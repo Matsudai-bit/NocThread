@@ -1,5 +1,5 @@
 /*****************************************************************//**
- * @file    IConstraintFactory.cpp
+ * @file    ConstraintFactory.cpp
  * @brief   制約の生成インターフェースに関するソースファイル
  *
  * @author  松下大暉
@@ -7,4 +7,9 @@
  *********************************************************************/
 
 #include "pch.h"
-#include "IConstraintFactory.h"
+#include "ConstraintFactory.h"
+
+ConstraintFactory::ConstraintFactory(bool isDynamic)
+	: m_isDynamic{ isDynamic }
+{
+}

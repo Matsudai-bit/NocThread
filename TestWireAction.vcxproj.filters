@@ -161,9 +161,6 @@
     <Filter Include="Game\GameObjects\RopeObject\XPBDSimulator\SimParticle">
       <UniqueIdentifier>{f2e0db80-23aa-4bd0-ab63-b26b938218d7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Game\GameObjects\RopeObject\XPBDSimulator\RopeSegment">
-      <UniqueIdentifier>{f14938ea-40d7-47cb-9494-e23910771bce}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Game\GameObjects\RopeObject\XPBDSimulator\Constraint">
       <UniqueIdentifier>{c29e1a8d-969c-4dd3-b32d-1dc4497f1dda}</UniqueIdentifier>
     </Filter>
@@ -350,6 +347,9 @@
     <Filter Include="Library\ImGui">
       <UniqueIdentifier>{5cd5f309-cc15-4981-bccc-ac9937f9266c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\GameObjects\RopeObject\XPBDSimulator\Constraint\DistanceConstraint">
+      <UniqueIdentifier>{81716a6e-9c74-45f3-a219-75968d971864}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -407,9 +407,6 @@
     </ClInclude>
     <ClInclude Include="Game\GameObjects\RopeObject\ParticleObject\ParticleObject.h">
       <Filter>Game\GameObjects\RopeObject\ParticleObject</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\GameObjects\RopeObject\XPBDSimulator\RopeSegment\RopeSegment.h">
-      <Filter>Game\GameObjects\RopeObject\XPBDSimulator\RopeSegment</Filter>
     </ClInclude>
     <ClInclude Include="Game\GameObjects\RopeObject\XPBDSimulator\SimParticle\SimParticle.h">
       <Filter>Game\GameObjects\RopeObject\XPBDSimulator\SimParticle</Filter>
@@ -693,11 +690,17 @@
     <ClInclude Include="Library\ImGui\imgui_impl_win32.h">
       <Filter>Library\ImGui</Filter>
     </ClInclude>
-    <ClInclude Include="Game\GameObjects\RopeObject\XPBDSimulator\Constraint\IConstraintFactory.h">
+    <ClInclude Include="Game\GameObjects\RopeObject\XPBDSimulator\Constraint\ConstraintFactory.h">
       <Filter>Game\GameObjects\RopeObject\XPBDSimulator\Constraint</Filter>
     </ClInclude>
     <ClInclude Include="Game\GameObjects\RopeObject\XPBDSimulator\Constraint\CollisionConstraint\CollisionConstraintFactory.h">
       <Filter>Game\GameObjects\RopeObject\XPBDSimulator\Constraint\CollisionConstraint</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameObjects\RopeObject\XPBDSimulator\Constraint\DistanceConstraint\DistanceConstraint.h">
+      <Filter>Game\GameObjects\RopeObject\XPBDSimulator\Constraint\DistanceConstraint</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameObjects\RopeObject\XPBDSimulator\Constraint\DistanceConstraint\DistanceConstraintFactory.h">
+      <Filter>Game\GameObjects\RopeObject\XPBDSimulator\Constraint\DistanceConstraint</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -747,9 +750,6 @@
     </ClCompile>
     <ClCompile Include="Game\GameObjects\RopeObject\ParticleObject\ParticleObject.cpp">
       <Filter>Game\GameObjects\RopeObject\ParticleObject</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\GameObjects\RopeObject\XPBDSimulator\RopeSegment\RopeSegment.cpp">
-      <Filter>Game\GameObjects\RopeObject\XPBDSimulator\RopeSegment</Filter>
     </ClCompile>
     <ClCompile Include="Game\GameObjects\RopeObject\XPBDSimulator\SimParticle\SimParticle.cpp">
       <Filter>Game\GameObjects\RopeObject\XPBDSimulator\SimParticle</Filter>
@@ -985,11 +985,17 @@
     <ClCompile Include="Library\ImGui\imgui_impl_win32.cpp">
       <Filter>Library\ImGui</Filter>
     </ClCompile>
-    <ClCompile Include="Game\GameObjects\RopeObject\XPBDSimulator\Constraint\IConstraintFactory.cpp">
+    <ClCompile Include="Game\GameObjects\RopeObject\XPBDSimulator\Constraint\ConstraintFactory.cpp">
       <Filter>Game\GameObjects\RopeObject\XPBDSimulator\Constraint</Filter>
     </ClCompile>
     <ClCompile Include="Game\GameObjects\RopeObject\XPBDSimulator\Constraint\CollisionConstraint\CollisionConstraintFactory.cpp">
       <Filter>Game\GameObjects\RopeObject\XPBDSimulator\Constraint\CollisionConstraint</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\GameObjects\RopeObject\XPBDSimulator\Constraint\DistanceConstraint\DistanceConstraint.cpp">
+      <Filter>Game\GameObjects\RopeObject\XPBDSimulator\Constraint\DistanceConstraint</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\GameObjects\RopeObject\XPBDSimulator\Constraint\DistanceConstraint\DistanceConstraintFactory.cpp">
+      <Filter>Game\GameObjects\RopeObject\XPBDSimulator\Constraint\DistanceConstraint</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

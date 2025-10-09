@@ -1,6 +1,6 @@
 /*****************************************************************//**
- * @file    CollisionConstraintFactory.h
- * @brief   衝突制約の生成器に関するヘッダーファイル
+ * @file    DistanceConstraintFactory.h
+ * @brief   距離制約の生成器に関するヘッダーファイル
  *
  * @author  松下大暉
  * @date    2025/10/09
@@ -28,9 +28,9 @@ class IConstraint;
 
 // クラスの定義 ===============================================================
 /**
- * @brief 衝突制約の生成器
+ * @brief 距離制約の生成器
  */
-class CollisionConstraintFactory
+class DistanceConstraintFactory
 	: public ConstraintFactory
 {
 // クラス定数の宣言 -------------------------------------------------
@@ -40,18 +40,16 @@ public:
 
 // データメンバの宣言 -----------------------------------------------
 private:
-	CollisionManager* m_pCollisionManager; ///< 衝突管理
 
-	XPBDSimulator::Parameter m_paramater;
 
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
 public:
 	// コンストラクタ
-	CollisionConstraintFactory(CollisionManager* pCollisionManager, XPBDSimulator::Parameter paramater);
+	DistanceConstraintFactory();
 
 	// デストラクタ
-	~CollisionConstraintFactory();
+	~DistanceConstraintFactory();
 
 
 // 操作

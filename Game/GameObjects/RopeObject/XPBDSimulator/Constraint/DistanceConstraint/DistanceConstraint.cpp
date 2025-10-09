@@ -1,6 +1,6 @@
 /*****************************************************************//**
- * @file    RopeSegment.h
- * @brief   パーティクル同士を繋ぐものに関するソースファイル
+ * @file    DistanceConstraint.h
+ * @brief   距離制約に関するソースファイル
  *
  * @author  松下大暉
  * @date    2025/05/14
@@ -8,7 +8,7 @@
 
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
-#include "RopeSegment.h"
+#include "DistanceConstraint.h"
 
 #include "Game/GameObjects/RopeObject/XPBDSimulator/SimParticle/SimParticle.h"
 
@@ -22,13 +22,13 @@ using namespace DirectX;
  * @param[in] pP1 繋ぐパーティクル１
  * @param[in] pP2 繋ぐパーティクル2
  */
-RopeSegment::RopeSegment(SimParticle* pP1, SimParticle* pP2)
+DistanceConstraint::DistanceConstraint(SimParticle* pP1, SimParticle* pP2)
 	: m_constraint{}
 {
 	Initialize(pP1, pP2);
 }
 
-RopeSegment::RopeSegment()
+DistanceConstraint::DistanceConstraint()
 	: m_connectParticle{}
 	, m_constraint{}
 {
@@ -39,7 +39,7 @@ RopeSegment::RopeSegment()
 /**
  * @brief デストラクタ
  */
-RopeSegment::~RopeSegment()
+DistanceConstraint::~DistanceConstraint()
 {
 
 }
@@ -50,7 +50,7 @@ RopeSegment::~RopeSegment()
  * @param[in] pP1 繋ぐパーティクル１
  * @param[in] pP2 繋ぐパーティクル2
  */
-void RopeSegment::Initialize(SimParticle* pP1, SimParticle* pP2)
+void DistanceConstraint::Initialize(SimParticle* pP1, SimParticle* pP2)
 {
 	// 初期化
 	m_constraint = ConstraintParam();
@@ -69,13 +69,13 @@ void RopeSegment::Initialize(SimParticle* pP1, SimParticle* pP2)
  * 
  * @param[in] flexibility　柔軟性
  */
-void RopeSegment::ResetConstraintParam(float flexibility)
+void DistanceConstraint::ResetConstraintParam(float flexibility)
 {
 	m_constraint.λ = 0.0f;
 	m_constraint.α = flexibility;
 }
 
-float RopeSegment::EvaluateConstraint() const
+float DistanceConstraint::EvaluateConstraint() const
 {
 	using namespace SimpleMath;
 
@@ -89,7 +89,7 @@ float RopeSegment::EvaluateConstraint() const
 	return distance - m_constraint.startDistance;
 }
 
-float RopeSegment::ComputeLambdaCorrection(float dt, float C) const
+float DistanceConstraint::ComputeLambdaCorrection(float dt, float C) const
 {
 	const auto& pP1 = m_connectParticle.pP1;
 	const auto& pP2 = m_connectParticle.pP2;
@@ -112,7 +112,7 @@ float RopeSegment::ComputeLambdaCorrection(float dt, float C) const
 	return (C - αTilda * m_constraint.λ) / (deltaC.Dot(invM * deltaC) + αTilda);
 }
 
-DirectX::SimpleMath::Vector3 RopeSegment::ComputeDeltaX(float deltaLambda) const
+DirectX::SimpleMath::Vector3 DistanceConstraint::ComputeDeltaX(float deltaLambda) const
 {
 
 	const auto& pP1 = m_connectParticle.pP1;
@@ -124,7 +124,7 @@ DirectX::SimpleMath::Vector3 RopeSegment::ComputeDeltaX(float deltaLambda) const
 	return deltaC * deltaLambda;
 }
 
-void RopeSegment::ApplyPositionCorrection(float deltaLambda)
+void DistanceConstraint::ApplyPositionCorrection(float deltaLambda)
 {
 	DirectX::SimpleMath::Vector3 deltaX = ComputeDeltaX(deltaLambda); // deltaXは片方のパーティクルに対する補正量
 	m_connectParticle.pP1->SetXi(m_connectParticle.pP1->GetXi() + m_connectParticle.pP1->GetInvMass() * deltaX);

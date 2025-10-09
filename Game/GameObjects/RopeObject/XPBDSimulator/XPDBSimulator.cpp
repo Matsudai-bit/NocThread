@@ -11,7 +11,7 @@
 #include "XPDBSimulator.h"
 
 #include "Game/GameObjects/RopeObject/RopeObject.h"
-#include "Game/GameObjects/RopeObject/XPBDSimulator/RopeSegment/RopeSegment.h"
+#include "Game/GameObjects/RopeObject/XPBDSimulator/Constraint/DistanceConstraint/DistanceConstraint.h"
 
 #include "Game/GameObjects/RopeObject/XPBDSimulator/Constraint/IConstraint.h"
 #include "Game/GameObjects/RopeObject/XPBDSimulator/Constraint/CollisionConstraint/CollisionConstraint.h"
@@ -22,7 +22,9 @@
 #include "Game/Common/Collision/CollisionManager/CollisionManager.h"
 #include "Game/Common/Collision/Collision.h"
 
+// 制約生成
 #include "Game/GameObjects/RopeObject/XPBDSimulator/Constraint/CollisionConstraint/CollisionConstraintFactory.h"
+#include "Game/GameObjects/RopeObject/XPBDSimulator/Constraint/DistanceConstraint/DistanceConstraintFactory.h"
 
 using namespace DirectX;
 
@@ -74,8 +76,9 @@ void XPBDSimulator::Initialize(Parameter parameter, RopeObject* pRopeObject)
 	// パーティクルの配列の領域を確保する
 	m_particles.resize(particleNum);
 
-	// ロープ同士の管理配列の領域を確保する
-	m_ropeSegments.resize(particleNum - 1);
+
+	//// ロープ同士の管理配列の領域を確保する
+	//m_ropeSegments.resize(particleNum - 1);
 
 	// パーティクル・ロープ同士管理の登録
 	for (size_t i = 0; i < particleNum; i++)
@@ -106,18 +109,30 @@ void XPBDSimulator::Initialize(Parameter parameter, RopeObject* pRopeObject)
 
 	}
 
-	for (size_t i = 0; i < particleNum; i++)
+	// 標準として距離制約を登録する
+	m_constraintFactories.emplace_back(std::make_unique<DistanceConstraintFactory>());
+	
+	// 静的な制約を初期化
+	m_staticConstraints.clear();
+
+	for (auto& factory : m_constraintFactories)
 	{
-		if (i == particleNum - 1) continue;
+		// 動的な場合まだ作成しない
+		if (factory->IsDynamic()) continue; 
 
-		// 処理用変数
-		SimParticle* pSimParticle = &m_particles[i].simP;
+		// 生成した制約の格納配列
+		std::vector<std::unique_ptr<IConstraint>> creationConstraints;
 
-		// 初期化処理
-		m_ropeSegments[i] = std::make_unique<RopeSegment>(pSimParticle, &m_particles[i + 1].simP);
+		// 生成
+		creationConstraints = factory->CreateConstraint(&m_particles);
+
+		// 生成した制約を登録する
+		for (int i = 0; i < creationConstraints.size(); i++)
+		{
+			m_staticConstraints.push_back(std::move(creationConstraints[i]));
+		}
+
 	}
-
-
 	
 }
 
@@ -212,7 +227,6 @@ void XPBDSimulator::Simulate(float elapsedTime)
 void XPBDSimulator::Reset()
 {
 	m_particles.clear();
-	m_ropeSegments.clear();
 }
 
 /**
@@ -220,7 +234,7 @@ void XPBDSimulator::Reset()
  * 
  * @param[in] constraintFactories 設定する制約
  */
-void XPBDSimulator::SetConstraint(std::vector<std::unique_ptr<IConstraintFactory>>* constraintFactories)
+void XPBDSimulator::SetConstraint(std::vector<std::unique_ptr<ConstraintFactory>>* constraintFactories)
 {
 	for (int i = 0; i < constraintFactories->size(); i++)
 	{
@@ -264,9 +278,9 @@ void XPBDSimulator::PredictNextPositions(float elapsedTime)
 void XPBDSimulator::ResetConstraintParameters()
 {
 	// 制約の初期化
-	for (auto& segment : m_ropeSegments)
+	for (auto& constraint : m_staticConstraints)
 	{
-		segment->ResetConstraintParam(m_parameter.flexibility);
+		constraint->ResetConstraintParam(m_parameter.flexibility);
 	}
 }
 
@@ -278,28 +292,26 @@ void XPBDSimulator::ResetConstraintParameters()
  */
 void XPBDSimulator::GenerateConstraints()
 {
-	m_constraints.clear();
-	int i = 0;
+	// 動的制約のクリア
+	m_dynamicConstraints.clear();
 
+	
+	// 制約の生成
 	for (auto& constraintFactory : m_constraintFactories)
 	{
+		// 生成した制約の格納配列
+		std::vector<std::unique_ptr<IConstraint>> creationConstraints;
 
-		// 各パーティクルと地面の衝突判定を行う（単純な平面衝突の例）
-		for (auto& particle : m_particles)
+		// 生成
+		creationConstraints = constraintFactory->CreateConstraint(&m_particles);
+
+		// 生成した制約を登録する
+		for (int i = 0; i < creationConstraints.size(); i++)
 		{
-			i++;
-
-			// 処理用変数
-			auto* simP = &particle.simP;
-
-			std::unique_ptr<IConstraint> constraint;
-
-
-			if (constraintFactory->CreateConstraint(simP, &constraint))
-			{
-				m_constraints.push_back(std::move(constraint));
-			}
+			m_dynamicConstraints.push_back(std::move(creationConstraints[i]));
 		}
+
+		
 	}
 
 }
@@ -318,16 +330,17 @@ void XPBDSimulator::IterateConstraints(float elapsedTime)
 {
 	using namespace SimpleMath;
 
+	// 制約を集約する
 	std::vector<IConstraint*> constraints;
 	//constraints.resize(m_constraints.size() + m_ropeSegments.size());
 	// コピーを取って使う
 	//constraints.reserve(m_ropeSegments.size() + m_constraints.size());
 
-	for (auto& seg : m_ropeSegments) 
+	for (auto& con : m_staticConstraints)
 	{
-		constraints.push_back(seg.get());
+		constraints.push_back(con.get());
 	}
-	for (auto& con : m_constraints) 
+	for (auto& con : m_dynamicConstraints)
 	{
 		constraints.push_back(con.get());
 	}

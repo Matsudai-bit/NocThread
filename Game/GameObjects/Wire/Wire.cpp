@@ -104,7 +104,7 @@ void Wire::Initialize(
 	m_simulator = std::make_unique<XPBDSimulator>();
 
 	// êßñÒÇÃí«â¡
-	std::vector<std::unique_ptr<IConstraintFactory>> constraintFactories;
+	std::vector<std::unique_ptr<ConstraintFactory>> constraintFactories;
 	constraintFactories.emplace_back(std::make_unique<CollisionConstraintFactory>(m_pCollisionManager, simulationParam));
 	m_simulator->SetConstraint(&constraintFactories);
 

@@ -22,9 +22,9 @@
 // クラスの前方宣言 ===================================================
 class ParticleObject;
 class RopeObject;
-class RopeSegment;
+class DistanceConstraint;
 class IConstraint;			// 制約インターフェース
-class IConstraintFactory;	// 制約生成インターフェース
+class ConstraintFactory;	// 制約生成インターフェース
 
 class CollisionManager; // 衝突管理
 
@@ -46,7 +46,7 @@ public:
 
 
 
-private:
+public:
 
 	/**
 	 * @brief 使用パーティクル
@@ -71,12 +71,13 @@ public:
 private:
 	std::vector<Particle> m_particles;	///< パーティクル群
 
-	std::vector<std::unique_ptr<RopeSegment>> m_ropeSegments; ///< パーティクル同士を繋ぐもの
-
 	Parameter m_parameter;	///< パラメータ
 
-	std::vector<std::unique_ptr<IConstraint>> m_constraints; ///< 制約群
-	std::vector<std::unique_ptr<IConstraintFactory>> m_constraintFactories; ///< 制約生成群
+	// 制約 処理速度担保のため分けておく
+	std::vector<std::unique_ptr<IConstraint>> m_staticConstraints;  ///< 静的制約群 
+	std::vector<std::unique_ptr<IConstraint>> m_dynamicConstraints; ///< 動的制約群　（毎フレーム更新される）
+
+	std::vector<std::unique_ptr<ConstraintFactory>> m_constraintFactories; ///< 制約生成群
 
 	// **** テスト用 :　絶対置き換えること ******
 	CollisionManager* m_pCollisionManager;
@@ -119,7 +120,7 @@ public:
 	void SetCollisionManager(CollisionManager* pCollisionManager) { m_pCollisionManager = pCollisionManager; }
 
 	// 制約の設定
-	void SetConstraint(std::vector<std::unique_ptr<IConstraintFactory>>* constraintFactories);
+	void SetConstraint(std::vector<std::unique_ptr<ConstraintFactory>>* constraintFactories);
 
 
 // 内部実装

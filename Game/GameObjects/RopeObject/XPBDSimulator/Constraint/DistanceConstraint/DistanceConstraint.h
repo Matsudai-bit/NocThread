@@ -1,6 +1,6 @@
 /*****************************************************************//**
- * @file    RopeSegment.h
- * @brief   パーティクル同士を繋ぐものに関するヘッダーファイル
+ * @file    DistanceConstraint.h
+ * @brief   距離制約に関するヘッダーファイル
  *
  * @author  松下大暉
  * @date    2025/05/14
@@ -16,15 +16,14 @@
 #include "Game/GameObjects/RopeObject/XPBDSimulator/XPDBSimulator.h"
 #include "Game/GameObjects/RopeObject/XPBDSimulator/Constraint/IConstraint.h"
 
-#include "Game/GameObjects/RopeObject/XPBDSimulator/Constraint/IConstraint.h"
 // クラスの前方宣言 ===================================================
 class SimParticle;	// シュミレータのパーティクル
 
 // クラスの定義 ===============================================================
 /**
- * @brief パーティクル同士を繋ぐもの
+ * @brief 距離制約
  */
-class RopeSegment
+class DistanceConstraint
 	: public IConstraint
 {
 // 構造体の宣言 -------------------------------------------------
@@ -57,13 +56,13 @@ private:
 // コンストラクタ/デストラクタ
 public:
 	// コンストラクタ
-	RopeSegment(SimParticle* pP1, SimParticle* pP2);
+	DistanceConstraint(SimParticle* pP1, SimParticle* pP2);
 
 	// コンストラクタ
-	RopeSegment();
+	DistanceConstraint();
 
 	// デストラクタ
-	~RopeSegment();
+	~DistanceConstraint();
 
 
 // 操作
