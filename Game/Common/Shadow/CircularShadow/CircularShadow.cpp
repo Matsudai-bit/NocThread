@@ -165,10 +165,10 @@ void CircularShadow::Draw(const DirectX::SimpleMath::Matrix& view, const DirectX
 
 	auto position = SimpleMath::Vector3(shadowOwnerPosition.x, m_castPositionY, shadowOwnerPosition.z);
 
-	float distance = 1.0f + std::abs(shadowOwnerPosition.y - m_castPositionY);
+	float distance =  std::abs(shadowOwnerPosition.y - m_castPositionY);
 
 	// ワールド座標の算出
-	auto world = SimpleMath::Matrix::CreateScale(distance) * SimpleMath::Matrix::CreateTranslation(position) ;
+	auto world = SimpleMath::Matrix::CreateScale(std::max(1.3f - distance * 0.1f, 0.0f)) * SimpleMath::Matrix::CreateTranslation(position) ;
 
 	// カリング
 	context->RSSetState(states->CullNone());  
@@ -181,7 +181,7 @@ void CircularShadow::Draw(const DirectX::SimpleMath::Matrix& view, const DirectX
 	cb.matWorldTranspose = world.Transpose();
 	cb.matProj = proj.Transpose();
 	cb.matView = view.Transpose();
-	cb.alphaValue = SimpleMath::Vector4(1.0f / (distance * 0.25f));
+	cb.alphaValue = SimpleMath::Vector4(1.0f / (distance * 0.5f));
 
 	//	受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
 	context->UpdateSubresource(m_constantBuffer.Get(), 0, NULL, &cb, 0, 0);

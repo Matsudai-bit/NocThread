@@ -305,7 +305,7 @@ void Player::Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::Simple
 	// ワイヤー照準検出器の表示
 	m_wireTargetFinder->Draw(view, proj);
 
-	m_collider->Draw(context, view, proj);
+	//m_collider->Draw(context, view, proj);
 
 }
 

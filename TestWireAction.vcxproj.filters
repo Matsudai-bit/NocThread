@@ -693,6 +693,12 @@
     <ClInclude Include="Library\ImGui\imgui_impl_win32.h">
       <Filter>Library\ImGui</Filter>
     </ClInclude>
+    <ClInclude Include="Game\GameObjects\RopeObject\XPBDSimulator\Constraint\IConstraintFactory.h">
+      <Filter>Game\GameObjects\RopeObject\XPBDSimulator\Constraint</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameObjects\RopeObject\XPBDSimulator\Constraint\CollisionConstraint\CollisionConstraintFactory.h">
+      <Filter>Game\GameObjects\RopeObject\XPBDSimulator\Constraint\CollisionConstraint</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -978,6 +984,12 @@
     </ClCompile>
     <ClCompile Include="Library\ImGui\imgui_impl_win32.cpp">
       <Filter>Library\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\GameObjects\RopeObject\XPBDSimulator\Constraint\IConstraintFactory.cpp">
+      <Filter>Game\GameObjects\RopeObject\XPBDSimulator\Constraint</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\GameObjects\RopeObject\XPBDSimulator\Constraint\CollisionConstraint\CollisionConstraintFactory.cpp">
+      <Filter>Game\GameObjects\RopeObject\XPBDSimulator\Constraint\CollisionConstraint</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

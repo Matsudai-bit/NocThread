@@ -23,7 +23,8 @@
 class ParticleObject;
 class RopeObject;
 class RopeSegment;
-class IConstraint; // 制約インターフェース
+class IConstraint;			// 制約インターフェース
+class IConstraintFactory;	// 制約生成インターフェース
 
 class CollisionManager; // 衝突管理
 
@@ -75,6 +76,7 @@ private:
 	Parameter m_parameter;	///< パラメータ
 
 	std::vector<std::unique_ptr<IConstraint>> m_constraints; ///< 制約群
+	std::vector<std::unique_ptr<IConstraintFactory>> m_constraintFactories; ///< 制約生成群
 
 	// **** テスト用 :　絶対置き換えること ******
 	CollisionManager* m_pCollisionManager;
@@ -115,6 +117,9 @@ public:
 public:
 
 	void SetCollisionManager(CollisionManager* pCollisionManager) { m_pCollisionManager = pCollisionManager; }
+
+	// 制約の設定
+	void SetConstraint(std::vector<std::unique_ptr<IConstraintFactory>>* constraintFactories);
 
 
 // 内部実装

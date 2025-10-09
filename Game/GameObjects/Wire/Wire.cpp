@@ -26,6 +26,8 @@
 
 #include "Game/GameObjects/Wire/IWireHolder/IWireHolder.h"
 
+#include "Game/GameObjects/RopeObject/XPBDSimulator/Constraint/CollisionConstraint/CollisionConstraintFactory.h"
+
 
 using namespace DirectX;
 
@@ -100,6 +102,11 @@ void Wire::Initialize(
 	m_ropeObject->Initialize(pCommonResources);
 	// シミュレータ作成
 	m_simulator = std::make_unique<XPBDSimulator>();
+
+	// 制約の追加
+	std::vector<std::unique_ptr<IConstraintFactory>> constraintFactories;
+	constraintFactories.emplace_back(std::make_unique<CollisionConstraintFactory>(m_pCollisionManager, simulationParam));
+	m_simulator->SetConstraint(&constraintFactories);
 
 	m_length = length;
 
@@ -317,9 +324,6 @@ bool Wire::CreateRope(const DirectX::SimpleMath::Vector3& origin, const DirectX:
 
 	}
 
-	m_particleObjects.emplace_back(std::make_unique<ParticleObject>());
-	m_particleObjects.back()->SetPosition(m_owner.pGameObject->GetPosition());
-	//m_particleObjects.back()->;
 
 	if (m_particleObjects.size() <= 3)
 	{

@@ -251,7 +251,9 @@
     <ClInclude Include="Game\GameObjects\RopeObject\ParticleObject\ParticleObject.h" />
     <ClInclude Include="Game\GameObjects\RopeObject\RopeObject.h" />
     <ClInclude Include="Game\GameObjects\RopeObject\XPBDSimulator\Constraint\CollisionConstraint\CollisionConstraint.h" />
+    <ClInclude Include="Game\GameObjects\RopeObject\XPBDSimulator\Constraint\CollisionConstraint\CollisionConstraintFactory.h" />
     <ClInclude Include="Game\GameObjects\RopeObject\XPBDSimulator\Constraint\IConstraint.h" />
+    <ClInclude Include="Game\GameObjects\RopeObject\XPBDSimulator\Constraint\IConstraintFactory.h" />
     <ClInclude Include="Game\GameObjects\RopeObject\XPBDSimulator\RopeSegment\RopeSegment.h" />
     <ClInclude Include="Game\GameObjects\RopeObject\XPBDSimulator\SimParticle\SimParticle.h" />
     <ClInclude Include="Game\GameObjects\RopeObject\XPBDSimulator\XPDBSimulator.h" />
@@ -354,7 +356,9 @@
     <ClCompile Include="Game\GameObjects\RopeObject\ParticleObject\ParticleObject.cpp" />
     <ClCompile Include="Game\GameObjects\RopeObject\RopeObject.cpp" />
     <ClCompile Include="Game\GameObjects\RopeObject\XPBDSimulator\Constraint\CollisionConstraint\CollisionConstraint.cpp" />
+    <ClCompile Include="Game\GameObjects\RopeObject\XPBDSimulator\Constraint\CollisionConstraint\CollisionConstraintFactory.cpp" />
     <ClCompile Include="Game\GameObjects\RopeObject\XPBDSimulator\Constraint\IConstraint.cpp" />
+    <ClCompile Include="Game\GameObjects\RopeObject\XPBDSimulator\Constraint\IConstraintFactory.cpp" />
     <ClCompile Include="Game\GameObjects\RopeObject\XPBDSimulator\RopeSegment\RopeSegment.cpp" />
     <ClCompile Include="Game\GameObjects\RopeObject\XPBDSimulator\SimParticle\SimParticle.cpp" />
     <ClCompile Include="Game\GameObjects\RopeObject\XPBDSimulator\XPDBSimulator.cpp" />
