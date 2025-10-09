@@ -350,6 +350,12 @@
     <Filter Include="Game\GameObjects\RopeObject\XPBDSimulator\Constraint\DistanceConstraint">
       <UniqueIdentifier>{81716a6e-9c74-45f3-a219-75968d971864}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\GameObjects\RopeObject\XPBDSimulator\Constraint\Factory">
+      <UniqueIdentifier>{3a88915d-5138-4d28-9923-9061728f2ec4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\GameObjects\RopeObject\XPBDSimulator\Constraint\Factory\Base">
+      <UniqueIdentifier>{57c15223-3cf6-4f1e-b2df-9ecf4f644136}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -690,17 +696,17 @@
     <ClInclude Include="Library\ImGui\imgui_impl_win32.h">
       <Filter>Library\ImGui</Filter>
     </ClInclude>
-    <ClInclude Include="Game\GameObjects\RopeObject\XPBDSimulator\Constraint\ConstraintFactory.h">
-      <Filter>Game\GameObjects\RopeObject\XPBDSimulator\Constraint</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\GameObjects\RopeObject\XPBDSimulator\Constraint\CollisionConstraint\CollisionConstraintFactory.h">
-      <Filter>Game\GameObjects\RopeObject\XPBDSimulator\Constraint\CollisionConstraint</Filter>
-    </ClInclude>
     <ClInclude Include="Game\GameObjects\RopeObject\XPBDSimulator\Constraint\DistanceConstraint\DistanceConstraint.h">
       <Filter>Game\GameObjects\RopeObject\XPBDSimulator\Constraint\DistanceConstraint</Filter>
     </ClInclude>
+    <ClInclude Include="Game\GameObjects\RopeObject\XPBDSimulator\Constraint\ConstraintFactory.h">
+      <Filter>Game\GameObjects\RopeObject\XPBDSimulator\Constraint\Factory\Base</Filter>
+    </ClInclude>
     <ClInclude Include="Game\GameObjects\RopeObject\XPBDSimulator\Constraint\DistanceConstraint\DistanceConstraintFactory.h">
-      <Filter>Game\GameObjects\RopeObject\XPBDSimulator\Constraint\DistanceConstraint</Filter>
+      <Filter>Game\GameObjects\RopeObject\XPBDSimulator\Constraint\Factory</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameObjects\RopeObject\XPBDSimulator\Constraint\CollisionConstraint\CollisionConstraintFactory.h">
+      <Filter>Game\GameObjects\RopeObject\XPBDSimulator\Constraint\Factory</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -985,17 +991,17 @@
     <ClCompile Include="Library\ImGui\imgui_impl_win32.cpp">
       <Filter>Library\ImGui</Filter>
     </ClCompile>
-    <ClCompile Include="Game\GameObjects\RopeObject\XPBDSimulator\Constraint\ConstraintFactory.cpp">
-      <Filter>Game\GameObjects\RopeObject\XPBDSimulator\Constraint</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\GameObjects\RopeObject\XPBDSimulator\Constraint\CollisionConstraint\CollisionConstraintFactory.cpp">
-      <Filter>Game\GameObjects\RopeObject\XPBDSimulator\Constraint\CollisionConstraint</Filter>
-    </ClCompile>
     <ClCompile Include="Game\GameObjects\RopeObject\XPBDSimulator\Constraint\DistanceConstraint\DistanceConstraint.cpp">
       <Filter>Game\GameObjects\RopeObject\XPBDSimulator\Constraint\DistanceConstraint</Filter>
     </ClCompile>
+    <ClCompile Include="Game\GameObjects\RopeObject\XPBDSimulator\Constraint\ConstraintFactory.cpp">
+      <Filter>Game\GameObjects\RopeObject\XPBDSimulator\Constraint\Factory\Base</Filter>
+    </ClCompile>
     <ClCompile Include="Game\GameObjects\RopeObject\XPBDSimulator\Constraint\DistanceConstraint\DistanceConstraintFactory.cpp">
-      <Filter>Game\GameObjects\RopeObject\XPBDSimulator\Constraint\DistanceConstraint</Filter>
+      <Filter>Game\GameObjects\RopeObject\XPBDSimulator\Constraint\Factory</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\GameObjects\RopeObject\XPBDSimulator\Constraint\CollisionConstraint\CollisionConstraintFactory.cpp">
+      <Filter>Game\GameObjects\RopeObject\XPBDSimulator\Constraint\Factory</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
