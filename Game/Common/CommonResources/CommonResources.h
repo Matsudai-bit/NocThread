@@ -1,0 +1,102 @@
+/*****************************************************************//**
+ * @file    CommonResources.h
+ * @brief   共通リソースクラスに関するヘッダーファイル
+ *
+ * @author  松下大暉
+ * @date    2025/03/22
+ *********************************************************************/
+
+// 多重インクルードの防止 =====================================================
+#pragma once
+
+
+
+
+// ヘッダファイルの読み込み ===================================================
+
+
+// クラスの前方宣言 ===================================================
+namespace DX
+{
+	class StepTimer;		// タイマー
+	class DeviceResources;	// デバイスリソース
+}
+
+namespace Imase
+{
+	class DebugFont;	// デバックフォント
+}
+
+class ResourceManager;	// リソース管理
+
+
+
+
+// クラスの定義 ===============================================================
+/**
+ * @brief 共通リソース
+ */
+class CommonResources
+{
+// クラス定数の宣言 -------------------------------------------------
+public:
+
+
+
+// データメンバの宣言 -----------------------------------------------
+private:
+
+	DX::StepTimer*			m_pStepTimer;		///< タイマー
+	DX::DeviceResources*	m_pDeviceResources;	///< デバイスリソース
+	DirectX::CommonStates*	m_pCommonStates;	///< 共通状態
+
+	Imase::DebugFont*		m_pDebugFont;		///< デバックフォント
+
+	ResourceManager*		m_pResourceManager;	///< リソース管理
+
+	DirectX::Keyboard::KeyboardStateTracker*	m_pKeyboardState;	///< キーボードの状態
+	DirectX::Mouse::ButtonStateTracker*			m_pMouseState;		///< マウスの状態
+
+
+// メンバ関数の宣言 -------------------------------------------------
+// コンストラクタ/デストラクタ
+public:
+	// コンストラクタ
+	CommonResources(
+		DX::StepTimer*			pStepTimer, 
+		DX::DeviceResources*	pDeviceResources, 
+		DirectX::CommonStates*	pCommonStates,
+		Imase::DebugFont*		pDebugFont,
+		ResourceManager*		pResourceManager,
+		DirectX::Keyboard::KeyboardStateTracker*pKeyboardState,
+		DirectX::Mouse::ButtonStateTracker*		pMouseState);
+
+	// デストラクタ
+	~CommonResources();
+
+
+// 取得
+public:
+
+	// タイマーの取得
+	DX::StepTimer* GetStepTimer()				const;
+
+	// デバイスリソースの取得
+	DX::DeviceResources* GetDeviceResources()	const;
+
+	// 共通状態の取得
+	DirectX::CommonStates* GetCommonStates()	const;
+
+	// デバックフォントの取得
+	Imase::DebugFont* GetDebugFont()			const;
+
+	// リソース管理
+	ResourceManager* GetResourceManager()		const;
+
+	// キーボードトラッカーの取得
+	DirectX::Keyboard::KeyboardStateTracker* GetKeyboardTracker() const;
+
+	// マウストラッカー取得
+	DirectX::Mouse::ButtonStateTracker* GetMouseTracker() const;
+
+};

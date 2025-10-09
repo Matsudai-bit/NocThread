@@ -1,0 +1,68 @@
+/*****************************************************************//**
+ * @file    TrackingEnemyBehaviour.h
+ * @brief   敵の追跡挙動に関するヘッダーファイル
+ *
+ * @author  松下大暉
+ * @date    2025/08/24
+ *********************************************************************/
+
+// 多重インクルードの防止 =====================================================
+#pragma once
+
+
+
+
+// ヘッダファイルの読み込み ===================================================
+#include "Game/GameObjects/Enemy/Behaviour/Update/IEnemyUpdateBehaviour.h"
+
+#include "Game/Common/ElapsedTimeCounter/ElapsedTimeCounter.h"
+
+// クラスの前方宣言 ===================================================
+class Player;
+
+// クラスの定義 ===============================================================
+/**
+ * @brief 敵の追跡挙動
+ */
+class TrackingEnemyBehaviour  
+	: public IEnemyUpdateBehaviour
+{
+// クラス定数の宣言 -------------------------------------------------
+public:
+
+
+
+// データメンバの宣言 -----------------------------------------------
+private:
+
+	ElapsedTimeCounter m_playerTargetTimeCounter; ///< プレイヤーを補足するクールタイムの加算器
+
+	DirectX::SimpleMath::Vector3 m_targetDirection; ///< 目標方向
+
+// メンバ関数の宣言 -------------------------------------------------
+// コンストラクタ/デストラクタ
+public:
+	// コンストラクタ
+	TrackingEnemyBehaviour();
+
+	// デストラクタ
+	~TrackingEnemyBehaviour();
+
+
+// 操作
+public:
+
+	// 更新処理
+	virtual void Update(Enemy* pEnemy, float elapsedTime,const CommonResources* pCommonResources) override;
+
+
+
+// 取得/設定
+public:
+
+
+// 内部実装
+private:
+
+
+};

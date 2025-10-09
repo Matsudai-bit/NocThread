@@ -1,0 +1,923 @@
+/*****************************************************************//**
+ * @file    Player.h
+ * @brief   プレイヤーに関するソースファイル
+ *
+ * @author  松下大暉
+ * @date    2025/06/12
+ *********************************************************************/
+
+// ヘッダファイルの読み込み ===================================================
+#include "pch.h"
+
+#include "Player.h"
+
+// ゲームプレイシーン関連
+#include "Game/Scene/GameplayScene/GameplayScene.h"
+
+// 共通ライブラリ・コンポーネント
+#include "Game/Common/CommonResources/CommonResources.h"
+#include "Game/Common/ResourceManager/ResourceManager.h"
+#include "Game/Common/SimpleModel/SimpleModel.h"
+#include "Game/Common/DeviceResources.h"
+#include "Game/Common/Collision/Collision.h"
+#include "Game/Common/Collision/CollisionManager/CollisionManager.h"
+#include "Game/Common/Camera/Camera.h"
+#include "Game/Common/Helper/MovementHelper/MovementHelper.h"
+#include "Game/Common//Helper/PhysicsHelper/PhysicsHelper.h"
+#include "Game/Common/WireTargetFinder/WireTargetFinder.h"
+
+// イベントシステム
+#include "Game/Common/Event/WireSystemObserver/WireSystemSubject.h"
+#include "Game/Common/Event/WireSystemObserver/IWireEventObserver.h"
+#include "Game/Common/Event/Messenger/GameFlowMessenger/GameFlowMessenger.h"
+
+// プレイヤーの状態 (ステートパターン)
+#include "Game/GameObjects/Player/State/IdlePlayerState/IdlePlayerState.h"
+#include "Game/GameObjects/Player/State/WalkPlayerState/WalkPlayerState.h"
+#include "Game/GameObjects/Player/State/JumpingPlayerState/JumpingPlayerState.h"
+#include "Game/GameObjects/Player/State/SteppingPlayerState/SteppingPlayerState.h"
+#include "Game/GameObjects/Player/State/WireActionPlayerState/WireActionPlayerState.h"
+#include "Game/GameObjects/Player/State/WireGrabbingPlayerState/WireGrabbingPlayerState.cpp.h"
+#include "Game/GameObjects/Player/State/WireThrowing/WireThrowingPlayerState.cpp.h"
+
+// ゲームオブジェクト
+#include "Game/GameObjects/Wire/Wire.h"
+
+// 外部ライブラリ・ツール
+#include "Library/ImaseLib/DebugDraw.h"
+#include "Library/ImaseLib/DebugFont.h"
+#include "Library/MyLib/DirectXMyToolKit/DirectXMyToolKit.h"
+#include "Library/MyLib/Ray/Ray.h"
+
+using namespace DirectX;
+
+
+
+// メンバ関数の定義 ===========================================================
+/**
+ * @brief コンストラクタ
+ *
+ * @param[in] なし
+ */
+Player::Player()
+	: m_pCollisionManager{ nullptr }
+	, m_pCamera{ nullptr }
+	, m_isGround{false}
+	, m_isActive{ true }
+	, m_canStep{ true }
+	, m_state{ State::IDLE }
+{
+	m_cursorPos = DirectX::SimpleMath::Vector2(Screen::Get()->GetCenterXF(), Screen::Get()->GetCenterYF() - 140.f * Screen::Get()->GetScreenScale());
+
+	// メッセージへの登録
+	GameFlowMessenger::GetInstance()->RegistrObserver(this);
+}
+
+
+
+/**
+ * @brief デストラクタ
+ */
+Player::~Player()
+{
+}
+
+
+
+/**
+ * @brief 初期化処理
+ *
+ * @param[in] pCommonResources 共通リソース
+ *
+ * @return なし
+ */
+void Player::Initialize(CommonResources* pCommonResources, CollisionManager* pCollisionManager)
+{
+	using namespace SimpleMath;
+
+	// 共通リソースの設定
+	SetCommonResources(pCommonResources);
+
+	m_pCollisionManager = pCollisionManager;
+
+	// モデルの取得
+	m_model =  GetCommonResources()->GetResourceManager()->CreateModel(PLAYER_MODEL_FILE_NAME);
+	auto context = GetCommonResources()->GetDeviceResources()->GetD3DDeviceContext();
+	auto device  = GetCommonResources()->GetDeviceResources()->GetD3DDevice();
+
+	SetPosition(SimpleMath::Vector3(0.0f, 29.0f, 0.0f));
+	SetScale(0.5f);
+
+	// コライダの作成
+	m_collider = std::make_unique<Sphere>(GetPosition(), GetScale() * 1.3f);
+
+	pCollisionManager->AddCollisionObjectData(this, m_collider.get());
+
+	m_basicEffect = std::make_unique<BasicEffect>(device);
+	m_basicEffect->SetVertexColorEnabled(true);
+	m_primitiveBatch = std::make_unique<PrimitiveBatch<VertexPositionColor>>(context);
+
+	CreateInputLayoutFromEffect<VertexPositionColor>(device, m_basicEffect.get(), m_inputLayout.ReleaseAndGetAddressOf());
+
+	// ワイヤーシステム
+	m_wireSystemSubject = std::make_unique<WireSystemSubject>();
+	
+	// ワイヤーの作成
+	m_wire = std::make_unique<Wire>();
+
+	// ワイヤー照準検出器の作成
+	m_wireTargetFinder = std::make_unique<WireTargetFinder>();
+	m_wireTargetFinder->Initialize(GetCommonResources(), pCollisionManager, 30.0f, this);
+
+	XPBDSimulator::Parameter param;
+	// 剛性（柔軟力）
+	param.flexibility = GameplayScene::ROPE_FIXIBLILLITY;
+	param.gravity = Vector3(0.0f, -9.8f / 2.f, 0.0f);
+	param.iterations = 1;
+
+	m_wire->Initialize(pCommonResources, pCollisionManager, param, WIRE_LENGTH , this,this, this, m_wireSystemSubject.get());
+
+
+	// デフォルト回転の初期化
+	SetDefaultRotate(Quaternion::CreateFromYawPitchRoll(XMConvertToRadians(180.0f), 0, 0.0f));
+
+	// 回転
+	SetRotate(Quaternion::CreateFromYawPitchRoll(0.0f, 0.0f, 0.0f));
+
+	// ステートマシーンの作成
+	m_stateMachine = std::make_unique<StateMachine<Player>>(this);
+	// ステートマシーンの作成
+	m_stateMachine = std::make_unique<StateMachine<Player>>(this);
+	RequestChangeState(State::IDLE);
+
+	m_isActive = true;
+
+	// 捕らえた時のイベントの追加
+	AddEventListener<CaughtEventData>(GameObjectEventType::CAUGHT,
+		[this](const CaughtEventData data)
+		{
+			if (IsActive())
+			{
+				m_isActive = false;
+				GameFlowMessenger::GetInstance()->Notify(GameFlowEventID::PLAYER_DIE);
+
+			}
+		});
+
+	// アニメーション関連の設定
+	ChangeAnimation(ANIM_IDLENG);
+
+
+
+
+}
+
+
+
+/**
+ * @brief 更新処理
+ * 
+ * @param[in] elapsedTime	経過時間
+ * @param[in] camera		カメラ
+ * @param[in] proj			射影行列
+ */
+void Player::Update(float elapsedTime, const Camera& camera, const DirectX::SimpleMath::Matrix& proj)
+{
+	if (m_isActive == false) { return; }
+
+	if (m_isGround)
+	{
+		m_canStep = true;
+	}
+
+	ApplyEvents();
+
+	auto kb = Keyboard::Get().GetState();
+
+	// ワイヤーの更新処理
+	m_wire->Update(elapsedTime);
+
+	// カメラの保存
+	m_pCamera = &camera;
+	// 射影行列の保存
+	m_proj = proj;
+
+	// 状態の更新処理
+	m_stateMachine->Update(elapsedTime);
+
+	// アニメーション時間がアニメーション終了時間より小さい場合はアニメーションを繰り返す
+	if (m_animation.GetAnimTime() < m_animation.GetEndTime())
+	{
+		// アニメーションを更新する
+		m_animation.Update(elapsedTime);
+	}
+	else
+	{
+		// アニメーションの開始時間を設定する
+		m_animation.SetStartTime(0.0);
+	}
+
+	// ワイヤー照準検出器の更新処理
+	m_wireTargetFinder->Update(elapsedTime, &camera, GetWireShootingRay(), WIRE_LENGTH, 0.5f);
+}
+
+
+
+/**
+ * @brief 描画処理
+ * 
+ * @param[in] view　ビュー行列
+ * @param[in] proj　射影行列
+ */
+void Player::Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj)
+{
+	using namespace SimpleMath;
+	if (m_isActive == false) { return; }
+
+	// ワイヤーの描画処理
+	m_wire->Draw(view, proj);
+
+	// 状態の描画処理
+	m_stateMachine->Draw();
+
+	auto states = GetCommonResources()->GetCommonStates();
+
+	auto context = GetCommonResources()->GetDeviceResources()->GetD3DDeviceContext();
+
+	
+	Matrix defaultRotation		= Matrix::CreateFromQuaternion(GetDefaultRotate());
+
+	Matrix defaultTransform = Matrix::CreateTranslation(Vector3(0.0f, -2.5f * GetScale(), 0.0f));
+
+	if (m_state == State::WIRE_ACTION)
+		defaultTransform *= Matrix::CreateTranslation(Vector3(1.7f, -1.8f, 0.0f));
+
+	Matrix transform	= Matrix::CreateTranslation(GetPosition());
+	Matrix rotation		= Matrix::CreateFromQuaternion(GetRotate());
+	Matrix scale		= Matrix::CreateScale(GetScale());
+
+	Matrix world = defaultRotation * defaultTransform * scale * rotation * transform;
+
+
+	m_model.Draw(context, *GetCommonResources()->GetCommonStates(), world, view, proj);
+	auto drawBones = DirectX::ModelBone::MakeArray(m_model.bones.size());
+	// ボーン数を取得する
+	size_t nbones = m_model.bones.size();
+
+	// アニメションにモデルを適用する
+	m_animation.Apply(m_model, nbones, drawBones.get());
+
+	// スキン変形用行列を適用する
+	m_animation.ApplySkinMatrix(m_model, nbones, drawBones.get());
+	// アニメーションモデルを描画する
+	m_model.DrawSkinned(context, *states, nbones, drawBones.get(), world, view, proj);
+
+	m_model.Draw(context, *states, world, view, proj);
+
+	// **** 軸の描画 ****
+
+	// ブレンドステート
+	context->OMSetBlendState(states->Opaque(), nullptr, 0xFFFFFFF);
+	// 深度ステンシルバッファ
+	context->OMSetDepthStencilState(states->DepthDefault(), 0);
+	// カリング
+	context->RSSetState(states->CullNone());
+
+	// インプットレイアウトの設定
+	context->IASetInputLayout(m_inputLayout.Get());
+
+	// ベーシックエフェクト
+	m_basicEffect->SetView(view);
+	m_basicEffect->SetProjection(proj);
+	m_basicEffect->Apply(context);
+
+	SimpleMath::Vector3 forward = GetForward() * 1.5f;
+
+	/*m_primitiveBatch->Begin();
+	DX::DrawRay(m_primitiveBatch.get(), GetPosition(), forward, false, Colors::Red);
+	m_primitiveBatch->End();*/
+
+
+	//GetCommonResources()->GetDebugFont()->AddString(100, 90, Colors::White, L"position : %f, %f, %f ", GetPosition().x, GetPosition().y, GetPosition().z);
+	//GetCommonResources()->GetDebugFont()->AddString(100, 110, Colors::White, L"velocity : %f, %f, %f ", GetVelocity().x, GetVelocity().y, GetVelocity().z);
+	//GetCommonResources()->GetDebugFont()->AddString(100, 130, Colors::White, L"speed : %f ", GetVelocity().Length());
+
+	// ワイヤー照準検出器の表示
+	m_wireTargetFinder->Draw(view, proj);
+
+	m_collider->Draw(context, view, proj);
+
+}
+
+
+
+/**
+ * @brief 終了処理
+ *
+ * @param[in] なし
+ *
+ * @return なし
+ */
+void Player::Finalize()
+{
+	// 状態の終了処理
+	m_stateMachine->ClearState();
+}
+
+/**
+ * @brief 衝突処理
+ * 
+ * @param[in] pHitObject	衝突オブジェクト
+ * @param[in] pHitCollider	衝突コライダー
+ */
+void Player::OnCollision(GameObject* pHitObject, ICollider* pHitCollider)
+{
+	if (pHitObject->GetTag() == GameObjectTag::FLOOR)
+	{
+		OnCollisionWithBuilding(pHitObject, pHitCollider);
+		/*if (const Box2D* box = dynamic_cast<const Box2D*>(pHitCollider))
+		{
+			Plane plane = box->GetPlane();
+
+			SimpleMath::Vector3 overlap = CalcOverlap(plane, *m_collider);
+
+			SimpleMath::Vector3 position = GetPosition() + overlap;
+
+			if (overlap.y > 0.0f)
+			{
+				SimpleMath::Vector3 velocity = GetVelocity() * SimpleMath::Vector3(1.0f, 0.0f, 1.0f);
+				SetVelocity(velocity);
+			}
+
+			SetPosition(position);
+			m_collider->Transform(position);
+
+			m_isGround = true;
+		}*/
+	}
+	
+	// 壁と衝突した場合
+	else if (pHitObject->GetTag() == GameObjectTag::WALL)
+	{
+
+		// 壁との衝突処理
+		OnCollisionWithWall(pHitObject, pHitCollider);
+	}
+	else if (pHitObject->GetTag() == GameObjectTag::BUILDING)
+	{
+		OnCollisionWithBuilding(pHitObject, pHitCollider);
+	}
+
+}
+
+/**
+ * @brief 所持するワイヤーが衝突した時に呼ばれる
+ * 
+ * @param[in] pHitGameObject 衝突したもの
+ */
+void Player::OnCollisionWire(GameObject* pHitObject)
+{
+	if (pHitObject->GetTag() == GameObjectTag::WALL ||
+		pHitObject->GetTag() == GameObjectTag::BUILDING ||
+		pHitObject->GetTag() == GameObjectTag::ESCAPE_HELICOPTER)
+	{
+		RequestChangeState(Player::State::WIRE_ACTION);
+
+	}
+}
+
+
+/**
+ * @brief 壁との衝突処理
+ *
+ * @param[in] pHitObject    衝突したゲームオブジェクト
+ * @param[in] pHitCollider  衝突したコライダ
+ */
+void Player::OnCollisionWithWall(GameObject* pHitObject, ICollider* pHitCollider)
+{
+	pHitObject;
+
+	// 矩形にキャスト
+	const Box2D* pHitBox = dynamic_cast<const Box2D*>(pHitCollider);
+
+
+	// 押し出しの計算
+	SimpleMath::Vector3 overlap = CalcOverlap(*pHitBox, *m_collider);
+
+	SimpleMath::Vector3 overlapRaw = overlap;
+
+	SimpleMath::Vector3 overlapDir = overlap;
+	overlapDir.Normalize();
+
+
+
+	// 現在の押し出しの単位ベクトル
+	SimpleMath::Vector3 totalOverlapNormal = m_overlapTotal;
+	totalOverlapNormal.Normalize();
+
+	// 押し出し方向ベクトル（累積方向 + 今回の方向）
+	SimpleMath::Vector3 combinedDirection = totalOverlapNormal + overlapDir;
+
+	if (combinedDirection.LengthSquared() < 1e-6f)
+		return;
+
+	combinedDirection.Normalize();
+
+	// それぞれの押し出しを、合成方向に投影して必要量を求める
+	float push1 = std::max(0.0f, overlap.Dot(combinedDirection));
+	float push2 = std::max(0.0f, m_overlapTotal.Dot(combinedDirection));
+
+	// より大きな押し出し量を採用
+	float projectedDepth = std::max(push1, push2);
+
+	// 合成押し出しを更新
+	m_overlapTotal += combinedDirection * projectedDepth;
+
+	if (overlap.y > 0.0f)
+	{
+		m_isGround = true;
+	}
+}
+
+
+void Player::OnCollisionWithBuilding(GameObject* pHitObject, ICollider* pHitCollider)
+{
+	UNREFERENCED_PARAMETER(pHitObject);
+
+	// 矩形にキャスト
+	const AABB* pHitBox = dynamic_cast<const AABB*>(pHitCollider);
+
+
+	// 押し出しの計算
+	SimpleMath::Vector3 overlap = CalcOverlap(*pHitBox, *m_collider);
+
+
+	SimpleMath::Vector3 overlapDir = overlap;
+	overlapDir.Normalize();
+
+
+	// 現在の押し出しの単位ベクトル
+	SimpleMath::Vector3 totalOverlapNormal = m_overlapTotal;
+	totalOverlapNormal.Normalize();
+
+	// 押し出し方向ベクトル（累積方向 + 今回の方向）
+	SimpleMath::Vector3 combinedDirection = totalOverlapNormal + overlapDir;
+
+	if (combinedDirection.LengthSquared() < 1e-6f)
+		return;
+
+	combinedDirection.Normalize();
+
+	// それぞれの押し出しを、合成方向に投影して必要量を求める
+	float push1 = std::max(0.0f, overlap.Dot(combinedDirection));
+	float push2 = std::max(0.0f, m_overlapTotal.Dot(combinedDirection));
+
+	// より大きな押し出し量を採用
+	float projectedDepth = std::max(push1, push2);
+
+	// 合成押し出しを更新
+	m_overlapTotal += combinedDirection * projectedDepth;
+
+
+}
+void Player::PreCollision()
+{
+	m_isGround = false;
+}
+/**
+ * @brief 衝突をした直後に呼ばれる
+ *
+ */
+void Player::PostCollision()
+{
+	if (std::abs(m_overlapTotal.LengthSquared()) > 0.0f)
+	{
+
+
+		SimpleMath::Vector3 overlap = m_overlapTotal;
+
+		// **** 押し出しとバウンド ****
+		ResolvePushOutAndBounce(overlap, 0.0f);
+
+		m_overlapTotal = SimpleMath::Vector3::Zero;
+
+		if (overlap.y > 0.0f)
+		{
+			m_isGround = true;
+		}
+	}
+}
+/**
+ * @brief ワイヤーが掴んだ時に呼ばれる
+ * 
+ * @param[in] pGrabGameObject　掴まれたオブジェクト
+ */
+void Player::OnWireGrabbed(GameObject* pGrabGameObject)
+{
+	UNREFERENCED_PARAMETER(pGrabGameObject);
+
+	RequestChangeState(Player::State::WIRE_GRABBING);
+
+
+}
+
+/**
+ * @brief イベントメッセージを受け取る
+ * 
+ * @param[in] eventID　イベントID
+ */
+void Player::OnGameFlowEvent(GameFlowEventID eventID)
+{
+	UNREFERENCED_PARAMETER(eventID);
+}
+
+/**
+ * @brief 移動の設定
+ * 
+ * @param[in] moveDirection
+ */
+void Player::RequestedMovement(DirectX::SimpleMath::Vector3 moveDirection)
+{
+
+	// 正規化
+	if (moveDirection.LengthSquared() > 0.0f) {
+		moveDirection.Normalize();
+	}
+
+	m_requestedMove = moveDirection;
+}
+
+/**
+ * @brief 移動の適用
+ * 
+ * @param[in] elapsedTime　経過時間
+ */
+void Player::Move(const float& elapsedTime)
+{
+
+	SimpleMath::Quaternion rotate = GetRotate();
+
+
+	// **** 座標の更新 ****
+	// 座標の算出
+	SimpleMath::Vector3 position = GetPosition() + GetVelocity() * elapsedTime;
+	SetPosition(position);
+
+	// コライダの更新処理
+	m_collider->Transform(position);
+}
+
+/**
+ * @brief シミュレータの更新処理
+ * 
+ * @param[in] elapsedTime　経過時間
+ */
+void Player::ApplyWireSimulator(const float& elapsedTime)
+{
+	m_wire->ApplyWireSimulator(elapsedTime);
+
+}
+
+/**
+ * @brief 移動要求されているかどうか
+ * 
+ * @returns true  要求されている
+ * @returns false 要求されていない
+ */
+bool Player::IsMovingRequested()
+{
+	return (m_requestedMove.LengthSquared() > 0.0f);
+}
+
+/**
+ * @brief 物理的な移動
+ * 
+ * @param[in] elapsedTime
+ */
+void Player::ApplyPhysic(const float& elapsedTime)
+{
+	// 重力を加える
+	ApplyGravity(elapsedTime);
+
+	if (IsGround())
+	{
+		// 摩擦を加える
+		ApplyFriction(elapsedTime);
+	}
+	
+	// 空気抵抗の適用
+	ApplyDrag(elapsedTime);
+	
+	// 回転する
+	RotateForMoveDirection(elapsedTime);
+	
+}
+
+/**
+ * @brief 摩擦を加える
+ */
+void Player::ApplyFriction(float elapsedTime)
+{
+	// 摩擦を加える
+
+	SimpleMath::Vector3 velocity = PhysicsHelper::CalculateFrictionVelocity(GetVelocity(), elapsedTime, FRICTION, GameObject::GRAVITY_ACCELERATION.Length());
+
+	SetVelocity(velocity);
+}
+
+/**
+ * @brief 空気抵抗の適用
+ */
+void Player::ApplyDrag(float elapsedTime)
+{
+	// 適用
+	auto velocity = PhysicsHelper::CalculateDragVelocity(GetVelocity(), elapsedTime, AIR_RESISTANCE);
+
+	SetVelocity(velocity);
+}
+
+/**
+ * @brief 状態の変更要求
+ * 
+ * @param[in] state
+ */
+void Player::RequestChangeState(State state)
+{
+	switch (state
+)
+	{
+	case Player::State::IDLE:
+		m_stateMachine->ChangeState<IdlePlayerState>();
+		break;
+	case Player::State::WALKING:
+		m_stateMachine->ChangeState<WalkPlayerState>();
+		break;
+	case Player::State::JUMPING:
+		m_stateMachine->ChangeState<JumpingPlayerState>();
+		break;
+	case Player::State::STTEPPING:
+		m_stateMachine->ChangeState<SteppingPlayerState>();
+		break;
+	case Player::State::WIRE_ACTION:
+		m_stateMachine->ChangeState<WireActionPlayerState>();
+		break;
+	case Player::State::WIRE_GRABBING:
+		m_stateMachine->ChangeState<WireGrabbingPlayerState>();
+		break;
+	case Player::State::WIRE_THROWING:
+		m_stateMachine->ChangeState<WireThrowingPlayerState>();
+		break;
+	default:
+		break;
+	}
+
+	m_state = state;
+}
+
+/**
+ * @brief 移動方向へ回転する
+ * 
+ */
+void Player::RotateForMoveDirection(const float& elapsedTime)
+{
+	UNREFERENCED_PARAMETER(elapsedTime);
+
+	
+
+	SetRotate(MovementHelper::RotateForMoveDirection(elapsedTime, GetRotate(), GetForward(), GetVelocity(), 0.1f));
+}
+
+/**
+ * @brief ワイヤーを離す
+ */
+void Player::ReleaseWire()
+{
+	if (m_wire->IsActive())
+		SetVelocity(m_wire->GetStartVelocity() * 3.0f );
+	m_wire->Reset();
+	
+}
+
+/**
+ * @brief 重力を適用
+ * 
+ * @param[in] elapsedTime　経過時間
+ */
+void Player::ApplyGravity(const float& elapsedTime)
+{
+	SimpleMath::Vector3 accel = SimpleMath::Vector3::Zero;
+
+	accel = GRAVITY_ACCELERATION * elapsedTime ;
+
+	AddForceToVelocity(accel);
+}
+
+/**
+ * @brief 移動入力の適用
+ * 
+ * @param[in] elapsedTime
+ */
+void Player::ApplyMoveInput(const float& elapsedTime)
+{
+	UNREFERENCED_PARAMETER(elapsedTime);
+
+	using namespace SimpleMath;
+
+	float maxMoveSpeed = (IsGround()) ? MAX_MOVE_SPEED : MAX_FLYING_MOVE_SPEED;
+	
+	auto newVelocity = MovementHelper::ClampedMovement(GetVelocity() *Vector3(1.0f, 0.0f, 1.0f), m_requestedMove, elapsedTime, ACCELERATION, DECELERATION, maxMoveSpeed);
+	// Y軸の速度はそのまま保持
+	AddForceToVelocity(newVelocity);
+
+	// 移動要求の解除
+	m_requestedMove = SimpleMath::Vector3::Zero;
+}
+
+
+DirectX::SimpleMath::Vector3 Player::CalcGrabbingPosition() const
+{
+
+	using namespace SimpleMath;
+	float length = 1.5f;
+
+
+	return GetPosition() + -GetForward() * length;
+}
+
+bool Player::CanShootWire() const
+{
+	return m_wireTargetFinder->IsFindTarget();
+}
+
+void Player::ChangeAnimation(const std::string& animationFilePath)
+{
+	
+	std::wstring fileString = std::wstring(animationFilePath.begin(), animationFilePath.end());
+	const wchar_t* name = fileString.c_str();
+
+	// アニメーションをロードする
+	DX::ThrowIfFailed(m_animation.Load(name));
+
+	// アニメーションをモデルにバインドする
+	m_animation.Bind(m_model);
+
+	// アニメーションの開始時間を設定する
+	m_animation.SetStartTime(0.0);
+
+
+}
+
+
+/**
+ * @brief ワイヤーアクション挙動
+ * 
+ * @param[in] 経過時間
+ * 
+ */
+void Player::BehaviourWireAction(const float& elapsedTime)
+{
+	m_canStep = true;
+	// ワイヤーシミュレータの適用
+	ApplyWireSimulator(elapsedTime);
+
+
+	if (m_wire->IsActive())
+	{
+		SetPosition(m_wire->GetEndPosition());
+	}
+}
+
+/**
+ * @brief ワイヤーを飛ばす
+ *
+ */
+void Player::ShootWire()
+{
+
+	auto eyePos = m_pCamera->GetEye();
+
+	// テスト ------------------------------------------------------
+
+	using namespace SimpleMath;
+	MyLib::Ray ray;
+
+	// レイの算出
+	MyLib::CalcScreenToWorldRay(
+		m_cursorPos.x, m_cursorPos.y,
+		Screen::Get()->GetWidthF(), Screen::Get()->GetHeightF(),
+		GetCamera()->GetEye(), GetCamera()->GetView(), GetProj(),
+		&ray.direction ,&ray.origin);
+	Vector3 maxPos = ray.origin + ray.direction * 30.0f;
+
+	//Vector3 wireLaunchDirection = maxPos - GetPosition();
+	Vector3 wireLaunchDirection = m_wireTargetFinder->GetTargetPosition() - GetPosition();
+	wireLaunchDirection.Normalize();
+
+	m_wire->ShootWire(GetPosition(), wireLaunchDirection * 300.0f );
+
+
+}
+
+ /**
+  * @brief 押し出しと反射の解消
+  *
+  * @param[in] overlap      押し出しベクトル
+  * @param[in] restitution  反発係数（バウンドする強さ）　0.0 = 全くバウンドしない、1.0 = 完全反射
+  */
+void Player::ResolvePushOutAndBounce(DirectX::SimpleMath::Vector3 overlap, const float& restitution)
+{
+	PushOut(overlap);
+
+	SimpleMath::Vector3 overlapRaw = overlap;
+	SimpleMath::Vector3 overlapDir = overlap;
+	overlapDir.Normalize();
+
+	float dot = GetVelocity().Dot(overlapDir);
+
+	// 速度の反転（バウンド成分）
+	SimpleMath::Vector3 bounce = -overlapDir * dot * restitution;
+
+	// 壁に沿った滑り成分
+	SimpleMath::Vector3 slide = GetVelocity() - overlapDir * dot;
+
+	// 最終的な速度
+	SetVelocity(slide + bounce);
+}
+
+/**
+ * @brief ジャンプ
+ */
+void Player::Jump(float elapsedTime)
+{
+	AddForceToVelocityY(JUMPING_POWER * elapsedTime);
+}
+
+/**
+ * @brief ジャンプに挑戦
+ * 
+ * @return 成功かどうか
+ */
+void Player::RequestJump()
+{
+	if (!m_isGround) { return; }
+
+	if (m_state == State::WIRE_ACTION ||
+		m_state == State::WIRE_GRABBING ||
+		m_state == State::WIRE_THROWING ||
+		m_state == State::JUMPING)
+	{ return; }
+
+	RequestChangeState(State::JUMPING);
+
+}
+
+/**
+ * @brief ステップ要求
+ */
+void Player::RequestStep()
+{
+	if (m_canStep)
+	{
+		RequestChangeState(State::STTEPPING);
+		m_canStep = false;
+	}
+}
+
+/**
+ * @brief 押し出しをする
+ *
+ * @param[in] overlap
+ */
+void Player::PushOut(DirectX::SimpleMath::Vector3 overlap)
+{
+	// 押し出す
+	SetPosition(GetPosition() + overlap);
+
+	m_collider->Transform(GetPosition());
+}
+
+/**
+ * @brief ワイヤー発射方向の取得
+ * 
+ * @return 
+ */
+MyLib::Ray Player::GetWireShootingRay() const
+{
+	MyLib::Ray ray;
+
+	// レイの算出
+	MyLib::CalcScreenToWorldRay(
+		m_cursorPos.x, m_cursorPos.y,
+		Screen::Get()->GetWidthF(), Screen::Get()->GetHeightF(),
+		GetCamera()->GetEye(), GetCamera()->GetView(), GetProj(),
+		&ray.direction ,&ray.origin);
+	SimpleMath::Vector3 maxPos = ray.origin + ray.direction * 30.0f;
+
+	SimpleMath::Vector3 wireLaunchDirection = maxPos - GetPosition();
+	wireLaunchDirection.Normalize();
+
+	MyLib::Ray resultRay(GetPosition(), wireLaunchDirection);
+
+	return resultRay;
+}
+

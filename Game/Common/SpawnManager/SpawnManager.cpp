@@ -1,0 +1,268 @@
+/*****************************************************************//**
+ * @file    SpawnManager.h
+ * @brief   出現管理クラスに関するソースファイル
+ *
+ * @author  松下大暉
+ * @date    2025/08/24
+ *********************************************************************/
+
+// ヘッダファイルの読み込み ===================================================
+#include "pch.h"
+#include "SpawnManager.h"
+
+#include "Game/Common/Event/Messenger/GameFlowMessenger/GameFlowMessenger.h"
+
+#include "Game/GameObjects/Enemy/Enemy.h"
+
+#include "Game/Common/GameObjectManager/EnemyManager/EnemyManager.h"
+#include "Game/Common/Factory/EnemyFactory/EnemyFactory.h"
+#include "Game/Common/GameObjectRegistry/GameObjectRegistry.h"
+#include "Game/GameObjects/Helicopter/EscapeHelicopter/EscapeHelicopter.h"
+#include <random>
+
+using namespace DirectX;
+
+// メンバ関数の定義 ===========================================================
+/**
+ * @brief コンストラクタ
+ *
+ * @param[in] なし
+ */
+SpawnManager::SpawnManager()
+	: m_pEnemyManager		{ nullptr }
+	, m_pCommonResources	{ nullptr }
+	, m_pCollisionManager	{ nullptr }
+	, m_stoleTreasure		{ false }
+{
+
+}
+
+
+
+/**
+ * @brief デストラクタ
+ */
+SpawnManager::~SpawnManager()
+{
+
+}
+
+
+
+/**
+ * @brief 初期化処理
+ *
+ * @param[in] なし
+ *
+ * @return なし
+ */
+void SpawnManager::Initialize(EnemyManager* pEnemyManager, std::vector<std::unique_ptr<EscapeHelicopter>>* pEscapeHelicopters, CommonResources* pCommonResources, CollisionManager* pCollisionManager)
+{
+	m_pEnemyManager = pEnemyManager;
+	m_pEscapeHelicopters = pEscapeHelicopters;
+
+	m_pCommonResources = pCommonResources;
+	m_pCollisionManager = pCollisionManager;
+
+	// オブザーバーに登録
+	GameFlowMessenger::GetInstance()->RegistrObserver(this);
+
+	// イベントスタックの初期化処理
+}
+
+
+
+/**
+ * @brief 更新処理
+ *
+ * @param[in] elapsedTime 経過時間
+ *
+ * @return なし
+ */
+void SpawnManager::Update(float elapsedTime)
+{
+	UNREFERENCED_PARAMETER(elapsedTime);
+
+	if (m_stoleTreasure)
+	{
+		m_enemySpawnCounter.UpperTime(elapsedTime);
+
+		if (m_enemySpawnCounter.GetElapsedTime() >= 10.0f)
+		{
+			SpawnEnemy();
+			m_enemySpawnCounter.Reset();
+		}
+	}
+
+	for (auto& eventFunc : m_eventStack)
+	{
+		eventFunc();
+	}
+	m_eventStack.clear();
+}
+
+
+
+/**
+ * @brief 描画処理
+ *
+ * @param[in] なし
+ *
+ * @return なし
+ */
+void SpawnManager::Draw()
+{
+
+}
+
+
+
+/**
+ * @brief 終了処理
+ *
+ * @param[in] なし
+ *
+ * @return なし
+ */
+void SpawnManager::Finalize()
+{
+
+}
+
+/**
+ * @brief イベントメッセージを受け取る
+ * 
+ * @param[in] eventID イベントID
+ */
+void SpawnManager::OnGameFlowEvent(GameFlowEventID eventID)
+{
+	switch (eventID)
+	{
+	case GameFlowEventID::STOLE_TREASURE:
+		// イベントの登録
+		m_eventStack.emplace_back([this]() {
+			OnStealingTreasures();
+			});		break;
+	default:
+		break;
+	}
+}
+
+/**
+ * @brief 宝が盗まれた時の処理
+ * 
+ */
+void SpawnManager::OnStealingTreasures()
+{
+	m_stoleTreasure = true;
+	using namespace SimpleMath;
+
+	//　****　敵の生成 ****
+	Vector3 treasurePos = GameObjectRegistry::GetInstance()->GetGameObject(GameObjectTag::TREASURE)->GetPosition();
+
+	std::unique_ptr<IEnemyFactory> factory = std::make_unique<EnemyFactory::FlyingChaserEnemy>();
+
+	const int NUM = 10;
+	const float RADIUS = 9.0f;
+
+	for (int i = 0; i < NUM; i++)
+	{
+		float degree = (360.0f / NUM) * i;
+
+		auto enemy = factory->Create();
+		
+		enemy->Initialize(m_pCommonResources, m_pCollisionManager);
+		Vector3 pos;
+
+		pos.x = treasurePos.x + std::cosf(XMConvertToRadians(degree)) * RADIUS;
+		pos.z = treasurePos.z +std::sinf(XMConvertToRadians(degree)) * RADIUS;
+		pos.y = treasurePos.y;
+		
+		enemy->SetPosition(pos);
+
+		m_pEnemyManager->AddEnemy(enemy.get());
+
+		m_enemyPool.push_back(std::move(enemy));
+	}
+
+	// ハードウェア乱数源からシードを生成
+	static std::random_device seed_gen;
+
+	// シードを使って乱数エンジンを初期化
+	std::mt19937 engine(seed_gen());
+	
+	std::vector<Vector3> helicopterPositions =
+	{
+		Vector3(-100.0f, 60.6f, 80.2f),
+		Vector3(100.0f, 60.6f, 80.2f),
+		Vector3(-100.0f, 60.6f, -130.2f),
+		Vector3(160.0f, 60.6f, -100.2f),
+	};
+	// 基準点から遠い順にソート
+	std::sort(helicopterPositions.begin(), helicopterPositions.end(),
+		[&](const Vector3& a, const Vector3& b)
+		{
+			// 基準点からの距離を比較
+			float distanceA = DirectX::SimpleMath::Vector3::DistanceSquared(a, treasurePos);
+			float distanceB = DirectX::SimpleMath::Vector3::DistanceSquared(b, treasurePos);
+			return distanceA > distanceB; // 遠い順なので > を使用
+		});
+
+	std::vector<float> weights = { 0.5f, 0.25f, 0.15f, 0.0f}; // 例: 0番目が50%の確率で出る
+	std::discrete_distribution<> dist(weights.begin(), weights.end());
+
+	int selectedIndex = dist(engine);
+
+	auto& position = helicopterPositions[selectedIndex];
+	
+
+	// 脱出用ヘリコプターの生成
+	m_pEscapeHelicopters->emplace_back(std::make_unique<EscapeHelicopter>());
+	m_pEscapeHelicopters->back()->Initialize(m_pCommonResources, m_pCollisionManager);
+	m_pEscapeHelicopters->back()->SetPosition(position);
+
+
+	
+}
+
+void SpawnManager::SpawnEnemy()
+{
+	using namespace SimpleMath;
+
+	//　****　敵の生成 ****
+	Vector3 treasurePos = GameObjectRegistry::GetInstance()->GetGameObject(GameObjectTag::PLAYER)->GetPosition();
+	std::uniform_int_distribution<> dist(0, 180);
+	std::unique_ptr<IEnemyFactory> factory = std::make_unique<EnemyFactory::FlyingChaserEnemy>();
+
+	// ハードウェア乱数源からシードを生成
+	static std::random_device seed_gen;
+	// シードを使って乱数エンジンを初期化
+	std::mt19937 engine(seed_gen());
+
+	const int NUM = 3;
+	const float RADIUS = 20.0f;
+
+	int startDegree = dist(engine);
+
+	for (int i = 0; i < NUM; i++)
+	{
+		float degree = (360.0f / NUM) * i + startDegree;
+
+		auto enemy = factory->Create();
+
+		enemy->Initialize(m_pCommonResources, m_pCollisionManager);
+		Vector3 pos;
+
+		pos.x = treasurePos.x + std::cosf(XMConvertToRadians(degree)) * RADIUS;
+		pos.z = treasurePos.z + std::sinf(XMConvertToRadians(degree)) * RADIUS;
+		pos.y = treasurePos.y;
+
+		enemy->SetPosition(pos);
+
+		m_pEnemyManager->AddEnemy(enemy.get());
+
+		m_enemyPool.push_back(std::move(enemy));
+	}
+}
+
+

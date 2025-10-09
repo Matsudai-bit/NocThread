@@ -1,0 +1,359 @@
+/*****************************************************************//**
+ * @file    Enemy.h
+ * @brief   敵に関するソースファイル
+ *
+ * @author  松下大暉
+ * @date    2025/07/30
+ *********************************************************************/
+
+// ヘッダファイルの読み込み ===================================================
+#include "pch.h"
+#include "Enemy.h"
+#include "Game/Common/Helper/PhysicsHelper/PhysicsHelper.h"
+
+#include "Game/GameObjects/Enemy/Behaviour/Update/IEnemyUpdateBehaviour.h"
+#include "Game/Common/CommonResources/CommonResources.h"
+#include "Game/Common/ResourceManager/ResourceManager.h"
+#include "Game/Common/DeviceResources.h"
+
+#include "Game/Common/Event/WireSystemObserver/WireEventData.h"
+#include "Game/Common/Collision/CollisionManager/CollisionManager.h"
+
+#include "Game/Common/Helper/MovementHelper/MovementHelper.h"
+#include "Library/ImaseLib/DebugFont.h"
+
+#include "Game/Common/ResultData/ResultData.h"
+
+#include "Game/Common/Screen.h"
+
+using namespace DirectX;
+
+// メンバ関数の定義 ===========================================================
+/**
+ * @brief コンストラクタ
+ *
+ * @param[in] なし
+ */
+Enemy::Enemy()
+	: m_isHold{false}
+	, m_isThrow{false}
+	, m_elapsedTime{}
+	, m_isActive{true}
+	, m_isGrounded{false}
+	
+{
+
+}
+
+
+
+/**
+ * @brief デストラクタ
+ */
+Enemy::~Enemy()
+{
+
+}
+
+/**
+ * @brief 初期化処理
+ * 
+ * @param[in] pCommonResources
+ * @param[in] pCollisionManager
+ */
+void Enemy::Initialize(const CommonResources* pCommonResources, CollisionManager* pCollisionManager)
+{
+	UNREFERENCED_PARAMETER(pCommonResources);
+	UNREFERENCED_PARAMETER(pCollisionManager);
+
+	SetCommonResources(pCommonResources);
+
+	m_model = pCommonResources->GetResourceManager()->CreateModel("security_guard_fly.sdkmesh");
+
+	m_isHold = false;
+	m_isThrow = false;
+	// キャスト登録
+	RegisterChildType(this);
+
+	RegisterChildType<IWireEventObserver>(this);
+
+	m_collider = std::make_unique<Sphere>(GetPosition() + SimpleMath::Vector3(0.0f, 0.5f, 0.0f), 1.0f);
+
+	pCollisionManager->AddCollisionObjectData(this,m_collider.get());
+
+	m_elapsedTime = 0.0f;
+
+	// イベントの追加
+	AddEventListener<ThrowHitEventData>(GameObjectEventType::THROW_HIT,
+		[this](const ThrowHitEventData data)
+		{
+			m_isActive = false;
+			ResultData::GetInstance()->UpperDestroyedNum();
+		}
+	);
+}
+
+/**
+ * @brief 更新処理
+ * 
+ * @param[in] elapsedTime　経過時間
+ */
+void Enemy::Update(float elapsedTime)
+{
+	ApplyEvents();
+	if (m_isActive == false) { return; }
+
+	if (m_isHold == false )
+	{
+		if (m_elapsedTime <= 0.0f)
+		{
+			for (auto& behaviour : m_updateBehaviour)
+			{
+				behaviour->Update(this, elapsedTime, GetCommonResources());
+			}
+		
+
+			m_elapsedTime = 0.0f;
+			m_isThrow = false;
+		}
+		else
+		{
+			m_elapsedTime -= elapsedTime;
+		}
+	
+	}
+
+
+	
+	SimpleMath::Vector3 velocity = GetVelocity();
+
+	// 重力を加える
+	velocity += GRAVITY_ACCELERATION * elapsedTime;
+
+	if (m_isGrounded)
+	{
+		// 摩擦を加える
+		velocity = PhysicsHelper::CalculateFrictionVelocity(velocity, elapsedTime, FRICTION, GameObject::GRAVITY_ACCELERATION.Length());
+	}
+	// 適用
+	velocity = PhysicsHelper::CalculateDragVelocity(velocity, elapsedTime, AIR_RESISTANCE);
+
+
+
+	SetVelocity(velocity);
+
+	SimpleMath::Vector3 position = MovementHelper::CalcPositionForVelocity(elapsedTime, GetPosition(), GetVelocity());
+	SetPosition(position );
+	m_collider->Transform(GetPosition() + SimpleMath::Vector3(0.0f, 0.5f, 0.0f));
+
+    SetRotate(MovementHelper::RotateForMoveDirection(elapsedTime, GetRotate(), GetForward(), GetVelocity(), 0.1f));
+}
+
+void Enemy::Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj)
+{
+	if (m_isActive == false) { return; }
+	using namespace SimpleMath;
+
+	UNREFERENCED_PARAMETER(proj);
+	UNREFERENCED_PARAMETER(view);
+
+	auto context	= GetCommonResources()->GetDeviceResources()->GetD3DDeviceContext();
+	auto states		= GetCommonResources()->GetCommonStates();
+
+	Matrix world = Matrix::Identity;
+	world *= Matrix::CreateFromQuaternion(GetRotate());
+	world *= Matrix::CreateTranslation(GetPosition());
+
+	m_model.Draw(context, *states, world, view, proj);
+
+	/*GetCommonResources()->GetDebugFont()->AddString(Screen::Get()->GetRight() - 600.0f, 90, Colors::White, L"position : %f, %f, %f ", GetPosition().x, GetPosition().y, GetPosition().z);
+	GetCommonResources()->GetDebugFont()->AddString(Screen::Get()->GetRight() - 600.0f, 110, Colors::White, L"velocity : %f, %f, %f ", GetVelocity().x, GetVelocity().y, GetVelocity().z);
+	GetCommonResources()->GetDebugFont()->AddString(Screen::Get()->GetRight() - 600.0f, 130, Colors::White, L"speed : %f ", GetVelocity().Length());*/
+
+	//m_collider->Draw(context, view, proj);
+}
+
+
+
+
+
+
+/**
+ * @brief 終了処理
+ *
+ * @param[in] なし
+ *
+ * @return なし
+ */
+void Enemy::Finalize()
+{
+
+}
+
+/**
+ * @brief 挙動の登録
+ * 
+ * @param[in] updateBehaviour 更新する時の挙動
+ */
+void Enemy::AddUpdateBehaviour(std::unique_ptr<IEnemyUpdateBehaviour> updateBehaviour)
+{
+	m_updateBehaviour.push_back(std::move(updateBehaviour));
+}
+
+/**
+ * @brief 衝突時に呼ばれる
+ * 
+ * @param[in] pHitObject	衝突オブジェクト
+ * @param[in] pHitCollider	衝突したコライダ
+ */
+void Enemy::OnCollision(GameObject* pHitObject, ICollider* pHitCollider)
+{
+	if (m_isThrow && pHitObject->GetTag() == GameObjectTag::ENEMY)
+	{
+		pHitObject->FireEvent(GameObjectEventType::THROW_HIT, std::make_unique<ThrowHitEventData>(this, m_collider.get()));
+	}
+
+	if (!m_isThrow && !m_isHold && pHitObject->GetTag() == GameObjectTag::PLAYER)
+	{
+		pHitObject->FireEvent(GameObjectEventType::CAUGHT, std::make_unique<CaughtEventData>(this));
+	}
+
+	if (pHitObject->GetTag() == GameObjectTag::BUILDING || pHitObject->GetTag() == GameObjectTag::FLOOR)
+	{
+		OnCollisionWithBuilding(pHitObject, pHitCollider);
+	}
+
+}
+
+void Enemy::PreCollision()
+{
+	m_isGrounded = false;
+}
+
+void Enemy::PostCollision()
+{
+	if (std::abs(m_overlapTotal.LengthSquared()) > 0.0f)
+	{
+
+		SimpleMath::Vector3 overlap = m_overlapTotal;
+
+		SimpleMath::Vector3 velocity = GetVelocity();
+
+		// **** 押し出しとバウンド ****
+		SetPosition(PhysicsHelper::PushOut(overlap, GetPosition()));
+
+		SetVelocity(PhysicsHelper::ResolveBounce(overlap, 0.0f, velocity));
+
+		m_overlapTotal = SimpleMath::Vector3::Zero;
+
+		if (overlap.y > 0.0f)
+		{
+			m_isGrounded = true;
+		}
+	}
+}
+
+/**
+ * @brief ワイヤーに掴まれた時の挙動
+ * 
+ * @param[in] eventData
+ */
+void Enemy::OnWireGrab(const WireEventData& eventData)
+{
+	SetPosition(eventData.grabPos);
+	ResetVelocity();
+
+	m_isHold = true;
+}
+
+/**
+ * @brief ワイヤーに掴まれている時
+ *
+ * @param[in] eventData
+ */
+void Enemy::OnWireHover(const WireEventData& eventData)
+{
+	SetPosition(eventData.grabPos);
+	ResetVelocity();
+}
+
+/**
+ * @brief ワイヤーから離れた時
+ * 
+ * @param[in] eventData
+ */
+void Enemy::OnWireRelease(const WireEventData& eventData)
+{
+	UNREFERENCED_PARAMETER(eventData);
+}
+
+/**
+ * @brief ワイヤーで引き寄せられる時
+ * 
+ * @param[in] eventData
+ */
+void Enemy::OnWirePull(const WireEventData& eventData)
+{
+	UNREFERENCED_PARAMETER(eventData);
+}
+
+/**
+ * @brief ワイヤーでなげられるとき　
+ * 
+ * @param[in] eventData
+ * @param[in] throwImpulse
+ */
+void Enemy::OnWireThrow(const WireEventData& eventData, const DirectX::SimpleMath::Vector3& throwImpulse)
+{
+	UNREFERENCED_PARAMETER(eventData);
+
+	ResetVelocity();
+
+	AddForceToVelocity(throwImpulse);
+
+	m_elapsedTime = 5.0f;
+
+	m_isHold = false;
+	m_isThrow = true;
+}
+
+
+void Enemy::OnCollisionWithBuilding(GameObject* pHitObject, ICollider* pHitCollider)
+{
+	UNREFERENCED_PARAMETER(pHitObject);
+
+	// 矩形にキャスト
+	const AABB* pHitBox = dynamic_cast<const AABB*>(pHitCollider);
+
+
+	// 押し出しの計算
+	SimpleMath::Vector3 overlap = CalcOverlap(*pHitBox, *m_collider);
+
+
+	SimpleMath::Vector3 overlapDir = overlap;
+	overlapDir.Normalize();
+
+
+	// 現在の押し出しの単位ベクトル
+	SimpleMath::Vector3 totalOverlapNormal = m_overlapTotal;
+	totalOverlapNormal.Normalize();
+
+	// 押し出し方向ベクトル（累積方向 + 今回の方向）
+	SimpleMath::Vector3 combinedDirection = totalOverlapNormal + overlapDir;
+
+	if (combinedDirection.LengthSquared() < 1e-6f)
+		return;
+
+	combinedDirection.Normalize();
+
+	// それぞれの押し出しを、合成方向に投影して必要量を求める
+	float push1 = std::max(0.0f, overlap.Dot(combinedDirection));
+	float push2 = std::max(0.0f, m_overlapTotal.Dot(combinedDirection));
+
+	// より大きな押し出し量を採用
+	float projectedDepth = std::max(push1, push2);
+
+	// 合成押し出しを更新
+	m_overlapTotal += combinedDirection * projectedDepth;
+
+}

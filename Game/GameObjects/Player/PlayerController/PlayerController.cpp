@@ -1,0 +1,149 @@
+/*****************************************************************//**
+ * @file    PlayerController.h
+ * @brief   プレイヤーのコントローラに関するソースファイル
+ *
+ * @author  松下大暉
+ * @date    2025/06/15
+ *********************************************************************/
+
+// ヘッダファイルの読み込み ===================================================
+#include "pch.h"
+#include "PlayerController.h"
+
+#include "Game/GameObjects/Player/Player.h"
+#include "Game/Common/Camera/Camera.h"
+
+using namespace DirectX;
+
+
+// メンバ関数の定義 ===========================================================
+/**
+ * @brief コンストラクタ
+ *
+ * @param[in] なし
+ */
+PlayerController::PlayerController(Player* pPlayer, Camera* pCamera)
+{
+	Initialize(pPlayer, pCamera);
+}
+
+
+
+/**
+ * @brief デストラクタ
+ */
+PlayerController::~PlayerController()
+{
+
+}
+
+
+
+/**
+ * @brief 初期化処理
+ *
+ * @param[in] なし
+ *
+ * @return なし
+ */
+void PlayerController::Initialize(Player* pPlayer, Camera* pCamera)
+{
+	m_pPlayer = pPlayer;
+	m_pCamera = pCamera;
+}
+
+
+
+/**
+ * @brief 更新処理
+ *
+ * @param[in] elapsedTime 経過時間
+ *
+ * @return なし
+ */
+void PlayerController::Update(float elapsedTime, const Keyboard::KeyboardStateTracker* pKeyboardStateTracker, const Mouse::ButtonStateTracker* pMouseStateTracker)
+{
+	UNREFERENCED_PARAMETER(elapsedTime);
+
+
+	auto kb = pKeyboardStateTracker->GetLastState();
+	auto mouse = pMouseStateTracker->GetLastState();
+
+
+	// 移動方向
+	SimpleMath::Vector3 movementDirection = SimpleMath::Vector3::Zero;
+
+	// 奥へ
+	if (kb.W)	movementDirection += SimpleMath::Vector3::Forward;
+	// 手前へ
+	if (kb.S)	movementDirection += SimpleMath::Vector3::Backward;
+	// 右へ
+	if (kb.D)	movementDirection += SimpleMath::Vector3::Right;
+	// 左へ
+	if (kb.A)	movementDirection += SimpleMath::Vector3::Left;
+
+
+	// 入力がないときは移動しない
+	if (movementDirection.LengthSquared() > 0.0f)
+	{
+		movementDirection.Normalize();
+
+		// カメラの「正面方向（XZ平面）」を取得
+		SimpleMath::Vector3 cameraForward = m_pCamera->GetTarget() - m_pCamera->GetEye();
+		cameraForward.y = 0.0f;
+		cameraForward.Normalize();
+
+		// カメラの「右方向」を取得（カメラの向き × Y軸）
+		SimpleMath::Vector3 cameraRight = cameraForward.Cross(SimpleMath::Vector3::Up);
+		cameraRight.Normalize();
+
+		// ローカル入力をカメラ空間に変換（X:右、Z:前）
+		// Z方向が正面同士の時に-の乗算になり結果敵に反対方向に向いてしまうため-で補正
+		SimpleMath::Vector3 worldMovementDir = -movementDirection.z * cameraForward + movementDirection.x * cameraRight;
+
+		worldMovementDir.Normalize();
+
+		// 移動方向の設定
+		m_pPlayer->RequestedMovement(worldMovementDir);
+	}
+
+	// ジャンプ
+	if (pKeyboardStateTracker->IsKeyPressed(Keyboard::Space))
+	{
+		m_pPlayer->RequestJump();
+	}
+
+	// ステップ
+	if (pMouseStateTracker->rightButton == Mouse::ButtonStateTracker::PRESSED)
+	{
+		m_pPlayer->RequestStep();
+	}
+}
+
+
+
+/**
+ * @brief 描画処理
+ *
+ * @param[in] なし
+ *
+ * @return なし
+ */
+void PlayerController::Draw()
+{
+
+}
+
+
+
+/**
+ * @brief 終了処理
+ *
+ * @param[in] なし
+ *
+ * @return なし
+ */
+void PlayerController::Finalize()
+{
+
+}
