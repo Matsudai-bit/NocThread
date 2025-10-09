@@ -152,36 +152,27 @@ void CircularShadow::Draw(const DirectX::SimpleMath::Matrix& view, const DirectX
 	DirectX::VertexPositionColorTexture vertexes[VERTEX_NUM] =
 	{
 		{SimpleMath::Vector3(0.0f,  0.0f, 0.0f),SimpleMath::Vector4::One, SimpleMath::Vector2(0.5f, 0.5f)},
-		//{ DirectX::SimpleMath::Vector3(-0.5f,-0.5f, 0.0f), SimpleMath::Vector4::One},
-		//{ DirectX::SimpleMath::Vector3(0.5f,-0.5f, 0.0f), SimpleMath::Vector4::One},
-		//{ DirectX::SimpleMath::Vector3(0.5f, 0.5f, 0.0f), SimpleMath::Vector4::One},
 	};
-
-	uint16_t indices[VERTEX_NUM + VERTEX_NUM / 2] =
-	{
-		0, 1, 2,
-		2, 3, 0
-	};
-
 	auto position = SimpleMath::Vector3(shadowOwnerPosition.x, m_castPositionY, shadowOwnerPosition.z);
 
+	// 地面との距離を計算
 	float distance =  std::abs(shadowOwnerPosition.y - m_castPositionY);
 
+	float scale = std::max(1.5f - distance * 0.05f, 0.0f);
+
 	// ワールド座標の算出
-	auto world = SimpleMath::Matrix::CreateScale(std::max(1.3f - distance * 0.1f, 0.0f)) * SimpleMath::Matrix::CreateTranslation(position) ;
+	auto world = SimpleMath::Matrix::CreateScale(scale) * SimpleMath::Matrix::CreateTranslation(position) ;
 
 	// カリング
 	context->RSSetState(states->CullNone());  
 
 
 	// 定数バッファにデータを設定する
-
-
 	ConstantBuffer cb = {};
 	cb.matWorldTranspose = world.Transpose();
 	cb.matProj = proj.Transpose();
 	cb.matView = view.Transpose();
-	cb.alphaValue = SimpleMath::Vector4(1.0f / (distance * 0.5f));
+	cb.alphaValue = SimpleMath::Vector4(1.0f / (distance * 0.4f));
 
 	//	受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
 	context->UpdateSubresource(m_constantBuffer.Get(), 0, NULL, &cb, 0, 0);
