@@ -19,6 +19,7 @@
 #include "Game/Common/Screen.h"
 
 #include "Game/Common/SoundManager/SoundManager.h"
+#include "Game/Common/GameEffect/GameEffectController.h"
 
 // ImGui系のヘッダーのインクルード
 #include "Library/ImGui/imgui.h"
@@ -108,7 +109,16 @@ void Game::Initialize(HWND window, int width, int height)
     // サウンド管理の設定
     SoundManager::GetInstance()->SetResourceManager(m_resourceManager.get());
 
+
+
+
+
    // **** 生成 ****
+   
+    // ゲームエフェクト管理の作成
+    m_gameEffectManager = std::make_unique<GameEffectManager>();
+    GameEffectController::GetInstance()->SetGameEffectManager(m_gameEffectManager.get());
+
    // シーンの生成
     m_sceneManager = std::make_unique<MyLib::SceneManager<CommonResources>>();
 

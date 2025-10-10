@@ -200,6 +200,10 @@
     <ClInclude Include="Game\Common\ExitController\ExitController.h" />
     <ClInclude Include="Game\Common\Factory\EnemyFactory\EnemyFactory.h" />
     <ClInclude Include="Game\Common\Factory\EnemyFactory\IEnemyFactory\IEnemyFactory.h" />
+    <ClInclude Include="Game\Common\GameEffect\Base\GameEffectBase.h" />
+    <ClInclude Include="Game\Common\GameEffect\Base\IGameEffect.h" />
+    <ClInclude Include="Game\Common\GameEffect\GameEffectController.h" />
+    <ClInclude Include="Game\Common\GameEffect\GameEffectManager.h" />
     <ClInclude Include="Game\Common\GameObjectManager\EnemyManager\EnemyManager.h" />
     <ClInclude Include="Game\Common\GameObjectRegistry\GameObjectRegistry.h" />
     <ClInclude Include="Game\Common\Helper\MovementHelper\MovementHelper.h" />
@@ -313,6 +317,10 @@
     <ClCompile Include="Game\Common\Event\WireSystemObserver\WireSystemSubject.cpp" />
     <ClCompile Include="Game\Common\ExitController\ExitController.cpp" />
     <ClCompile Include="Game\Common\Factory\EnemyFactory\EnemyFactory.cpp" />
+    <ClCompile Include="Game\Common\GameEffect\Base\GameEffectBase.cpp" />
+    <ClCompile Include="Game\Common\GameEffect\Base\IGameEffect.cpp" />
+    <ClCompile Include="Game\Common\GameEffect\GameEffectController.cpp" />
+    <ClCompile Include="Game\Common\GameEffect\GameEffectManager.cpp" />
     <ClCompile Include="Game\Common\GameObjectManager\EnemyManager\EnemyManager.cpp" />
     <ClCompile Include="Game\Common\GameObjectRegistry\GameObjectRegistry.cpp" />
     <ClCompile Include="Game\Common\Helper\MovementHelper\MovementHelper.cpp" />

@@ -8,7 +8,7 @@ float4 main(PS_INPUT input) : SV_Target0
     
     float2 dist = centerPosition - input.Tex;
     
-    float lengthValue = length(dist); //dist.x * dist.x + dist.y * dist.y;
+    float lengthValue = length(dist);
     
     
     float lerpValue = lengthValue / 0.25f;

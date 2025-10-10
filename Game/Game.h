@@ -17,9 +17,10 @@
 
 
 // システム
-#include "Game/Common/CommonResources/CommonResources.h"                // 共通リソース
-#include "Game/Common/ResourceManager/ResourceManager.h"                // リソース管理
-#include "Game/Manager/SceneManager/SceneManager.h"                     // シーン管理
+#include "Game/Common/CommonResources/CommonResources.h"    // 共通リソース
+#include "Game/Common/ResourceManager/ResourceManager.h"    // リソース管理
+#include "Game/Manager/SceneManager/SceneManager.h"         // シーン管理
+#include "Game/Common/GameEffect/GameEffectManager.h"       // ゲームエフェクト管理
 
 
 // A basic game implementation that creates a D3D11 device and
@@ -37,6 +38,8 @@ private:
     // デバッグフォント
     std::unique_ptr<Imase::DebugFont> m_debugFont;
 
+    // 管理系
+    std::unique_ptr<GameEffectManager> m_gameEffectManager; ///< ゲームエフェクト管理
 
     // リソース
     std::unique_ptr<CommonResources> m_commonResources;     ///< 共通リソース

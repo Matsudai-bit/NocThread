@@ -312,7 +312,7 @@ extern IMGUI_API ImGuiContext* GImGui;  // Current implicit context pointer
 
 // Warnings
 #if defined(_MSC_VER) && !defined(__clang__)
-#define IM_MSVC_WARNING_SUPPRESS(XXXX)  __pragma(warning(suppress: XXXX))
+#define IM_MSVC_WARNING_SUPPRESS(GameEffectBase)  __pragma(warning(suppress: GameEffectBase))
 #else
 #define IM_MSVC_WARNING_SUPPRESS(XXXX)
 #endif

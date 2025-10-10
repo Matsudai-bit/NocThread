@@ -356,6 +356,12 @@
     <Filter Include="Game\GameObjects\RopeObject\XPBDSimulator\Constraint\Factory\Base">
       <UniqueIdentifier>{57c15223-3cf6-4f1e-b2df-9ecf4f644136}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\Common\GameEffect">
+      <UniqueIdentifier>{20ad6956-f2ab-4d5f-9db1-5e8c2d91efb2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Common\GameEffect\Base">
+      <UniqueIdentifier>{b3c07baa-e5b0-4219-ac00-46a047379b59}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -708,6 +714,18 @@
     <ClInclude Include="Game\GameObjects\RopeObject\XPBDSimulator\Constraint\CollisionConstraint\CollisionConstraintFactory.h">
       <Filter>Game\GameObjects\RopeObject\XPBDSimulator\Constraint\Factory</Filter>
     </ClInclude>
+    <ClInclude Include="Game\Common\GameEffect\Base\GameEffectBase.h">
+      <Filter>Game\Common\GameEffect\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Common\GameEffect\Base\IGameEffect.h">
+      <Filter>Game\Common\GameEffect\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Common\GameEffect\GameEffectManager.h">
+      <Filter>Game\Common\GameEffect</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Common\GameEffect\GameEffectController.h">
+      <Filter>Game\Common\GameEffect</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -1002,6 +1020,18 @@
     </ClCompile>
     <ClCompile Include="Game\GameObjects\RopeObject\XPBDSimulator\Constraint\CollisionConstraint\CollisionConstraintFactory.cpp">
       <Filter>Game\GameObjects\RopeObject\XPBDSimulator\Constraint\Factory</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Common\GameEffect\Base\GameEffectBase.cpp">
+      <Filter>Game\Common\GameEffect\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Common\GameEffect\Base\IGameEffect.cpp">
+      <Filter>Game\Common\GameEffect\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Common\GameEffect\GameEffectManager.cpp">
+      <Filter>Game\Common\GameEffect</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Common\GameEffect\GameEffectController.cpp">
+      <Filter>Game\Common\GameEffect</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
