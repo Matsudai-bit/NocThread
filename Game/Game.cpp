@@ -206,8 +206,9 @@ void Game::Update(DX::StepTimer const& timer)
     auto mouse = DirectX::Mouse::Get().GetState();
     m_mouseStateTracker->Update(mouse);
 
-   
-    
+   // エフェクトの更新処理
+    GameEffectController::GetInstance()->Update(elapsedTime);
+
     // シーン管理の更新処理
     m_sceneManager->Update(elapsedTime);
 
@@ -245,6 +246,10 @@ void Game::Render()
 
     // シーン管理の描画処理
     m_sceneManager->Render();
+
+    // エフェクトの描画処理
+    GameEffectController::GetInstance()->Draw();;
+
 
     // FPSを取得する
     //uint32_t fps = m_timer.GetFramesPerSecond();

@@ -362,6 +362,9 @@
     <Filter Include="Game\Common\GameEffect\Base">
       <UniqueIdentifier>{b3c07baa-e5b0-4219-ac00-46a047379b59}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\Common\GameEffect\Effects">
+      <UniqueIdentifier>{81b7ddaf-d91e-44b2-a797-922dfdf9e832}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -726,6 +729,9 @@
     <ClInclude Include="Game\Common\GameEffect\GameEffectController.h">
       <Filter>Game\Common\GameEffect</Filter>
     </ClInclude>
+    <ClInclude Include="Game\Common\GameEffect\Effects\SimpleParticle\SimpleParticle.h">
+      <Filter>Game\Common\GameEffect\Effects</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -1032,6 +1038,9 @@
     </ClCompile>
     <ClCompile Include="Game\Common\GameEffect\GameEffectController.cpp">
       <Filter>Game\Common\GameEffect</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Common\GameEffect\Effects\SimpleParticle\SimpleParticle.cpp">
+      <Filter>Game\Common\GameEffect\Effects</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

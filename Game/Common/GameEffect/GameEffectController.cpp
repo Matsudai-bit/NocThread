@@ -61,6 +61,44 @@ void GameEffectController::StopEffect(unsigned int id)
 }
 
 /**
+ * @brief 更新処理
+ * 
+ * @param[in] elapsedTime　経過時間
+ */
+void GameEffectController::Update(float elapsedTime)
+{
+    m_pGameEffectManager->Update(elapsedTime);
+}
+
+/**
+ * @brief 描画処理
+ */
+void GameEffectController::Draw()
+{
+    m_pGameEffectManager->Draw(m_view, m_projection);
+}
+
+/**
+ * @brief ビュー行列の設定
+ * 
+ * @param[in] view　ビュー行列
+ */
+void GameEffectController::SetView(const DirectX::SimpleMath::Matrix& view)
+{
+    m_view = view;
+}
+
+/**
+ * @brief 射影行列の設定
+ * 
+ * @param[in] projection　射影行列
+ */
+void GameEffectController::SetProjection(const DirectX::SimpleMath::Matrix& projection)
+{
+    m_projection = projection;
+}
+
+/**
  * @brief インスタンスの取得
  * 
  * @return インスタンス

@@ -41,7 +41,7 @@ NormalGameplayState::~NormalGameplayState()
 
 void NormalGameplayState::OnStartState()
 {
-	
+
 }
 
 void NormalGameplayState::OnUpdate(float elapsedTime)

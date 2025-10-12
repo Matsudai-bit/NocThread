@@ -76,14 +76,9 @@ public:
 	// ‰Šú‰»ˆ—
 	void Initialize(DX::DeviceResources* pDeviceResources,const float& castShadowPositionY);
 
-	// XVˆ—
-	void Update(float elapsedTime);
-
 	// •`‰æˆ—
 	void Draw( const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj, DirectX::CommonStates* states, const DirectX::SimpleMath::Vector3& shadowOwnerPosition);
 
-	// I—¹ˆ—
-	void Finalize();
 
 
 // æ“¾/İ’è

@@ -92,6 +92,9 @@ GameplayScene::~GameplayScene()
 {
 }
 
+#include "Game/Common/GameEffect/GameEffectController.h"
+#include "Game/Common/GameEffect/Effects/SimpleParticle/SimpleParticle.h"
+
 /**
  * @brief 初期化処理
  *
@@ -181,6 +184,11 @@ void GameplayScene::Initialize()
     m_gamePlayingTimeCounter.Reset();
 
     ResultData::GetInstance()->Reset();
+
+    GameEffectManager::EffectClip clip;
+    clip.isLoop = true;
+    GameEffectController::GetInstance()->PlayEffect(std::make_unique<SimpleParticle>(GetCommonResources()->GetDeviceResources(), m_player->GetPosition()), clip);
+
 }
 
 
@@ -327,6 +335,9 @@ void GameplayScene::DrawInGameObjects()
 
     // デバッグカメラからビュー行列を取得する
     SimpleMath::Matrix view = m_playerCamera->GetView();
+    GameEffectController::GetInstance()->SetView(view);
+    GameEffectController::GetInstance()->SetProjection(m_proj);
+
     // 共通リソース
     auto states = GetCommonResources()->GetCommonStates();
 

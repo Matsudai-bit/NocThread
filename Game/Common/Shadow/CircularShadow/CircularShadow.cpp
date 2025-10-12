@@ -121,20 +121,6 @@ void CircularShadow::Initialize(DX::DeviceResources* pDeviceResources, const flo
 
 }
 
-
-
-/**
- * @brief 更新処理
- *
- * @param[in] elapsedTime 経過時間
- *
- * @return なし
- */
-void CircularShadow::Update(float elapsedTime)
-{
-
-}
-
 /**
  * @brief 描画処理
  * 
@@ -214,19 +200,4 @@ void CircularShadow::Draw(const DirectX::SimpleMath::Matrix& view, const DirectX
 	context->VSSetShader(nullptr, nullptr, 0);
 	context->GSSetShader(nullptr, nullptr, 0);
 	context->PSSetShader(nullptr, nullptr, 0);
-}
-
-
-
-
-/**
- * @brief 終了処理
- *
- * @param[in] なし
- *
- * @return なし
- */
-void CircularShadow::Finalize()
-{
-
 }
