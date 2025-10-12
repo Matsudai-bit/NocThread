@@ -187,7 +187,9 @@ void GameplayScene::Initialize()
 
     GameEffectManager::EffectClip clip;
     clip.isLoop = true;
-    GameEffectController::GetInstance()->PlayEffect(std::make_unique<SimpleParticle>(GetCommonResources()->GetDeviceResources(), m_player->GetPosition()), clip);
+    auto simpleParticle = std::make_unique<SimpleParticle>(GetCommonResources()->GetDeviceResources(), m_player->GetPosition());
+    m_pSimpleParticle = simpleParticle.get();
+    GameEffectController::GetInstance()->PlayEffect(std::move(simpleParticle), clip);
 
 }
 
@@ -210,6 +212,8 @@ void GameplayScene::Update(float elapsedTime)
         event();
     }
     m_eventStack.clear();
+
+    m_pSimpleParticle->SetPosition(m_player->GetPosition());
 }
 
 

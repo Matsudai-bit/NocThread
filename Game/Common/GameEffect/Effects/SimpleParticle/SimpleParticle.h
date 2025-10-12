@@ -15,9 +15,11 @@
 // ヘッダファイルの読み込み ===================================================
 #include <memory>
 #include <vector>
+#include <random>
 
 #include "Game/Common/GameEffect/Base/GameEffectBase.h"
 #include "Game/Common/DeviceResources.h"
+#include "Game/Common/ElapsedTimeCounter/ElapsedTimeCounter.h"
 // クラスの前方宣言 ===================================================
 class CircularShadow;
 
@@ -34,10 +36,11 @@ public:
 
 	struct Particle
 	{
-		SimpleMath::Vector3 position;
+		DirectX::SimpleMath::Vector3 position;
 		float		time;
 		float		speed;
 	
+		bool isActive; // 再利用のため
 	};
 	
 	// クラス定数の宣言 -------------------------------------------------
@@ -55,6 +58,12 @@ private:
 	DirectX::CommonStates m_commonStates;
 
 	std::vector<Particle> m_particles;
+
+	ElapsedTimeCounter m_timeCounter;
+
+	std::mt19937 m_randomGenerator;
+
+	std::unique_ptr<DirectX::GeometricPrimitive> m_model;
 
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
@@ -78,10 +87,11 @@ public:
 	// 再生してるかどうか
 	bool IsPlaying() const override;
 
-
 // 取得/設定
 public:
 
+	// 座標の設定
+	void SetPosition(const DirectX::SimpleMath::Vector3& position);
 
 // 内部実装
 private:

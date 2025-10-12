@@ -28,6 +28,11 @@ SimpleParticle::SimpleParticle(DX::DeviceResources* pDeviceResources, DirectX::S
 
 	m_position = position;
 
+	std::random_device randomDevice;
+	m_randomGenerator.seed(randomDevice());
+
+	m_model = GeometricPrimitive::CreateBox(pDeviceResources->GetD3DDeviceContext(), DirectX::SimpleMath::Vector3(1, 1, 1));
+
 }
 
 
@@ -60,6 +65,37 @@ void SimpleParticle::Play()
  */
 void SimpleParticle::Update(float elapsedTime)
 {
+	// 時間のカウント
+	m_timeCounter.UpperTime(elapsedTime);
+
+	if (m_timeCounter.GetElapsedTime() >= 0.1f)
+	{
+		Particle particle;
+		particle.time = 0.5f;
+
+		particle.speed = 1.0f;
+		
+		float radius = 2.0f;
+		float radian = XMConvertToRadians(m_randomGenerator() % 360);
+		particle.position.y = m_position.y;
+		particle.position.x = m_position.x + std::cos(radian) * radius;
+		particle.position.z = m_position.z + std::sin(radian) * radius;
+
+		m_particles.emplace_back(particle);
+
+		m_timeCounter.Reset();
+	}
+
+	for (auto& particle : m_particles)
+	{
+		if (particle.time <= 0)
+		{
+			particle.isActive = false;
+		}
+		if (particle.isActive == false){continue;}
+
+		particle.position.y += particle.speed * elapsedTime;
+	}
 }
 
 /**
@@ -70,7 +106,12 @@ void SimpleParticle::Update(float elapsedTime)
  */
 void SimpleParticle::Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj)
 {
-//	m_circleShadow->Draw(view, proj, &m_commonStates, m_position);
+
+	for (auto& particle : m_particles)
+	{
+		m_model->Draw(SimpleMath::Matrix::CreateTranslation(particle.position), view, proj);
+	}
+
 }
 
 /**
@@ -82,5 +123,15 @@ void SimpleParticle::Draw(const DirectX::SimpleMath::Matrix& view, const DirectX
 bool SimpleParticle::IsPlaying() const
 {
 	return true;
+}
+
+/**
+ * @brief 座標の設定
+ * 
+ * @param[in] position 座標
+ */
+void SimpleParticle::SetPosition(const DirectX::SimpleMath::Vector3& position)
+{
+	m_position = position;
 }
 

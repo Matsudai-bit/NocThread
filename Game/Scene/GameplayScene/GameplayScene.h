@@ -64,6 +64,8 @@ class RopeObject;
 class ParticleObject;
 class XPBDSimulator;
 
+// 仮
+class SimpleParticle;
 
 // クラスの定義 ===============================================================
 /**
@@ -132,6 +134,8 @@ private:
 	// その他
 	DirectX::Model m_skySphere;	///< 天球
 	std::unique_ptr<CircularShadow> m_playerShadow;	///< プレイヤーの影
+
+	SimpleParticle* m_pSimpleParticle;
 
 	std::vector <std::function<void()>> m_eventStack;
 	ElapsedTimeCounter m_gamePlayingTimeCounter; ///< ゲームのプレイ時間の
