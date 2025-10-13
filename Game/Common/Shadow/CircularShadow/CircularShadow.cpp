@@ -149,9 +149,6 @@ void CircularShadow::Draw(const DirectX::SimpleMath::Matrix& view, const DirectX
 	// ワールド座標の算出
 	auto world = SimpleMath::Matrix::CreateScale(scale) * SimpleMath::Matrix::CreateTranslation(position) ;
 
-	// カリング
-	context->RSSetState(states->CullNone());  
-
 
 	// 定数バッファにデータを設定する
 	ConstantBuffer cb = {};
@@ -183,8 +180,8 @@ void CircularShadow::Draw(const DirectX::SimpleMath::Matrix& view, const DirectX
 	//	深度バッファに書き込み参照する
 	context->OMSetDepthStencilState(states->DepthDefault(), 0);
 
-	//	カリングはなし
-	context->RSSetState(states->CullNone());
+	// カリング
+	context->RSSetState(states->CullCounterClockwise());
 
 	//m_basicEffect->Apply(context);
 	context->IASetInputLayout(m_inputLayout.Get());

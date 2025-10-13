@@ -89,5 +89,15 @@ DirectX::SimpleMath::Vector3 Camera::GetTarget() const
 	return m_target;
 }
 
+/**
+ * @brief 上ベクトルの取得
+ * 
+ * @return 上ベクトル
+ */
+DirectX::SimpleMath::Vector3 Camera::GetUp() const
+{
+	return m_up;
+}
+
 
 

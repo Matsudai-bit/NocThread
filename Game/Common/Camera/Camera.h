@@ -60,6 +60,8 @@ public:
 	// ビュー座標の取得
 	DirectX::SimpleMath::Vector3 GetEye() const;
 	DirectX::SimpleMath::Vector3 GetTarget() const;
+	// 上ベクトルの取得
+	DirectX::SimpleMath::Vector3 GetUp() const;
 
 
 
