@@ -181,6 +181,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Game\Common\Camera\Camera.h" />
+    <ClInclude Include="Game\Common\Camera\MainCamera\MainCamera.h" />
     <ClInclude Include="Game\Common\Camera\PlayerCamera\PlayerCamera.h" />
     <ClInclude Include="Game\Common\Collision\Collision.h" />
     <ClInclude Include="Game\Common\Collision\CollisionManager\CollisionManager.h" />
@@ -200,6 +201,11 @@
     <ClInclude Include="Game\Common\ExitController\ExitController.h" />
     <ClInclude Include="Game\Common\Factory\EnemyFactory\EnemyFactory.h" />
     <ClInclude Include="Game\Common\Factory\EnemyFactory\IEnemyFactory\IEnemyFactory.h" />
+    <ClInclude Include="Game\Common\GameEffect\Base\GameEffectBase.h" />
+    <ClInclude Include="Game\Common\GameEffect\Base\IGameEffect.h" />
+    <ClInclude Include="Game\Common\GameEffect\Effects\SimpleParticle\SimpleParticle.h" />
+    <ClInclude Include="Game\Common\GameEffect\GameEffectController.h" />
+    <ClInclude Include="Game\Common\GameEffect\GameEffectManager.h" />
     <ClInclude Include="Game\Common\GameObjectManager\EnemyManager\EnemyManager.h" />
     <ClInclude Include="Game\Common\GameObjectRegistry\GameObjectRegistry.h" />
     <ClInclude Include="Game\Common\Helper\MovementHelper\MovementHelper.h" />
@@ -301,6 +307,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game\Common\Camera\Camera.cpp" />
+    <ClCompile Include="Game\Common\Camera\MainCamera\MainCamera.cpp" />
     <ClCompile Include="Game\Common\Camera\PlayerCamera\PlayerCamera.cpp" />
     <ClCompile Include="Game\Common\Collision\Collision.cpp" />
     <ClCompile Include="Game\Common\Collision\CollisionManager\CollisionManager.cpp" />
@@ -313,6 +320,11 @@
     <ClCompile Include="Game\Common\Event\WireSystemObserver\WireSystemSubject.cpp" />
     <ClCompile Include="Game\Common\ExitController\ExitController.cpp" />
     <ClCompile Include="Game\Common\Factory\EnemyFactory\EnemyFactory.cpp" />
+    <ClCompile Include="Game\Common\GameEffect\Base\GameEffectBase.cpp" />
+    <ClCompile Include="Game\Common\GameEffect\Base\IGameEffect.cpp" />
+    <ClCompile Include="Game\Common\GameEffect\Effects\SimpleParticle\SimpleParticle.cpp" />
+    <ClCompile Include="Game\Common\GameEffect\GameEffectController.cpp" />
+    <ClCompile Include="Game\Common\GameEffect\GameEffectManager.cpp" />
     <ClCompile Include="Game\Common\GameObjectManager\EnemyManager\EnemyManager.cpp" />
     <ClCompile Include="Game\Common\GameObjectRegistry\GameObjectRegistry.cpp" />
     <ClCompile Include="Game\Common\Helper\MovementHelper\MovementHelper.cpp" />
@@ -431,6 +443,7 @@
   <ItemGroup>
     <None Include="packages.config" />
     <None Include="Shaders\CircleShadow.hlsli" />
+    <None Include="Shaders\SimpleParticle\SimpleParticle.hlsli" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shaders\CircleShadow_GS.hlsl">
@@ -444,6 +457,21 @@
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources/Shaders/%(Filename).cso</ObjectFileOutput>
     </FxCompile>
     <FxCompile Include="Shaders\CircleShadow_VS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0</ShaderModel>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources/Shaders/%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
+    <FxCompile Include="Shaders\SimpleParticle\SimpleParticle_GS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Geometry</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0</ShaderModel>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources/Shaders/%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
+    <FxCompile Include="Shaders\SimpleParticle\SimpleParticle_PS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0</ShaderModel>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources/Shaders/%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
+    <FxCompile Include="Shaders\SimpleParticle\SimpleParticle_VS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0</ShaderModel>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources/Shaders/%(Filename).cso</ObjectFileOutput>

@@ -19,6 +19,7 @@
 #include "Game/Common/Screen.h"
 
 #include "Game/Common/SoundManager/SoundManager.h"
+#include "Game/Common/GameEffect/GameEffectController.h"
 
 // ImGui系のヘッダーのインクルード
 #include "Library/ImGui/imgui.h"
@@ -108,7 +109,12 @@ void Game::Initialize(HWND window, int width, int height)
     // サウンド管理の設定
     SoundManager::GetInstance()->SetResourceManager(m_resourceManager.get());
 
+
+
+
+
    // **** 生成 ****
+   
    // シーンの生成
     m_sceneManager = std::make_unique<MyLib::SceneManager<CommonResources>>();
 
@@ -196,8 +202,6 @@ void Game::Update(DX::StepTimer const& timer)
     auto mouse = DirectX::Mouse::Get().GetState();
     m_mouseStateTracker->Update(mouse);
 
-   
-    
     // シーン管理の更新処理
     m_sceneManager->Update(elapsedTime);
 
@@ -235,6 +239,7 @@ void Game::Render()
 
     // シーン管理の描画処理
     m_sceneManager->Render();
+
 
     // FPSを取得する
     //uint32_t fps = m_timer.GetFramesPerSecond();

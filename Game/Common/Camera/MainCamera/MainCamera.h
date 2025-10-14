@@ -1,9 +1,9 @@
 /*****************************************************************//**
- * @file    Camera.h
- * @brief   カメラに関するヘッダーファイル
+ * @file    MainCamera.h
+ * @brief   メインカメラに関するヘッダーファイル
  *
  * @author  松下大暉
- * @date    2025/05/02
+ * @date    2025/10/14
  *********************************************************************/
 
 // 多重インクルードの防止 =====================================================
@@ -16,12 +16,13 @@
 
 
 // クラスの前方宣言 ===================================================
+class Camera; // カメラ
 
 // クラスの定義 ===============================================================
 /**
- * @brief カメラ
+ * @brief メインカメラ
  */
-class Camera 
+class MainCamera
 {
 // クラス定数の宣言 -------------------------------------------------
 public:
@@ -30,40 +31,35 @@ public:
 
 // データメンバの宣言 -----------------------------------------------
 private:
+	Camera* m_pMainCamera; ///< メインカメラ
 
-	DirectX::SimpleMath::Vector3 m_eye;		///< 視点
-	DirectX::SimpleMath::Vector3 m_target;	///< 注視点
-	DirectX::SimpleMath::Vector3 m_up;	///< 注視点
+	static std::unique_ptr<MainCamera> s_instance; // インスタンス
 
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
-public:
+private:
 	// コンストラクタ
-	Camera();
-
+	MainCamera();
+public:
 	// デストラクタ
-	~Camera();
+	~MainCamera();
 
 
 // 操作
 public:
-
-	// 視点の設定
-	void SetEye(const DirectX::SimpleMath::Vector3& eye);
-	// 注視点の設定
-	void SetTarget(const DirectX::SimpleMath::Vector3& target);
-	void SetUp(const DirectX::SimpleMath::Vector3& up);
-
-	// ビュー行列の取得
-	DirectX::SimpleMath::Matrix GetView() const;
-
-	// ビュー座標の取得
-	DirectX::SimpleMath::Vector3 GetEye() const;
-	DirectX::SimpleMath::Vector3 GetTarget() const;
-	// 上ベクトルの取得
-	DirectX::SimpleMath::Vector3 GetUp() const;
+	
 
 
+// 取得/設定
+public:
+
+	// インスタンス
+	static MainCamera* GetInstance();
+
+	// カメラを設定する
+	void SetCamera(Camera* pCamera);
+	// カメラの取得
+	const Camera* GetCamera() const;
 
 // 内部実装
 private:

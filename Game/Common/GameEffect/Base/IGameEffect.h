@@ -1,9 +1,9 @@
 /*****************************************************************//**
- * @file    Camera.h
- * @brief   カメラに関するヘッダーファイル
+ * @file    IGameEffect.h
+ * @brief   ゲームエフェクトのインターフェースに関するヘッダーファイル
  *
  * @author  松下大暉
- * @date    2025/05/02
+ * @date    2025/10/11
  *********************************************************************/
 
 // 多重インクルードの防止 =====================================================
@@ -19,9 +19,9 @@
 
 // クラスの定義 ===============================================================
 /**
- * @brief カメラ
+ * @brief ゲームエフェクトのインターフェース
  */
-class Camera 
+class IGameEffect
 {
 // クラス定数の宣言 -------------------------------------------------
 public:
@@ -31,38 +31,34 @@ public:
 // データメンバの宣言 -----------------------------------------------
 private:
 
-	DirectX::SimpleMath::Vector3 m_eye;		///< 視点
-	DirectX::SimpleMath::Vector3 m_target;	///< 注視点
-	DirectX::SimpleMath::Vector3 m_up;	///< 注視点
+
 
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
 public:
 	// コンストラクタ
-	Camera();
+	IGameEffect();
 
 	// デストラクタ
-	~Camera();
+	virtual ~IGameEffect();
 
 
 // 操作
 public:
 
-	// 視点の設定
-	void SetEye(const DirectX::SimpleMath::Vector3& eye);
-	// 注視点の設定
-	void SetTarget(const DirectX::SimpleMath::Vector3& target);
-	void SetUp(const DirectX::SimpleMath::Vector3& up);
+	// 再生
+	virtual void Play() = 0;
 
-	// ビュー行列の取得
-	DirectX::SimpleMath::Matrix GetView() const;
+	// 更新処理
+	virtual void Update(float elapsedTime) = 0;
+	// 描画処理
+	virtual void Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj) = 0;
 
-	// ビュー座標の取得
-	DirectX::SimpleMath::Vector3 GetEye() const;
-	DirectX::SimpleMath::Vector3 GetTarget() const;
-	// 上ベクトルの取得
-	DirectX::SimpleMath::Vector3 GetUp() const;
+// 取得/設定
+public:
 
+	// 再生してるかどうか
+	virtual bool IsPlaying() const = 0;
 
 
 // 内部実装

@@ -356,6 +356,21 @@
     <Filter Include="Game\GameObjects\RopeObject\XPBDSimulator\Constraint\Factory\Base">
       <UniqueIdentifier>{57c15223-3cf6-4f1e-b2df-9ecf4f644136}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\Common\GameEffect">
+      <UniqueIdentifier>{20ad6956-f2ab-4d5f-9db1-5e8c2d91efb2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Common\GameEffect\Base">
+      <UniqueIdentifier>{b3c07baa-e5b0-4219-ac00-46a047379b59}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Common\GameEffect\Effects">
+      <UniqueIdentifier>{81b7ddaf-d91e-44b2-a797-922dfdf9e832}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\Shaders\CircleShadow">
+      <UniqueIdentifier>{c4d188cf-1282-453a-8db1-edfa827b6884}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\Shaders\SimpleParticle">
+      <UniqueIdentifier>{a17b6d63-9cc2-4e67-ad16-c6acbb66495f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -708,6 +723,21 @@
     <ClInclude Include="Game\GameObjects\RopeObject\XPBDSimulator\Constraint\CollisionConstraint\CollisionConstraintFactory.h">
       <Filter>Game\GameObjects\RopeObject\XPBDSimulator\Constraint\Factory</Filter>
     </ClInclude>
+    <ClInclude Include="Game\Common\GameEffect\Base\GameEffectBase.h">
+      <Filter>Game\Common\GameEffect\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Common\GameEffect\Base\IGameEffect.h">
+      <Filter>Game\Common\GameEffect\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Common\GameEffect\GameEffectManager.h">
+      <Filter>Game\Common\GameEffect</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Common\GameEffect\GameEffectController.h">
+      <Filter>Game\Common\GameEffect</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Common\GameEffect\Effects\SimpleParticle\SimpleParticle.h">
+      <Filter>Game\Common\GameEffect\Effects</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -1003,6 +1033,21 @@
     <ClCompile Include="Game\GameObjects\RopeObject\XPBDSimulator\Constraint\CollisionConstraint\CollisionConstraintFactory.cpp">
       <Filter>Game\GameObjects\RopeObject\XPBDSimulator\Constraint\Factory</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Common\GameEffect\Base\GameEffectBase.cpp">
+      <Filter>Game\Common\GameEffect\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Common\GameEffect\Base\IGameEffect.cpp">
+      <Filter>Game\Common\GameEffect\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Common\GameEffect\GameEffectManager.cpp">
+      <Filter>Game\Common\GameEffect</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Common\GameEffect\GameEffectController.cpp">
+      <Filter>Game\Common\GameEffect</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Common\GameEffect\Effects\SimpleParticle\SimpleParticle.cpp">
+      <Filter>Game\Common\GameEffect\Effects</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />
@@ -1020,18 +1065,30 @@
   <ItemGroup>
     <None Include="packages.config" />
     <None Include="Shaders\CircleShadow.hlsli">
-      <Filter>Resources\Shaders</Filter>
+      <Filter>Resources\Shaders\CircleShadow</Filter>
+    </None>
+    <None Include="Shaders\SimpleParticle\SimpleParticle.hlsli">
+      <Filter>Resources\Shaders\SimpleParticle</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="Shaders\CircleShadow_PS.hlsl">
-      <Filter>Resources\Shaders</Filter>
-    </FxCompile>
     <FxCompile Include="Shaders\CircleShadow_GS.hlsl">
-      <Filter>Resources\Shaders</Filter>
+      <Filter>Resources\Shaders\CircleShadow</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\CircleShadow_PS.hlsl">
+      <Filter>Resources\Shaders\CircleShadow</Filter>
     </FxCompile>
     <FxCompile Include="Shaders\CircleShadow_VS.hlsl">
-      <Filter>Resources\Shaders</Filter>
+      <Filter>Resources\Shaders\CircleShadow</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\SimpleParticle\SimpleParticle_GS.hlsl">
+      <Filter>Resources\Shaders\SimpleParticle</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\SimpleParticle\SimpleParticle_PS.hlsl">
+      <Filter>Resources\Shaders\SimpleParticle</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\SimpleParticle\SimpleParticle_VS.hlsl">
+      <Filter>Resources\Shaders\SimpleParticle</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

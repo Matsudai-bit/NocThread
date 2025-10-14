@@ -13,6 +13,7 @@
 
 #include "GameplayScene.h"
 
+#include "Game/Common/Camera/MainCamera/MainCamera.h"
 #include "Game/Scene/TitleScene/TitleScene.h"
 #include "Game/Scene/ResultScene/ResultScene.h"
 #include "Game/Common/DeviceResources.h"
@@ -48,10 +49,6 @@
 #include "Game/Common/UserInterfaceTool/Sprite/Sprite.h"
 
 #include "Library/ImaseLib/DebugFont.h"
-
-// 敵の挙動
-#include "Game/GameObjects/Enemy/Behaviour/Update/TrackingEnemyBehaviour/TrackingEnemyBehaviour.h"
-
 #include "Game//Common/GameObjectRegistry/GameObjectRegistry.h"
 #include "Game/Common/Event/Messenger/GameFlowMessenger/GameFlowMessenger.h"
 #include <random>
@@ -92,6 +89,9 @@ GameplayScene::~GameplayScene()
 {
 }
 
+#include "Game/Common/GameEffect/GameEffectController.h"
+#include "Game/Common/GameEffect/Effects/SimpleParticle/SimpleParticle.h"
+
 /**
  * @brief 初期化処理
  *
@@ -119,8 +119,6 @@ void GameplayScene::Initialize()
     // グリッド床の生成
     m_gridFloor         =   std::make_unique<Imase::GridFloor>(pDeviceResources->GetD3DDevice(), pDeviceResources->GetD3DDeviceContext(), pStates);
 
-
-
     // キャンバスの設定
     m_canvas = std::make_unique<Canvas>();
     // スプライトの生成
@@ -134,7 +132,11 @@ void GameplayScene::Initialize()
     m_scopeSprite->SetPosition(DirectX::SimpleMath::Vector2(Screen::Get()->GetCenterXF(), Screen::Get()->GetCenterYF() - 140.f *  Screen::Get()->GetScreenScale()));
     m_scopeSprite->SetScale(0.09f * Screen::Get()->GetScreenScale());
     m_canvas->AddSprite(m_scopeSprite.get());
-
+    m_gameEffectManager = std::make_unique<GameEffectManager>();
+    // 現在使用するエフェクト管理の取得
+    GameEffectController::GetInstance()->SetGameEffectManager(m_gameEffectManager.get());
+    // メインカメラの設定 
+    MainCamera::GetInstance()->SetCamera(m_playerCamera.get());
     // **** ゲームオブジェクトの作成 *****    
     // プレイヤーカメラの初期化処理
     m_playerCamera->Initialize(GetCommonResources(), m_collisionManager.get());
@@ -181,6 +183,9 @@ void GameplayScene::Initialize()
     m_gamePlayingTimeCounter.Reset();
 
     ResultData::GetInstance()->Reset();
+
+
+
 }
 
 
@@ -202,6 +207,7 @@ void GameplayScene::Update(float elapsedTime)
         event();
     }
     m_eventStack.clear();
+
 }
 
 
@@ -266,6 +272,9 @@ void GameplayScene::UpdateInGameObjects(float elapsedTime)
 
     // ゲームプレイ時間の加算
     m_gamePlayingTimeCounter.UpperTime(elapsedTime);
+
+    // ゲームエフェクト管理の更新処理
+    m_gameEffectManager->Update(elapsedTime);
   
     // 出現管理の更新処理
     m_spawnManager->Update(elapsedTime);
@@ -326,7 +335,10 @@ void GameplayScene::DrawInGameObjects()
 
 
     // デバッグカメラからビュー行列を取得する
-    SimpleMath::Matrix view = m_playerCamera->GetView();
+    SimpleMath::Matrix view = MainCamera::GetInstance()->GetCamera()->GetView();
+    GameEffectController::GetInstance()->SetView(view);
+    GameEffectController::GetInstance()->SetProjection(m_proj);
+
     // 共通リソース
     auto states = GetCommonResources()->GetCommonStates();
 
@@ -374,6 +386,7 @@ void GameplayScene::DrawInGameObjects()
     m_treasure->Draw(view, m_proj);
 
 
+
     //// 仮UI
     //GetCommonResources()->GetDebugFont()->AddString(Screen::Get()->GetRight() - 400, 50, Colors::Blue,  L"Left Mouse Click : ShootWire");
     //GetCommonResources()->GetDebugFont()->AddString(Screen::Get()->GetRight() - 400, 80, Colors::Blue,  L"                WASD : PlayerMove");
@@ -408,7 +421,8 @@ void GameplayScene::DrawInGameObjects()
     world *= SimpleMath::Matrix::CreateTranslation(m_player->GetPosition());
 
     m_skySphere.Draw(GetCommonResources()->GetDeviceResources()->GetD3DDeviceContext(), *GetCommonResources()->GetCommonStates(), world, view, m_proj);
-
+    // ゲームエフェクト管理の描画処理
+    m_gameEffectManager->Draw(view, m_proj);
     //
     m_playerShadow->Draw(view, m_proj, states, m_player->GetPosition());
 

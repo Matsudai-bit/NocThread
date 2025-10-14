@@ -63,6 +63,7 @@ class CircularShadow;	// 丸影
 class RopeObject;
 class ParticleObject;
 class XPBDSimulator;
+class GameEffectManager;
 
 
 // クラスの定義 ===============================================================
@@ -110,6 +111,7 @@ private:
     // システム
     std::unique_ptr<CollisionManager>   m_collisionManager; ///< 衝突管理
 	std::unique_ptr<PlayerController>	m_playerController;	///< プレイヤーのコントローラ
+	std::unique_ptr<GameEffectManager>	m_gameEffectManager;///< ゲームエフェクト管理
 
 	// スプライト関連
 	std::unique_ptr<Canvas> m_canvas; // スプライト表示用
