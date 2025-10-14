@@ -115,10 +115,6 @@ void Game::Initialize(HWND window, int width, int height)
 
    // **** 生成 ****
    
-    // ゲームエフェクト管理の作成
-    m_gameEffectManager = std::make_unique<GameEffectManager>();
-    GameEffectController::GetInstance()->SetGameEffectManager(m_gameEffectManager.get());
-
    // シーンの生成
     m_sceneManager = std::make_unique<MyLib::SceneManager<CommonResources>>();
 
@@ -206,9 +202,6 @@ void Game::Update(DX::StepTimer const& timer)
     auto mouse = DirectX::Mouse::Get().GetState();
     m_mouseStateTracker->Update(mouse);
 
-   // エフェクトの更新処理
-    GameEffectController::GetInstance()->Update(elapsedTime);
-
     // シーン管理の更新処理
     m_sceneManager->Update(elapsedTime);
 
@@ -246,9 +239,6 @@ void Game::Render()
 
     // シーン管理の描画処理
     m_sceneManager->Render();
-
-    // エフェクトの描画処理
-    GameEffectController::GetInstance()->Draw();;
 
 
     // FPSを取得する

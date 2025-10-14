@@ -63,9 +63,8 @@ class CircularShadow;	// 丸影
 class RopeObject;
 class ParticleObject;
 class XPBDSimulator;
+class GameEffectManager;
 
-// 仮
-class SimpleParticle;
 
 // クラスの定義 ===============================================================
 /**
@@ -112,6 +111,7 @@ private:
     // システム
     std::unique_ptr<CollisionManager>   m_collisionManager; ///< 衝突管理
 	std::unique_ptr<PlayerController>	m_playerController;	///< プレイヤーのコントローラ
+	std::unique_ptr<GameEffectManager>	m_gameEffectManager;///< ゲームエフェクト管理
 
 	// スプライト関連
 	std::unique_ptr<Canvas> m_canvas; // スプライト表示用
@@ -134,8 +134,6 @@ private:
 	// その他
 	DirectX::Model m_skySphere;	///< 天球
 	std::unique_ptr<CircularShadow> m_playerShadow;	///< プレイヤーの影
-
-	SimpleParticle* m_pSimpleParticle;
 
 	std::vector <std::function<void()>> m_eventStack;
 	ElapsedTimeCounter m_gamePlayingTimeCounter; ///< ゲームのプレイ時間の

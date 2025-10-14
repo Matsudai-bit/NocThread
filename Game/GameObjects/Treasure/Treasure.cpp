@@ -18,6 +18,11 @@
 
 #include "Game/Common/Event/Messenger/GameFlowMessenger/GameFlowMessenger.h"
 
+#include "Game/Common/GameEffect/GameEffectManager.h"
+#include "Game/Common/GameEffect/Effects/SimpleParticle/SimpleParticle.h"
+#include "Game/Common/Camera/MainCamera/MainCamera.h"
+#include "Game/Common/GameEffect/GameEffectController.h"
+
 using namespace DirectX;
 
 
@@ -29,6 +34,7 @@ using namespace DirectX;
  */
 Treasure::Treasure()
 	: m_isActive{ true }
+	, m_effectId{ 0 }
 {
 
 }
@@ -68,6 +74,12 @@ void Treasure::Initialize(CommonResources* pCommonResources, CollisionManager* p
 	pCollisionManager->AddCollisionObjectData(this, m_collider.get());
 
 	m_isActive = true;
+
+	GameEffectManager::EffectClip clip;
+	clip.isLoop = true;
+	auto simpleParticle = std::make_unique<SimpleParticle>(GetCommonResources()->GetDeviceResources(), GetPosition(), MainCamera::GetInstance()->GetCamera());
+	m_effectId	=	GameEffectController::GetInstance()->PlayEffect(std::move(simpleParticle), clip);
+
 	
 }
 
@@ -169,6 +181,8 @@ void Treasure::OnCollision(GameObject* pHitObject, ICollider* pHitCollider)
 	case GameObjectTag::PLAYER:
 		m_isActive = false;
 		GameFlowMessenger::GetInstance()->Notify(GameFlowEventID::STOLE_TREASURE);
+		// エフェクトの停止
+		GameEffectController::GetInstance()->StopEffect(m_effectId);
 		break;
 	default:
 		break;

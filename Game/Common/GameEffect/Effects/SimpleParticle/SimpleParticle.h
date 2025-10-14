@@ -60,7 +60,7 @@ public:
 		DirectX::SimpleMath::Matrix matProj;
 
 		DirectX::SimpleMath::Vector3 objectTarget;    // オブジェクトの注視点(ビルボード用)
-		float padding;
+		float scale;
 	};
 
 	// クラス定数の宣言 -------------------------------------------------

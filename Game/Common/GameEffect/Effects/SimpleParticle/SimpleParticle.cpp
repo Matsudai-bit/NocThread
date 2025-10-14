@@ -203,7 +203,7 @@ void SimpleParticle::Draw(const DirectX::SimpleMath::Matrix& view, const DirectX
 	cb.matProj = proj.Transpose();
 	cb.matView = view.Transpose();
 	cb.objectTarget = m_pCamera->GetEye();
-	cb.padding = 0.5f;
+	cb.scale = 0.5f;
 
 	//	受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
 	context->UpdateSubresource(m_constantBuffer.Get(), 0, NULL, &cb, 0, 0);
@@ -221,10 +221,10 @@ void SimpleParticle::Draw(const DirectX::SimpleMath::Matrix& view, const DirectX
 	context->VSSetShader(m_vs.Get(), nullptr, 0);
 
 	//	半透明描画指定
-	ID3D11BlendState* blendstate = m_commonStates.NonPremultiplied();
+	ID3D11BlendState* blendState = m_commonStates.NonPremultiplied();
 
 	//	透明判定処理
-	context->OMSetBlendState(blendstate, nullptr, 0xFFFFFFFF);
+	context->OMSetBlendState(blendState, nullptr, 0xFFFFFFFF);
 
 	//	深度バッファに書き込み参照する
 	context->OMSetDepthStencilState(m_commonStates.DepthRead(), 0);
@@ -281,7 +281,7 @@ void SimpleParticle::CreateParticle()
 
 	// 活動していないパーティクルを探索
 	auto findingParticle = std::find_if(m_particles.begin(), m_particles.end(), 
-		[](const Particle& p) {return !(p.isActive);});
+		[](const Particle& p) {return !(p.isActive); });
 
 	// 見つかっていればそのパーティクルを使用する
 	if (findingParticle != m_particles.end())
