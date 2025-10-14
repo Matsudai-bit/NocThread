@@ -738,6 +738,7 @@
     <ClInclude Include="Game\Common\GameEffect\Effects\SimpleParticle\SimpleParticle.h">
       <Filter>Game\Common\GameEffect\Effects</Filter>
     </ClInclude>
+    <ClInclude Include="Game\Common\Camera\MainCamera\MainCamera.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -1048,6 +1049,7 @@
     <ClCompile Include="Game\Common\GameEffect\Effects\SimpleParticle\SimpleParticle.cpp">
       <Filter>Game\Common\GameEffect\Effects</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Common\Camera\MainCamera\MainCamera.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />

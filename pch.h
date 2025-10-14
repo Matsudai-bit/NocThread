@@ -84,6 +84,8 @@ namespace DX
     }
 }
 
+// nlohman json
+#include "nlohmann/json.hpp"
 
 // DirectXTK
 #include "Keyboard.h"
