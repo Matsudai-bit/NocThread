@@ -65,10 +65,8 @@ void PlayerController::Update(float deltaTime, const Keyboard::KeyboardStateTrac
 {
 	UNREFERENCED_PARAMETER(deltaTime);
 
-
 	auto kb = pKeyboardStateTracker->GetLastState();
 	auto mouse = pMouseStateTracker->GetLastState();
-
 
 	// ˆÚ“®•ûŒü
 	SimpleMath::Vector3 movementDirection = SimpleMath::Vector3::Zero;
@@ -81,7 +79,6 @@ void PlayerController::Update(float deltaTime, const Keyboard::KeyboardStateTrac
 	if (kb.D)	movementDirection += SimpleMath::Vector3::Right;
 	// ¶‚Ö
 	if (kb.A)	movementDirection += SimpleMath::Vector3::Left;
-
 
 	// “ü—Í‚ª‚È‚¢‚Æ‚«‚ÍˆÚ“®‚µ‚È‚¢
 	if (movementDirection.LengthSquared() > 0.0f)

@@ -146,9 +146,11 @@ private:
 	// 状態
 	State m_state;
 
+	State m_requestedState; ///< 要求状態
+
 	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_inputLayout;
 	std::unique_ptr<DirectX::BasicEffect> m_basicEffect; ///< ベーシックエフェクト　ものを描画する時の必要なものが用意されているクラス　基本形態
-
+	
 
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
@@ -203,7 +205,7 @@ public:
 	void Move(const float& deltaTime);
 
 	// ワイヤーアクション挙動
-	void BehaviourWireAction(const float& deltaTime);
+	void BehaviourWireAction(const float& deltaTime, const float& speed);
 	// シミュレータの更新処理
 	void ApplyWireSimulator(const float& deltaTime);
 
@@ -250,7 +252,8 @@ public:
 	// 状態の変更要求
 	void RequestChangeState(State state);
 
-
+	// 要求状態のリセット
+	void ResetRequestedState();
 
 // 取得/設定
 public:
@@ -287,7 +290,8 @@ public:
 	// 地面にいるかどうか
 	bool IsGround() const { return m_isGround; }
 
-
+	// 要求状態の取得
+	State GetRequestedState() { return m_requestedState; }
 
 
 // 内部実装

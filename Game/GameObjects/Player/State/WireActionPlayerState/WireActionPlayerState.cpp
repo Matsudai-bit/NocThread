@@ -63,7 +63,7 @@ void WireActionPlayerState::OnUpdate(float deltaTime)
 	GetOwner()->SetVelocity(GetOwner()->GetWire()->GetStartVelocity());
 
 	// ワイヤーアクション挙動
-	GetOwner()->BehaviourWireAction(deltaTime);
+	GetOwner()->BehaviourWireAction(deltaTime, 1.0f);
 
 	// 物理の適用
 	//GetOwner()->ApplyPhysic(deltaTime);

@@ -674,6 +674,7 @@ void Player::RequestChangeState(State state)
 	m_state = state;
 }
 
+
 /**
  * @brief 移動方向へ回転する
  * 
@@ -774,11 +775,11 @@ void Player::ChangeAnimation(const std::string& animationFilePath)
  * @param[in] 経過時間
  * 
  */
-void Player::BehaviourWireAction(const float& deltaTime)
+void Player::BehaviourWireAction(const float& deltaTime, const float& speed)
 {
 	m_canStep = true;
 	// ワイヤーシミュレータの適用
-	ApplyWireSimulator(deltaTime);
+	ApplyWireSimulator(deltaTime * speed);
 
 
 	if (m_wire->IsActive())
