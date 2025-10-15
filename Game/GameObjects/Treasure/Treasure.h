@@ -61,7 +61,7 @@ public:
 	void Initialize(CommonResources* pCommonResources, CollisionManager* pCollisionManager);
 
 	// XVˆ—
-	void Update(float elapsedTime);
+	void Update(float deltaTime);
 
 	// •`‰æˆ—
 	void Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj);

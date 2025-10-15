@@ -87,13 +87,13 @@ void WireTargetFinder::Initialize(const CommonResources* pCommonResources, Colli
 /**
  * @brief 更新処理
  *
- * @param[in] elapsedTime 経過時間
+ * @param[in] deltaTime 経過時間
  *
  * @return なし
  */
-void WireTargetFinder::Update(float elapsedTime, const Camera* pCamera, MyLib::Ray wireShootingRay, const float& length, const float& radius)
+void WireTargetFinder::Update(float deltaTime, const Camera* pCamera, MyLib::Ray wireShootingRay, const float& length, const float& radius)
 {
-	UNREFERENCED_PARAMETER(elapsedTime);
+	UNREFERENCED_PARAMETER(deltaTime);
 
 	// 座標更新
 	SetPosition(m_pPlayer->GetPosition());

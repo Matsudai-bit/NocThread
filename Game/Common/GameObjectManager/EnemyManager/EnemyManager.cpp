@@ -53,15 +53,15 @@ void EnemyManager::Initialize()
 /**
  * @brief 更新処理
  *
- * @param[in] elapsedTime 経過時間
+ * @param[in] deltaTime 経過時間
  *
  * @return なし
  */
-void EnemyManager::Update(float elapsedTime)
+void EnemyManager::Update(float deltaTime)
 {
 	for (auto& enemy : m_enemies)
 	{
-		enemy->Update(elapsedTime);
+		enemy->Update(deltaTime);
 	}
 }
 

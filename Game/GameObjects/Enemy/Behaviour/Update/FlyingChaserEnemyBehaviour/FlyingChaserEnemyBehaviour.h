@@ -53,7 +53,7 @@ public:
 public:
 
 	// XVˆ—
-	virtual void Update(Enemy* pEnemy, float elapsedTime,const CommonResources* pCommonResources) override;
+	virtual void Update(Enemy* pEnemy, float deltaTime,const CommonResources* pCommonResources) override;
 
 
 

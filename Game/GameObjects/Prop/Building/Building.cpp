@@ -92,13 +92,13 @@ void Building::Initialize(const CommonResources* pCommonResources, CollisionMana
 /**
  * @brief 更新処理
  *
- * @param[in] elapsedTime 経過時間
+ * @param[in] deltaTime 経過時間
  *
  * @return なし
  */
-void Building::Update(float elapsedTime)
+void Building::Update(float deltaTime)
 {
-	UNREFERENCED_PARAMETER(elapsedTime);
+	UNREFERENCED_PARAMETER(deltaTime);
 }
 
 /**

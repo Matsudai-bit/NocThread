@@ -37,7 +37,7 @@ using namespace DirectX;
 Enemy::Enemy()
 	: m_isHold{false}
 	, m_isThrow{false}
-	, m_elapsedTime{}
+	, m_deltaTime{}
 	, m_isActive{true}
 	, m_isGrounded{false}
 	
@@ -81,7 +81,7 @@ void Enemy::Initialize(const CommonResources* pCommonResources, CollisionManager
 
 	pCollisionManager->AddCollisionObjectData(this,m_collider.get());
 
-	m_elapsedTime = 0.0f;
+	m_deltaTime = 0.0f;
 
 	// イベントの追加
 	AddEventListener<ThrowHitEventData>(GameObjectEventType::THROW_HIT,
@@ -96,29 +96,29 @@ void Enemy::Initialize(const CommonResources* pCommonResources, CollisionManager
 /**
  * @brief 更新処理
  * 
- * @param[in] elapsedTime　経過時間
+ * @param[in] deltaTime　経過時間
  */
-void Enemy::Update(float elapsedTime)
+void Enemy::Update(float deltaTime)
 {
 	ApplyEvents();
 	if (m_isActive == false) { return; }
 
 	if (m_isHold == false )
 	{
-		if (m_elapsedTime <= 0.0f)
+		if (m_deltaTime <= 0.0f)
 		{
 			for (auto& behaviour : m_updateBehaviour)
 			{
-				behaviour->Update(this, elapsedTime, GetCommonResources());
+				behaviour->Update(this, deltaTime, GetCommonResources());
 			}
 		
 
-			m_elapsedTime = 0.0f;
+			m_deltaTime = 0.0f;
 			m_isThrow = false;
 		}
 		else
 		{
-			m_elapsedTime -= elapsedTime;
+			m_deltaTime -= deltaTime;
 		}
 	
 	}
@@ -128,25 +128,25 @@ void Enemy::Update(float elapsedTime)
 	SimpleMath::Vector3 velocity = GetVelocity();
 
 	// 重力を加える
-	velocity += GRAVITY_ACCELERATION * elapsedTime;
+	velocity += GRAVITY_ACCELERATION * deltaTime;
 
 	if (m_isGrounded)
 	{
 		// 摩擦を加える
-		velocity = PhysicsHelper::CalculateFrictionVelocity(velocity, elapsedTime, FRICTION, GameObject::GRAVITY_ACCELERATION.Length());
+		velocity = PhysicsHelper::CalculateFrictionVelocity(velocity, deltaTime, FRICTION, GameObject::GRAVITY_ACCELERATION.Length());
 	}
 	// 適用
-	velocity = PhysicsHelper::CalculateDragVelocity(velocity, elapsedTime, AIR_RESISTANCE);
+	velocity = PhysicsHelper::CalculateDragVelocity(velocity, deltaTime, AIR_RESISTANCE);
 
 
 
 	SetVelocity(velocity);
 
-	SimpleMath::Vector3 position = MovementHelper::CalcPositionForVelocity(elapsedTime, GetPosition(), GetVelocity());
+	SimpleMath::Vector3 position = MovementHelper::CalcPositionForVelocity(deltaTime, GetPosition(), GetVelocity());
 	SetPosition(position );
 	m_collider->Transform(GetPosition() + SimpleMath::Vector3(0.0f, 0.5f, 0.0f));
 
-    SetRotate(MovementHelper::RotateForMoveDirection(elapsedTime, GetRotate(), GetForward(), GetVelocity(), 0.1f));
+    SetRotate(MovementHelper::RotateForMoveDirection(deltaTime, GetRotate(), GetForward(), GetVelocity(), 0.1f));
 }
 
 void Enemy::Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj)
@@ -311,7 +311,7 @@ void Enemy::OnWireThrow(const WireEventData& eventData, const DirectX::SimpleMat
 
 	AddForceToVelocity(throwImpulse);
 
-	m_elapsedTime = 5.0f;
+	m_deltaTime = 5.0f;
 
 	m_isHold = false;
 	m_isThrow = true;

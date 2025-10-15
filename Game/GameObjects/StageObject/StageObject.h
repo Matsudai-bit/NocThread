@@ -69,7 +69,7 @@ public:
 	void Initialize(CommonResources* pCommonResources, CollisionManager* pCollisionManager);
 
 	// 更新処理
-	void Update(float elapsedTime);
+	void Update(float deltaTime);
 
 	// 描画処理
 	void Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj);
@@ -78,13 +78,13 @@ public:
 	void Finalize();
 
 	// 物理的な移動の適用
-	void ApplyPhysic(const float& elapsedTime);
+	void ApplyPhysic(const float& deltaTime);
 	// 摩擦の適用
 	void ApplyFriction();
 	// 重力の適用
-	void ApplyGravity(const float& elapsedTime);
+	void ApplyGravity(const float& deltaTime);
 	// 移動の適用
-	void Move(const float& elapsedTime);
+	void Move(const float& deltaTime);
 
 
 	//  ワイヤーに掴まれたときの挙動

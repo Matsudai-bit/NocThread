@@ -8,7 +8,7 @@
 
 // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
-#include "XPDBSimulator.h"
+#include "XPBDSimulator.h"
 
 #include "Game/GameObjects/RopeObject/RopeObject.h"
 #include "Game/GameObjects/RopeObject/XPBDSimulator/Constraint/DistanceConstraint/DistanceConstraint.h"
@@ -141,11 +141,11 @@ void XPBDSimulator::Initialize(Parameter parameter, RopeObject* pRopeObject)
 /**
  * @brief 更新処理
  *
- * @param[in] elapsedTime 経過時間
+ * @param[in] deltaTime 経過時間
  *
  * @return なし
  */
-void XPBDSimulator::Update(float elapsedTime)
+void XPBDSimulator::Update(float deltaTime)
 {
 
 	// **** 固定点以外の位置をデータに反映 ****
@@ -156,7 +156,7 @@ void XPBDSimulator::Update(float elapsedTime)
 		particle.simP.SetX(particle.pP->GetPosition());
 	}
 
-	Simulate(elapsedTime);
+	Simulate(deltaTime);
 
 	// **** シミュレーション結果の位置をデータに反映 ****
 	for (auto& particle : m_particles)
@@ -200,12 +200,12 @@ void XPBDSimulator::Finalize()
 /**
  * @brief シュミレーション
  * 
- * @param[in] elapsedTime　経過時間
+ * @param[in] deltaTime　経過時間
  */
-void XPBDSimulator::Simulate(float elapsedTime)
+void XPBDSimulator::Simulate(float deltaTime)
 {
 	// 予測位置の算出
-	PredictNextPositions(elapsedTime);
+	PredictNextPositions(deltaTime);
 
 	// 制約の生成
 	GenerateConstraints();
@@ -214,10 +214,10 @@ void XPBDSimulator::Simulate(float elapsedTime)
 	ResetConstraintParameters();
 
 	// 各制約に対してXPBDの反復計算を行い、パーティクルの予測位置（xi）を調整する
-	IterateConstraints(elapsedTime);
+	IterateConstraints(deltaTime);
 
 	// 予測位置と現在位置から速度を更新
-	FinalizeVelocitiesAndPositions(elapsedTime);
+	FinalizeVelocitiesAndPositions(deltaTime);
 }
 
 /**
@@ -248,9 +248,9 @@ void XPBDSimulator::SetConstraint(std::vector<std::unique_ptr<ConstraintFactory>
  * 現在位置と速度を使って、次のフレームでの予測位置を求めます。
  * 外力（重力など）はこの時点では加味しません。
  *
- * @param[in] elapsedTime 経過時間（Δt）
+ * @param[in] deltaTime 経過時間（Δt）
  */
-void XPBDSimulator::PredictNextPositions(float elapsedTime)
+void XPBDSimulator::PredictNextPositions(float deltaTime)
 {
 
 	// x~ = x + Δt v + Δt^2 M^-1 f_ext(x)
@@ -261,7 +261,7 @@ void XPBDSimulator::PredictNextPositions(float elapsedTime)
 		auto* simP = &particle.simP;
 
 		// 次の地点
-		auto xTilda = simP->GetX() + elapsedTime * simP->GetV();
+		auto xTilda = simP->GetX() + deltaTime * simP->GetV();
 		// 座標の更新
 		simP->SetXi(xTilda);
 
@@ -324,9 +324,9 @@ void XPBDSimulator::GenerateConstraints()
  * パーティクルの予測位置に反映していきます。
  * 指定されたイテレーション回数だけ反復して、安定した解に近づけます。
  *
- * @param[in] elapsedTime 経過時間（Δt）
+ * @param[in] deltaTime 経過時間（Δt）
  */
-void XPBDSimulator::IterateConstraints(float elapsedTime)
+void XPBDSimulator::IterateConstraints(float deltaTime)
 {
 	using namespace SimpleMath;
 
@@ -372,7 +372,7 @@ void XPBDSimulator::IterateConstraints(float elapsedTime)
 	
 
 			// Δλの計算
-			float Δλ = constraint->ComputeLambdaCorrection(elapsedTime, C);
+			float Δλ = constraint->ComputeLambdaCorrection(deltaTime, C);
 
 			// 制約の更新 (ラグランジュ乗数の蓄積)
 			cParam.λ = cParam.λ + Δλ;
@@ -396,9 +396,9 @@ void XPBDSimulator::IterateConstraints(float elapsedTime)
  * パーティクルの現在位置（x）を予測位置に更新します。
  * 外力（重力）もここで加味します。
  *
- * @param[in] elapsedTime 経過時間（Δt）
+ * @param[in] deltaTime 経過時間（Δt）
  */
-void XPBDSimulator::FinalizeVelocitiesAndPositions(float elapsedTime)
+void XPBDSimulator::FinalizeVelocitiesAndPositions(float deltaTime)
 {
 	for (auto& particle : m_particles)
 	{
@@ -407,24 +407,9 @@ void XPBDSimulator::FinalizeVelocitiesAndPositions(float elapsedTime)
 
 		if (simP->IsFixed())  continue;
 
-		// **** 考え中 : 速度の更新の仕方候補 *****
-
-		// ① シンプルに重力も全部処理しちゃう
 		// 速度の更新
-		SimpleMath::Vector3 v_potential = ((simP->GetXi() - simP->GetX()) / elapsedTime + m_parameter.gravity * elapsedTime);
-		simP->SetV(v_potential + m_parameter.gravity * elapsedTime);
-
-		// ② 押し出しがあった場合押し出し方向の速度をなくす
-		//SimpleMath::Vector3 v_potential = ((simP->GetXi() - simP->GetX()) / elapsedTime );
-		//if (MyLib::ApproxEqual(particle.simP.m_planeNormal.LengthSquared(), 0.0f) == false)
-		//{
-		//	float dot_product = v_potential.Dot(particle.simP.m_planeNormal);
-		//	// 法線方向の速度成分を削除
-		//	v_potential -= dot_product * particle.simP.m_planeNormal;
-		//	simP->SetV(v_potential);
-		//}
-		//else
-			//simP->SetV(v_potential + m_parameter.gravity * elapsedTime);
+		SimpleMath::Vector3 v_potential = ((simP->GetXi() - simP->GetX()) / deltaTime + m_parameter.gravity * deltaTime);
+		simP->SetV(v_potential + m_parameter.gravity * deltaTime);
 
 		particle.simP.m_planeNormal = SimpleMath::Vector3::Zero;
 		// 座標の更新

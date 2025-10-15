@@ -92,7 +92,7 @@ public:
 		const Player* pPlayer);
 
 	// XVˆ—
-	void Update(float elapsedTime, const Camera* pCamera, MyLib::Ray wireShootingRay, const float& length, const float& radius);
+	void Update(float deltaTime, const Camera* pCamera, MyLib::Ray wireShootingRay, const float& length, const float& radius);
 
 	// •`‰æˆ—
 	void Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& projection);

@@ -68,13 +68,13 @@ void EscapeHelicopter::Initialize(const CommonResources* pCommonResources, Colli
 /**
  * @brief 更新処理
  *
- * @param[in] elapsedTime 経過時間
+ * @param[in] deltaTime 経過時間
  *
  * @return なし
  */
-void EscapeHelicopter::Update(float elapsedTime)
+void EscapeHelicopter::Update(float deltaTime)
 {
-	UNREFERENCED_PARAMETER(elapsedTime);
+	UNREFERENCED_PARAMETER(deltaTime);
 	m_collider->SetCenter(GetPosition());
 }
 

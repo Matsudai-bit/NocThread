@@ -118,13 +118,13 @@ void Floor::Initialize(const DirectX::SimpleMath::Vector3& pos, CommonResources*
 /**
  * @brief 更新処理
  *
- * @param[in] elapsedTime 経過時間
+ * @param[in] deltaTime 経過時間
  *
  * @return なし
  */
-void Floor::Update(float elapsedTime)
+void Floor::Update(float deltaTime)
 {
-    elapsedTime;
+    deltaTime;
 
 }
 

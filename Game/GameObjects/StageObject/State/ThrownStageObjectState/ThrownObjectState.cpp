@@ -46,12 +46,12 @@ ThrownStageObjectState::~ThrownStageObjectState()
 /**
  * @brief 更新処理
  *
- * @param[in] elapsedTime　経過時間
+ * @param[in] deltaTime　経過時間
  */
-void ThrownStageObjectState::OnUpdate(float elapsedTime)
+void ThrownStageObjectState::OnUpdate(float deltaTime)
 {
-	GetOwner()->ApplyPhysic(elapsedTime);
-	GetOwner()->Move(elapsedTime);
+	GetOwner()->ApplyPhysic(deltaTime);
+	GetOwner()->Move(deltaTime);
 
 	SimpleMath::Vector3 velocity = GetOwner()->GetVelocity();
 

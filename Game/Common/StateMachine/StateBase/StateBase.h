@@ -68,8 +68,8 @@ protected:
 	virtual void OnStartState() {};
 
 	// 更新処理
-	virtual void OnUpdate(float elapsedTime) {
-		UNREFERENCED_PARAMETER(elapsedTime);
+	virtual void OnUpdate(float deltaTime) {
+		UNREFERENCED_PARAMETER(deltaTime);
 	};
 
 	// 描画処理
@@ -101,9 +101,9 @@ private:
 	}
 
 	// 更新関数をマシンから呼ぶための関数
-	void CallUpdate(float elapsedTime)
+	void CallUpdate(float deltaTime)
 	{
-		OnUpdate(elapsedTime);
+		OnUpdate(deltaTime);
 	}
 
 	// 更新関数をマシンから呼ぶための関数

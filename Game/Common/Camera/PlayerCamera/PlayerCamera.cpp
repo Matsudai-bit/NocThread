@@ -27,6 +27,7 @@ using namespace DirectX;
 /// @brief デフォルトのカメラ距離（未使用、将来的な拡張用）
 const float PlayerCamera::DEFAULT_CAMERA_DISTANCE = 5.0f;
 
+
 /**
  * @brief コンストラクタ
  * 
@@ -84,7 +85,7 @@ void PlayerCamera::Initialize(CommonResources* pCommonResources, CollisionManage
  * 毎フレーム呼び出され、マウスの現在位置に応じてカメラの回転を更新し、
  * プレイヤーの位置と方向からビュー行列用の視点と注視点を設定します。
  */
-void PlayerCamera::Update(float elapsedTime)
+void PlayerCamera::Update(float deltaTime)
 {
 
 	// マウス状態を取得
@@ -96,114 +97,14 @@ void PlayerCamera::Update(float elapsedTime)
 	int mouseX = state.x;
 	int mouseY = state.y;
 
+	// 回転の更新
+	UpdateRotation(mouseX, mouseY);
 
-	// クォータニオン回転を行列に変換
-	if (m_isStartUpdatig)
-	{
-		m_mousePrevX = mouseX;
-		m_mousePrevY = mouseY;
-		m_isStartUpdatig = false;
-	}
+	// カメラの注視点と目標位置を計算
+	CalculateCameraTarget(m_pPlayer->GetPosition());
 
-
-
-	// 現在のマウス位置に基づいて回転を更新
-	Motion(mouseX, mouseY);
-
-	// プレイヤーの前方方向を取得
-	SimpleMath::Vector3 localForward = SimpleMath::Vector3(0.0f, 0.0f, -0.1f);
-	SimpleMath::Matrix rot = SimpleMath::Matrix::CreateFromQuaternion(m_rotate);
-
-	SimpleMath::Vector3 forward = SimpleMath::Vector3::TransformNormal(localForward, rot);;
-
-	auto position = m_pPlayer->GetPosition();
-	//position += SimpleMath::Vector3(4.0f, 0.0f, 0);
-	// 注視点（プレイヤーの少し前方）
-	SimpleMath::Vector3 target = position + forward * 2.0f;
-
-	SimpleMath::Vector3 eye = GetEye();
-
-
-	SimpleMath::Vector3 velocity = (m_eyeTargetPosition - eye) * 20.0f * elapsedTime;
-	if (SimpleMath::Vector3::Distance(position, eye) > 2.0f)
-	{
-		eye += velocity;
-	}
-
-
-	// 視点（プレイヤーの後方、やや引いた位置）
-	SimpleMath::Vector3 eyeTargetPositionTmp = position + -forward * 100.0f + SimpleMath::Vector3(0.0f, 2.5f, 0.0f);
-
-	m_eyeTargetPosition = (SimpleMath::Vector3::Distance(eyeTargetPositionTmp, m_eyeTargetPosition) >= 0.01f  ) ? eyeTargetPositionTmp : m_eyeTargetPosition ;
-
-	// ワールド上方向（Y軸）をカメラ空間で再計算
-	SimpleMath::Vector3 up(0.0f, 1.0f, 0.0f);
-
-	// up を求める
-	up = SimpleMath::Vector3::TransformNormal(up, rot);
-	// 1/10 にする
-	up.x *= 0.1f;
-	up.z *= 0.1;
-
-	// カメラの視点と注視点を設定（基底クラス Camera の機能）
-	SetTarget(target);
-
-	SetEye(eye);
-	SetUp(up);
-
-	// ゲームオブジェクト側の座標の設定
-	SetPosition(GetEye());
-	m_sphereCollider->Transform(m_eyeTargetPosition);
-
-}
-
-/**
- * @brief マウスによるカメラの回転処理
- *
- * マウスのドラッグに応じて、カメラのY軸（水平）とX軸（垂直）回転を行い、
- * 回転クォータニオンに反映します。
- *
- * @param[in] x 現在のマウスX座標（ピクセル）
- * @param[in] y 現在のマウスY座標（ピクセル）
- */
-void PlayerCamera::Motion(int x, int y)
-{
-	// マウスの相対移動量を計算（スケール付き）
-	float dx = static_cast<float>(x ) * m_sx;
-	float dy = static_cast<float>(y ) * m_sy;
-
-	// 変化があった場合のみ回転を更新
-	if ((std::abs(dx) + std::abs(dy)) > 0.001f)
-	{
-
-		// ラジアン変換（1画面分をπラジアンに相当）
-		float rotY = dx */* XM_PI * */ 200.0f;
-		float rotX = -dy */* XM_PI **/ 200.0f;
-
-		// 現在の回転クォータニオンを行列化
-		SimpleMath::Matrix rotateMatrix = SimpleMath::Matrix::CreateFromQuaternion(m_rotate);
-
-		// 仮想的なX軸（カメラ空間での水平ベクトル）
-		SimpleMath::Vector3 horizonal = SimpleMath::Vector3::UnitX;
-
-		// 回転軸の定義
-		SimpleMath::Vector3 axisY = -SimpleMath::Vector3::UnitY;
-		SimpleMath::Vector3 axisX =  SimpleMath::Vector3::TransformNormal(horizonal, rotateMatrix);
-		axisX.y = 0.0f;
-
-		SimpleMath::Quaternion q = SimpleMath::Quaternion::Identity;
-
-		// クォータニオンによる回転の合成（Y軸→X軸の順）
-		q *= SimpleMath::Quaternion::CreateFromAxisAngle(axisY, XMConvertToRadians(rotY));
-		q *= SimpleMath::Quaternion::CreateFromAxisAngle(axisX, XMConvertToRadians(rotX));
-
-		m_rotate *= q;
-
-
-	}
-	// 現在のマウス位置を保存
-	m_mousePrevX = x;
-	m_mousePrevY = y;
+	// カメラの追従位置と最終設定を更新
+	UpdateCameraPosition(deltaTime);
 }
 
 /**
@@ -288,6 +189,112 @@ void PlayerCamera::PostCollision()
 	}
 }
 
+/**
+ * @brief 回転の更新処理
+ * 
+ * @param[in] mouseX　マウス座標X
+ * @param[in] mouseY　マウス座標Y
+ */
+void PlayerCamera::UpdateRotation(int mouseX, int mouseY)
+{
+	// マウス入力による回転更新 (Motion関数)
+	Motion(mouseX, mouseY);
+
+	// 初回フレームの初期化
+	if (m_isStartUpdatig)
+	{
+		m_mousePrevX = mouseX;
+		m_mousePrevY = mouseY;
+		m_isStartUpdatig = false;
+	}
+}
+
+/**
+ * @brief カメラの注視点の算出
+ * 
+ * @param[in] playerPos　プレイヤー座標
+ */
+void PlayerCamera::CalculateCameraTarget(const DirectX::SimpleMath::Vector3& playerPos)
+{
+	using namespace SimpleMath;
+
+	// クォータニオンから行列に変換
+	Matrix rot = Matrix::CreateFromQuaternion(m_rotate);
+
+	// プレイヤーの前方方向を取得
+	Vector3 localForward = Vector3(0.0f, 0.0f, -1.0f); // 単位ベクトル (-1.0f)
+	Vector3 forward = Vector3::TransformNormal(localForward, rot);
+
+	// 注視点 (Target) の計算 (プレイヤーの少し前方)
+	Vector3 target = playerPos + forward * 2.0f;
+	SetTarget(target); // 基底クラスに設定
+
+	// 理想的な視点目標位置の計算
+	// プレイヤーの後方 (距離 10.0f) + 高さ補正
+	Vector3 eyeTargetPositionTmp = playerPos + (-forward * 10.0f) + Vector3(0.0f, 2.5f, 0.0f);
+
+	// 目標位置の更新（滑らかさ維持のため、わずかな変化でも更新を維持）
+	if (Vector3::Distance(eyeTargetPositionTmp, m_eyeTargetPosition) >= 0.01f)
+	{
+		m_eyeTargetPosition = eyeTargetPositionTmp;
+	}
+}
+
+/**
+ * @brief カメラ座標の更新処理
+ * 
+ * @param[in] deltaTime　経過時間
+ */
+void PlayerCamera::UpdateCameraPosition(float deltaTime)
+{
+	using namespace SimpleMath;
+
+	//  現在の視点位置を取得
+	Vector3 currentEye = GetEye();
+
+	// 目標位置への滑らかな追従処理 (線形補間 LERP / 減速運動)
+
+	// 目標位置までのベクトル
+	Vector3 velocity = (m_eyeTargetPosition - currentEye) * 20.0f * deltaTime;
+
+	// プレイヤー位置と現在の視点位置の距離
+
+	// 距離が一定以上離れていれば追従
+	if (Vector3::Distance(m_eyeTargetPosition, currentEye) > 2.0f) 
+	{
+		currentEye += velocity;
+	}
+	else if (Vector3::Distance(m_eyeTargetPosition, currentEye) > 0.001f)
+	{
+		// 収束時の振動防止のため、最後の微調整を行う
+		currentEye = m_eyeTargetPosition;
+	}
+
+	// Upベクトルの計算
+	// 注: Upベクトル計算は、CalculateCameraTarget 内の rot を使用するため、ロジックを調整する必要があります
+	Matrix rot = Matrix::CreateFromQuaternion(m_rotate);
+	Vector3 up(0.0f, 1.0f, 0.0f);
+	up = Vector3::TransformNormal(up, rot);
+
+	// 1/10 にする (ロールを制御する特殊な補正。通常は行いませんが、元のコードを踏襲)
+	up.x *= 0.1f;
+	up.z *= 0.1f;
+
+	// 基底クラスへの最終設定
+	SetEye(currentEye);
+	SetUp(up);
+
+	// ゲームオブジェクト側の座標・コライダー更新
+	SetPosition(GetEye());
+	m_sphereCollider->Transform(m_eyeTargetPosition); // 追従目標位置でコライダーを更新
+}
+
+/**
+ * @brief 建物との衝突判定処理
+ * 
+ * @param[in] pHitObject	衝突したオブジェクト
+ * @param[in] pHitCollider	衝突したコライダ^
+ */
 void PlayerCamera::OnCollisionWithBuilding(GameObject* pHitObject, ICollider* pHitCollider)
 {
 	UNREFERENCED_PARAMETER(pHitObject);
@@ -326,40 +333,53 @@ void PlayerCamera::OnCollisionWithBuilding(GameObject* pHitObject, ICollider* pH
 
 }
 
-void PlayerCamera::OnCollisionWithFloor(GameObject* pHitObject, ICollider* pHitCollider)
+
+/**
+ * @brief マウスによるカメラの回転処理
+ *
+ * マウスのドラッグに応じて、カメラのY軸（水平）とX軸（垂直）回転を行い、
+ * 回転クォータニオンに反映します。
+ *
+ * @param[in] x 現在のマウスX座標（ピクセル）
+ * @param[in] y 現在のマウスY座標（ピクセル）
+ */
+void PlayerCamera::Motion(int x, int y)
 {
-	UNREFERENCED_PARAMETER(pHitObject);
+	// マウスの相対移動量を計算（スケール付き）
+	float dx = static_cast<float>(x) * m_sx;
+	float dy = static_cast<float>(y) * m_sy;
 
-	// 矩形にキャスト
-	const AABB* pHitBox = dynamic_cast<const AABB*>(pHitCollider);
+	// 変化があった場合のみ回転を更新
+	if ((std::abs(dx) + std::abs(dy)) > 0.001f)
+	{
 
-	SimpleMath::Vector3 overlapDir = GetTarget() - GetEye();
-	overlapDir.Normalize();
+		// ラジアン変換（1画面分をπラジアンに相当）
+		float rotY = dx */* XM_PI * */ 200.0f;
+		float rotX = -dy */* XM_PI **/ 200.0f;
 
-	// 押し出しの計算
-	SimpleMath::Vector3 overlap = CalcOverlap(*pHitBox, *m_sphereCollider, overlapDir);
+		// 現在の回転クォータニオンを行列化
+		SimpleMath::Matrix rotateMatrix = SimpleMath::Matrix::CreateFromQuaternion(m_rotate);
+
+		// 仮想的なX軸（カメラ空間での水平ベクトル）
+		SimpleMath::Vector3 horizonal = SimpleMath::Vector3::UnitX;
+
+		// 回転軸の定義
+		SimpleMath::Vector3 axisY = -SimpleMath::Vector3::UnitY;
+		SimpleMath::Vector3 axisX = SimpleMath::Vector3::TransformNormal(horizonal, rotateMatrix);
+		axisX.y = 0.0f;
+
+		SimpleMath::Quaternion q = SimpleMath::Quaternion::Identity;
+
+		// クォータニオンによる回転の合成（Y軸→X軸の順）
+		q *= SimpleMath::Quaternion::CreateFromAxisAngle(axisY, XMConvertToRadians(rotY));
+		q *= SimpleMath::Quaternion::CreateFromAxisAngle(axisX, XMConvertToRadians(rotX));
+
+		m_rotate *= q;
 
 
-	// 現在の押し出しの単位ベクトル
-	SimpleMath::Vector3 totalOverlapNormal = m_overlapTotal;
-	totalOverlapNormal.Normalize();
-
-	// 押し出し方向ベクトル（累積方向 + 今回の方向）
-	SimpleMath::Vector3 combinedDirection = totalOverlapNormal + overlapDir;
-
-	if (combinedDirection.LengthSquared() < 1e-6f)
-		return;
-
-	combinedDirection.Normalize();
-
-	// それぞれの押し出しを、合成方向に投影して必要量を求める
-	float push1 = std::max(0.0f, overlap.Dot(combinedDirection));
-	float push2 = std::max(0.0f, m_overlapTotal.Dot(combinedDirection));
-
-	// より大きな押し出し量を採用
-	float projectedDepth = std::max(push1, push2);
-
-	// 合成押し出しを更新]
-	m_overlapTotal += combinedDirection * projectedDepth;
-
+	}
+	// 現在のマウス位置を保存
+	m_mousePrevX = x;
+	m_mousePrevY = y;
 }
+

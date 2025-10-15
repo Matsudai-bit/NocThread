@@ -32,6 +32,6 @@ public:
 
 public:
 	// XVˆ—
-	virtual void Update(Enemy* pEnemy, float elapsedTime,const CommonResources* pCommonResources) = 0;
+	virtual void Update(Enemy* pEnemy, float deltaTime,const CommonResources* pCommonResources) = 0;
 
 };

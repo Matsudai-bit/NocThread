@@ -50,7 +50,7 @@ public:
 	void Initialize();
 
 	// XVˆ—
-	void Update(float elapsedTime);
+	void Update(float deltaTime);
 
 	// •`‰æˆ—
 	void Draw();

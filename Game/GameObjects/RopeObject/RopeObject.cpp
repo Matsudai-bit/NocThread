@@ -75,13 +75,13 @@ void RopeObject::Initialize(const CommonResources* pCommonResouces)
 /**
  * @brief 更新処理
  *
- * @param[in] elapsedTime 経過時間
+ * @param[in] deltaTime 経過時間
  *
  * @return なし
  */
-void RopeObject::Update(float elapsedTime)
+void RopeObject::Update(float deltaTime)
 {
-	UNREFERENCED_PARAMETER(elapsedTime);
+	UNREFERENCED_PARAMETER(deltaTime);
 }
 
 

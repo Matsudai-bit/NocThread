@@ -54,25 +54,25 @@ void JumpingPlayerState::OnStartState()
 /**
  * @brief 更新処理
  * 
- * @param[in] elapsedTime　経過時間
+ * @param[in] deltaTime　経過時間
  */
-void JumpingPlayerState::OnUpdate(float elapsedTime)
+void JumpingPlayerState::OnUpdate(float deltaTime)
 {
 	if (m_isJumping == false)
 	{
 		// ジャンプ
-		GetOwner()->Jump(elapsedTime);
+		GetOwner()->Jump(deltaTime);
 		m_isJumping = true;
 	}
 
 
 	// 物理の適用
-	GetOwner()->ApplyPhysic(elapsedTime);
+	GetOwner()->ApplyPhysic(deltaTime);
 
 	// 移動入力の適用
-	GetOwner()->ApplyMoveInput(elapsedTime);
+	GetOwner()->ApplyMoveInput(deltaTime);
 	// 移動
-	GetOwner()->Move(elapsedTime);
+	GetOwner()->Move(deltaTime);
 
 	if (GetOwner()->IsGround())
 	{

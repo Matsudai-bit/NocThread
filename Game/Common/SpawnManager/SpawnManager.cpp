@@ -75,19 +75,19 @@ void SpawnManager::Initialize(EnemyManager* pEnemyManager, std::vector<std::uniq
 /**
  * @brief 更新処理
  *
- * @param[in] elapsedTime 経過時間
+ * @param[in] deltaTime 経過時間
  *
  * @return なし
  */
-void SpawnManager::Update(float elapsedTime)
+void SpawnManager::Update(float deltaTime)
 {
-	UNREFERENCED_PARAMETER(elapsedTime);
+	UNREFERENCED_PARAMETER(deltaTime);
 
 	if (m_stoleTreasure)
 	{
-		m_enemySpawnCounter.UpperTime(elapsedTime);
+		m_enemySpawnCounter.UpperTime(deltaTime);
 
-		if (m_enemySpawnCounter.GetElapsedTime() >= 10.0f)
+		if (m_enemySpawnCounter.GetdeltaTime() >= 10.0f)
 		{
 			SpawnEnemy();
 			m_enemySpawnCounter.Reset();

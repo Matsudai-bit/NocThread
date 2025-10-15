@@ -192,7 +192,7 @@ void Game::Update(DX::StepTimer const& timer)
     //  デモウィンドウの描画
     ImGui::ShowDemoWindow();
 
-    float elapsedTime = float(timer.GetElapsedSeconds());
+    float deltaTime = float(timer.GetElapsedSeconds());
 
     // キーボードトラッカーの更新処理
     auto kb = DirectX::Keyboard::Get().GetState();
@@ -203,7 +203,7 @@ void Game::Update(DX::StepTimer const& timer)
     m_mouseStateTracker->Update(mouse);
 
     // シーン管理の更新処理
-    m_sceneManager->Update(elapsedTime);
+    m_sceneManager->Update(deltaTime);
 
     
 #ifdef GAME_MODE
@@ -307,7 +307,7 @@ void Game::OnSuspending()
 
 void Game::OnResuming()
 {
-    m_timer.ResetElapsedTime();
+    m_timer.ResetdeltaTime();
 
     // TODO: Game is being power-resumed (or returning from minimize).
 }

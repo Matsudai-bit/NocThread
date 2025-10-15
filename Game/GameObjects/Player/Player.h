@@ -166,7 +166,7 @@ public:
 	void Initialize(CommonResources* pCommonResources, CollisionManager* pCollisionManager);
 
 	// 更新処理
-	void Update(float elapsedTime, const Camera& camera, const DirectX::SimpleMath::Matrix& proj);
+	void Update(float deltaTime, const Camera& camera, const DirectX::SimpleMath::Matrix& proj);
 
 	// 描画処理
 	void Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& projection);
@@ -186,26 +186,26 @@ public:
 // 動作処理関連
 public:
 	// 物理的な移動の適用
-	void ApplyPhysic(const float& elapsedTime);
+	void ApplyPhysic(const float& deltaTime);
 	// 重力の適用
-	void ApplyGravity(const float& elapsedTime);
+	void ApplyGravity(const float& deltaTime);
 
 	// 移動入力の適用
-	void ApplyMoveInput(const float& elapsedTime);
+	void ApplyMoveInput(const float& deltaTime);
 
 	// 移動方向へ回転する
-	void RotateForMoveDirection(const float& elapsedTime);
+	void RotateForMoveDirection(const float& deltaTime);
 
 	// ワイヤーを離す
 	void ReleaseWire();
 
 	// 移動の適用
-	void Move(const float& elapsedTime);
+	void Move(const float& deltaTime);
 
 	// ワイヤーアクション挙動
-	void BehaviourWireAction(const float& elapsedTime);
+	void BehaviourWireAction(const float& deltaTime);
 	// シミュレータの更新処理
-	void ApplyWireSimulator(const float& elapsedTime);
+	void ApplyWireSimulator(const float& deltaTime);
 
 
 	// ワイヤーを飛ばす
@@ -214,7 +214,7 @@ public:
 	void ResolvePushOutAndBounce(DirectX::SimpleMath::Vector3 overlap, const float& restitution);
 
 	// ジャンプ
-	void Jump(float elapsedTime);
+	void Jump(float deltaTime);
 
 	// アニメーション変更要求
 	void ChangeAnimation(const std::string& animationFilePath);
@@ -295,10 +295,10 @@ private:
 
 
 	// 摩擦の適用
-	void ApplyFriction(float elapsedTime);
+	void ApplyFriction(float deltaTime);
 
 	// 空気抵抗の適用
-	void ApplyDrag(float elapsedTime);
+	void ApplyDrag(float deltaTime);
 
 
 

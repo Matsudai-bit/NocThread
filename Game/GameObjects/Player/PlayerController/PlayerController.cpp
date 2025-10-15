@@ -57,13 +57,13 @@ void PlayerController::Initialize(Player* pPlayer, Camera* pCamera)
 /**
  * @brief 更新処理
  *
- * @param[in] elapsedTime 経過時間
+ * @param[in] deltaTime 経過時間
  *
  * @return なし
  */
-void PlayerController::Update(float elapsedTime, const Keyboard::KeyboardStateTracker* pKeyboardStateTracker, const Mouse::ButtonStateTracker* pMouseStateTracker)
+void PlayerController::Update(float deltaTime, const Keyboard::KeyboardStateTracker* pKeyboardStateTracker, const Mouse::ButtonStateTracker* pMouseStateTracker)
 {
-	UNREFERENCED_PARAMETER(elapsedTime);
+	UNREFERENCED_PARAMETER(deltaTime);
 
 
 	auto kb = pKeyboardStateTracker->GetLastState();

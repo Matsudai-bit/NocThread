@@ -110,7 +110,7 @@ void TitleScene::Initialize()
 	m_alphaSprite->SetScale(1.68f * screen->GetScreenScale());
 	m_logoSprite->SetScale(0.68f * screen->GetScreenScale());
 
-	m_elapsedTimeCounter.Reset();
+	m_ElapsedTimeCounter.Reset();
 
 	SoundManager::GetInstance()->RemoveAll();
 	m_bgmSoundID = SoundManager::GetInstance()->Play(SoundPaths::BGM_TITLE, true);
@@ -124,19 +124,19 @@ void TitleScene::Initialize()
 /**
  * @brief 更新処理
  *
- * @param[in] elapsedTime フレーム間の経過時間
+ * @param[in] deltaTime フレーム間の経過時間
  *
  * @return なし
  */
-void TitleScene::Update(float elapsedTime)
+void TitleScene::Update(float deltaTime)
 {
-	UNREFERENCED_PARAMETER(elapsedTime);
+	UNREFERENCED_PARAMETER(deltaTime);
 
 	// ロゴの透過イージング
-	float opacity = MyLib::EaseInOutQuint( m_elapsedTimeCounter.GetElapsedTime() / LOGO_EASING_TIME);
-	if (m_elapsedTimeCounter.GetElapsedTime() <= LOGO_EASING_TIME)
+	float opacity = MyLib::EaseInOutQuint( m_ElapsedTimeCounter.GetdeltaTime() / LOGO_EASING_TIME);
+	if (m_ElapsedTimeCounter.GetdeltaTime() <= LOGO_EASING_TIME)
 	{
-		m_elapsedTimeCounter.UpperTime(elapsedTime);
+		m_ElapsedTimeCounter.UpperTime(deltaTime);
 	}
 	else
 	{
@@ -152,11 +152,11 @@ void TitleScene::Update(float elapsedTime)
 	if (m_isDisplayingTutorialWindow == false)
 	{
 		// タイトルメニューの更新処理
-		m_titleMenu->Update(elapsedTime);
+		m_titleMenu->Update(deltaTime);
 	}
 	else
 	{
-		m_tutorialWindow->Update(elapsedTime, *GetCommonResources()->GetKeyboardTracker());
+		m_tutorialWindow->Update(deltaTime, *GetCommonResources()->GetKeyboardTracker());
 	}
 
 

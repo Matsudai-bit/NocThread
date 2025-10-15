@@ -85,13 +85,13 @@ void TutorialWindow::Initialize(ResourceManager* pResourceManager, std::function
 /**
  * @brief 更新処理
  *
- * @param[in] elapsedTime 経過時間
+ * @param[in] deltaTime 経過時間
  *
  * @return なし
  */
-void TutorialWindow::Update(float elapsedTime, const DirectX::Keyboard::KeyboardStateTracker& keyboardStateTracker)
+void TutorialWindow::Update(float deltaTime, const DirectX::Keyboard::KeyboardStateTracker& keyboardStateTracker)
 {
-	UNREFERENCED_PARAMETER(elapsedTime);
+	UNREFERENCED_PARAMETER(deltaTime);
 
 	if (CanMoveRight(keyboardStateTracker))
 	{

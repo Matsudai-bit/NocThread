@@ -82,11 +82,11 @@ void GameEffectManager::StopEffect(unsigned int id)
 /**
  * @brief 更新処理
  *
- * @param[in] elapsedTime 経過時間
+ * @param[in] deltaTime 経過時間
  *
  * @return なし
  */
-void GameEffectManager::Update(float elapsedTime)
+void GameEffectManager::Update(float deltaTime)
 {
 	for (auto& effectHandle : m_effectHandles)
 	{
@@ -97,7 +97,7 @@ void GameEffectManager::Update(float elapsedTime)
 		if (effect->IsPlaying())
 		{
 			// 更新処理
-			effect->Update(elapsedTime);
+			effect->Update(deltaTime);
 		}
 
 		// 再生が終了している場合

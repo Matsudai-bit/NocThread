@@ -21,7 +21,7 @@
  * @param[in] ‚È‚µ
  */
 ElapsedTimeCounter::ElapsedTimeCounter()
-	: m_elapsedTime{ 0.0f }
+	: m_deltaTime{ 0.0f }
 {
 
 }
@@ -43,7 +43,7 @@ ElapsedTimeCounter::~ElapsedTimeCounter()
  */
 void ElapsedTimeCounter::UpperTime(float deltaTime)
 {
-	m_elapsedTime += deltaTime;
+	m_deltaTime += deltaTime;
 }
 
 /**
@@ -52,7 +52,7 @@ void ElapsedTimeCounter::UpperTime(float deltaTime)
  */
 void ElapsedTimeCounter::Reset()
 {
-	m_elapsedTime = 0.0f;
+	m_deltaTime = 0.0f;
 }
 
 

@@ -73,7 +73,7 @@ private:
 	bool m_isActive;
 	bool m_isGrounded; // Ú’n‚µ‚Ä‚¢‚é
 
-	float m_elapsedTime;
+	float m_deltaTime;
 
 	DirectX::SimpleMath::Vector3 m_overlapTotal;
 
@@ -93,7 +93,7 @@ public:
 	void Initialize(const CommonResources* pCommonResources, CollisionManager* pCollisionManager) override;
 
 	// XVˆ—
-	void Update(float elapsedTime) override;
+	void Update(float deltaTime) override;
 
 	// •`‰æˆ—
 	void Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj) override;

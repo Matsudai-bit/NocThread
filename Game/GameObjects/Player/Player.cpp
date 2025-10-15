@@ -177,11 +177,11 @@ void Player::Initialize(CommonResources* pCommonResources, CollisionManager* pCo
 /**
  * @brief 更新処理
  * 
- * @param[in] elapsedTime	経過時間
+ * @param[in] deltaTime	経過時間
  * @param[in] camera		カメラ
  * @param[in] proj			射影行列
  */
-void Player::Update(float elapsedTime, const Camera& camera, const DirectX::SimpleMath::Matrix& proj)
+void Player::Update(float deltaTime, const Camera& camera, const DirectX::SimpleMath::Matrix& proj)
 {
 	if (m_isActive == false) { return; }
 
@@ -195,7 +195,7 @@ void Player::Update(float elapsedTime, const Camera& camera, const DirectX::Simp
 	auto kb = Keyboard::Get().GetState();
 
 	// ワイヤーの更新処理
-	m_wire->Update(elapsedTime);
+	m_wire->Update(deltaTime);
 
 	// カメラの保存
 	m_pCamera = &camera;
@@ -203,13 +203,13 @@ void Player::Update(float elapsedTime, const Camera& camera, const DirectX::Simp
 	m_proj = proj;
 
 	// 状態の更新処理
-	m_stateMachine->Update(elapsedTime);
+	m_stateMachine->Update(deltaTime);
 
 	// アニメーション時間がアニメーション終了時間より小さい場合はアニメーションを繰り返す
 	if (m_animation.GetAnimTime() < m_animation.GetEndTime())
 	{
 		// アニメーションを更新する
-		m_animation.Update(elapsedTime);
+		m_animation.Update(deltaTime);
 	}
 	else
 	{
@@ -218,7 +218,7 @@ void Player::Update(float elapsedTime, const Camera& camera, const DirectX::Simp
 	}
 
 	// ワイヤー照準検出器の更新処理
-	m_wireTargetFinder->Update(elapsedTime, &camera, GetWireShootingRay(), WIRE_LENGTH, 0.5f);
+	m_wireTargetFinder->Update(deltaTime, &camera, GetWireShootingRay(), WIRE_LENGTH, 0.5f);
 }
 
 
@@ -550,9 +550,9 @@ void Player::RequestedMovement(DirectX::SimpleMath::Vector3 moveDirection)
 /**
  * @brief 移動の適用
  * 
- * @param[in] elapsedTime　経過時間
+ * @param[in] deltaTime　経過時間
  */
-void Player::Move(const float& elapsedTime)
+void Player::Move(const float& deltaTime)
 {
 
 	SimpleMath::Quaternion rotate = GetRotate();
@@ -560,7 +560,7 @@ void Player::Move(const float& elapsedTime)
 
 	// **** 座標の更新 ****
 	// 座標の算出
-	SimpleMath::Vector3 position = GetPosition() + GetVelocity() * elapsedTime;
+	SimpleMath::Vector3 position = GetPosition() + GetVelocity() * deltaTime;
 	SetPosition(position);
 
 	// コライダの更新処理
@@ -570,11 +570,11 @@ void Player::Move(const float& elapsedTime)
 /**
  * @brief シミュレータの更新処理
  * 
- * @param[in] elapsedTime　経過時間
+ * @param[in] deltaTime　経過時間
  */
-void Player::ApplyWireSimulator(const float& elapsedTime)
+void Player::ApplyWireSimulator(const float& deltaTime)
 {
-	m_wire->ApplyWireSimulator(elapsedTime);
+	m_wire->ApplyWireSimulator(deltaTime);
 
 }
 
@@ -592,35 +592,35 @@ bool Player::IsMovingRequested()
 /**
  * @brief 物理的な移動
  * 
- * @param[in] elapsedTime
+ * @param[in] deltaTime
  */
-void Player::ApplyPhysic(const float& elapsedTime)
+void Player::ApplyPhysic(const float& deltaTime)
 {
 	// 重力を加える
-	ApplyGravity(elapsedTime);
+	ApplyGravity(deltaTime);
 
 	if (IsGround())
 	{
 		// 摩擦を加える
-		ApplyFriction(elapsedTime);
+		ApplyFriction(deltaTime);
 	}
 	
 	// 空気抵抗の適用
-	ApplyDrag(elapsedTime);
+	ApplyDrag(deltaTime);
 	
 	// 回転する
-	RotateForMoveDirection(elapsedTime);
+	RotateForMoveDirection(deltaTime);
 	
 }
 
 /**
  * @brief 摩擦を加える
  */
-void Player::ApplyFriction(float elapsedTime)
+void Player::ApplyFriction(float deltaTime)
 {
 	// 摩擦を加える
 
-	SimpleMath::Vector3 velocity = PhysicsHelper::CalculateFrictionVelocity(GetVelocity(), elapsedTime, FRICTION, GameObject::GRAVITY_ACCELERATION.Length());
+	SimpleMath::Vector3 velocity = PhysicsHelper::CalculateFrictionVelocity(GetVelocity(), deltaTime, FRICTION, GameObject::GRAVITY_ACCELERATION.Length());
 
 	SetVelocity(velocity);
 }
@@ -628,10 +628,10 @@ void Player::ApplyFriction(float elapsedTime)
 /**
  * @brief 空気抵抗の適用
  */
-void Player::ApplyDrag(float elapsedTime)
+void Player::ApplyDrag(float deltaTime)
 {
 	// 適用
-	auto velocity = PhysicsHelper::CalculateDragVelocity(GetVelocity(), elapsedTime, AIR_RESISTANCE);
+	auto velocity = PhysicsHelper::CalculateDragVelocity(GetVelocity(), deltaTime, AIR_RESISTANCE);
 
 	SetVelocity(velocity);
 }
@@ -678,13 +678,13 @@ void Player::RequestChangeState(State state)
  * @brief 移動方向へ回転する
  * 
  */
-void Player::RotateForMoveDirection(const float& elapsedTime)
+void Player::RotateForMoveDirection(const float& deltaTime)
 {
-	UNREFERENCED_PARAMETER(elapsedTime);
+	UNREFERENCED_PARAMETER(deltaTime);
 
 	
 
-	SetRotate(MovementHelper::RotateForMoveDirection(elapsedTime, GetRotate(), GetForward(), GetVelocity(), 0.1f));
+	SetRotate(MovementHelper::RotateForMoveDirection(deltaTime, GetRotate(), GetForward(), GetVelocity(), 0.1f));
 }
 
 /**
@@ -701,13 +701,13 @@ void Player::ReleaseWire()
 /**
  * @brief 重力を適用
  * 
- * @param[in] elapsedTime　経過時間
+ * @param[in] deltaTime　経過時間
  */
-void Player::ApplyGravity(const float& elapsedTime)
+void Player::ApplyGravity(const float& deltaTime)
 {
 	SimpleMath::Vector3 accel = SimpleMath::Vector3::Zero;
 
-	accel = GRAVITY_ACCELERATION * elapsedTime ;
+	accel = GRAVITY_ACCELERATION * deltaTime ;
 
 	AddForceToVelocity(accel);
 }
@@ -715,17 +715,17 @@ void Player::ApplyGravity(const float& elapsedTime)
 /**
  * @brief 移動入力の適用
  * 
- * @param[in] elapsedTime
+ * @param[in] deltaTime
  */
-void Player::ApplyMoveInput(const float& elapsedTime)
+void Player::ApplyMoveInput(const float& deltaTime)
 {
-	UNREFERENCED_PARAMETER(elapsedTime);
+	UNREFERENCED_PARAMETER(deltaTime);
 
 	using namespace SimpleMath;
 
 	float maxMoveSpeed = (IsGround()) ? MAX_MOVE_SPEED : MAX_FLYING_MOVE_SPEED;
 	
-	auto newVelocity = MovementHelper::ClampedMovement(GetVelocity() *Vector3(1.0f, 0.0f, 1.0f), m_requestedMove, elapsedTime, ACCELERATION, DECELERATION, maxMoveSpeed);
+	auto newVelocity = MovementHelper::ClampedMovement(GetVelocity() *Vector3(1.0f, 0.0f, 1.0f), m_requestedMove, deltaTime, ACCELERATION, DECELERATION, maxMoveSpeed);
 	// Y軸の速度はそのまま保持
 	AddForceToVelocity(newVelocity);
 
@@ -774,11 +774,11 @@ void Player::ChangeAnimation(const std::string& animationFilePath)
  * @param[in] 経過時間
  * 
  */
-void Player::BehaviourWireAction(const float& elapsedTime)
+void Player::BehaviourWireAction(const float& deltaTime)
 {
 	m_canStep = true;
 	// ワイヤーシミュレータの適用
-	ApplyWireSimulator(elapsedTime);
+	ApplyWireSimulator(deltaTime);
 
 
 	if (m_wire->IsActive())
@@ -847,9 +847,9 @@ void Player::ResolvePushOutAndBounce(DirectX::SimpleMath::Vector3 overlap, const
 /**
  * @brief ジャンプ
  */
-void Player::Jump(float elapsedTime)
+void Player::Jump(float deltaTime)
 {
-	AddForceToVelocityY(JUMPING_POWER * elapsedTime);
+	AddForceToVelocityY(JUMPING_POWER * deltaTime);
 }
 
 /**
