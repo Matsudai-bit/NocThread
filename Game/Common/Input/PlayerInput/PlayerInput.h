@@ -25,8 +25,29 @@ class PlayerInput
 {
 // 列挙型 -------------------------------------------------
 public:
-	enum class InputID
+	enum class ActionID
 	{
+		JUMPING,
+		FRONT_MOVE,
+		RIGHT_MOVE,
+		LEFT_MOVE,
+		BACK_MOVE,
+		WIRE_SHOOTING,
+		STEPPING,
+	};
+
+	enum class MouseButtons
+	{
+		LEFT_BUTTON,
+		RIGHT_BUTTTON,
+		MIDDLE_BUTTTON,
+	};
+
+	enum class InputOption
+	{
+		DOWN,
+		PRESSED,
+		RELEASED
 	};
 
 // 構造体-------------------------------------------------
@@ -34,11 +55,14 @@ public:
 
 	struct InputData
 	{
-		DirectX::Keyboard::Keys key;
-		bool isInput;
+		std::vector<DirectX::Keyboard::Keys> keys; // 判定キー
+		std::vector<MouseButtons> buttons;
 	};
 
-	std::unordered_map<InputID, InputData> m_judgementKeys;
+	std::unordered_map<ActionID, InputData> m_inputs; ///< 入力情報と動作の紐づけ群
+
+	const DirectX::Keyboard::KeyboardStateTracker* m_pKeyboardStateTracker;
+	const DirectX::Mouse::ButtonStateTracker* m_pMouseStateTracker;
 
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
@@ -54,8 +78,12 @@ public:
 public:
 
 	// 更新処理
-	void Update(const DirectX::Keyboard::KeyboardStateTracker&  keyboardState);
+	void Update(
+		const DirectX::Keyboard::KeyboardStateTracker*  pKeyboardStateTracker,
+		const DirectX::Mouse::ButtonStateTracker*		pMouseStateTracker);
 
+	// 入力されたかどうか
+	bool IsInput(const ActionID& actionID, const InputOption& inputOption = InputOption::DOWN);
 
 
 // 取得/設定
