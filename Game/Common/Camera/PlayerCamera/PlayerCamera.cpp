@@ -138,22 +138,12 @@ void PlayerCamera::Update(float elapsedTime)
 
 	// ワールド上方向（Y軸）をカメラ空間で再計算
 	SimpleMath::Vector3 up(0.0f, 1.0f, 0.0f);
-	
-	//auto rt = SimpleMath::Matrix::CreateFromQuaternion( m_rotate);
 
-	//// 視線方向の算出
-	//auto nor = target - eye;
-	//nor.Normalize();
-
-	//// カメラのX方向を算出
-	//auto uniX = SimpleMath::Vector3::UnitX;
-	//uniX = SimpleMath::Vector3::TransformNormal(uniX, rt);
-
-	//up = uniX.Cross(nor);
-
-	//up = SimpleMath::Vector3::TransformNormal(up, rt);
-
-
+	// up を求める
+	up = SimpleMath::Vector3::TransformNormal(up, rot);
+	// 1/10 にする
+	up.x *= 0.1f;
+	up.z *= 0.1;
 
 	// カメラの視点と注視点を設定（基底クラス Camera の機能）
 	SetTarget(target);

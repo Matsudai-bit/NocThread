@@ -45,7 +45,7 @@ void main(
             element.Tex /= 2.0f;
 		//	ストリームへ頂点情報を追加する		
             output.Append(element);
-        }
+    } 
     
 
     output.RestartStrip();

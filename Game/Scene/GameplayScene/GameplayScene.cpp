@@ -108,7 +108,7 @@ void GameplayScene::Initialize()
 
     // BGMを鳴らす
     SoundManager::GetInstance()->RemoveAll();
-    //SoundManager::GetInstance()->Play(SoundPaths::BGM_INGAME, true);
+    SoundManager::GetInstance()->Play(SoundPaths::BGM_INGAME, true);
 
     DX::DeviceResources*    pDeviceResources    = GetCommonResources()->GetDeviceResources();
     CommonStates*           pStates             = GetCommonResources()->GetCommonStates();
@@ -387,12 +387,8 @@ void GameplayScene::DrawInGameObjects()
 
 
 
-    //// 仮UI
-    //GetCommonResources()->GetDebugFont()->AddString(Screen::Get()->GetRight() - 400, 50, Colors::Blue,  L"Left Mouse Click : ShootWire");
-    //GetCommonResources()->GetDebugFont()->AddString(Screen::Get()->GetRight() - 400, 80, Colors::Blue,  L"                WASD : PlayerMove");
-    //GetCommonResources()->GetDebugFont()->AddString(Screen::Get()->GetRight() - 400, 110, Colors::Blue, L"                       Q : Restart");
-    //GetCommonResources()->GetDebugFont()->AddString(Screen::Get()->GetRight() - 400, 140, Colors::Blue, L"                     Esc : QuitGame");
-    //GetCommonResources()->GetDebugFont()->AddString(Screen::Get()->GetRight() - 400, 170, Colors::Blue, L"                       U : WireDebugMode");
+    // 仮UI
+    GetCommonResources()->GetDebugFont()->AddString(Screen::Get()->GetRight() - static_cast<int>(static_cast<float>(240 * Screen::Get()->GetScreenScale())), static_cast<int>(static_cast<float>(20) * Screen::Get()->GetScreenScale()), Colors::White, L"ESC : PAUSE MENU");
 
 
     // スカイボックスの描画処理
@@ -460,14 +456,22 @@ void GameplayScene::OnGameFlowEvent(GameFlowEventID eventID)
     }
 }
 
+// シーンの終了
 void GameplayScene::OnEndScene()
 {
+    // ゲームオブジェクトの登録簿のクリア
     GameObjectRegistry::GetInstance()->Clear();
+    // ゲームフロー通知の監視者の全削除
     GameFlowMessenger::GetInstance()->RemoveAllObserver();
+    // 音管理の全削除
     SoundManager::GetInstance()->RemoveAll();
 
 }
 
+/**
+ * @brief ステージの生成
+ * 
+ */
 void GameplayScene::CreateStage()
 {
     using namespace SimpleMath;
@@ -493,46 +497,8 @@ void GameplayScene::CreateStage()
     m_treasure->SetPosition(treasurePosition);
     m_treasure->Initialize(GetCommonResources(), m_collisionManager.get());
 
-    // ****　要修正 :　仮で壁を生成する殴り書きコード *****************************************
-
-    // 壁の初期化
-    //Vector3 wallPos = Vector3(0.0f, 0.0f, -1.5f);
-    Wall::WallData wallData;
-    wallData.generation = true;
-    struct WallTrans
-    {
-        Vector3 pos;
-        float height;
-        std::string fileName;
-
-        WallTrans(Vector3 pos, float height, std::string fileName)
-            : pos{ pos }
-            , height{ height }
-            , fileName{ fileName }
-        {
-        }
-    };
-    std::vector<WallTrans> wallTrans;
-   /* wallTrans.emplace_back(Vector3(0.0f, 26.f, 0.0f), 2.0f, "start.dds");
-
-    wallTrans.emplace_back(Vector3(7.0f * 3.0f, 23.0f, -3.5f), 10.0f, "wall.dds");
-    wallTrans.emplace_back(Vector3(10.0f * 4.0f, 23.0f, 5.5f), 10.0f, "wall.dds");
-    wallTrans.emplace_back(Vector3(10.0f * 5.0f, 23.0f, -3.5f), 10.0f, "wall.dds");
-    wallTrans.emplace_back(Vector3(10.0f * 6.0f, 23.0f, 5.5f), 10.0f, "wall.dds");
-    wallTrans.emplace_back(Vector3(10.0f * 7.0f, 23.0f, -3.5f), 10.0f, "wall.dds");
-    wallTrans.emplace_back(Vector3(10.0f * 8.0f, 23.0f, 5.5f), 10.0f, "wall.dds");
-    wallTrans.emplace_back(Vector3(10.0f * 9.0f, 23.0f, -3.5f), 10.0f, "wall.dds");
-
-    wallTrans.emplace_back(Vector3(10.0f * 10.0f, 10.0f, 0.5f), 10.0f, "goal.dds");*/
-
-    for (auto& trans : wallTrans)
-    {
-        m_walls.emplace_back(std::make_unique<Wall>());
-        m_walls.back()->Initialize(trans.pos, Wall::PlaceDirection::UP, wallData, GetCommonResources(), m_collisionManager.get(), trans.fileName, trans.height);
-    }
-
-    // ****** ここまで ******************************************************
-
+    // ****　要修正 !!! :　仮でステージを生成する殴り書きコード *****************************************
+    // ****                マネージャークラス、生成クラスを実装予定
 
     struct BuildingTrans
     {
@@ -812,6 +778,8 @@ void GameplayScene::CreateStage()
 
         m_buildings.emplace_back(std::move(building));
     }
+    // ****** ここまで ******************************************************
+
 
 
 }

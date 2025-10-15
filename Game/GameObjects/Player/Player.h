@@ -169,7 +169,7 @@ public:
 	void Update(float elapsedTime, const Camera& camera, const DirectX::SimpleMath::Matrix& proj);
 
 	// •`‰æˆ—
-	void Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj);
+	void Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& projection);
 
 	// I—¹ˆ—
 	void Finalize();

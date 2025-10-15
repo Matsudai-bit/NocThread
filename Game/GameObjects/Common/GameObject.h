@@ -18,6 +18,7 @@
 #include "Game/Common/Collision/ICollision.h"
 #include "Game/Common/EventSystem/EventSystem.h"
 #include "Game/GameObjects/Common/GameObjectEvent/GameObjectEvent.h"
+#include "Game/Common/EntityManager/IEntity.h"
 
 // クラスの前方宣言 ===================================================
 class ICollider;		// コライダー
@@ -82,6 +83,12 @@ public:
 
 // 操作
 public:
+
+	//// 更新処理
+	//void Update(float deltaTime) override;
+
+	//// 描画処理
+	//void Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& projection) override;
 
 
 	// 型を登録する
