@@ -54,7 +54,7 @@ public:
 	void Initialize(const CommonResources* pCommonResources, CollisionManager* pCollisionManager)override = 0;
 
 	// XVˆ—
-	void Update(float elapsedTime) override= 0; 
+	void Update(float deltaTime) override= 0; 
 
 	// •`‰æˆ—
 	void Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj)override = 0;

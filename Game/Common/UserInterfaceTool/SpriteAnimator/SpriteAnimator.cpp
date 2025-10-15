@@ -24,7 +24,7 @@
 SpriteAnimator::SpriteAnimator()
 	: m_sprite{ nullptr }
 	, m_animationClip{ }
-	, m_elapsedTime{ 0 }
+	, m_deltaTime{ 0 }
 	, m_frameIndex{ 0 }
 	, m_isPlaying{ false }
 {
@@ -54,7 +54,7 @@ void SpriteAnimator::Initialize(Sprite* sprite, AnimationClip& animationClip)
 {
 	m_sprite = sprite;
 	m_animationClip = animationClip;
-	m_elapsedTime = 0.0f;
+	m_deltaTime = 0.0f;
 	m_frameIndex = 0;
 	m_isPlaying = false;
 }
@@ -68,17 +68,17 @@ void SpriteAnimator::Initialize(Sprite* sprite, AnimationClip& animationClip)
  *
  * @return なし
  */
-void SpriteAnimator::Update(float elapsedTime)
+void SpriteAnimator::Update(float deltaTime)
 {
 	// 再生時の処理
 	if (m_isPlaying)
 	{
 		// アニメーション終了時の処理
-		if (m_elapsedTime >= m_animationClip.duration)
+		if (m_deltaTime >= m_animationClip.duration)
 		{
 			if (m_animationClip.isLoop)
 			{
-				m_elapsedTime = 0.0f;
+				m_deltaTime = 0.0f;
 				m_sprite->SetRegion(m_animationClip.startRegion);
 
 			}
@@ -93,7 +93,7 @@ void SpriteAnimator::Update(float elapsedTime)
 
 		// 時間経過による描画フレームの設定
 		int lastFrame = m_animationClip.numFrames;
-		m_frameIndex = static_cast<int>(m_animationClip.numFrames *  m_elapsedTime / m_animationClip.duration);
+		m_frameIndex = static_cast<int>(m_animationClip.numFrames *  m_deltaTime / m_animationClip.duration);
 
 		if (m_frameIndex != lastFrame)
 		{
@@ -107,7 +107,7 @@ void SpriteAnimator::Update(float elapsedTime)
 			m_sprite->SetRegion(sourceRegion);
 		}
 
-		m_elapsedTime += elapsedTime;
+		m_deltaTime += deltaTime;
 	}
 }
 
@@ -123,7 +123,7 @@ void SpriteAnimator::Update(float elapsedTime)
 void SpriteAnimator::Play()
 {
 	// アニメーション開始の場合
-	if (m_elapsedTime == 0)
+	if (m_deltaTime == 0)
 	{
 		m_sprite->SetRegion(m_animationClip.startRegion);
 	}
@@ -162,7 +162,7 @@ void SpriteAnimator::Stop()
 	m_isPlaying = false;
 
 	// 経過時間のリセット
-	m_elapsedTime = 0;
+	m_deltaTime = 0;
 }
 
 
@@ -192,7 +192,7 @@ bool SpriteAnimator::IsPlaying() const
  */
 bool SpriteAnimator::IsFinished() const
 {
-	if ((m_isPlaying == false) && (m_elapsedTime == m_animationClip.duration))
+	if ((m_isPlaying == false) && (m_deltaTime == m_animationClip.duration))
 	{
 		return true;
 	}
@@ -233,7 +233,7 @@ void SpriteAnimator::ChangeAnimation( const AnimationClip& newAnimationClip)
 	// アニメーションの変更
 	m_animationClip = changeAnimationClip;
 	
-	m_elapsedTime = 0;
+	m_deltaTime = 0;
 	m_frameIndex = (m_animationClip.numFrames == 1)? 1 : 0;
 
 

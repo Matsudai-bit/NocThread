@@ -63,9 +63,9 @@ void WireGrabbingPlayerState::OnStartState()
 /**
  * @brief 更新処理
  *
- * @param[in] elapsedTime　経過時間
+ * @param[in] deltaTime　経過時間
  */
-void WireGrabbingPlayerState::OnUpdate(float elapsedTime)
+void WireGrabbingPlayerState::OnUpdate(float deltaTime)
 {
 	// マウストラック
 	auto mouseTrack = GetOwner()->GetCommonResources()->GetMouseTracker();
@@ -85,15 +85,15 @@ void WireGrabbingPlayerState::OnUpdate(float elapsedTime)
 	GetOwner()->GetWireSystem()->NotifyHover(eventData);
 
 	// 入力の受付
-	GetOwner()->ApplyMoveInput(elapsedTime);
+	GetOwner()->ApplyMoveInput(deltaTime);
 
 	// 移動
-	GetOwner()->Move(elapsedTime);
+	GetOwner()->Move(deltaTime);
 
 
-	GetOwner()->ApplyPhysic(elapsedTime);
+	GetOwner()->ApplyPhysic(deltaTime);
 
-	GetOwner()->RotateForMoveDirection(elapsedTime);
+	GetOwner()->RotateForMoveDirection(deltaTime);
 
 	//// テスト **************************************:::
 
@@ -124,7 +124,7 @@ void WireGrabbingPlayerState::OnUpdate(float elapsedTime)
 	//	Quaternion targetRotation = Quaternion::CreateFromRotationMatrix(Matrix::CreateWorld(Vector3::Zero, moveDir, Vector3::Up));
 
 
-	//	//float t = elapsedTime / Player::ROTATION_SPEED;
+	//	//float t = deltaTime / Player::ROTATION_SPEED;
 	//	Quaternion result = Quaternion::Slerp(currentRotation, targetRotation, 1.0f); // 補間率を調整
 	//	GetOwner()->SetRotate(result);
 

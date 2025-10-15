@@ -114,20 +114,20 @@ void ResultScene::Initialize()
 /**
  * @brief 更新処理
  *
- * @param[in] elapsedTime フレーム間の経過時間
+ * @param[in] deltaTime フレーム間の経過時間
  *
  * @return なし
  */
-void ResultScene::Update(float elapsedTime)
+void ResultScene::Update(float deltaTime)
 {
-	UNREFERENCED_PARAMETER(elapsedTime);
+	UNREFERENCED_PARAMETER(deltaTime);
 
 
 	// キーボードの情報取得する
 	auto kbTracker = GetCommonResources()->GetKeyboardTracker();
 
 	// ステートマシーンの更新処理
-	m_stateMachine->Update(elapsedTime);
+	m_stateMachine->Update(deltaTime);
 
 	if (kbTracker->IsKeyPressed(Keyboard::Space))
 	{

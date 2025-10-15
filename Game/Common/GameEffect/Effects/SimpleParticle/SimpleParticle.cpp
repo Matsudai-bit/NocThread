@@ -117,17 +117,17 @@ void SimpleParticle::Play()
 /**
  * @brief 更新処理
  *
- * @param[in] elapsedTime 経過時間
+ * @param[in] deltaTime 経過時間
  *
  * @return なし
  */
-void SimpleParticle::Update(float elapsedTime)
+void SimpleParticle::Update(float deltaTime)
 {
 	// 時間のカウント
-	m_timeCounter.UpperTime(elapsedTime);
+	m_timeCounter.UpperTime(deltaTime);
 
 	// 時間が来たら
-	if (m_timeCounter.GetElapsedTime() >= 0.1f)
+	if (m_timeCounter.GetdeltaTime() >= 0.1f)
 	{
 		// パーティクルの生成
 		CreateParticle();
@@ -149,8 +149,8 @@ void SimpleParticle::Update(float elapsedTime)
 		if (particle.isActive == false){continue;}
 
 		// 座標の更新処理
-		particle.position.y += particle.speed * elapsedTime;
-		particle.time -= elapsedTime;
+		particle.position.y += particle.speed * deltaTime;
+		particle.time -= deltaTime;
 	}
 }
 

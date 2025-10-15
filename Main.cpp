@@ -11,7 +11,7 @@
 
 using namespace DirectX;
 
-//#define GAME_MODE
+#define GAME_MODE
 
 #ifdef __clang__
 #pragma clang diagnostic ignored "-Wcovered-switch-default"
@@ -66,9 +66,6 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
     //else
         s_fullscreen = false;
 #endif 
-
-
-
 
     // Å™Ç±Ç±Ç‹Ç≈
 

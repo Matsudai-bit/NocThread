@@ -54,14 +54,14 @@ void ParticleObject::Initialize()
 /**
  * @brief 更新処理
  *
- * @param[in] elapsedTime 経過時間
+ * @param[in] deltaTime 経過時間
  *
  * @return なし
  */
-void ParticleObject::Update(float elapsedTime)
+void ParticleObject::Update(float deltaTime)
 {
 
-	UNREFERENCED_PARAMETER(elapsedTime);
+	UNREFERENCED_PARAMETER(deltaTime);
 }
 
 

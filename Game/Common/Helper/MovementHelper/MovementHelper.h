@@ -26,21 +26,21 @@ namespace MovementHelper
 	/**
 	 * @brief 速度を元に座標の算出
 	 * 
-	 * @param[in] elapsedTime	経過時間
+	 * @param[in] deltaTime	経過時間
 	 * @param[in] position		座標
 	 * @param[in] velocity		速度
 	 * 
 	 * @return 座標
 	 */
-	inline DirectX::SimpleMath::Vector3 CalcPositionForVelocity(const float& elapsedTime, const DirectX::SimpleMath::Vector3& position,const DirectX::SimpleMath::Vector3& velocity)
+	inline DirectX::SimpleMath::Vector3 CalcPositionForVelocity(const float& deltaTime, const DirectX::SimpleMath::Vector3& position,const DirectX::SimpleMath::Vector3& velocity)
 	{
-		return position + velocity * elapsedTime;
+		return position + velocity * deltaTime;
 	}
 
 	/**
 	 * @brief 移動方向への回転結果を取得する
 	 *
-	 * @param[in] elapsedTime		経過時間
+	 * @param[in] deltaTime		経過時間
 	 * @param[in] currentRotate		現在の回転量
 	 * @param[in] movementDirection	移動方向
 	 * @param[in] forward			今の前方ベクトル
@@ -49,14 +49,14 @@ namespace MovementHelper
 	 * @return 移動方向への回転結果
 	 */
 	inline DirectX::SimpleMath::Quaternion RotateForMoveDirection(
-		const float& elapsedTime,
+		const float& deltaTime,
 		const DirectX::SimpleMath::Quaternion& currentRotation,
 		DirectX::SimpleMath::Vector3 currentForward,
 		DirectX::SimpleMath::Vector3 movementDirection,
 		const float& slerpT)
 	{
 		using namespace DirectX::SimpleMath;
-		UNREFERENCED_PARAMETER(elapsedTime);
+		UNREFERENCED_PARAMETER(deltaTime);
 
 		const float EPSILON = 0.0001f;
 
@@ -91,7 +91,7 @@ namespace MovementHelper
 	 *
 	 * @param[in] currentVelocity        現在の水平方向の速度
 	 * @param[in] requestedMoveDirection          プレイヤーの入力方向（正規化済み）
-	 * @param[in] elapsedTime            経過時間
+	 * @param[in] deltaTime            経過時間
 	 * @param[in] accelerationRate       加速の強さ
 	 * @param[in] decelerationRate       減速の強さ
 	 * @param[in] maxSpeed               最大移動速度
@@ -101,7 +101,7 @@ namespace MovementHelper
 	inline DirectX::SimpleMath::Vector3 ClampedMovement(
 		const DirectX::SimpleMath::Vector3& currentVelocity,
 		const DirectX::SimpleMath::Vector3& requestedMoveDirection,
-		const float& elapsedTime,
+		const float& deltaTime,
 		const float& accelerationRate,
 		const float& decelerationRate,
 		const float& maxSpeed)
@@ -126,7 +126,7 @@ namespace MovementHelper
 			// 加速と減速を内積の度合いに応じてブレンド
 			float finalAccelRate =  accelerationRate -  ( accelerationRate - decelerationRate ) * dotNormalized;
         
-			acceleration = requestedMoveDirection * finalAccelRate * elapsedTime;
+			acceleration = requestedMoveDirection * finalAccelRate * deltaTime;
 
 
 		}

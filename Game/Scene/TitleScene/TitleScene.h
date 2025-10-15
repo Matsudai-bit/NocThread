@@ -57,7 +57,7 @@ private:
 	std::unique_ptr<TutorialWindow>		m_tutorialWindow;	///< チュートリアルウィンドウ
 
 	// 演出系
-	ElapsedTimeCounter m_elapsedTimeCounter; ///< 経過時間カウンター
+	ElapsedTimeCounter m_ElapsedTimeCounter; ///< 経過時間カウンター
 
 	// 簡易フラグ
 	bool m_isDisplayingTutorialWindow; ///< チュートリアルウィンドウを表示しているかどうか
@@ -81,7 +81,7 @@ public:
 	void Initialize() override;
 
 	// 更新処理
-	void Update(float elapsedTime) override;
+	void Update(float deltaTime) override;
 
 	// 描画処理
 	void Render() override;

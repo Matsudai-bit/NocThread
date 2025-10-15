@@ -100,7 +100,7 @@ void PoseMenu::Initialize(Canvas* pCanvas, const CommonResources* pCommonResourc
 
 	m_line.Initialize(pCommonResources->GetDeviceResources());
 
-	m_elapsedTimeCounter.Reset();
+	m_ElapsedTimeCounter.Reset();
 
 }
 
@@ -109,27 +109,27 @@ void PoseMenu::Initialize(Canvas* pCanvas, const CommonResources* pCommonResourc
 /**
  * @brief 更新処理
  *
- * @param[in] elapsedTime 経過時間
+ * @param[in] deltaTime 経過時間
  *
  * @return なし
  */
-void PoseMenu::Update(float elapsedTime)
+void PoseMenu::Update(float deltaTime)
 {
 
 	// 加算
-	m_elapsedTimeCounter.UpperTime(elapsedTime);
+	m_ElapsedTimeCounter.UpperTime(deltaTime);
 
 	Sprite* currentSelectElementOfSprite = m_poseFontSprites[m_currentSelectItemForInt].get();
 
-	float ratio = MyLib::EaseOutSine(m_elapsedTimeCounter.GetElapsedTime() / EASING_TIME );
+	float ratio = MyLib::EaseOutSine(m_ElapsedTimeCounter.GetdeltaTime() / EASING_TIME );
 	float width = static_cast<float>(currentSelectElementOfSprite->GetSpriteWidth()) + 20.0f * Screen::Get()->GetScreenScale();
 
 	width = MAX_SELECTOR_LENGTH;
 	float length = width * 0.2f + (width - width * 0.2f) * Screen::Get()->GetScreenScale() * ratio;
 
-	if (m_elapsedTimeCounter.GetElapsedTime() >= EASING_TIME)
+	if (m_ElapsedTimeCounter.GetdeltaTime() >= EASING_TIME)
 	{
-		m_elapsedTimeCounter.Reset();
+		m_ElapsedTimeCounter.Reset();
 	}
 	m_line.SetLength(length);
 

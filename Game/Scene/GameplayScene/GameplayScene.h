@@ -36,7 +36,7 @@
 
 // ゲームオブジェクト
 #include "Game/GameObjects/RopeObject/RopeObject.h"
-#include "Game/GameObjects/RopeObject/XPBDSimulator/XPDBSimulator.h"
+#include "Game/GameObjects/RopeObject/XPBDSimulator/XPBDSimulator.h"
 #include "Game/GameObjects/RopeObject/ParticleObject/ParticleObject.h"
 
 // クラスの宣言 ===============================================================
@@ -59,6 +59,7 @@ class Treasure;			// 宝
 class EscapeHelicopter;	// ヘリコプター
 class IEnemyFactory;	
 class CircularShadow;	// 丸影
+class BuildingManager;  // 建物管理
 
 class RopeObject;
 class ParticleObject;
@@ -124,12 +125,12 @@ private:
 
 	// ゲームオブジェクト
 	std::unique_ptr<Floor>						m_floor;		///< 床
-	std::vector<std::unique_ptr<Wall>>			m_walls;		///< 壁
 	std::unique_ptr<Player>						m_player;		///< プレイヤー
 	std::vector<std::unique_ptr<StageObject>>	m_stageObject;	///< ステージオブジェクト
 	std::unique_ptr<Treasure>					m_treasure;		///< お宝
 	std::vector<std::unique_ptr<Building>>		m_buildings;	////< 建物
 	std::vector< std::unique_ptr<EscapeHelicopter>>				m_escapeHelicopter;///< 脱出用ヘリコプター
+	std::unique_ptr<BuildingManager>			m_buildingManager;///< 建物管理
 
 	// その他
 	DirectX::Model m_skySphere;	///< 天球
@@ -154,7 +155,7 @@ public:
 	void Initialize() override;
 
 	// 更新処理
-	void Update(float elapsedTime) override;
+	void Update(float deltaTime) override;
 
 	// 描画処理
 	void Render() override;
@@ -168,7 +169,7 @@ public:
 // 挙動関連
 public:
 	// インゲームのゲームオブジェクトを更新する
-	void UpdateInGameObjects(float elapsedTime);
+	void UpdateInGameObjects(float deltaTime);
 	// インゲームのゲームオブジェクトを描画する
 	void DrawInGameObjects();
 

@@ -136,17 +136,17 @@ void LoadingScreen::Initialize()
 /**
  * @brief 更新処理
  *
- * @param[in] elapsedTime フレーム間の経過時間
+ * @param[in] deltaTime フレーム間の経過時間
  *
  * @return なし
  */
-void LoadingScreen::Update(float elapsedTime)
+void LoadingScreen::Update(float deltaTime)
 {
-	UNREFERENCED_PARAMETER(elapsedTime);
+	UNREFERENCED_PARAMETER(deltaTime);
 
 	// アニメータの更新処理
-	m_loadingAnimator->Update(elapsedTime);
-	m_loadingFontAnimator->Update(elapsedTime);
+	m_loadingAnimator->Update(deltaTime);
+	m_loadingFontAnimator->Update(deltaTime);
 
 	// キーボードの情報取得する
 	auto kb = Keyboard::Get().GetState();

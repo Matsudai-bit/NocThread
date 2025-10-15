@@ -65,25 +65,25 @@ void SteppingPlayerState::OnStartState()
 /**
  * @brief 更新処理
  * 
- * @param[in] elapsedTime　経過時間
+ * @param[in] deltaTime　経過時間
  */
-void SteppingPlayerState::OnUpdate(float elapsedTime)
+void SteppingPlayerState::OnUpdate(float deltaTime)
 {
 	using namespace SimpleMath;
 
-	m_targetCounter.UpperTime(elapsedTime);
+	m_targetCounter.UpperTime(deltaTime);
 
-	m_currentLerpValue = m_targetCounter.GetElapsedTime() / 0.2f;
+	m_currentLerpValue = m_targetCounter.GetdeltaTime() / 0.2f;
 	
 	Vector3 currentPosition = Vector3::Lerp(m_startPosition, m_targetPosition, m_currentLerpValue);
 
 	//GetOwner()->SetPosition(currentPosition);
 
-	GetOwner()->SetVelocity((currentPosition - GetOwner()->GetPosition())/elapsedTime);
+	GetOwner()->SetVelocity((currentPosition - GetOwner()->GetPosition())/deltaTime);
 
-	GetOwner()->Move(elapsedTime);
+	GetOwner()->Move(deltaTime);
 
-	if (m_targetCounter.GetElapsedTime() >= 0.2f)
+	if (m_targetCounter.GetdeltaTime() >= 0.2f)
 	{
 		GetOwner()->SetPosition(m_targetPosition);
 		GetOwner()->RequestChangeState(Player::State::IDLE);

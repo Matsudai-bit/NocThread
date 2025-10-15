@@ -61,7 +61,6 @@ private:
 
 private:
 
-	void Motion(int x, int y);
 
 
 public:
@@ -73,7 +72,7 @@ public:
 	void Initialize(CommonResources* pCommonResources, CollisionManager* pCollisionManager);
 
 	// デバッグカメラの更新
-	void Update(float elapsedTime);
+	void Update(float deltaTime);
 
 	// 画面サイズの設定関数
 	void SetWindowSize(int windowWidth, int windowHeight);
@@ -98,10 +97,24 @@ public:
 	// ゲームオブジェクトタグの取得
 	GameObjectTag GetTag() const override { return GameObjectTag::CAMERA; };
 
+// 内部実装
 private:
 
+	// 回転の更新処理
+	void UpdateRotation(int mouseX, int mouseY);
+
+	// カメラの注視点の算出
+	void CalculateCameraTarget(const DirectX::SimpleMath::Vector3& playerPos);
+
+	// カメラの位置の更新処理
+	void UpdateCameraPosition(float deltaTime);
+
+	// 建物との衝突判定処理
 	void OnCollisionWithBuilding(GameObject* pHitObject, ICollider* pHitCollider);
-	void OnCollisionWithFloor(GameObject* pHitObject, ICollider* pHitCollider);
+	
+	// マウスによるカメラの回転処理
+	void Motion(int x, int y);
+
 
 };
 

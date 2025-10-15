@@ -44,12 +44,12 @@ void NormalGameplayState::OnStartState()
 
 }
 
-void NormalGameplayState::OnUpdate(float elapsedTime)
+void NormalGameplayState::OnUpdate(float deltaTime)
 {
 	auto keyboardStateTracker = GetOwner()->GetCommonResources()->GetKeyboardTracker();
 
 	// ゲームオブジェクトの更新処理
-	GetOwner()->UpdateInGameObjects(elapsedTime);
+	GetOwner()->UpdateInGameObjects(deltaTime);
 
 
 	if (keyboardStateTracker->IsKeyPressed(Keyboard::Escape))

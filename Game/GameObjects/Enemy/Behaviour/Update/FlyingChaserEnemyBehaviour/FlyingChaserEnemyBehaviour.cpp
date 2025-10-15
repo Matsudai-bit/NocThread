@@ -58,18 +58,18 @@ FlyingChaserEnemyBehaviour::~FlyingChaserEnemyBehaviour()
  * @brief 更新処理
  * 
  * @param[in] pEnemy		敵（自身）
- * @param[in] elapsedTime	経過時間
+ * @param[in] deltaTime	経過時間
  * @param[in] pPlayer		プレイヤー
  */
-void FlyingChaserEnemyBehaviour::Update(Enemy* pEnemy, float elapsedTime, const CommonResources* pCommonResources)
+void FlyingChaserEnemyBehaviour::Update(Enemy* pEnemy, float deltaTime, const CommonResources* pCommonResources)
 {
 	UNREFERENCED_PARAMETER(pCommonResources);
-	UNREFERENCED_PARAMETER(elapsedTime);
+	UNREFERENCED_PARAMETER(deltaTime);
 	using namespace SimpleMath;
 
-	m_playerTargetTimeCounter.UpperTime(elapsedTime);
+	m_playerTargetTimeCounter.UpperTime(deltaTime);
 
-	if (m_playerTargetTimeCounter.GetElapsedTime() >= 1.0f)
+	if (m_playerTargetTimeCounter.GetdeltaTime() >= 1.0f)
 	{
 		const GameObject* pPlayerObject = GameObjectRegistry::GetInstance()->GetGameObject(GameObjectTag::PLAYER);
 		if (pPlayerObject == nullptr) {
@@ -104,13 +104,13 @@ void FlyingChaserEnemyBehaviour::Update(Enemy* pEnemy, float elapsedTime, const 
 
 		
 	// 水平方向へ移動する速度を算出
-	Vector3 velocity = MovementHelper::ClampedMovement(pEnemy->GetVelocity() * Vector3(1.0f, 0.0f, 1.0f), horizonalDirection, elapsedTime, ACCELERATION, DECELERATION, MAX_MOVE_SPEED); ;
+	Vector3 velocity = MovementHelper::ClampedMovement(pEnemy->GetVelocity() * Vector3(1.0f, 0.0f, 1.0f), horizonalDirection, deltaTime, ACCELERATION, DECELERATION, MAX_MOVE_SPEED); ;
 
 	pEnemy->AddForceToVelocity(velocity);
 
 
 	// 飛ぶ向きに対する速度を算出
-	Vector3 flyingVelocity = MovementHelper::ClampedMovement(pEnemy->GetVelocity() * Vector3(0.0f, 1.0f, 0.0f), flyingDirection, elapsedTime, ACCELERATION, DECELERATION, MAX_FLYING_SPEED);
+	Vector3 flyingVelocity = MovementHelper::ClampedMovement(pEnemy->GetVelocity() * Vector3(0.0f, 1.0f, 0.0f), flyingDirection, deltaTime, ACCELERATION, DECELERATION, MAX_FLYING_SPEED);
 
 	// 下向きの動きの場合少し遅くする
 	if (flyingDirection.y < 0.0f)

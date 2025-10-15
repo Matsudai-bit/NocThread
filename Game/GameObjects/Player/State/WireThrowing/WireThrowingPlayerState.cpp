@@ -62,9 +62,9 @@ void WireThrowingPlayerState::OnStartState()
 /**
  * @brief 更新処理
  *
- * @param[in] elapsedTime　経過時間
+ * @param[in] deltaTime　経過時間
  */
-void WireThrowingPlayerState::OnUpdate(float elapsedTime)
+void WireThrowingPlayerState::OnUpdate(float deltaTime)
 {
 
 	WireEventData eventData;
@@ -80,7 +80,7 @@ void WireThrowingPlayerState::OnUpdate(float elapsedTime)
 	GetOwner()->GetWireSystem()->NotifyThrow(eventData, throwImpulse);
 
 	// 移動
-	GetOwner()->Move(elapsedTime);
+	GetOwner()->Move(deltaTime);
 
 	// 離す
 	GetOwner()->ReleaseWire();

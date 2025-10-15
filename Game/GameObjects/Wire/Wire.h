@@ -17,7 +17,7 @@
 #include "Game/GameObjects/Common/GameObject.h"
 
 // シミュレーション関連
-#include "Game/GameObjects/RopeObject/XPBDSimulator/XPDBSimulator.h"	// XPDBのシミュレーション
+#include "Game/GameObjects/RopeObject/XPBDSimulator/XPBDSimulator.h"	// XPBDのシミュレーション
 #include "Game/GameObjects/RopeObject/ParticleObject/ParticleObject.h"	// パーティクルオブジェクト
 #include "Game/GameObjects/RopeObject/RopeObject.h"						// ロープオブジェクト
 
@@ -109,7 +109,7 @@ public:
 		WireSystemSubject*	wireSystemSubject = nullptr);
 
 	// 更新処理
-	void Update(float elapsedTime);
+	void Update(float deltaTime);
 
 	// 描画処理
 	void Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj);
@@ -121,7 +121,7 @@ public:
 	void Reset();
 
 	// ワイヤーシミュレータの適用
-	void ApplyWireSimulator(const float& elapsedTime);
+	void ApplyWireSimulator(const float& deltaTime);
 
 	// ワイヤーの発射
 	void ShootWire(const DirectX::SimpleMath::Vector3&  origin, const DirectX::SimpleMath::Vector3& wireVelocity);

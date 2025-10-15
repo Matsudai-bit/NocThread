@@ -135,11 +135,11 @@ void PoseGameplayState::OnStartState()
 /**
  * @brief 更新処理
  * 
- * @param[in] elapsedTime
+ * @param[in] deltaTime
  */
-void PoseGameplayState::OnUpdate(float elapsedTime)
+void PoseGameplayState::OnUpdate(float deltaTime)
 {
-	UNREFERENCED_PARAMETER(elapsedTime);
+	UNREFERENCED_PARAMETER(deltaTime);
 
 	auto keyboardStateTracker = GetOwner()->GetCommonResources()->GetKeyboardTracker();
 
@@ -148,7 +148,7 @@ void PoseGameplayState::OnUpdate(float elapsedTime)
 	if (m_isDisplayingTutorialWindow == false)
 	{
 		// ポーズメニューの更新処理
-		m_poseMenu->Update(elapsedTime);
+		m_poseMenu->Update(deltaTime);
 		if (keyboardStateTracker->IsKeyPressed(Keyboard::Escape))
 		{
 			// ゲームに戻る
@@ -157,7 +157,7 @@ void PoseGameplayState::OnUpdate(float elapsedTime)
 	}
 	else
 	{
-		m_tutorialWindow->Update(elapsedTime, *keyboardStateTracker);
+		m_tutorialWindow->Update(deltaTime, *keyboardStateTracker);
 	}
 }
 

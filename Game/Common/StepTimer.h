@@ -71,7 +71,7 @@ namespace DX
         // call this to avoid having the fixed timestep logic attempt a set of catch-up
         // Update calls.
 
-        void ResetElapsedTime()
+        void ResetdeltaTime()
         {
             if (!QueryPerformanceCounter(&m_qpcLastTime))
             {

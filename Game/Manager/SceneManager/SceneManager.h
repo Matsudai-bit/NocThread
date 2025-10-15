@@ -51,7 +51,7 @@ namespace MyLib
 		virtual void Initialize() = 0;
 
 		// 更新
-		virtual void Update(float elapsedTime) = 0;
+		virtual void Update(float deltaTime) = 0;
 
 		// 描画
 		virtual void Render() = 0;
@@ -139,7 +139,7 @@ namespace MyLib
 		};
 
 		// 更新
-		void Update(float elapsedTime);
+		void Update(float deltaTime);
 
 		// 描画
 		void Render();
@@ -248,7 +248,7 @@ namespace MyLib
 
 	// 更新関数
 	template <typename T>
-	void SceneManager<T>::Update(float elapsedTime)
+	void SceneManager<T>::Update(float deltaTime)
 	{
 #ifdef ESC_QUIT_ENABLE
 		// ESCキーで終了
@@ -275,12 +275,12 @@ namespace MyLib
 
 		if (m_loadingScreen)
 		{
-			m_loadingScreen->Update(elapsedTime);
+			m_loadingScreen->Update(deltaTime);
 			return;
 		}
 
 		// シーンの更新
-		if (m_scene) m_scene->Update(elapsedTime);
+		if (m_scene) m_scene->Update(deltaTime);
 
 	}
 

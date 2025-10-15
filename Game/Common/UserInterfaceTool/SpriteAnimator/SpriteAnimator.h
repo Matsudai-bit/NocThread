@@ -46,7 +46,7 @@ public:
 private:
 	Sprite* m_sprite;           ///< アニメーション対象のスプライト
 	 AnimationClip m_animationClip;    ///< 指定のアニメーションクリップ
-	float                  m_elapsedTime;      ///< 経過時間[frames]
+	float                  m_deltaTime;      ///< 経過時間[frames]
 	int                  m_frameIndex;       ///< 現在のフレームのインデックス
 	bool                 m_isPlaying;        ///< 再生中かどうか
 
@@ -68,7 +68,7 @@ public:
 	void Initialize(Sprite* sprite, AnimationClip& animationClip);
 
 	// 更新処理
-	void Update(float elapsedTime);
+	void Update(float deltaTime);
 
 	// アニメーションの再生
 	void Play();

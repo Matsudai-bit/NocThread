@@ -13,7 +13,7 @@
 
 
 // ヘッダファイルの読み込み ===================================================
-#include "Game/GameObjects/RopeObject/XPBDSimulator/XPDBSimulator.h"
+#include "Game/GameObjects/RopeObject/XPBDSimulator/XPBDSimulator.h"
 #include "Game/GameObjects/RopeObject/XPBDSimulator/Constraint/IConstraint.h"
 
 // クラスの前方宣言 ===================================================

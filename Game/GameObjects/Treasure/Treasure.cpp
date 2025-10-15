@@ -88,13 +88,13 @@ void Treasure::Initialize(CommonResources* pCommonResources, CollisionManager* p
 /**
  * @brief 更新処理
  *
- * @param[in] elapsedTime 経過時間
+ * @param[in] deltaTime 経過時間
  *
  * @return なし
  */
-void Treasure::Update(float elapsedTime)
+void Treasure::Update(float deltaTime)
 {
-	SetRotate(GetRotate() * SimpleMath::Quaternion::CreateFromAxisAngle(SimpleMath::Vector3::Up, XMConvertToRadians(180.0f * elapsedTime)));
+	SetRotate(GetRotate() * SimpleMath::Quaternion::CreateFromAxisAngle(SimpleMath::Vector3::Up, XMConvertToRadians(180.0f * deltaTime)));
 }
 
 

@@ -112,7 +112,7 @@ public:
 	// Ä¶
 	void Play() override;
 	// XVˆ—
-	void Update(float elapsedTime) override;
+	void Update(float deltaTime) override;
 	// •`‰æˆ—
 	void Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj) override;
 

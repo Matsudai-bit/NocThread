@@ -1,9 +1,9 @@
 /*****************************************************************//**
- * @file    RopeObject.h
- * @brief   ロープオブジェクトに関するヘッダーファイル
+ * @file    BuildingManager.h
+ * @brief   建物管理に関するヘッダーファイル
  *
  * @author  松下大暉
- * @date    2025/05/15
+ * @date    2025/10/15
  *********************************************************************/
 
 // 多重インクルードの防止 =====================================================
@@ -13,18 +13,20 @@
 
 
 // ヘッダファイルの読み込み ===================================================
-#include <vector>
 #include <memory>
-#include "Game/GameObjects/RopeObject/ParticleObject/ParticleObject.h"
+#include <vector>
+
+#include "Game/GameObjects/Prop/Building/Building.h"
 
 // クラスの前方宣言 ===================================================
-class CommonResources;	// 共通リソース
+class CollisionManager;
+class CommonResources;
 
 // クラスの定義 ===============================================================
 /**
- * @brief ロープオブジェクト
+ * @brief 建物管理
  */
-class RopeObject
+class BuildingManager
 {
 // クラス定数の宣言 -------------------------------------------------
 public:
@@ -33,51 +35,48 @@ public:
 
 // データメンバの宣言 -----------------------------------------------
 private:
-
-	std::vector<ParticleObject*> m_particles;	///< パーティクルデータ
-
-	std::unique_ptr <DirectX::PrimitiveBatch<DirectX::VertexPositionColor>> m_batch;
-
-	std::unique_ptr<DirectX::BasicEffect> m_effect;
-
-	Microsoft::WRL::ComPtr<ID3D11InputLayout>								m_inputLayout;
-
-	const CommonResources* m_pCommonResources;	///< 共通リソース
 	
+	std::vector<std::unique_ptr<Building>> m_buildings; ///< 建物
 
+	nlohmann::json m_stageJson;
 
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
 public:
 	// コンストラクタ
-	RopeObject();
+	BuildingManager();
 
 	// デストラクタ
-	~RopeObject();
+	~BuildingManager();
 
 
 // 操作
 public:
 	// 初期化処理
-	void Initialize(const CommonResources* pCommonResouces);
+	void Initialize();
 
 	// 更新処理
 	void Update(float deltaTime);
 
 	// 描画処理
-	void Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj);
+	void Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& projection);
 
 	// 終了処理
 	void Finalize();
 
-	// パーティクル情報のリセット
-	void ResetParticle();
+	bool RequestCreate(
+		CollisionManager* pCollisionManager,
+		const CommonResources* pCommonResources);
+	void Save();
 
-	// パーティクルの追加
-	void AddParticle(ParticleObject* pParticle);
+private:
+	void CreateBuilding(
+		const DirectX::SimpleMath::Vector3& position,
+		const DirectX::SimpleMath::Vector3& scale,
+		CollisionManager* pCollisionManager,
+		const CommonResources* pCommonResources);
 
-	// パーティクルデータの取得
-	std::vector< ParticleObject*>* GetParticles() ;
+
 
 
 // 取得/設定

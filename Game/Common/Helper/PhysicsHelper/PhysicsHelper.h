@@ -70,14 +70,14 @@ namespace PhysicsHelper
  * @brief 速度に空気抵抗を適用した後の速度を計算
  *
  * @param[in] currentVelocity    現在の速度
- * @param[in] elapsedTime        経過時間
+ * @param[in] deltaTime        経過時間
  * @param[in] dragCoefficient    空気抵抗係数（減速の強さ）
  * 
  * @return DirectX::SimpleMath::Vector3 空気抵抗適用後の速度
  */
 	inline DirectX::SimpleMath::Vector3 CalculateDragVelocity(
 		const DirectX::SimpleMath::Vector3& currentVelocity,
-		const float& elapsedTime,
+		const float& deltaTime,
 		const float& dragCoefficient)
 	{
 		using namespace DirectX::SimpleMath;
@@ -95,7 +95,7 @@ namespace PhysicsHelper
 			Vector3 dragForce = counterDir * (speed * speed) * dragCoefficient;
 
 			// 加速度を適用して速度を更新 (v = v0 + at)
-			velocity += dragForce * elapsedTime;
+			velocity += dragForce * deltaTime;
 
 			// ゼロに近づきすぎた場合、ゼロにクランプする
 			if (velocity.LengthSquared() < 0.0001f)
@@ -112,14 +112,14 @@ namespace PhysicsHelper
 	 * @brief 速度に摩擦力を適用した後の速度を計算
 	 *
 	 * @param[in] currentVelocity    現在の速度
-	 * @param[in] elapsedTime        経過時間
+	 * @param[in] deltaTime        経過時間
 	 * @param[in] frictionCoefficient 摩擦係数
 	 * @param[in] normalForce        垂直抗力（例: 重力や地面からの反発力）
 	 * @return DirectX::SimpleMath::Vector3 摩擦適用後の速度
 	 */
 	inline DirectX::SimpleMath::Vector3 CalculateFrictionVelocity(
 		const DirectX::SimpleMath::Vector3& currentVelocity,
-		const float& elapsedTime,
+		const float& deltaTime,
 		const float& frictionCoefficient,
 		const float& normalForce)
 	{
@@ -141,7 +141,7 @@ namespace PhysicsHelper
 			// 速度がゼロに達するまでの時間を計算
 			float timeToStop = speed / deceleration;
 
-			if (elapsedTime > timeToStop)
+			if (deltaTime > timeToStop)
 			{
 				// このフレームで完全に停止する場合
 				velocity = Vector3::Zero;
@@ -151,7 +151,7 @@ namespace PhysicsHelper
 				// 速度の方向はそのままに、大きさを減らす
 				auto dir = velocity;
 				dir.Normalize();
-				velocity -= dir * deceleration * elapsedTime;
+				velocity -= dir * deceleration * deltaTime;
 			}
 		}
 

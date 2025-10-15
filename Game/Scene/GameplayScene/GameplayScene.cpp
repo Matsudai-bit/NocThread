@@ -36,6 +36,7 @@
 #include "Game/GameObjects/Treasure/Treasure.h"
 #include "Game/GameObjects/Prop/Building/Building.h"
 #include "Game/GameObjects/Helicopter/EscapeHelicopter/EscapeHelicopter.h"
+#include "Game/Manager/BuildingManager/BuildingManager.h"
 
 // ゲームオブジェクト管理系
 #include "Game/Common/GameObjectManager/EnemyManager/EnemyManager.h"
@@ -192,14 +193,14 @@ void GameplayScene::Initialize()
 /**
  * @brief 更新処理
  *
- * @param[in] elapsedTime フレーム間の経過時間
+ * @param[in] deltaTime フレーム間の経過時間
  *
  * @return なし
  */
-void GameplayScene::Update(float elapsedTime)
+void GameplayScene::Update(float deltaTime)
 {
     // 状態の更新処理
-    m_stateMachine->Update(elapsedTime);
+    m_stateMachine->Update(deltaTime);
 
     // イベントスタックの解消(仮実装)
     for (auto& event : m_eventStack)
@@ -264,59 +265,51 @@ void GameplayScene::CreateWindowSizeDependentResources()
 /**
  * @brief インゲームのオブジェクトを更新する
  * 
- * @param[in] elapsedTime 経過時間
+ * @param[in] deltaTime 経過時間
  */
-void GameplayScene::UpdateInGameObjects(float elapsedTime)
+void GameplayScene::UpdateInGameObjects(float deltaTime)
 {
     auto kb = Keyboard::Get().GetState();
 
     // ゲームプレイ時間の加算
-    m_gamePlayingTimeCounter.UpperTime(elapsedTime);
+    m_gamePlayingTimeCounter.UpperTime(deltaTime);
 
     // ゲームエフェクト管理の更新処理
-    m_gameEffectManager->Update(elapsedTime);
+    m_gameEffectManager->Update(deltaTime);
   
     // 出現管理の更新処理
-    m_spawnManager->Update(elapsedTime);
+    m_spawnManager->Update(deltaTime);
 
     // デバックカメラの更新
     m_debugCamera->Update();
 
     auto mouse = Mouse::Get().GetState();
 
-    m_playerCamera->Update(elapsedTime);
+    m_playerCamera->Update(deltaTime);
 
     // 衝突管理の更新処理
     m_collisionManager->Update();
 
-    // 壁の更新処理
-    //m_wall->Update(elapsedTime);
-
-    for (auto& wall : m_walls)
-    {
-        wall->Update(elapsedTime);
-    }
-
     // プレイヤーコントローラの更新処理
-    m_playerController->Update(elapsedTime, GetCommonResources()->GetKeyboardTracker(), GetCommonResources()->GetMouseTracker());
+    m_playerController->Update(deltaTime, GetCommonResources()->GetKeyboardTracker(), GetCommonResources()->GetMouseTracker());
     // プレイヤーの更新処理
-    m_player->Update(elapsedTime, *m_playerCamera, m_proj);
+    m_player->Update(deltaTime, *m_playerCamera, m_proj);
 
     for (auto& stageObj : m_stageObject)
     {
-        stageObj->Update(elapsedTime);
+        stageObj->Update(deltaTime);
     }
 
     // お宝の更新処理
-    m_treasure->Update(elapsedTime);
+    m_treasure->Update(deltaTime);
 
     // 敵の更新処理
-    m_enemyManager->Update(elapsedTime);
+    m_enemyManager->Update(deltaTime);
 
     // 脱出用ヘリコプターの更新処理
     for (auto& helicopter : m_escapeHelicopter)
     {
-        helicopter->Update(elapsedTime);
+        helicopter->Update(deltaTime);
     }
 
 
@@ -347,16 +340,6 @@ void GameplayScene::DrawInGameObjects()
 
     m_floor->Draw(view, m_proj);
 
-    // 壁の描画処理
-    //m_wall->Draw(&view, &m_proj);
-
-    for (auto& wall : m_walls)
-    {
-        wall->Draw(&view, &m_proj);
-    }
-
-    //m_floor->Draw(&view, &m_proj);
-
     // プレイヤーの描画処理
     m_player->Draw(view, m_proj);
 
@@ -367,10 +350,7 @@ void GameplayScene::DrawInGameObjects()
     }
 
     // 建物の描画処理
-    for (auto& building : m_buildings)
-    {
-        building->Draw(view, m_proj);
-    }
+    m_buildingManager->Draw(view, m_proj);
 
     // 脱出用ヘリコプターの描画処理
     for (auto& helicopter : m_escapeHelicopter)
@@ -440,14 +420,14 @@ void GameplayScene::OnGameFlowEvent(GameFlowEventID eventID)
     case GameFlowEventID::PLAYER_DIE:
         m_eventStack.emplace_back([&]() {
             OnEndScene();
-            ResultData::GetInstance()->SetResultData(m_gamePlayingTimeCounter.GetElapsedTime(), false);
+            ResultData::GetInstance()->SetResultData(m_gamePlayingTimeCounter.GetdeltaTime(), false);
             ChangeScene<ResultScene, LoadingScreen>();
             });
         break;
     case GameFlowEventID::ESCAPE_SUCCESS:
         m_eventStack.emplace_back([&]() {
             OnEndScene();
-            ResultData::GetInstance()->SetResultData(m_gamePlayingTimeCounter.GetElapsedTime(),  true);
+            ResultData::GetInstance()->SetResultData(m_gamePlayingTimeCounter.GetdeltaTime(),  true);
             ChangeScene<ResultScene, LoadingScreen>();
             });
         break;
@@ -497,287 +477,10 @@ void GameplayScene::CreateStage()
     m_treasure->SetPosition(treasurePosition);
     m_treasure->Initialize(GetCommonResources(), m_collisionManager.get());
 
-    // ****　要修正 !!! :　仮でステージを生成する殴り書きコード *****************************************
-    // ****                マネージャークラス、生成クラスを実装予定
-
-    struct BuildingTrans
-    {
-    public:
-        Vector3 pos;
-        Vector3 scale;
-
-        BuildingTrans(Vector3 pos, Vector3 scale)
-            : pos{ pos }
-            , scale{ scale }
-        {
-        }
-    };
-    std::vector<BuildingTrans> buildingTrans
-    {
-        {Vector3(0.0f, 0.0f, 0.0f), Vector3(1.18f, 2.51f, 1.25f)},
-        {Vector3(0.0f, 0.0f, -50.0f), Vector3(2.0f, 2.5f, 2.5f)},
-        {Vector3(-25.2f, 0.0f, -12.5f), Vector3(1.34f, 1.98f, 1.42f)},
-        {Vector3(15.9f, 0.0f, 31.6f), Vector3(1.11f, 2.82f, 1.05f)},
-        {Vector3(48.7f, 0.0f, 22.3f), Vector3(1.04f, 1.67f, 1.33f)},
-        {Vector3(-35.1f, 0.0f, -44.8f), Vector3(1.22f, 2.30f, 1.48f)},
-        {Vector3(-61.4f, 0.0f, 8.9f), Vector3(1.47f, 1.77f, 1.15f)},
-        {Vector3(-55.6f, 0.0f, 47.2f), Vector3(1.30f, 2.94f, 1.09f)},
-        {Vector3(33.0f, 0.0f, -58.4f), Vector3(1.17f, 1.55f, 1.29f)},
-        {Vector3(9.2f, 0.0f, 72.5f), Vector3(1.41f, 2.12f, 1.01f)},
-        {Vector3(66.8f, 0.0f, -39.1f), Vector3(1.06f, 1.88f, 1.38f)},
-        {Vector3(42.3f, 0.0f, -85.0f), Vector3(1.25f, 2.76f, 1.45f)},
-        {Vector3(-78.1f, 0.0f, -25.6f), Vector3(1.36f, 2.45f, 1.03f)},
-        {Vector3(71.5f, 0.0f, 55.7f), Vector3(1.02f, 1.91f, 1.27f)},
-        {Vector3(-5.8f, 0.0f, -98.3f), Vector3(1.19f, 2.68f, 1.49f)},
-        {Vector3(-89.0f, 0.0f, 33.4f), Vector3(1.44f, 2.05f, 1.12f)},
-        {Vector3(95.7f, 0.0f, 9.8f), Vector3(1.07f, 2.97f, 1.30f)},
-        {Vector3(-76.2f, 0.0f, -82.1f), Vector3(1.32f, 1.63f, 1.44f)},
-        {Vector3(57.4f, 0.0f, 105.6f), Vector3(1.01f, 2.22f, 1.06f)},
-        {Vector3(-110.3f, 0.0f, -1.5f), Vector3(1.20f, 2.89f, 1.36f)},
-        {Vector3(-93.6f, 0.0f, -68.2f), Vector3(1.46f, 1.74f, 1.18f)},
-        {Vector3(121.0f, 0.0f, 30.7f), Vector3(1.09f, 2.58f, 1.40f)},
-        {Vector3(88.5f, 0.0f, 92.4f), Vector3(1.28f, 2.15f, 1.04f)},
-        {Vector3(-3.4f, 0.0f, 124.1f), Vector3(1.05f, 1.83f, 1.26f)},
-        {Vector3(-132.1f, 0.0f, 45.9f), Vector3(1.24f, 2.62f, 1.41f)},
-        {Vector3(81.8f, 0.0f, -115.0f), Vector3(1.39f, 2.36f, 1.08f)},
-        {Vector3(139.3f, 0.0f, -20.6f), Vector3(1.03f, 1.94f, 1.31f)},
-        {Vector3(-22.8f, 0.0f, -141.7f), Vector3(1.21f, 2.74f, 1.46f)},
-        {Vector3(-118.9f, 0.0f, 110.0f), Vector3(1.45f, 2.09f, 1.13f)},
-        {Vector3(-150.0f, 0.0f, 71.3f), Vector3(1.04f, 2.91f, 1.32f)},
-        {Vector3(115.4f, 0.0f, -100.1f), Vector3(1.27f, 1.59f, 1.43f)},
-        {Vector3(165.6f, 0.0f, 5.2f), Vector3(1.01f, 2.25f, 1.07f)},
-        {Vector3(75.1f, 0.0f, 135.8f), Vector3(1.23f, 2.85f, 1.37f)},
-        {Vector3(-148.9f, 0.0f, -110.1f), Vector3(1.48f, 1.71f, 1.19f)},
-        {Vector3(-158.2f, 0.0f, -40.9f), Vector3(1.10f, 2.54f, 1.45f)},
-        {Vector3(178.4f, 0.0f, 56.3f), Vector3(1.29f, 2.01f, 1.02f)},
-        {Vector3(-55.3f, 0.0f, 152.0f), Vector3(1.05f, 1.78f, 1.28f)},
-        {Vector3(120.1f, 0.0f, -148.5f), Vector3(1.26f, 2.65f, 1.47f)},
-        {Vector3(-170.5f, 0.0f, 118.7f), Vector3(1.42f, 2.42f, 1.10f)},
-        {Vector3(190.0f, 0.0f, -70.9f), Vector3(1.06f, 1.97f, 1.35f)},
-        {Vector3(150.7f, 0.0f, 145.0f), Vector3(1.24f, 2.72f, 1.49f)},
-        {Vector3(-35.8f, 0.0f, -179.6f), Vector3(1.49f, 2.03f, 1.14f)},
-        {Vector3(-195.1f, 0.0f, -10.4f), Vector3(1.08f, 2.88f, 1.34f)},
-        {Vector3(2.3f, 0.0f, 191.2f), Vector3(1.35f, 1.56f, 1.46f)},
-        {Vector3(-165.7f, 0.0f, -135.8f), Vector3(1.12f, 2.21f, 1.09f)},
-        {Vector3(205.2f, 0.0f, 100.3f), Vector3(1.33f, 2.84f, 1.39f)},
-        {Vector3(-28.6f, 0.0f, -210.5f), Vector3(1.17f, 1.75f, 1.11f)},
-        {Vector3(-215.3f, 0.0f, -75.1f), Vector3(1.04f, 2.56f, 1.31f)},
-        {Vector3(190.4f, 0.0f, -170.2f), Vector3(1.28f, 2.18f, 1.44f)},
-        {Vector3(230.5f, 0.0f, 5.9f), Vector3(1.47f, 2.99f, 1.05f)},
-        {Vector3(-88.8f, 0.0f, 215.1f), Vector3(1.03f, 1.62f, 1.25f)},
-        {Vector3(-210.7f, 0.0f, 150.3f), Vector3(1.22f, 2.33f, 1.48f)},
-        {Vector3(245.6f, 0.0f, -102.4f), Vector3(1.38f, 1.80f, 1.16f)},
-        {Vector3(240.8f, 0.0f, 80.8f), Vector3(1.09f, 2.52f, 1.40f)},
-        {Vector3(-115.1f, 0.0f, -230.2f), Vector3(1.31f, 2.08f, 1.03f)},
-        {Vector3(40.2f, 0.0f, -245.5f), Vector3(1.15f, 1.93f, 1.34f)},
-        {Vector3(-220.3f, 0.0f, -160.6f), Vector3(1.27f, 2.79f, 1.45f)},
-        {Vector3(225.4f, 0.0f, 140.7f), Vector3(1.43f, 2.40f, 1.12f)},
-        {Vector3(-250.5f, 0.0f, 10.3f), Vector3(1.06f, 1.90f, 1.36f)},
-        {Vector3(-155.6f, 0.0f, 250.4f), Vector3(1.25f, 2.61f, 1.49f)},
-        {Vector3(210.7f, 0.0f, 220.5f), Vector3(1.41f, 2.35f, 1.07f)},
-        {Vector3(-10.1f, 0.0f, -240.2f), Vector3(1.18f, 2.51f, 1.25f)},
-        {Vector3(28.2f, 0.0f, -112.5f), Vector3(1.34f, 1.98f, 1.42f)},
-        {Vector3(-15.9f, 0.0f, 31.6f), Vector3(1.11f, 2.82f, 1.05f)},
-        {Vector3(-48.7f, 0.0f, 22.3f), Vector3(1.04f, 1.67f, 1.33f)},
-        {Vector3(35.1f, 0.0f, -44.8f), Vector3(1.22f, 2.30f, 1.48f)},
-        {Vector3(61.4f, 0.0f, 8.9f), Vector3(1.47f, 1.77f, 1.15f)},
-        {Vector3(55.6f, 0.0f, 47.2f), Vector3(1.30f, 2.94f, 1.09f)},
-        {Vector3(-33.0f, 0.0f, -58.4f), Vector3(1.17f, 1.55f, 1.29f)},
-        {Vector3(-9.2f, 0.0f, 72.5f), Vector3(1.41f, 2.12f, 1.01f)},
-        {Vector3(-66.8f, 0.0f, -39.1f), Vector3(1.06f, 1.88f, 1.38f)},
-        {Vector3(-42.3f, 0.0f, -85.0f), Vector3(1.25f, 2.76f, 1.45f)},
-        {Vector3(78.1f, 0.0f, -25.6f), Vector3(1.36f, 2.45f, 1.03f)},
-        {Vector3(-71.5f, 0.0f, 55.7f), Vector3(1.02f, 1.91f, 1.27f)},
-        {Vector3(5.8f, 0.0f, -98.3f), Vector3(1.19f, 2.68f, 1.49f)},
-        {Vector3(-95.7f, 0.0f, 9.8f), Vector3(1.07f, 2.97f, 1.30f)},
-        {Vector3(76.2f, 0.0f, -82.1f), Vector3(1.32f, 1.63f, 1.44f)},
-        {Vector3(-57.4f, 0.0f, 105.6f), Vector3(1.01f, 2.22f, 1.06f)},
-        {Vector3(110.3f, 0.0f, -1.5f), Vector3(1.20f, 2.89f, 1.36f)},
-        {Vector3(93.6f, 0.0f, -68.2f), Vector3(1.46f, 1.74f, 1.18f)},
-        {Vector3(-121.0f, 0.0f, 30.7f), Vector3(1.09f, 2.58f, 1.40f)},
-        {Vector3(-88.5f, 0.0f, 92.4f), Vector3(1.28f, 2.15f, 1.04f)},
-        {Vector3(3.4f, 0.0f, 124.1f), Vector3(1.05f, 1.83f, 1.26f)},
-        {Vector3(132.1f, 0.0f, 45.9f), Vector3(1.24f, 2.62f, 1.41f)},
-        {Vector3(-81.8f, 0.0f, -115.0f), Vector3(1.39f, 2.36f, 1.08f)},
-        {Vector3(-139.3f, 0.0f, -20.6f), Vector3(1.03f, 1.94f, 1.31f)},
-        {Vector3(22.8f, 0.0f, -141.7f), Vector3(1.21f, 2.74f, 1.46f)},
-        {Vector3(118.9f, 0.0f, 110.0f), Vector3(1.45f, 2.09f, 1.13f)},
-        {Vector3(150.0f, 0.0f, 71.3f), Vector3(1.04f, 2.91f, 1.32f)},
-        {Vector3(-115.4f, 0.0f, -100.1f), Vector3(1.27f, 1.59f, 1.43f)},
-        {Vector3(-165.6f, 0.0f, 5.2f), Vector3(1.01f, 2.25f, 1.07f)},
-        {Vector3(-75.1f, 0.0f, 135.8f), Vector3(1.23f, 2.85f, 1.37f)},
-        {Vector3(148.9f, 0.0f, -110.1f), Vector3(1.48f, 1.71f, 1.19f)},
-        {Vector3(158.2f, 0.0f, -40.9f), Vector3(1.10f, 2.54f, 1.45f)},
-        {Vector3(-178.4f, 0.0f, 56.3f), Vector3(1.29f, 2.01f, 1.02f)},
-        {Vector3(55.3f, 0.0f, 152.0f), Vector3(1.05f, 1.78f, 1.28f)},
-        {Vector3(-120.1f, 0.0f, -148.5f), Vector3(1.26f, 2.65f, 1.47f)},
-        {Vector3(170.5f, 0.0f, 118.7f), Vector3(1.42f, 2.42f, 1.10f)},
-        {Vector3(-190.0f, 0.0f, -70.9f), Vector3(1.06f, 1.97f, 1.35f)},
-        {Vector3(-150.7f, 0.0f, 145.0f), Vector3(1.24f, 2.72f, 1.49f)},
-        {Vector3(35.8f, 0.0f, -179.6f), Vector3(1.49f, 2.03f, 1.14f)},
-        {Vector3(195.1f, 0.0f, -10.4f), Vector3(1.08f, 2.88f, 1.34f)},
-        {Vector3(-2.3f, 0.0f, 191.2f), Vector3(1.35f, 1.56f, 1.46f)},
-        {Vector3(165.7f, 0.0f, -135.8f), Vector3(1.12f, 2.21f, 1.09f)},
-        {Vector3(-205.2f, 0.0f, 100.3f), Vector3(1.33f, 2.84f, 1.39f)},
-        {Vector3(28.6f, 0.0f, -210.5f), Vector3(1.17f, 1.75f, 1.11f)},
-        {Vector3(215.3f, 0.0f, -75.1f), Vector3(1.04f, 2.56f, 1.31f)},
-        {Vector3(-190.4f, 0.0f, -170.2f), Vector3(1.28f, 2.18f, 1.44f)},
-        {Vector3(-230.5f, 0.0f, 5.9f), Vector3(1.47f, 2.99f, 1.05f)},
-        {Vector3(88.8f, 0.0f, 215.1f), Vector3(1.03f, 1.62f, 1.25f)},
-        {Vector3(210.7f, 0.0f, 150.3f), Vector3(1.22f, 2.33f, 1.48f)},
-        {Vector3(-245.6f, 0.0f, -102.4f), Vector3(1.38f, 1.80f, 1.16f)},
-        {Vector3(-240.8f, 0.0f, 80.8f), Vector3(1.09f, 2.52f, 1.40f)},
-        {Vector3(115.1f, 0.0f, -230.2f), Vector3(1.31f, 2.08f, 1.03f)},
-        {Vector3(-40.2f, 0.0f, -245.5f), Vector3(1.15f, 1.93f, 1.34f)},
-        {Vector3(220.3f, 0.0f, -160.6f), Vector3(1.27f, 2.79f, 1.45f)},
-        {Vector3(-225.4f, 0.0f, 140.7f), Vector3(1.43f, 2.40f, 1.12f)},
-        {Vector3(250.5f, 0.0f, 10.3f), Vector3(1.06f, 1.90f, 1.36f)},
-        {Vector3(155.6f, 0.0f, 250.4f), Vector3(1.25f, 2.61f, 1.49f)},
-        {Vector3(-210.7f, 0.0f, 220.5f), Vector3(1.41f, 2.35f, 1.07f)},
-        {Vector3(-10.1f, 0.0f, -240.2f), Vector3(1.18f, 2.51f, 1.25f)},
-        {Vector3(28.2f, 0.0f, -112.5f), Vector3(1.34f, 1.98f, 1.42f)},
-        {Vector3(-15.9f, 0.0f, 31.6f), Vector3(1.11f, 2.82f, 1.05f)},
-        {Vector3(-48.7f, 0.0f, 22.3f), Vector3(1.04f, 1.67f, 1.33f)},
-        {Vector3(35.1f, 0.0f, -44.8f), Vector3(1.22f, 2.30f, 1.48f)},
-        {Vector3(61.4f, 0.0f, 8.9f), Vector3(1.47f, 1.77f, 1.15f)},
-        {Vector3(55.6f, 0.0f, 47.2f), Vector3(1.30f, 2.94f, 1.09f)},
-        {Vector3(-33.0f, 0.0f, -58.4f), Vector3(1.17f, 1.55f, 1.29f)},
-        {Vector3(-9.2f, 0.0f, 72.5f), Vector3(1.41f, 2.12f, 1.01f)},
-        {Vector3(-66.8f, 0.0f, -39.1f), Vector3(1.06f, 1.88f, 1.38f)},
-        {Vector3(-42.3f, 0.0f, -85.0f), Vector3(1.25f, 2.76f, 1.45f)},
-        {Vector3(78.1f, 0.0f, -25.6f), Vector3(1.36f, 2.45f, 1.03f)},
-        {Vector3(-71.5f, 0.0f, 55.7f), Vector3(1.02f, 1.91f, 1.27f)},
-        {Vector3(5.8f, 0.0f, -98.3f), Vector3(1.19f, 2.68f, 1.49f)},
-        {Vector3(89.0f, 0.0f, 33.4f), Vector3(1.44f, 2.05f, 1.12f)},
-        {Vector3(-95.7f, 0.0f, 9.8f), Vector3(1.07f, 2.97f, 1.30f)},
-        {Vector3(76.2f, 0.0f, -82.1f), Vector3(1.32f, 1.63f, 1.44f)},
-        {Vector3(-57.4f, 0.0f, 105.6f), Vector3(1.01f, 2.22f, 1.06f)},
-        {Vector3(110.3f, 0.0f, -1.5f), Vector3(1.20f, 2.89f, 1.36f)},
-        {Vector3(93.6f, 0.0f, -68.2f), Vector3(1.46f, 1.74f, 1.18f)},
-        {Vector3(-121.0f, 0.0f, 30.7f), Vector3(1.09f, 2.58f, 1.40f)},
-        {Vector3(-88.5f, 0.0f, 92.4f), Vector3(1.28f, 2.15f, 1.04f)},
-        {Vector3(3.4f, 0.0f, 124.1f), Vector3(1.05f, 1.83f, 1.26f)},
-        {Vector3(132.1f, 0.0f, 45.9f), Vector3(1.24f, 2.62f, 1.41f)},
-        {Vector3(-81.8f, 0.0f, -115.0f), Vector3(1.39f, 2.36f, 1.08f)},
-        {Vector3(-139.3f, 0.0f, -20.6f), Vector3(1.03f, 1.94f, 1.31f)},
-        {Vector3(22.8f, 0.0f, -141.7f), Vector3(1.21f, 2.74f, 1.46f)},
-        {Vector3(118.9f, 0.0f, 110.0f), Vector3(1.45f, 2.09f, 1.13f)},
-        {Vector3(150.0f, 0.0f, 71.3f), Vector3(1.04f, 2.91f, 1.32f)},
-        {Vector3(-115.4f, 0.0f, -100.1f), Vector3(1.27f, 1.59f, 1.43f)},
-        {Vector3(-165.6f, 0.0f, 5.2f), Vector3(1.01f, 2.25f, 1.07f)},
-        {Vector3(-75.1f, 0.0f, 135.8f), Vector3(1.23f, 2.85f, 1.37f)},
-        {Vector3(148.9f, 0.0f, -110.1f), Vector3(1.48f, 1.71f, 1.19f)},
-        {Vector3(158.2f, 0.0f, -40.9f), Vector3(1.10f, 2.54f, 1.45f)},
-        {Vector3(-178.4f, 0.0f, 56.3f), Vector3(1.29f, 2.01f, 1.02f)},
-        {Vector3(55.3f, 0.0f, 152.0f), Vector3(1.05f, 1.78f, 1.28f)},
-        {Vector3(-120.1f, 0.0f, -148.5f), Vector3(1.26f, 2.65f, 1.47f)},
-        {Vector3(170.5f, 0.0f, 118.7f), Vector3(1.42f, 2.42f, 1.10f)},
-        {Vector3(-190.0f, 0.0f, -70.9f), Vector3(1.06f, 1.97f, 1.35f)},
-        {Vector3(-150.7f, 0.0f, 145.0f), Vector3(1.24f, 2.72f, 1.49f)},
-        {Vector3(35.8f, 0.0f, -179.6f), Vector3(1.49f, 2.03f, 1.14f)},
-        {Vector3(195.1f, 0.0f, -10.4f), Vector3(1.08f, 2.88f, 1.34f)},
-        {Vector3(-2.3f, 0.0f, 191.2f), Vector3(1.35f, 1.56f, 1.46f)},
-        {Vector3(165.7f, 0.0f, -135.8f), Vector3(1.12f, 2.21f, 1.09f)},
-        {Vector3(-205.2f, 0.0f, 100.3f), Vector3(1.33f, 2.84f, 1.39f)},
-        {Vector3(28.6f, 0.0f, -210.5f), Vector3(1.17f, 1.75f, 1.11f)},
-        {Vector3(215.3f, 0.0f, -75.1f), Vector3(1.04f, 2.56f, 1.31f)},
-        {Vector3(-190.4f, 0.0f, -170.2f), Vector3(1.28f, 2.18f, 1.44f)},
-        {Vector3(-230.5f, 0.0f, 5.9f), Vector3(1.47f, 2.99f, 1.05f)},
-        {Vector3(88.8f, 0.0f, 215.1f), Vector3(1.03f, 1.62f, 1.25f)},
-        {Vector3(210.7f, 0.0f, 150.3f), Vector3(1.22f, 2.33f, 1.48f)},
-        {Vector3(-245.6f, 0.0f, -102.4f), Vector3(1.38f, 1.80f, 1.16f)},
-        {Vector3(-240.8f, 0.0f, 80.8f), Vector3(1.09f, 2.52f, 1.40f)},
-        {Vector3(115.1f, 0.0f, -230.2f), Vector3(1.31f, 2.08f, 1.03f)},
-        {Vector3(-40.2f, 0.0f, -245.5f), Vector3(1.15f, 1.93f, 1.34f)},
-        {Vector3(220.3f, 0.0f, -160.6f), Vector3(1.27f, 2.79f, 1.45f)},
-        {Vector3(-225.4f, 0.0f, 140.7f), Vector3(1.43f, 2.40f, 1.12f)},
-        {Vector3(250.5f, 0.0f, 10.3f), Vector3(1.06f, 1.90f, 1.36f)},
-        {Vector3(155.6f, 0.0f, 250.4f), Vector3(1.25f, 2.61f, 1.49f)},
-        {Vector3(-210.7f, 0.0f, 220.5f), Vector3(1.41f, 2.35f, 1.07f)},
-        {Vector3(-10.1f, 0.0f, -240.2f), Vector3(1.18f, 2.51f, 1.25f)},
-        {Vector3(28.2f, 0.0f, -112.5f), Vector3(1.34f, 1.98f, 1.42f)},
-        {Vector3(-15.9f, 0.0f, 31.6f), Vector3(1.11f, 2.82f, 1.05f)},
-        {Vector3(-48.7f, 0.0f, 22.3f), Vector3(1.04f, 1.67f, 1.33f)},
-        {Vector3(35.1f, 0.0f, -44.8f), Vector3(1.22f, 2.30f, 1.48f)},
-        {Vector3(61.4f, 0.0f, 8.9f), Vector3(1.47f, 1.77f, 1.15f)},
-        {Vector3(55.6f, 0.0f, 47.2f), Vector3(1.30f, 2.94f, 1.09f)},
-        {Vector3(-33.0f, 0.0f, -58.4f), Vector3(1.17f, 1.55f, 1.29f)},
-        {Vector3(-9.2f, 0.0f, 72.5f), Vector3(1.41f, 2.12f, 1.01f)},
-        {Vector3(-66.8f, 0.0f, -39.1f), Vector3(1.06f, 1.88f, 1.38f)},
-        {Vector3(-42.3f, 0.0f, -85.0f), Vector3(1.25f, 2.76f, 1.45f)},
-        {Vector3(78.1f, 0.0f, -25.6f), Vector3(1.36f, 2.45f, 1.03f)},
-        {Vector3(-71.5f, 0.0f, 55.7f), Vector3(1.02f, 1.91f, 1.27f)},
-        {Vector3(5.8f, 0.0f, -98.3f), Vector3(1.19f, 2.68f, 1.49f)},
-        {Vector3(-95.7f, 0.0f, 9.8f), Vector3(1.07f, 2.97f, 1.30f)},
-        {Vector3(76.2f, 0.0f, -82.1f), Vector3(1.32f, 1.63f, 1.44f)},
-        {Vector3(-57.4f, 0.0f, 105.6f), Vector3(1.01f, 2.22f, 1.06f)},
-        {Vector3(110.3f, 0.0f, -1.5f), Vector3(1.20f, 2.89f, 1.36f)},
-        {Vector3(93.6f, 0.0f, -68.2f), Vector3(1.46f, 1.74f, 1.18f)},
-        {Vector3(-121.0f, 0.0f, 30.7f), Vector3(1.09f, 2.58f, 1.40f)},
-        {Vector3(-88.5f, 0.0f, 92.4f), Vector3(1.28f, 2.15f, 1.04f)},
-        {Vector3(3.4f, 0.0f, 124.1f), Vector3(1.05f, 1.83f, 1.26f)},
-        {Vector3(132.1f, 0.0f, 45.9f), Vector3(1.24f, 2.62f, 1.41f)},
-        {Vector3(-81.8f, 0.0f, -115.0f), Vector3(1.39f, 2.36f, 1.08f)},
-        {Vector3(-139.3f, 0.0f, -20.6f), Vector3(1.03f, 1.94f, 1.31f)},
-        {Vector3(22.8f, 0.0f, -141.7f), Vector3(1.21f, 2.74f, 1.46f)},
-        {Vector3(118.9f, 0.0f, 110.0f), Vector3(1.45f, 2.09f, 1.13f)},
-        {Vector3(150.0f, 0.0f, 71.3f), Vector3(1.04f, 2.91f, 1.32f)},
-        {Vector3(-115.4f, 0.0f, -100.1f), Vector3(1.27f, 1.59f, 1.43f)},
-        {Vector3(-165.6f, 0.0f, 5.2f), Vector3(1.01f, 2.25f, 1.07f)},
-        {Vector3(-75.1f, 0.0f, 135.8f), Vector3(1.23f, 2.85f, 1.37f)},
-        {Vector3(148.9f, 0.0f, -110.1f), Vector3(1.48f, 1.71f, 1.19f)},
-        {Vector3(158.2f, 0.0f, -40.9f), Vector3(1.10f, 2.54f, 1.45f)},
-        {Vector3(-178.4f, 0.0f, 56.3f), Vector3(1.29f, 2.01f, 1.02f)},
-        {Vector3(55.3f, 0.0f, 152.0f), Vector3(1.05f, 1.78f, 1.28f)},
-        {Vector3(-120.1f, 0.0f, -148.5f), Vector3(1.26f, 2.65f, 1.47f)},
-        {Vector3(170.5f, 0.0f, 118.7f), Vector3(1.42f, 2.42f, 1.10f)},
-        {Vector3(-190.0f, 0.0f, -70.9f), Vector3(1.06f, 1.97f, 1.35f)},
-        {Vector3(-150.7f, 0.0f, 145.0f), Vector3(1.24f, 2.72f, 1.49f)},
-        {Vector3(35.8f, 0.0f, -179.6f), Vector3(1.49f, 2.03f, 1.14f)},
-        {Vector3(195.1f, 0.0f, -10.4f), Vector3(1.08f, 2.88f, 1.34f)},
-        {Vector3(-2.3f, 0.0f, 191.2f), Vector3(1.35f, 1.56f, 1.46f)},
-        {Vector3(165.7f, 0.0f, -135.8f), Vector3(1.12f, 2.21f, 1.09f)},
-        {Vector3(-205.2f, 0.0f, 100.3f), Vector3(1.33f, 2.84f, 1.39f)},
-        {Vector3(28.6f, 0.0f, -210.5f), Vector3(1.17f, 1.75f, 1.11f)},
-        {Vector3(215.3f, 0.0f, -75.1f), Vector3(1.04f, 2.56f, 1.31f)},
-        {Vector3(-190.4f, 0.0f, -170.2f), Vector3(1.28f, 2.18f, 1.44f)},
-        {Vector3(-230.5f, 0.0f, 5.9f), Vector3(1.47f, 2.99f, 1.05f)},
-        {Vector3(88.8f, 0.0f, 215.1f), Vector3(1.03f, 1.62f, 1.25f)},
-        {Vector3(210.7f, 0.0f, 150.3f), Vector3(1.22f, 2.33f, 1.48f)},
-        {Vector3(-245.6f, 0.0f, -102.4f), Vector3(1.38f, 1.80f, 1.16f)},
-        {Vector3(-240.8f, 0.0f, 80.8f), Vector3(1.09f, 2.52f, 1.40f)},
-        {Vector3(115.1f, 0.0f, -230.2f), Vector3(1.31f, 2.08f, 1.03f)},
-        {Vector3(-40.2f, 0.0f, -245.5f), Vector3(1.15f, 1.93f, 1.34f)},
-        {Vector3(220.3f, 0.0f, -160.6f), Vector3(1.27f, 2.79f, 1.45f)},
-        {Vector3(-225.4f, 0.0f, 140.7f), Vector3(1.43f, 2.40f, 1.12f)},
-        {Vector3(250.5f, 0.0f, 10.3f), Vector3(1.06f, 1.90f, 1.36f)},
-        {Vector3(155.6f, 0.0f, 250.4f), Vector3(1.25f, 2.61f, 1.49f)},
-        {Vector3(-210.7f, 0.0f, 220.5f), Vector3(1.41f, 2.35f, 1.07f)},
-    };
-
-    std::sort(buildingTrans.begin(), buildingTrans.end(), [](BuildingTrans& transA, BuildingTrans& transB)
-        {
-            return (transA.pos.LengthSquared() < transB.pos.LengthSquared());});
-
-    // 重複した要素をuniqueで末尾に移動
-    auto last = std::unique(buildingTrans.begin(), buildingTrans.end(), 
-        [](BuildingTrans& transA, BuildingTrans& transB) {
-            return transA.pos == transB.pos;
-        });
-
-    // 末尾から重複要素を削除
-    buildingTrans.erase(last, buildingTrans.end());
-    // 建物の作成
-    for (auto& trans : buildingTrans)
-    {
-        auto building = std::make_unique<Building>();
-
-        building->SetPosition(trans.pos);
-        building->SetExtends(trans.scale);
-        building->Initialize(GetCommonResources(), m_collisionManager.get());
-
-        m_buildings.emplace_back(std::move(building));
-    }
+    m_buildingManager = std::make_unique<BuildingManager>();
+    m_buildingManager->Initialize();
+    m_buildingManager->RequestCreate(m_collisionManager.get(), GetCommonResources());
+   // m_buildingManager->Save();
     // ****** ここまで ******************************************************
 
 

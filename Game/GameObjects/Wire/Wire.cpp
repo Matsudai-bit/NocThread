@@ -123,18 +123,18 @@ void Wire::Initialize(
 /**
  * @brief 更新処理
  *
- * @param[in] elapsedTime 経過時間
+ * @param[in] deltaTime 経過時間
  *
  * @return なし
  */
-void Wire::Update(float elapsedTime)
+void Wire::Update(float deltaTime)
 {
 
 	if (m_isExtention)
 	{
 
 		auto particle = m_ropeObject->GetParticles()->back();
-		SimpleMath::Vector3 pos = particle->GetPosition() + m_wireVelocity * elapsedTime;
+		SimpleMath::Vector3 pos = particle->GetPosition() + m_wireVelocity * deltaTime;
 
 		float lengthSqr = SimpleMath::Vector3::DistanceSquared(m_owner.pGameObject->GetPosition(), pos);
 
@@ -239,12 +239,12 @@ void Wire::Reset()
 /**
  * @brief シミュレータの適用
  * 
- * @param[in] elapsedTime　経過時間
+ * @param[in] deltaTime　経過時間
  */
-void Wire::ApplyWireSimulator(const float& elapsedTime)
+void Wire::ApplyWireSimulator(const float& deltaTime)
 {
 	if (m_simulator.get() != nullptr)
-		m_simulator->Update(elapsedTime);
+		m_simulator->Update(deltaTime);
 }
 
 /**

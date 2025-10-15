@@ -62,7 +62,7 @@ public:
 	void Initialize(ResourceManager* pResourceManager, std::function<void()> closeWindow);
 
 	// XVˆ—
-	void Update(float elapsedTime, const DirectX::Keyboard::KeyboardStateTracker& keyboardStateTracker);
+	void Update(float deltaTime, const DirectX::Keyboard::KeyboardStateTracker& keyboardStateTracker);
 	// •`‰æˆ—
 	void Draw();
 	// I—¹ˆ—

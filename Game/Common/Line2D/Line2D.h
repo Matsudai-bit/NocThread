@@ -64,7 +64,7 @@ public:
 	void Initialize(DX::DeviceResources* pDeviceResources);
 
 	// XVˆ—
-	void Update(float elapsedTime);
+	void Update(float deltaTime);
 
 	// •`‰æˆ—
 	void Draw(DirectX::CommonStates* pStates, float windowWidth, float windowHeight);

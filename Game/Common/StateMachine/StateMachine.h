@@ -147,7 +147,7 @@ public:
 	 * @brief 状態の更新
 	 * 
 	 */
-	void Update(float elapsedTime)
+	void Update(float deltaTime)
 	{
 		// ステートの変更命令があれば処理する
 		m_fnChangeState();
@@ -156,7 +156,7 @@ public:
 		StateBase<OwnerType>* pBackState = GetNowState();
 		if (pBackState != nullptr)
 		{
-			pBackState->CallUpdate(elapsedTime);
+			pBackState->CallUpdate(deltaTime);
 		}
 
 	}

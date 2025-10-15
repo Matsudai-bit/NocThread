@@ -70,7 +70,7 @@ public:
 	void Initialize() override;
 
 	// XVˆ—
-	void Update(float elapsedTime) override;
+	void Update(float deltaTime) override;
 
 	// •`‰æˆ—
 	void Render() override;

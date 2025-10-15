@@ -122,14 +122,14 @@ void FailureResultState::OnStartState()
 	m_destroyedNumSprite->SetNumber(resultData->GetDestroyedNum());
 }
 
-void FailureResultState::OnUpdate(float elapsedTime)
+void FailureResultState::OnUpdate(float deltaTime)
 {
-	m_elapsedCounterForEasing.UpperTime(elapsedTime);
+	m_elapsedCounterForEasing.UpperTime(deltaTime);
 
-	float ratio= 0.3f +0.7f * MyLib::EaseOutSine(m_elapsedCounterForEasing.GetElapsedTime() / EASING_TIME) ;
+	float ratio= 0.3f +0.7f * MyLib::EaseOutSine(m_elapsedCounterForEasing.GetdeltaTime() / EASING_TIME) ;
 	m_resultFontSprite->SetOpacity(ratio);
 
-	if (m_elapsedCounterForEasing.GetElapsedTime() >= EASING_TIME)
+	if (m_elapsedCounterForEasing.GetdeltaTime() >= EASING_TIME)
 	{
 		m_elapsedCounterForEasing.Reset();
 	}

@@ -68,7 +68,7 @@ private:
 
 	Line2D	m_line;
 
-	ElapsedTimeCounter m_elapsedTimeCounter; ///< 経過時間カウンター
+	ElapsedTimeCounter m_ElapsedTimeCounter; ///< 経過時間カウンター
 
 
 // メンバ関数の宣言 -------------------------------------------------
@@ -87,7 +87,7 @@ public:
 	void Initialize(Canvas* pCanvas, const CommonResources* pCommonResources, std::function<void(MenuItem)> pushButtonFunc);
 
 	// 更新処理
-	void Update(float elapsedTime);
+	void Update(float deltaTime);
 
 	// 描画処理
 	void Draw();

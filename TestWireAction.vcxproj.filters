@@ -438,7 +438,7 @@
     <ClInclude Include="Game\GameObjects\RopeObject\RopeObject.h">
       <Filter>Game\GameObjects\RopeObject</Filter>
     </ClInclude>
-    <ClInclude Include="Game\GameObjects\RopeObject\XPBDSimulator\XPDBSimulator.h">
+    <ClInclude Include="Game\GameObjects\RopeObject\XPBDSimulator\XPBDSimulator.h">
       <Filter>Game\GameObjects\RopeObject\XPBDSimulator</Filter>
     </ClInclude>
     <ClInclude Include="Game\GameObjects\Floor\Floor.h">
@@ -748,6 +748,7 @@
     <ClInclude Include="Game\Common\EntityManager\IEntity.h">
       <Filter>Game\Common\EntityManager</Filter>
     </ClInclude>
+    <ClInclude Include="Game\Manager\BuildingManager\BuildingManager.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -803,7 +804,7 @@
     <ClCompile Include="Game\GameObjects\RopeObject\RopeObject.cpp">
       <Filter>Game\GameObjects\RopeObject</Filter>
     </ClCompile>
-    <ClCompile Include="Game\GameObjects\RopeObject\XPBDSimulator\XPDBSimulator.cpp">
+    <ClCompile Include="Game\GameObjects\RopeObject\XPBDSimulator\XPBDSimulator.cpp">
       <Filter>Game\GameObjects\RopeObject\XPBDSimulator</Filter>
     </ClCompile>
     <ClCompile Include="Game\GameObjects\Floor\Floor.cpp">
@@ -1065,6 +1066,7 @@
     <ClCompile Include="Game\Common\EntityManager\IEntity.cpp">
       <Filter>Game\Common\EntityManager</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Manager\BuildingManager\BuildingManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />

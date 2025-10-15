@@ -58,18 +58,18 @@ TrackingEnemyBehaviour::~TrackingEnemyBehaviour()
  * @brief 更新処理
  * 
  * @param[in] pEnemy		敵（自身）
- * @param[in] elapsedTime	経過時間
+ * @param[in] deltaTime	経過時間
  * @param[in] pPlayer		プレイヤー
  */
-void TrackingEnemyBehaviour::Update(Enemy* pEnemy, float elapsedTime, const CommonResources* pCommonResources)
+void TrackingEnemyBehaviour::Update(Enemy* pEnemy, float deltaTime, const CommonResources* pCommonResources)
 {
 	UNREFERENCED_PARAMETER(pCommonResources);
-	UNREFERENCED_PARAMETER(elapsedTime);
+	UNREFERENCED_PARAMETER(deltaTime);
 	using namespace SimpleMath;
 
-	m_playerTargetTimeCounter.UpperTime(elapsedTime);
+	m_playerTargetTimeCounter.UpperTime(deltaTime);
 
-	if (m_playerTargetTimeCounter.GetElapsedTime() >= 1.0f)
+	if (m_playerTargetTimeCounter.GetdeltaTime() >= 1.0f)
 	{
 		const GameObject* pPlayerObject = GameObjectRegistry::GetInstance()->GetGameObject(GameObjectTag::PLAYER);
 		if (pPlayerObject == nullptr) {
@@ -95,7 +95,7 @@ void TrackingEnemyBehaviour::Update(Enemy* pEnemy, float elapsedTime, const Comm
 
 		
 
-	Vector3 velocity = MovementHelper::ClampedMovement(pEnemy->GetVelocity() * Vector3(1.0f, 0.0f, 1.0f), m_targetDirection, elapsedTime, ACCELERATION, DECELERATION, MAX_MOVE_SPEED); ;
+	Vector3 velocity = MovementHelper::ClampedMovement(pEnemy->GetVelocity() * Vector3(1.0f, 0.0f, 1.0f), m_targetDirection, deltaTime, ACCELERATION, DECELERATION, MAX_MOVE_SPEED); ;
 
 	
 

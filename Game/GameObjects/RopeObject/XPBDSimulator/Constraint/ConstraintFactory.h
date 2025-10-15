@@ -14,7 +14,7 @@
 
 // ヘッダファイルの読み込み ===================================================
 
-#include "Game/GameObjects/RopeObject/XPBDSimulator/XPDBSimulator.h"
+#include "Game/GameObjects/RopeObject/XPBDSimulator/XPBDSimulator.h"
 
 // クラスの前方宣言 ===================================================
 class IConstraint;

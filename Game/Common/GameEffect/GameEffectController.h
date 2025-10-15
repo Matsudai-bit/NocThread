@@ -61,7 +61,7 @@ public:
 	void StopEffect(unsigned int id);
 
 	// XVˆ—
-	void Update(float elapsedTime);
+	void Update(float deltaTime);
 
 	// •`‰æˆ—
 	void Draw();

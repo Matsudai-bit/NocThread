@@ -63,11 +63,11 @@ void GameEffectController::StopEffect(unsigned int id)
 /**
  * @brief 更新処理
  * 
- * @param[in] elapsedTime　経過時間
+ * @param[in] deltaTime　経過時間
  */
-void GameEffectController::Update(float elapsedTime)
+void GameEffectController::Update(float deltaTime)
 {
-    m_pGameEffectManager->Update(elapsedTime);
+    m_pGameEffectManager->Update(deltaTime);
 }
 
 /**

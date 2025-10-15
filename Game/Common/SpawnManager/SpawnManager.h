@@ -77,7 +77,7 @@ public:
 	void Initialize(EnemyManager* pEnemyManager, std::vector<std::unique_ptr<EscapeHelicopter>>* pEscapeHelicopters,CommonResources* pCommonResources, CollisionManager* pCollisionManager);
 
 	// XVˆ—
-	void Update(float elapsedTime);
+	void Update(float deltaTime);
 
 	// •`‰æˆ—
 	void Draw();

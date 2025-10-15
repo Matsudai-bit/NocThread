@@ -58,7 +58,7 @@ public:
 	void Initialize(const CommonResources* pCommonResources, CollisionManager* pCollisionManager) override ;
 
 	// 更新処理
-	void Update(float elapsedTime) override ;
+	void Update(float deltaTime) override ;
 
 	// 描画処理
 	void Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj) override ;
@@ -80,6 +80,7 @@ public:
 
 	// ゲームオブジェクトタグの取得
 	GameObjectTag GetTag() const override { return GameObjectTag::BUILDING; }
+	DirectX::SimpleMath::Vector3 GetExtends() const { return m_extends; }
 
 	void SetExtends(const DirectX::SimpleMath::Vector3& extends) 
 	{

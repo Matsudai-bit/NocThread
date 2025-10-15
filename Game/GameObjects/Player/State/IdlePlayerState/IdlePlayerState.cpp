@@ -55,15 +55,15 @@ void IdlePlayerState::OnStartState()
 /**
  * @brief 更新処理
  * 
- * @param[in] elapsedTime　経過時間
+ * @param[in] deltaTime　経過時間
  */
-void IdlePlayerState::OnUpdate(float elapsedTime)
+void IdlePlayerState::OnUpdate(float deltaTime)
 {
 	// マウストラック
 	auto mosueTrack = GetOwner()->GetCommonResources()->GetMouseTracker();
 
 	// 物理の適用
-	GetOwner()->ApplyPhysic(elapsedTime);
+	GetOwner()->ApplyPhysic(deltaTime);
 
 	// 移動入力されているかどうか
 	if (GetOwner()->IsMovingRequested())
@@ -80,7 +80,7 @@ void IdlePlayerState::OnUpdate(float elapsedTime)
 	}
 
 	// 移動する
-	GetOwner()->Move(elapsedTime);
+	GetOwner()->Move(deltaTime);
 
 	//GetOwner()->GetCommonResources()->GetDebugFont()->AddString(10, 90, Colors::White, L"Idle");
 

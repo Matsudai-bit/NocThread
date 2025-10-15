@@ -77,13 +77,13 @@ void Line2D::Initialize(DX::DeviceResources* pDeviceResources)
 /**
  * @brief 更新処理
  *
- * @param[in] elapsedTime 経過時間
+ * @param[in] deltaTime 経過時間
  *
  * @return なし
  */
-void Line2D::Update(float elapsedTime)
+void Line2D::Update(float deltaTime)
 {
-	UNREFERENCED_PARAMETER(elapsedTime);
+	UNREFERENCED_PARAMETER(deltaTime);
 }
 
 

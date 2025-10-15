@@ -93,16 +93,16 @@ void StageObject::Initialize(CommonResources* pCommonResources, CollisionManager
 /**
  * @brief 更新処理
  *
- * @param[in] elapsedTime 経過時間
+ * @param[in] deltaTime 経過時間
  *
  * @return なし
  */
-void StageObject::Update(float elapsedTime)
+void StageObject::Update(float deltaTime)
 {
 	if (m_isActive == false) return;
 	ApplyEvents();
 	// ステートマシーンの更新処理
-	m_stateMachine->Update(elapsedTime);
+	m_stateMachine->Update(deltaTime);
 
 
 
@@ -156,12 +156,12 @@ void StageObject::Finalize()
 /**
  * @brief 物理的な移動
  *
- * @param[in] elapsedTime
+ * @param[in] deltaTime
  */
-void StageObject::ApplyPhysic(const float& elapsedTime)
+void StageObject::ApplyPhysic(const float& deltaTime)
 {
 	// 重力を加える
-	ApplyGravity(elapsedTime);
+	ApplyGravity(deltaTime);
 
 
 
@@ -183,14 +183,14 @@ void StageObject::ApplyFriction()
 /**
  * @brief 重力を適用
  *
- * @param[in] elapsedTime　経過時間
+ * @param[in] deltaTime　経過時間
  */
-void StageObject::ApplyGravity(const float& elapsedTime)
+void StageObject::ApplyGravity(const float& deltaTime)
 {
 
 	// 重力を加える
 	SimpleMath::Vector3 velocity = GetVelocity();
-	velocity += GRAVITY_ACCELERATION * elapsedTime;
+	velocity += GRAVITY_ACCELERATION * deltaTime;
 
 	SetVelocity(velocity);
 }
@@ -198,9 +198,9 @@ void StageObject::ApplyGravity(const float& elapsedTime)
 /**
  * @brief 移動の適用
  *
- * @param[in] elapsedTime　経過時間
+ * @param[in] deltaTime　経過時間
  */
-void StageObject::Move(const float& elapsedTime)
+void StageObject::Move(const float& deltaTime)
 {
 
 	SimpleMath::Quaternion rotate = GetRotate();
@@ -208,7 +208,7 @@ void StageObject::Move(const float& elapsedTime)
 
 	// **** 座標の更新 ****
 	// 座標の算出
-	SimpleMath::Vector3 position = GetPosition() + GetVelocity() * elapsedTime;
+	SimpleMath::Vector3 position = GetPosition() + GetVelocity() * deltaTime;
 	SetPosition(position);
 
 	// コライダの更新処理

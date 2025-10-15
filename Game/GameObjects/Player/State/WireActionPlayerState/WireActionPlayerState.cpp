@@ -53,9 +53,9 @@ void WireActionPlayerState::OnStartState()
 /**
  * @brief 更新処理
  * 
- * @param[in] elapsedTime　経過時間
+ * @param[in] deltaTime　経過時間
  */
-void WireActionPlayerState::OnUpdate(float elapsedTime)
+void WireActionPlayerState::OnUpdate(float deltaTime)
 {
 	// マウストラック
 	auto mosueTrack = GetOwner()->GetCommonResources()->GetMouseTracker();
@@ -63,18 +63,18 @@ void WireActionPlayerState::OnUpdate(float elapsedTime)
 	GetOwner()->SetVelocity(GetOwner()->GetWire()->GetStartVelocity());
 
 	// ワイヤーアクション挙動
-	GetOwner()->BehaviourWireAction(elapsedTime);
+	GetOwner()->BehaviourWireAction(deltaTime);
 
 	// 物理の適用
-	//GetOwner()->ApplyPhysic(elapsedTime);
+	//GetOwner()->ApplyPhysic(deltaTime);
 
 	// 移動入力の適用
-	//GetOwner()->ApplyMoveInput(elapsedTime);
+	//GetOwner()->ApplyMoveInput(deltaTime);
 
-	GetOwner()->RotateForMoveDirection(elapsedTime);
+	GetOwner()->RotateForMoveDirection(deltaTime);
 
 	// 移動
-	GetOwner()->Move(elapsedTime);
+	GetOwner()->Move(deltaTime);
 
 	if (mosueTrack->leftButton == Mouse::ButtonStateTracker::RELEASED)
 	{

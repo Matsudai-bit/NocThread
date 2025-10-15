@@ -100,7 +100,7 @@ public:
 	void Initialize(Parameter parameter, RopeObject* pRopeObject);
 
 	// 更新処理
-	void Update(float elapsedTime);
+	void Update(float deltaTime);
 
 	// 描画処理
 	void Draw();
@@ -109,7 +109,7 @@ public:
 	void Finalize();
 
 	// シュミレーション
-	void Simulate(float elapsedTime);
+	void Simulate(float deltaTime);
 
 	// リセットする
 	void Reset();
@@ -127,7 +127,7 @@ public:
 private:
 
 	// 各パーティクルの予測位置（xi）を慣性に基づいて計算する
-	void PredictNextPositions(float elapsedTime);
+	void PredictNextPositions(float deltaTime);
 
 	// 各ロープセグメントの制約パラメータ（λ・α）を初期化する
 	void ResetConstraintParameters();
@@ -136,10 +136,10 @@ private:
 	void GenerateConstraints();
 
 	// 各制約に対してXPBDの反復計算を行い、パーティクルの予測位置（xi）を調整する
-	void IterateConstraints(float elapsedTime);
+	void IterateConstraints(float deltaTime);
 
 	// 予測位置と現在位置から速度を更新し、パーティクルの状態を確定させる
-	void FinalizeVelocitiesAndPositions(float elapsedTime);
+	void FinalizeVelocitiesAndPositions(float deltaTime);
 
 
 

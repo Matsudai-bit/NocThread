@@ -52,7 +52,7 @@ public:
 	virtual void Initialize(const CommonResources* pCommonResources, CollisionManager* pCollisionManager) = 0;
 
 	// XVˆ—
- 	virtual void Update(float elapsedTime) = 0;
+ 	virtual void Update(float deltaTime) = 0;
 
 	// •`‰æˆ—
 	virtual void Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj) = 0;

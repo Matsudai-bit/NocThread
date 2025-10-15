@@ -52,7 +52,7 @@ public:
 	void OnStartState() override;
 
 	// XVˆ—
-	void OnUpdate(float elapsedTime) override;
+	void OnUpdate(float deltaTime) override;
 
 	// •`‰æˆ—
 	void OnDraw() override;

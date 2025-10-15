@@ -185,7 +185,7 @@ public:
 		float height);
 
 	// XVˆ—
-	void Update(float elapsedTime);
+	void Update(float deltaTime);
 
 	// •`‰æˆ—
 	void Draw(DirectX::SimpleMath::Matrix* pView, DirectX::SimpleMath::Matrix* pProj);

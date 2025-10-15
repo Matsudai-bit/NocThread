@@ -51,18 +51,18 @@ void WalkPlayerState::OnStartState()
 /**
  * @brief 更新処理
  * 
- * @param[in] elapsedTime　経過時間
+ * @param[in] deltaTime　経過時間
  */
-void WalkPlayerState::OnUpdate(float elapsedTime)
+void WalkPlayerState::OnUpdate(float deltaTime)
 {
 	// マウストラック
 	auto mosueTrack = GetOwner()->GetCommonResources()->GetMouseTracker();
 
 	// 物理の適用
-	GetOwner()->ApplyPhysic(elapsedTime);
+	GetOwner()->ApplyPhysic(deltaTime);
 
 	// 移動入力の適用
-	GetOwner()->ApplyMoveInput(elapsedTime);
+	GetOwner()->ApplyMoveInput(deltaTime);
 
 	if (GetOwner()->GetVelocity().LengthSquared() <= 0.0f)
 	{
@@ -79,7 +79,7 @@ void WalkPlayerState::OnUpdate(float elapsedTime)
 
 
 	// 移動
-	GetOwner()->Move(elapsedTime);
+	GetOwner()->Move(deltaTime);
 
 	//GetOwner()->GetCommonResources()->GetDebugFont()->AddString(10, 90, Colors::White, L"Walk");
 

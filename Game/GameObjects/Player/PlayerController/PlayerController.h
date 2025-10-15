@@ -55,7 +55,7 @@ public:
 	void Initialize(Player* pPlayer, Camera* pCamera);
 
 	// XVˆ—
-	void Update(float elapsedTime, const DirectX::Keyboard::KeyboardStateTracker* pKeyboardStateTracker, const DirectX::Mouse::ButtonStateTracker* pMouseStateTracker);
+	void Update(float deltaTime, const DirectX::Keyboard::KeyboardStateTracker* pKeyboardStateTracker, const DirectX::Mouse::ButtonStateTracker* pMouseStateTracker);
 
 	// •`‰æˆ—
 	void Draw();
