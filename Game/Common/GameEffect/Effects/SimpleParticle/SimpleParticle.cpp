@@ -304,7 +304,7 @@ void SimpleParticle::CreateParticle()
 
 	// ¶¬ˆÊ’u‚ğŒˆ‚ß‚é
 	float radius = 2.0f;
-	float radian = XMConvertToRadians(m_randomGenerator() % 360);
+	float radian = XMConvertToRadians(static_cast<float>(static_cast<int>(m_randomGenerator()) % 360));
 	pCreationParticle->position.y = m_position.y;
 	pCreationParticle->position.x = m_position.x + std::cos(radian) * radius;
 	pCreationParticle->position.z = m_position.z + std::sin(radian) * radius;

@@ -131,12 +131,12 @@ void WireTargetFinder::Update(float elapsedTime, const Camera* pCamera, MyLib::R
  *
  * @return なし
  */
-void WireTargetFinder::Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj)
+void WireTargetFinder::Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& projection)
 {
 	auto context = GetCommonResources()->GetDeviceResources()->GetD3DDeviceContext();
 	
 	// デバック表示
-	//m_capsuleCollider->Draw(context, view, proj);
+	//m_capsuleCollider->Draw(context, view, projection);
 
 	//m_primitiveBatch->Begin();
 	//DX::DrawRay(m_primitiveBatch.get(), m_capsuleCollider->GetPosition() + (-m_capsuleCollider->GetAxis() * (m_capsuleCollider->GetLength() / 2.0f)), m_capsuleCollider->GetAxis() * m_capsuleCollider->GetLength(), false, Colors::Red);
@@ -147,7 +147,7 @@ void WireTargetFinder::Draw(const DirectX::SimpleMath::Matrix& view, const Direc
 	for (auto& data : m_grappleTargetData)
 	{
 
-		a->Draw(SimpleMath::Matrix::CreateTranslation(data.targetPosition), view, proj, Colors::Blue, nullptr, true);
+		a->Draw(SimpleMath::Matrix::CreateTranslation(data.targetPosition), view, projection, Colors::Blue, nullptr, true);
 	}
 
 	

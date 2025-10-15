@@ -139,7 +139,7 @@ void Game::Initialize(HWND window, int width, int height)
     m_sceneManager->SetCommonResources(m_commonResources.get());
 
     // 開始シーンの設定
-    m_sceneManager->RequestSceneChange<GameplayScene, LoadingScreen>();
+    m_sceneManager->RequestSceneChange<TitleScene, LoadingScreen>();
 
     // ***** ImGuiの初期設定 *****
     //  バージョンの確認
@@ -248,11 +248,11 @@ void Game::Render()
     //m_debugFont->AddString(0, 0, Colors::White, L"FPS=%d", fps);
 
     // デバッグフォントの描画
-    //m_debugFont->Render(m_states.get());
+    m_debugFont->Render(m_states.get());
 
        // ****  ImGuiの描画処理 ****
     ImGui::Render();
-    ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+    //ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 
     // ***** ここから下には書かない　******
 

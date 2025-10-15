@@ -229,13 +229,13 @@ void Player::Update(float elapsedTime, const Camera& camera, const DirectX::Simp
  * @param[in] view　ビュー行列
  * @param[in] proj　射影行列
  */
-void Player::Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj)
+void Player::Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& projection)
 {
 	using namespace SimpleMath;
 	if (m_isActive == false) { return; }
 
 	// ワイヤーの描画処理
-	m_wire->Draw(view, proj);
+	m_wire->Draw(view, projection);
 
 	// 状態の描画処理
 	m_stateMachine->Draw();
@@ -259,7 +259,7 @@ void Player::Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::Simple
 	Matrix world = defaultRotation * defaultTransform * scale * rotation * transform;
 
 
-	m_model.Draw(context, *GetCommonResources()->GetCommonStates(), world, view, proj);
+	m_model.Draw(context, *GetCommonResources()->GetCommonStates(), world, view, projection);
 	auto drawBones = DirectX::ModelBone::MakeArray(m_model.bones.size());
 	// ボーン数を取得する
 	size_t nbones = m_model.bones.size();
@@ -270,9 +270,9 @@ void Player::Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::Simple
 	// スキン変形用行列を適用する
 	m_animation.ApplySkinMatrix(m_model, nbones, drawBones.get());
 	// アニメーションモデルを描画する
-	m_model.DrawSkinned(context, *states, nbones, drawBones.get(), world, view, proj);
+	m_model.DrawSkinned(context, *states, nbones, drawBones.get(), world, view, projection);
 
-	m_model.Draw(context, *states, world, view, proj);
+	m_model.Draw(context, *states, world, view, projection);
 
 	// **** 軸の描画 ****
 
@@ -288,7 +288,7 @@ void Player::Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::Simple
 
 	// ベーシックエフェクト
 	m_basicEffect->SetView(view);
-	m_basicEffect->SetProjection(proj);
+	m_basicEffect->SetProjection(projection);
 	m_basicEffect->Apply(context);
 
 	SimpleMath::Vector3 forward = GetForward() * 1.5f;
@@ -303,7 +303,7 @@ void Player::Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::Simple
 	//GetCommonResources()->GetDebugFont()->AddString(100, 130, Colors::White, L"speed : %f ", GetVelocity().Length());
 
 	// ワイヤー照準検出器の表示
-	m_wireTargetFinder->Draw(view, proj);
+	m_wireTargetFinder->Draw(view, projection);
 
 	//m_collider->Draw(context, view, proj);
 

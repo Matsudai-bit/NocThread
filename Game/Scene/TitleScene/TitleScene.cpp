@@ -132,6 +132,7 @@ void TitleScene::Update(float elapsedTime)
 {
 	UNREFERENCED_PARAMETER(elapsedTime);
 
+	// ロゴの透過イージング
 	float opacity = MyLib::EaseInOutQuint( m_elapsedTimeCounter.GetElapsedTime() / LOGO_EASING_TIME);
 	if (m_elapsedTimeCounter.GetElapsedTime() <= LOGO_EASING_TIME)
 	{
@@ -175,7 +176,7 @@ void TitleScene::Render()
 	// 共通リソース
 	auto states = GetCommonResources()->GetCommonStates();
 
-	GetCommonResources()->GetDebugFont()->AddString(0, 30, Colors::White, L"TitleScene");
+	//GetCommonResources()->GetDebugFont()->AddString(0, 30, Colors::White, L"TitleScene");
 
 	m_canvas->Draw(states);
 

@@ -150,7 +150,7 @@ void ResultScene::Render()
 	// ‹¤’ÊƒŠƒ\[ƒX
 	auto states = GetCommonResources()->GetCommonStates();
 
-	GetCommonResources()->GetDebugFont()->AddString(0, 30, Colors::White, L"ResultScene");
+	//GetCommonResources()->GetDebugFont()->AddString(0, 30, Colors::White, L"ResultScene");
 
 	m_canvas->Draw(states);
 
