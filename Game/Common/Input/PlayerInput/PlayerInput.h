@@ -61,6 +61,8 @@ public:
 
 	std::unordered_map<ActionID, InputData> m_inputs; ///< “ü—Íî•ñ‚Æ“®ì‚Ì•R‚Ã‚¯ŒQ
 
+	std::unordered_map < ActionID, std::unordered_map<InputOption, bool>> m_currentInputState; ///< Œ»İ‚Ì“ü—Íó‹µ
+
 	const DirectX::Keyboard::KeyboardStateTracker* m_pKeyboardStateTracker;
 	const DirectX::Mouse::ButtonStateTracker* m_pMouseStateTracker;
 

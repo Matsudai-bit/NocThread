@@ -66,6 +66,9 @@ void PlayerInput::Update(
 	const DirectX::Keyboard::KeyboardStateTracker* pKeyboardStateTracker, 
 	const DirectX::Mouse::ButtonStateTracker* pMouseStateTracker)
 {
+	// リセット
+	m_currentInputState.clear();
+
 	m_pKeyboardStateTracker = pKeyboardStateTracker;
 	m_pMouseStateTracker	= pMouseStateTracker;
 }
@@ -81,7 +84,17 @@ void PlayerInput::Update(
  */
 bool PlayerInput::IsInput(const ActionID& actionID, const InputOption& inputOption)
 {
+	// 既にデータに入っているかどうか
+	if (m_currentInputState.count(actionID)
+		&& m_currentInputState[actionID].count(inputOption))
+	{
+		// あればそれを送る
+		return m_currentInputState[actionID][inputOption];
+	}
+
 	InputData inputData = m_inputs[actionID];
+
+	bool result = false;
 
 	// キーボードの確認
 	for (auto& key : inputData.keys)
@@ -90,15 +103,15 @@ bool PlayerInput::IsInput(const ActionID& actionID, const InputOption& inputOpti
 		{
 		// 押している時
 		case PlayerInput::InputOption::DOWN:
-			if (m_pKeyboardStateTracker->GetLastState().IsKeyDown(key)) { return true; }
+			result = m_pKeyboardStateTracker->GetLastState().IsKeyDown(key);
 			break;
 		// 押された時
 		case PlayerInput::InputOption::PRESSED:
-			if (m_pKeyboardStateTracker->IsKeyPressed(key)) { return true; }
+			result = m_pKeyboardStateTracker->IsKeyPressed(key);
 			break;
 		// 離された時
 		case PlayerInput::InputOption::RELEASED:
-			if (m_pKeyboardStateTracker->IsKeyReleased(key)) { return true; }
+			result = m_pKeyboardStateTracker->IsKeyReleased(key);
 			break;
 		default:
 			break;
@@ -126,6 +139,7 @@ bool PlayerInput::IsInput(const ActionID& actionID, const InputOption& inputOpti
 			default:
 				break;
 			}
+			return false;
 		};
 
 		int buttonInt[] = { static_cast<int>(MouseButtons::LEFT_BUTTON),  static_cast<int>(MouseButtons::RIGHT_BUTTTON), static_cast<int>(MouseButtons::MIDDLE_BUTTTON) };
@@ -135,10 +149,8 @@ bool PlayerInput::IsInput(const ActionID& actionID, const InputOption& inputOpti
 			// ボタンの確認
 			if (button == static_cast<MouseButtons>(buttonInt[i]))
 			{
-				if (checkInput(m_pMouseStateTracker->leftButton))
-				{
-					return true;
-				}
+			
+				result = checkInput(m_pMouseStateTracker->leftButton);
 			}
 		}
 
@@ -147,7 +159,7 @@ bool PlayerInput::IsInput(const ActionID& actionID, const InputOption& inputOpti
 		//{
 		//	if (checkInput(m_pMouseStateTracker->leftButton))
 		//	{
-		//		return true;
+		//		result = true;
 		//	}
 		//}
 		//// 右ボタンの確認
@@ -155,7 +167,7 @@ bool PlayerInput::IsInput(const ActionID& actionID, const InputOption& inputOpti
 		//{
 		//	if (checkInput(m_pMouseStateTracker->rightButton))
 		//	{
-		//		return true;
+		//		result = true;
 		//	}
 		//}
 		//// 間のボタンの確認
@@ -163,12 +175,16 @@ bool PlayerInput::IsInput(const ActionID& actionID, const InputOption& inputOpti
 		//{
 		//	if (checkInput(m_pMouseStateTracker->middleButton))
 		//	{
-		//		return true;
+		//		result = true;
 		//	}
 		//}
 		//
 	}
-	return false;
+
+	// 結果の登録
+	m_currentInputState[actionID][inputOption] = result;
+
+	return result;
 }
 
 
