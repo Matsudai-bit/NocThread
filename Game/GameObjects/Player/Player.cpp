@@ -67,8 +67,7 @@ Player::Player()
 	, m_canStep{ true }
 	, m_state{ State::IDLE }
 {
-	m_cursorPos = DirectX::SimpleMath::Vector2(Screen::Get()->GetCenterXF(), Screen::Get()->GetCenterYF() - 140.f * Screen::Get()->GetScreenScale());
-
+	m_cursorPos = DirectX::SimpleMath::Vector2(Screen::Get()->GetCenterXF(), Screen::Get()->GetCenterYF() -  CURSOR_Y_OFFSET_SCALE * Screen::Get()->GetScreenScale());
 	// メッセージへの登録
 	GameFlowMessenger::GetInstance()->RegistrObserver(this);
 }
@@ -81,7 +80,6 @@ Player::Player()
 Player::~Player()
 {
 }
-
 
 
 /**
@@ -102,15 +100,15 @@ void Player::Initialize(CommonResources* pCommonResources, CollisionManager* pCo
 	m_pCollisionManager = pCollisionManager;
 
 	// モデルの取得
-	m_model =  GetCommonResources()->GetResourceManager()->CreateModel(PLAYER_MODEL_FILE_NAME);
+	m_model = GetCommonResources()->GetResourceManager()->CreateModel(PLAYER_MODEL_FILE_NAME);
 	auto context = GetCommonResources()->GetDeviceResources()->GetD3DDeviceContext();
-	auto device  = GetCommonResources()->GetDeviceResources()->GetD3DDevice();
+	auto device = GetCommonResources()->GetDeviceResources()->GetD3DDevice();
 
-	SetPosition(SimpleMath::Vector3(0.0f, 29.0f, 0.0f));
-	SetScale(0.5f);
+	SetPosition(SimpleMath::Vector3(0.0f, INITIAL_POS_Y, 0.0f));
+	SetScale(DEFAULT_MODEL_SCALE);
 
 	// コライダの作成
-	m_collider = std::make_unique<Sphere>(GetPosition(), GetScale() * 1.3f);
+	m_collider = std::make_unique<Sphere>(GetPosition(), GetScale() * DEFAULT_COLLIDER_RADIUS_FACTOR);
 
 	pCollisionManager->AddCollisionObjectData(this, m_collider.get());
 
@@ -122,25 +120,28 @@ void Player::Initialize(CommonResources* pCommonResources, CollisionManager* pCo
 
 	// ワイヤーシステム
 	m_wireSystemSubject = std::make_unique<WireSystemSubject>();
-	
+
 	// ワイヤーの作成
 	m_wire = std::make_unique<Wire>();
 
 	// ワイヤー照準検出器の作成
 	m_wireTargetFinder = std::make_unique<WireTargetFinder>();
-	m_wireTargetFinder->Initialize(GetCommonResources(), pCollisionManager, 30.0f, this, m_pPlayerCamera);
+	m_wireTargetFinder->Initialize(GetCommonResources(), pCollisionManager,  this, m_pPlayerCamera);
 
 	XPBDSimulator::Parameter param;
 	// 剛性（柔軟力）
 	param.flexibility = GameplayScene::ROPE_FIXIBLILLITY;
-	param.gravity = Vector3(0.0f, -9.8f / 2.f, 0.0f);
-	param.iterations = 1;
 
-	m_wire->Initialize(pCommonResources, pCollisionManager, param, WIRE_LENGTH , this,this, this, m_wireSystemSubject.get());
+	// 【ローカル定数化】XPBDの重力係数
+	const float GRAVITY_DIVISOR = 2.f;
+	param.gravity = Vector3(0.0f, -9.8f / GRAVITY_DIVISOR, 0.0f);
+	param.iterations = WIRE_SIMULATION_ITERATIONS;
+
+	m_wire->Initialize(pCommonResources, pCollisionManager, param, WIRE_LENGTH, this, this, this, m_wireSystemSubject.get());
 
 
 	// デフォルト回転の初期化
-	SetDefaultRotate(Quaternion::CreateFromYawPitchRoll(XMConvertToRadians(180.0f), 0, 0.0f));
+	SetDefaultRotate(Quaternion::CreateFromYawPitchRoll(XMConvertToRadians(DEFAULT_ROTATION_Y_DEGREE), 0, 0.0f));
 
 	// 回転
 	SetRotate(Quaternion::CreateFromYawPitchRoll(0.0f, 0.0f, 0.0f));
@@ -167,12 +168,7 @@ void Player::Initialize(CommonResources* pCommonResources, CollisionManager* pCo
 
 	// アニメーション関連の設定
 	ChangeAnimation(ANIM_IDLENG);
-
-
-
-
 }
-
 
 
 /**
@@ -245,17 +241,17 @@ void Player::Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::Simple
 
 	auto context = GetCommonResources()->GetDeviceResources()->GetD3DDeviceContext();
 
-	
-	Matrix defaultRotation		= Matrix::CreateFromQuaternion(GetDefaultRotate());
 
-	Matrix defaultTransform = Matrix::CreateTranslation(Vector3(0.0f, -2.5f * GetScale(), 0.0f));
+	Matrix defaultRotation = Matrix::CreateFromQuaternion(GetDefaultRotate());
+
+	Matrix defaultTransform = Matrix::CreateTranslation(Vector3(0.0f, MODEL_DEFAULT_OFFSET_Y * GetScale(), 0.0f));
 
 	if (m_state == State::WIRE_ACTION)
-		defaultTransform *= Matrix::CreateTranslation(Vector3(1.7f, -1.8f, 0.0f));
+		defaultTransform *= Matrix::CreateTranslation(Vector3(WIRE_ACTION_OFFSET_X, Player::WIRE_ACTION_OFFSET_Y, 0.0f));
 
-	Matrix transform	= Matrix::CreateTranslation(GetPosition());
-	Matrix rotation		= Matrix::CreateFromQuaternion(GetRotate());
-	Matrix scale		= Matrix::CreateScale(GetScale());
+	Matrix transform = Matrix::CreateTranslation(GetPosition());
+	Matrix rotation = Matrix::CreateFromQuaternion(GetRotate());
+	Matrix scale = Matrix::CreateScale(GetScale());
 
 	Matrix world = defaultRotation * defaultTransform * scale * rotation * transform;
 
@@ -304,7 +300,7 @@ void Player::Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::Simple
 	//GetCommonResources()->GetDebugFont()->AddString(100, 130, Colors::White, L"speed : %f ", GetVelocity().Length());
 
 	// ワイヤー照準検出器の表示
-	m_wireTargetFinder->Draw(view, projection);
+	//m_wireTargetFinder->Draw(view, projection);
 
 	//m_collider->Draw(context, view, proj);
 
@@ -336,25 +332,6 @@ void Player::OnCollision(GameObject* pHitObject, ICollider* pHitCollider)
 	if (pHitObject->GetTag() == GameObjectTag::FLOOR)
 	{
 		OnCollisionWithBuilding(pHitObject, pHitCollider);
-		/*if (const Box2D* box = dynamic_cast<const Box2D*>(pHitCollider))
-		{
-			Plane plane = box->GetPlane();
-
-			SimpleMath::Vector3 overlap = CalcOverlap(plane, *m_collider);
-
-			SimpleMath::Vector3 position = GetPosition() + overlap;
-
-			if (overlap.y > 0.0f)
-			{
-				SimpleMath::Vector3 velocity = GetVelocity() * SimpleMath::Vector3(1.0f, 0.0f, 1.0f);
-				SetVelocity(velocity);
-			}
-
-			SetPosition(position);
-			m_collider->Transform(position);
-
-			m_isGround = true;
-		}*/
 	}
 	
 	// 壁と衝突した場合
@@ -411,7 +388,6 @@ void Player::OnCollisionWithWall(GameObject* pHitObject, ICollider* pHitCollider
 	overlapDir.Normalize();
 
 
-
 	// 現在の押し出しの単位ベクトル
 	SimpleMath::Vector3 totalOverlapNormal = m_overlapTotal;
 	totalOverlapNormal.Normalize();
@@ -419,7 +395,7 @@ void Player::OnCollisionWithWall(GameObject* pHitObject, ICollider* pHitCollider
 	// 押し出し方向ベクトル（累積方向 + 今回の方向）
 	SimpleMath::Vector3 combinedDirection = totalOverlapNormal + overlapDir;
 
-	if (combinedDirection.LengthSquared() < 1e-6f)
+	if (combinedDirection.LengthSquared() < SQUARED_ZERO_THRESHOLD)
 		return;
 
 	combinedDirection.Normalize();
@@ -464,7 +440,7 @@ void Player::OnCollisionWithBuilding(GameObject* pHitObject, ICollider* pHitColl
 	// 押し出し方向ベクトル（累積方向 + 今回の方向）
 	SimpleMath::Vector3 combinedDirection = totalOverlapNormal + overlapDir;
 
-	if (combinedDirection.LengthSquared() < 1e-6f)
+	if (combinedDirection.LengthSquared() < SQUARED_ZERO_THRESHOLD)
 		return;
 
 	combinedDirection.Normalize();
@@ -478,8 +454,6 @@ void Player::OnCollisionWithBuilding(GameObject* pHitObject, ICollider* pHitColl
 
 	// 合成押し出しを更新
 	m_overlapTotal += combinedDirection * projectedDepth;
-
-
 }
 void Player::PreCollision()
 {
@@ -491,10 +465,8 @@ void Player::PreCollision()
  */
 void Player::PostCollision()
 {
-	if (std::abs(m_overlapTotal.LengthSquared()) > 0.0f)
+	if (std::abs(m_overlapTotal.LengthSquared()) > SQUARED_ZERO_THRESHOLD) 
 	{
-
-
 		SimpleMath::Vector3 overlap = m_overlapTotal;
 
 		// **** 押し出しとバウンド ****
@@ -683,9 +655,13 @@ void Player::RotateForMoveDirection(const float& deltaTime)
 {
 	UNREFERENCED_PARAMETER(deltaTime);
 
-	
 
-	SetRotate(MovementHelper::RotateForMoveDirection(deltaTime, GetRotate(), GetForward(), GetVelocity(), 0.1f));
+	SetRotate(MovementHelper::RotateForMoveDirection(
+		deltaTime, 
+		GetRotate(),
+		GetForward(),
+		GetVelocity(),
+		ROTATE_SPEED_FACTOR));
 }
 
 /**
@@ -694,7 +670,7 @@ void Player::RotateForMoveDirection(const float& deltaTime)
 void Player::ReleaseWire()
 {
 	if (m_wire->IsActive())
-		SetVelocity(m_wire->GetStartVelocity() * 3.0f );
+		SetVelocity(m_wire->GetStartVelocity() * WIRE_RELEASE_VELOCITY_MULTIPLIER);
 	m_wire->Reset();
 	
 }
@@ -739,7 +715,7 @@ DirectX::SimpleMath::Vector3 Player::CalcGrabbingPosition() const
 {
 
 	using namespace SimpleMath;
-	float length = 1.5f;
+	float length = GRABBING_DISTANCE;
 
 
 	return GetPosition() + -GetForward() * length;
@@ -794,7 +770,6 @@ void Player::BehaviourWireAction(const float& deltaTime)
  */
 void Player::ShootWire()
 {
-
 	auto eyePos = m_pPlayerCamera->GetEye();
 
 	// テスト ------------------------------------------------------
@@ -807,15 +782,14 @@ void Player::ShootWire()
 		m_cursorPos.x, m_cursorPos.y,
 		Screen::Get()->GetWidthF(), Screen::Get()->GetHeightF(),
 		GetCamera()->GetEye(), GetCamera()->GetView(), GetProj(),
-		&ray.direction ,&ray.origin);
-	Vector3 maxPos = ray.origin + ray.direction * 30.0f;
+		&ray.direction, &ray.origin);
+	Vector3 maxPos = ray.origin + ray.direction * MAX_TARGETING_RAY_DISTANCE;
 
 	//Vector3 wireLaunchDirection = maxPos - GetPosition();
 	Vector3 wireLaunchDirection = m_wireTargetFinder->GetTargetPosition() - GetPosition();
 	wireLaunchDirection.Normalize();
 
-	m_wire->ShootWire(GetPosition(), wireLaunchDirection * 300.0f );
-
+	m_wire->ShootWire(GetPosition(), wireLaunchDirection * SHOOT_WIRE_INITIAL_SPEED);
 
 }
 
@@ -911,7 +885,7 @@ MyLib::Ray Player::GetWireShootingRay() const
 		m_cursorPos.x, m_cursorPos.y,
 		Screen::Get()->GetWidthF(), Screen::Get()->GetHeightF(),
 		GetCamera()->GetEye(), GetCamera()->GetView(), GetProj(),
-		&ray.direction ,&ray.origin);
+		&ray.direction, &ray.origin);
 
 
 	SimpleMath::Vector3 maxPos = ray.origin + ray.direction * MAX_TARGETING_RAY_DISTANCE;

@@ -52,7 +52,13 @@ private:
 // クラス定数の宣言 -------------------------------------------------
 public:
 
+	// 上下左右に広がるグリッドを想定したサンプリング
+	static constexpr int SEARCH_DIRECTION_NUM = 5; // 定数化推奨
+	static constexpr float SEARCH_ANGLE_STEP_YAW = 8.0f;
+	static constexpr float SEARCH_ANGLE_OFFSET_YAW = 48.0f;
+	static constexpr float SEARCH_ANGLE_STEP_PITCH = 8.0f;
 
+	static constexpr float SEARCH_ANGLE_START_PITCH = 15.f;
 
 // データメンバの宣言 -----------------------------------------------
 private:
@@ -92,7 +98,6 @@ public:
 	void Initialize(
 		const CommonResources* pCommonResources, 
 		CollisionManager* pCollisionManager, 
-		const float& detectionRadius,
 		const Player* pPlayer,
 		const Camera* pCamera);
 

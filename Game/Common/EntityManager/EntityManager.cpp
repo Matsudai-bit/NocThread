@@ -55,6 +55,7 @@ void EntityManager::Initialize()
  */
 void EntityManager::UpdateEntity(float deltaTime)
 {
+	UNREFERENCED_PARAMETER(deltaTime);
 }
 
 /**
@@ -65,6 +66,8 @@ void EntityManager::UpdateEntity(float deltaTime)
  */
 void EntityManager::DrawEntity(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj)
 {
+	UNREFERENCED_PARAMETER(view);
+	UNREFERENCED_PARAMETER(proj);
 }
 
 /**

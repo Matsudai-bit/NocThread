@@ -40,6 +40,9 @@ WireTargetFinder::WireTargetFinder()
 	, m_pCamera{ nullptr }
 	, m_pPlayer{ nullptr }
 	, m_pCollisionManager{ nullptr }
+	, m_wireLength{}
+	, m_wireRadius{}
+	
 {
 
 }
@@ -61,12 +64,10 @@ WireTargetFinder::~WireTargetFinder()
  * 
  * @param[in] pCommonResources		共通リソース
  * @param[in] pCollisionManager		衝突管理
- * @param[in] detectionRadius		検出半径
  * @param[in] pPlayer				プレイヤーのポインタ
  */
 void WireTargetFinder::Initialize(const CommonResources* pCommonResources,
 	CollisionManager* pCollisionManager,
-	const float& detectionRadius,
 	const Player* pPlayer,
 	const Camera* pCamera)
 {
@@ -155,7 +156,8 @@ void WireTargetFinder::PostCollision()
 void WireTargetFinder::OnCollision(GameObject* pHitObject, ICollider* pHitCollider)
 {
 	
-
+	UNREFERENCED_PARAMETER(pHitObject);
+	UNREFERENCED_PARAMETER(pHitCollider);
 }
 
 /**
@@ -263,21 +265,21 @@ std::vector<DirectX::SimpleMath::Vector3> WireTargetFinder::GetSearchDirections(
 	Vector3 centerDirection = cameraDirection;
 	centerDirection.y = 0.0f;
 
-	// 上下左右に広がるグリッドを想定したサンプリング
-	const int GRID_SIZE = 5; // 定数化推奨
-	const float ANGLE_STEP_YAW = 8.0f; 
-	const float ANGLE_STEP_PITCH = 8.0f; 
-
 	// XとYのオフセットを計算する行列 (回転はcenterDirection基準)
 	Matrix baseRotation = Matrix::CreateFromQuaternion(Quaternion::FromToRotation(Vector3::Forward, centerDirection));
 
-	for (int y = 0; y <= GRID_SIZE; ++y)
+	for (int y = 0; y <= SEARCH_DIRECTION_NUM; ++y)
 	{
-		for (int x = -GRID_SIZE; x <= GRID_SIZE; ++x)
+		for (int x = -SEARCH_DIRECTION_NUM; x <= SEARCH_DIRECTION_NUM; ++x)
 		{
+			
+
 			// 視線方向からのオフセット角度
-			float yaw = ANGLE_STEP_YAW * x;
-			float pitch = 15.f + std::abs(ANGLE_STEP_PITCH * y);
+			float offset = SEARCH_ANGLE_OFFSET_YAW;
+			offset *= (x > 0.0f) ? -1.0f : 1.0f;
+
+			float yaw = SEARCH_ANGLE_STEP_YAW * x +offset;
+			float pitch = SEARCH_ANGLE_START_PITCH + std::abs(SEARCH_ANGLE_STEP_PITCH * y);
 
 			// 視線方向を基準に回転を適用
 			Vector3 offsetDirection = Vector3::TransformNormal(Vector3::Forward,
@@ -409,26 +411,29 @@ std::vector<DirectX::SimpleMath::Vector3> WireTargetFinder::GetTargetPositionCan
 		Capsule capsule = CreateCapsuleCollider(m_pPlayer->GetPosition(), direction, m_wireLength , m_wireRadius);
 
 		// 衝突情報
-		std::vector<const GameObject*> hitGameObjects;
-		std::vector<const ICollider*> hitColliders;
+		std::vector<const GameObject*> hitGameObjects{};
+		std::vector<const ICollider*> hitColliders{};
 
 		// 衝突判定
-		auto collisionData = m_pCollisionManager->RetrieveCollisionData(&capsule, &hitGameObjects, &hitColliders);
-
-		for (size_t i = 0; i < hitGameObjects.size(); i++)
+		if (m_pCollisionManager->RetrieveCollisionData(&capsule, &hitGameObjects, &hitColliders))
 		{
-			// 処理用変数
-			auto pHitObject = hitGameObjects[i];
-			auto pHitCollider = hitColliders[i];
 
-			SimpleMath::Vector3 targetPosition;
-
-			// 目標座標の算出
-			if (CalcWireTargetPosition(&targetPosition, capsule, pHitObject, pHitCollider))
+			for (size_t i = 0; i < hitGameObjects.size(); i++)
 			{
-				targetPositions.emplace_back(targetPosition);
+				// 処理用変数
+				auto pHitObject = hitGameObjects[i];
+				auto pHitCollider = hitColliders[i];
+
+				SimpleMath::Vector3 targetPosition;
+
+				// 目標座標の算出
+				if (CalcWireTargetPosition(&targetPosition, capsule, pHitObject, pHitCollider))
+				{
+					targetPositions.emplace_back(targetPosition);
+				}
 			}
 		}
+
 	}
 	return targetPositions;
 }
