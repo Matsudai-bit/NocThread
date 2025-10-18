@@ -21,7 +21,7 @@
 #include "Game/Common/DeviceResources.h"
 #include "Game/Common/Collision/Collision.h"
 #include "Game/Common/Collision/CollisionManager/CollisionManager.h"
-#include "Game/Common/Camera/Camera.h"
+#include "Game/Common/Camera/PlayerCamera/PlayerCamera.h"
 #include "Game/Common/Helper/MovementHelper/MovementHelper.h"
 #include "Game/Common//Helper/PhysicsHelper/PhysicsHelper.h"
 #include "Game/Common/WireTargetFinder/WireTargetFinder.h"
@@ -61,7 +61,7 @@ using namespace DirectX;
  */
 Player::Player()
 	: m_pCollisionManager{ nullptr }
-	, m_pCamera{ nullptr }
+	, m_pPlayerCamera{ nullptr }
 	, m_isGround{false}
 	, m_isActive{ true }
 	, m_canStep{ true }
@@ -91,9 +91,10 @@ Player::~Player()
  *
  * @return なし
  */
-void Player::Initialize(CommonResources* pCommonResources, CollisionManager* pCollisionManager)
+void Player::Initialize(CommonResources* pCommonResources, CollisionManager* pCollisionManager, const PlayerCamera* pPlayerCamera)
 {
 	using namespace SimpleMath;
+	m_pPlayerCamera = pPlayerCamera;
 
 	// 共通リソースの設定
 	SetCommonResources(pCommonResources);
@@ -127,7 +128,7 @@ void Player::Initialize(CommonResources* pCommonResources, CollisionManager* pCo
 
 	// ワイヤー照準検出器の作成
 	m_wireTargetFinder = std::make_unique<WireTargetFinder>();
-	m_wireTargetFinder->Initialize(GetCommonResources(), pCollisionManager, 30.0f, this);
+	m_wireTargetFinder->Initialize(GetCommonResources(), pCollisionManager, 30.0f, this, m_pPlayerCamera);
 
 	XPBDSimulator::Parameter param;
 	// 剛性（柔軟力）
@@ -181,7 +182,7 @@ void Player::Initialize(CommonResources* pCommonResources, CollisionManager* pCo
  * @param[in] camera		カメラ
  * @param[in] proj			射影行列
  */
-void Player::Update(float deltaTime, const Camera& camera, const DirectX::SimpleMath::Matrix& proj)
+void Player::Update(float deltaTime, const DirectX::SimpleMath::Matrix& proj)
 {
 	if (m_isActive == false) { return; }
 
@@ -197,8 +198,7 @@ void Player::Update(float deltaTime, const Camera& camera, const DirectX::Simple
 	// ワイヤーの更新処理
 	m_wire->Update(deltaTime);
 
-	// カメラの保存
-	m_pCamera = &camera;
+	
 	// 射影行列の保存
 	m_proj = proj;
 
@@ -217,8 +217,9 @@ void Player::Update(float deltaTime, const Camera& camera, const DirectX::Simple
 		m_animation.SetStartTime(0.0);
 	}
 
-	// ワイヤー照準検出器の更新処理
-	m_wireTargetFinder->Update(deltaTime, &camera, GetWireShootingRay(), WIRE_LENGTH, 0.5f);
+	// ワイヤー照準検出器の設定
+	m_wireTargetFinder->SetSearchParameters(GetWireShootingRay().direction, WIRE_LENGTH, 0.5f);
+	m_wireTargetFinder->Update();
 }
 
 
@@ -794,7 +795,7 @@ void Player::BehaviourWireAction(const float& deltaTime)
 void Player::ShootWire()
 {
 
-	auto eyePos = m_pCamera->GetEye();
+	auto eyePos = m_pPlayerCamera->GetEye();
 
 	// テスト ------------------------------------------------------
 
@@ -911,7 +912,9 @@ MyLib::Ray Player::GetWireShootingRay() const
 		Screen::Get()->GetWidthF(), Screen::Get()->GetHeightF(),
 		GetCamera()->GetEye(), GetCamera()->GetView(), GetProj(),
 		&ray.direction ,&ray.origin);
-	SimpleMath::Vector3 maxPos = ray.origin + ray.direction * 30.0f;
+
+
+	SimpleMath::Vector3 maxPos = ray.origin + ray.direction * MAX_TARGETING_RAY_DISTANCE;
 
 	SimpleMath::Vector3 wireLaunchDirection = maxPos - GetPosition();
 	wireLaunchDirection.Normalize();

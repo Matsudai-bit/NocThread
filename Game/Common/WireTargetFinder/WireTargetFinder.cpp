@@ -1,5 +1,5 @@
 /*****************************************************************//**
- * @file    WireTargetFinder.h
+ * @file    WireTargetFinder.cpp
  * @brief   ワイヤーの照準を合わせるクラスに関するソースファイル
  *
  * @author  松下大暉
@@ -39,6 +39,7 @@ WireTargetFinder::WireTargetFinder()
 	: m_detectionRadius{ 0.0f }
 	, m_pCamera{ nullptr }
 	, m_pPlayer{ nullptr }
+	, m_pCollisionManager{ nullptr }
 {
 
 }
@@ -63,66 +64,34 @@ WireTargetFinder::~WireTargetFinder()
  * @param[in] detectionRadius		検出半径
  * @param[in] pPlayer				プレイヤーのポインタ
  */
-void WireTargetFinder::Initialize(const CommonResources* pCommonResources, CollisionManager* pCollisionManager, const float& detectionRadius, const Player* pPlayer)
+void WireTargetFinder::Initialize(const CommonResources* pCommonResources,
+	CollisionManager* pCollisionManager,
+	const float& detectionRadius,
+	const Player* pPlayer,
+	const Camera* pCamera)
 {
+	m_pCamera = pCamera;
+
 	// 共通リソースへ登録
 	SetCommonResources(pCommonResources);
 
-	// コライダーの作成
-	m_sphereCollider = std::make_unique<Sphere>(GetPosition(), detectionRadius);
-	m_capsuleCollider = std::make_unique<Capsule>();
-
-	// コライダーの登録
-	pCollisionManager->AddCollisionObjectData(this, m_capsuleCollider.get());
-
-	m_grappleTargetData.clear();
+	m_grappleTargetPositionCache.clear();
 
 	m_pPlayer = pPlayer;
 
 	m_primitiveBatch = std::make_unique<PrimitiveBatch<VertexPositionColor>>(GetCommonResources()->GetDeviceResources()->GetD3DDeviceContext());
+
+	m_pCollisionManager = pCollisionManager;
 }
-
-
 
 /**
  * @brief 更新処理
- *
- * @param[in] deltaTime 経過時間
- *
- * @return なし
  */
-void WireTargetFinder::Update(float deltaTime, const Camera* pCamera, MyLib::Ray wireShootingRay, const float& length, const float& radius)
+void WireTargetFinder::Update()
 {
-	UNREFERENCED_PARAMETER(deltaTime);
-
-	// 座標更新
-	SetPosition(m_pPlayer->GetPosition());
-
-	// コライダーの更新処理
-	m_sphereCollider->Transform(GetPosition());
-
-	m_pCamera = pCamera;
-
-	SimpleMath::Vector3 center = wireShootingRay.origin + (wireShootingRay.direction * (length / static_cast<float>(2.0))) ;
-
-	// 座標の設定
-	m_capsuleCollider->SetPosition(center);
-
-	// 半径
-	m_capsuleCollider->SetRadius(radius);
-
-	// 長さ
-	// カプセルのため理想の長さにするため半径を削る
-	m_capsuleCollider->SetLength(length - radius * 2.0f);
-
-	m_capsuleCollider->SetAxis(wireShootingRay.direction);
-
-
-
-
+	// 検索要求
+	RequestSearchingTargetPosition();
 }
-
-
 
 /**
  * @brief 描画処理
@@ -134,23 +103,26 @@ void WireTargetFinder::Update(float deltaTime, const Camera* pCamera, MyLib::Ray
 void WireTargetFinder::Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& projection)
 {
 	auto context = GetCommonResources()->GetDeviceResources()->GetD3DDeviceContext();
-	
-	// デバック表示
-	//m_capsuleCollider->Draw(context, view, projection);
 
-	//m_primitiveBatch->Begin();
-	//DX::DrawRay(m_primitiveBatch.get(), m_capsuleCollider->GetPosition() + (-m_capsuleCollider->GetAxis() * (m_capsuleCollider->GetLength() / 2.0f)), m_capsuleCollider->GetAxis() * m_capsuleCollider->GetLength(), false, Colors::Red);
-	//m_primitiveBatch->End();
 
 	std::unique_ptr<GeometricPrimitive>  a = GeometricPrimitive::CreateSphere(context, 0.5f);
 
-	for (auto& data : m_grappleTargetData)
+	// デバック表示
+	//m_capsuleCollider->Draw(context, view, projection);
+
+	//DX::DrawRay(m_primitiveBatch.get(), m_capsuleCollider->GetPosition() + (-m_capsuleCollider->GetAxis() * (m_capsuleCollider->GetLength() / 2.0f)), m_capsuleCollider->GetAxis() * m_capsuleCollider->GetLength(), false, Colors::Red);
+
+	m_primitiveBatch->Begin();
+	for (auto direction : GetSearchDirections())
+	{
+		DX::DrawRay(m_primitiveBatch.get(), m_pPlayer->GetPosition(), direction * 30.0f, false, Colors::Yellow);
+	}
+	for (auto& data : m_grappleTargetPositionCache)
 	{
 
-		a->Draw(SimpleMath::Matrix::CreateTranslation(data.targetPosition), view, projection, Colors::Blue, nullptr, true);
+		a->Draw(SimpleMath::Matrix::CreateTranslation(data), view, projection, Colors::Blue, nullptr, true);
 	}
-
-	
+	m_primitiveBatch->End();
 
 }
 
@@ -168,93 +140,295 @@ void WireTargetFinder::Finalize()
 
 }
 
-void WireTargetFinder::PreCollision()
+void WireTargetFinder::PostCollision()
 {
-	m_grappleTargetData.clear();
+	// 検索要求
+	RequestSearchingTargetPosition();
 }
 
 /**
  * @brief 衝突処理
- * 
+ *
  * @param[in] pHitObject	衝突したオブジェクト
  * @param[in] pHitCollider	衝突したコライダー
  */
 void WireTargetFinder::OnCollision(GameObject* pHitObject, ICollider* pHitCollider)
 {
-	if (pHitObject->GetTag() == GameObjectTag::ENEMY)
-	{
-		if (const auto sphere = dynamic_cast<const Sphere*>(pHitCollider))
-		{
-			SimpleMath::Vector3 targetPosition = sphere->GetPosition();
-			
-			// 距離が 1.1f 以下の場合除外
-			if (1.1f * 1.1f >= SimpleMath::Vector3::DistanceSquared(GetPosition(), targetPosition))
-			{
-				return;
-			}
-			m_grappleTargetData.emplace_back(targetPosition, pHitObject);
-
-
-			//GetCommonResources()->GetDebugFont()->AddString(100, 70, Colors::White, L"degree : %f", XMConvertToDegrees(radian));
-			//GetCommonResources()->GetDebugFont()->AddString(100, 90, Colors::White, L"ratio : %f", XMConvertToDegrees(ratio));
-			//GetCommonResources()->GetDebugFont()->AddString(100, 110, Colors::White, L"position : %f, %f, %f ", targetPosition.x, targetPosition.y, targetPosition.z);
-		}
-	}
-	if (pHitObject->GetTag() == GameObjectTag::BUILDING || pHitObject->GetTag() == GameObjectTag::ESCAPE_HELICOPTER)
-	{
-		if (const auto aabb = dynamic_cast<const AABB*>(pHitCollider))
-		{
-
-			SimpleMath::Vector3 targetPosition;
-			if (GetIntersectionPointOnSurface( *aabb, *m_capsuleCollider, &targetPosition))
-			{
-				// 距離が 1.1f 以下の場合除外
-				if (1.1f *1.1f >= SimpleMath::Vector3::DistanceSquared(GetPosition(), targetPosition))
-				{
-					return;
-				}
-				m_grappleTargetData.emplace_back(targetPosition, pHitObject);
-			}
-
-			//GetCommonResources()->GetDebugFont()->AddString(100, 70, Colors::White, L"degree : %f", XMConvertToDegrees(radian));
-			//GetCommonResources()->GetDebugFont()->AddString(100, 90, Colors::White, L"ratio : %f", XMConvertToDegrees(ratio));
-			//GetCommonResources()->GetDebugFont()->AddString(100, 110, Colors::White, L"position : %f, %f, %f ", targetPosition.x, targetPosition.y, targetPosition.z);
-		}
-		
-	}
-
-}
-
-DirectX::SimpleMath::Vector3 WireTargetFinder::GetTargetPosition()
-{
-	if (m_grappleTargetData.size() <= 0)
-	{
-		return SimpleMath::Vector3::Forward;
-	}
-
-
-	// ソート前にプレイヤーの位置を一度だけ取得
-	const SimpleMath::Vector3 playerPosition = m_pPlayer->GetPosition();
-
-	// m_grappleTargetData をプレイヤーからの距離が近い順にソート
-	// [this] をキャプチャすることで、ラムダ内でクラスのメンバー変数にアクセス可能にする
-	std::sort(m_grappleTargetData.begin(), m_grappleTargetData.end(), [&playerPosition](const GrappleTargetData& lhs, const GrappleTargetData& rhs)
-		{
-			// lhsとrhsの、プレイヤーからの距離の2乗を比較
-			// sqrt()を呼び出す必要がないため、計算が速い
-			return (SimpleMath::Vector3::DistanceSquared(playerPosition, lhs.targetPosition) < SimpleMath::Vector3::DistanceSquared(playerPosition, rhs.targetPosition));
-		});
-
-	return m_grappleTargetData.front().targetPosition;
+	
 
 }
 
 /**
- * @brief 照準を見つけたかどうか
+ * @brief 検索するパラメータの設定
  * 
+ * @param[in] wireShootingRay
+ * @param[in] length
+ * @param[in] radius
+ */
+void WireTargetFinder::SetSearchParameters(DirectX::SimpleMath::Vector3 wireShootingDirection, const float& length, const float& radius)
+{
+	m_shootingRay.direction = wireShootingDirection;
+	m_wireLength = length;
+	m_wireRadius = radius;
+}
+
+DirectX::SimpleMath::Vector3 WireTargetFinder::GetTargetPosition()
+{
+
+	return 	GetFarTargetPosition(m_grappleTargetPositionCache);
+}
+
+/**
+ * @brief 照準を見つけたかどうか
+ *
  * @return 照準を見つけたかどうか
  */
 bool WireTargetFinder::IsFindTarget() const
 {
-	return m_grappleTargetData.size() > 0;
+	
+
+	return m_grappleTargetPositionCache.size() > 0;
+
+}
+
+
+/**
+ * @brief 目標座標を探す
+ * 
+ */
+void WireTargetFinder::RequestSearchingTargetPosition()
+{
+	//if (m_isCheckedTargetPosition) return;
+
+	//m_isCheckedTargetPosition = true;
+
+	SearchTargetPositionForSeveralPosition();
+	//SearchTargetPositionForShootingRay(m_shootingRay);
+
+}
+
+/**
+ * @brief 飛ばすレイを元に目標座標を取得する(旧バージョン)
+ *
+ * @param[in] shootingRay 飛ばすレイ
+ *
+ * @return 目標座標
+ */
+void WireTargetFinder::SearchTargetPositionForShootingRay(MyLib::Ray shootingRay)
+{
+	// 目標座標候補の取得
+	auto targetPositionCandidates = GetTargetPositionCandidatesForDirection(std::vector<DirectX::SimpleMath::Vector3>{shootingRay.direction});
+
+	// キャッシュの登録
+	m_grappleTargetPositionCache = targetPositionCandidates;
+}
+
+/**
+ * @brief いくつかの点から目標座標を取得する
+ *
+ * @return 目標座標
+ */
+void WireTargetFinder::SearchTargetPositionForSeveralPosition()
+{
+	using namespace SimpleMath;
+
+	auto searchDirections = GetSearchDirections();
+
+	// 方向を元に衝突判定を取り、ワイヤーの接地座標を算出する
+	std::vector<Vector3> targetPositions;
+
+	// 目標座標候補の取得
+	auto targetPositionCandidates = GetTargetPositionCandidatesForDirection(searchDirections);
+
+	// キャッシュの登録
+	m_grappleTargetPositionCache = targetPositionCandidates;
+
+}
+
+/**
+ * @brief 調べる方向を取得する
+ * 
+ * @return 調べる方向
+ */
+std::vector<DirectX::SimpleMath::Vector3> WireTargetFinder::GetSearchDirections() const
+{
+	using namespace SimpleMath;
+	// 結果を格納する
+	std::vector<DirectX::SimpleMath::Vector3> result;
+
+	if (m_pCamera == nullptr) { return result; }
+	Vector3 cameraDirection = m_pCamera->GetTarget() - m_pCamera->GetEye();
+	cameraDirection.Normalize();
+	// 検索の中心線
+	Vector3 centerDirection = cameraDirection;
+	centerDirection.y = 0.0f;
+
+	// 上下左右に広がるグリッドを想定したサンプリング
+	const int GRID_SIZE = 5; // 定数化推奨
+	const float ANGLE_STEP_YAW = 8.0f; 
+	const float ANGLE_STEP_PITCH = 8.0f; 
+
+	// XとYのオフセットを計算する行列 (回転はcenterDirection基準)
+	Matrix baseRotation = Matrix::CreateFromQuaternion(Quaternion::FromToRotation(Vector3::Forward, centerDirection));
+
+	for (int y = 0; y <= GRID_SIZE; ++y)
+	{
+		for (int x = -GRID_SIZE; x <= GRID_SIZE; ++x)
+		{
+			// 視線方向からのオフセット角度
+			float yaw = ANGLE_STEP_YAW * x;
+			float pitch = 15.f + std::abs(ANGLE_STEP_PITCH * y);
+
+			// 視線方向を基準に回転を適用
+			Vector3 offsetDirection = Vector3::TransformNormal(Vector3::Forward,
+				Matrix::CreateRotationY(XMConvertToRadians(yaw)) * Matrix::CreateRotationX(XMConvertToRadians(pitch)));
+
+			// 視線方向の回転を適用
+			Vector3 finalDirection = Vector3::TransformNormal(offsetDirection, baseRotation);
+
+			result.emplace_back(finalDirection);
+		}
+	}
+	return result;
+}
+
+/**
+ * @brief カプセルコライダーの作成
+ * 
+ * @param[in] origin	原点
+ * @param[in] direction 向き
+ * @param[in] length	長さ
+ * @param[in] radius	半径
+ * 
+ * @return 作成したカプセルコライダー
+ */
+Capsule WireTargetFinder::CreateCapsuleCollider(
+	const DirectX::SimpleMath::Vector3& origin, 
+	const DirectX::SimpleMath::Vector3& direction,
+	const float& length,
+	const float& radius)
+{
+	Capsule capsule ;
+
+	SimpleMath::Vector3 center = origin + (direction * (length / static_cast<float>(2.0)));
+
+	// 座標の設定
+	capsule.SetPosition(center);
+
+	// 半径
+	capsule.SetRadius(radius);
+
+	// 長さ
+	// カプセルのため理想の長さにするため半径を削る
+	capsule.SetLength(length - radius * 2.0f);
+
+	capsule.SetAxis(direction);
+
+	return capsule;
+}
+
+
+/**
+ * @brief 衝突情報を元に接地座標を算出する
+ * 
+ * @param[out]pTargetPosition	 目標座標
+ * @param[in] hitCapsuleCollider 衝突したカプセルコライダー
+ * @param[in] pHitObject		衝突したオブジェクト
+ * @param[in] pHitCollider		衝突したコライダー
+ * 
+ * @returns true 算出できた
+ * @returns false 算出できなかった
+ */
+bool WireTargetFinder::CalcWireTargetPosition(
+	DirectX::SimpleMath::Vector3* pTargetPosition,
+	const Capsule& hitCapsuleCollider,
+	const GameObject* pHitObject,
+	const ICollider* pHitCollider)
+{
+	const float MIN_GRAPPLE_DISTANCE_THRESHOLD = 1.1f;
+	
+	if (pHitObject->GetTag() == GameObjectTag::BUILDING || pHitObject->GetTag() == GameObjectTag::ESCAPE_HELICOPTER)
+	{
+		// AABBにキャスト
+		if (const auto aabb = dynamic_cast<const AABB*>(pHitCollider))
+		{
+			SimpleMath::Vector3 targetPosition;
+			if (GetIntersectionPointOnSurface(*aabb, hitCapsuleCollider, &targetPosition))
+			{
+				// 距離が MIN_GRAPPLE_DISTANCE_THRESHOLD 以下の場合除外
+				if (MIN_GRAPPLE_DISTANCE_THRESHOLD * MIN_GRAPPLE_DISTANCE_THRESHOLD < SimpleMath::Vector3::DistanceSquared(GetPosition(), targetPosition))
+				{
+					*pTargetPosition = targetPosition;
+					return true;
+				}
+			}
+
+		}
+
+	}
+
+	return false;
+}
+
+/**
+ * @brief 最も遠い目標座標を取得する
+ * 
+ * @param[in] targetPositions 目標座標の候補
+ * 
+ * @return 最も遠い目標座標 
+ */
+DirectX::SimpleMath::Vector3 WireTargetFinder::GetFarTargetPosition(std::vector<DirectX::SimpleMath::Vector3> targetPositions)
+{
+	using namespace SimpleMath;
+
+	// 近い順にソートする
+	std::sort(targetPositions.begin(), targetPositions.end(), [&](const Vector3& lhs, const Vector3& rhs)
+		{
+			return Vector3::DistanceSquared(lhs, m_pPlayer->GetPosition()) < Vector3::DistanceSquared(rhs, m_pPlayer->GetPosition());
+		});
+
+
+	return (targetPositions.size() != 0) ? targetPositions.back() : SimpleMath::Vector3::Zero;
+}
+
+/**
+ * @brief 方向からカプセルコライダーを算出し目標座標の候補を取得する
+ * 
+ * @param[in] directions 方向
+ * 
+ * @return 最も遠い目標座標
+ */
+std::vector<DirectX::SimpleMath::Vector3> WireTargetFinder::GetTargetPositionCandidatesForDirection(std::vector<DirectX::SimpleMath::Vector3> searchDirections)
+{
+	using namespace SimpleMath;
+	// 目標座標の候補
+	std::vector<Vector3> targetPositions;
+
+	for (Vector3 direction : searchDirections)
+	{
+		Capsule capsule = CreateCapsuleCollider(m_pPlayer->GetPosition(), direction, m_wireLength , m_wireRadius);
+
+		// 衝突情報
+		std::vector<const GameObject*> hitGameObjects;
+		std::vector<const ICollider*> hitColliders;
+
+		// 衝突判定
+		auto collisionData = m_pCollisionManager->RetrieveCollisionData(&capsule, &hitGameObjects, &hitColliders);
+
+		for (size_t i = 0; i < hitGameObjects.size(); i++)
+		{
+			// 処理用変数
+			auto pHitObject = hitGameObjects[i];
+			auto pHitCollider = hitColliders[i];
+
+			SimpleMath::Vector3 targetPosition;
+
+			// 目標座標の算出
+			if (CalcWireTargetPosition(&targetPosition, capsule, pHitObject, pHitCollider))
+			{
+				targetPositions.emplace_back(targetPosition);
+			}
+		}
+	}
+	return targetPositions;
 }

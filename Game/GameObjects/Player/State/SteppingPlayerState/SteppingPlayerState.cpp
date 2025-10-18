@@ -15,7 +15,7 @@
 #include "Game/GameObjects/Player/State/WireActionPlayerState/WireActionPlayerState.h"
 #include "Game/Common/CommonResources/CommonResources.h"
 
-#include "Game/Common/Camera/Camera.h"
+#include "Game/Common/Camera/PlayerCamera/PlayerCamera.h"
 
 #include "Library/ImaseLib/DebugFont.h"
 #include "Library/MyLib/DirectXMyToolKit/DirectXMyToolKit.h"

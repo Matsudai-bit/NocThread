@@ -32,7 +32,7 @@ class SimpleModel;		// モデル
 class CommonResources;	// 共通リソース
 class Sphere;			// 球
 class CollisionManager; // 衝突管理
-class Camera;			// カメラ
+class PlayerCamera;			// カメラ
 class WireSystemSubject;// ワイヤーシステムの観察対象
 class Wire;				// ワイヤー
 class WireTargetFinder;		// ワイヤー照準
@@ -80,18 +80,19 @@ public:
 	static const constexpr char* PLAYER_MODEL_FILE_NAME = "player.sdkmesh";
 
 	// プレイヤーの挙系
-	static constexpr float FRICTION = 3.0f;		// 摩擦係数
+	static constexpr float FRICTION = 3.0f;			// 摩擦係数
 	static constexpr float AIR_RESISTANCE = 0.05f;  // 空気抵抗係数
 	static constexpr float ROTATION_SPEED = 1.0f;	// 回転速度(s)
 
 	const float ACCELERATION = 100.0f;				// 加速力（加速の強さ）
 	const float DECELERATION = 60.0f;				// 減速力（ブレーキの強さ）
-	const float MAX_MOVE_SPEED = 20.0f;					// 最大速度
-	const float MAX_FLYING_MOVE_SPEED = 15.0f;			// 空中速度
+	const float MAX_MOVE_SPEED = 20.0f;				// 最大速度
+	const float MAX_FLYING_MOVE_SPEED = 15.0f;		// 空中速度
 	static constexpr float JUMPING_POWER = 1200.0f;
 
 	// ワイヤー関連
-	static constexpr float WIRE_LENGTH = 60.0f; // ワイヤーの長さ
+	static constexpr float WIRE_LENGTH = 60.0f;					// ワイヤーの長さ
+	static constexpr float MAX_TARGETING_RAY_DISTANCE = 30.0f;	// ワイヤーの照準計算に使用する仮想的な最大距離（ワイヤーの実際の長さとは異なる）
 
 	// アニメーション関連
 	const static constexpr char* ANIM_WALKING		= "Resources/Models/player_walk.sdkmesh_anim";
@@ -108,7 +109,7 @@ public:
 private:
 
 	// グラフィック関連
-	const Camera* m_pCamera;
+	const PlayerCamera* m_pPlayerCamera;
 	DirectX::SimpleMath::Matrix m_proj;
 	DX::AnimationSDKMESH m_animation;	///< アニメーション
 	DirectX::Model m_model;					///< モデル
@@ -163,10 +164,10 @@ public:
 // 操作
 public:
 	// 初期化処理
-	void Initialize(CommonResources* pCommonResources, CollisionManager* pCollisionManager);
+	void Initialize(CommonResources* pCommonResources, CollisionManager* pCollisionManager, const PlayerCamera* pPlayerCamera);
 
 	// 更新処理
-	void Update(float deltaTime, const Camera& camera, const DirectX::SimpleMath::Matrix& proj);
+	void Update(float deltaTime, const DirectX::SimpleMath::Matrix& proj);
 
 	// 描画処理
 	void Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& projection);
@@ -262,7 +263,7 @@ public:
 	bool IsActive() const override {return m_isActive;}
 
 	// カメラの取得
-	const Camera* GetCamera() const { return m_pCamera; }
+	const PlayerCamera* GetCamera() const { return m_pPlayerCamera; }
 
 	// 射影行列の取得
 	DirectX::SimpleMath::Matrix GetProj() const { return m_proj; }

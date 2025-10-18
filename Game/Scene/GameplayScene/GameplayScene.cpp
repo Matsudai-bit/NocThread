@@ -151,7 +151,7 @@ void GameplayScene::Initialize()
     // プレイヤーの生成
     m_player = std::make_unique<Player>();
     // プレイヤーの初期化
-    m_player->Initialize(GetCommonResources(), m_collisionManager.get());
+    m_player->Initialize(GetCommonResources(), m_collisionManager.get(), m_playerCamera.get());
 
     // プレイヤー影の作成
     m_playerShadow = std::make_unique<CircularShadow>();
@@ -293,7 +293,7 @@ void GameplayScene::UpdateInGameObjects(float deltaTime)
     // プレイヤーコントローラの更新処理
     m_playerController->Update(deltaTime, GetCommonResources()->GetKeyboardTracker(), GetCommonResources()->GetMouseTracker());
     // プレイヤーの更新処理
-    m_player->Update(deltaTime, *m_playerCamera, m_proj);
+    m_player->Update(deltaTime,  m_proj);
 
     for (auto& stageObj : m_stageObject)
     {

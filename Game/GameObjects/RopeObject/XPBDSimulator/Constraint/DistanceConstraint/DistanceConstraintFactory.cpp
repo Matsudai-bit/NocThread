@@ -52,7 +52,10 @@ DistanceConstraintFactory::~DistanceConstraintFactory()
  */
 std::vector<std::unique_ptr<IConstraint>> DistanceConstraintFactory::CreateConstraint(std::vector<XPBDSimulator::Particle>* pParticles)
 {
-	std::vector<std::unique_ptr<IConstraint>> creationConstraints(pParticles->size()-1);
+	int particleNum = static_cast<int>(pParticles->size() - 1);
+	if (particleNum <= 0) {
+		return std::vector<std::unique_ptr<IConstraint>>();}
+	std::vector<std::unique_ptr<IConstraint>> creationConstraints(particleNum);
 
 	for (size_t i = 0; i < pParticles->size(); i++)
 	{

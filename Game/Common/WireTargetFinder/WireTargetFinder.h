@@ -57,20 +57,24 @@ public:
 // データメンバの宣言 -----------------------------------------------
 private:
 
-	std::vector<GrappleTargetData> m_grappleTargetData; ///< 照準対象データ群
 
-	std::unique_ptr<Sphere> m_sphereCollider;	///< 球コライダー
+	// 依存関係
+	CollisionManager* m_pCollisionManager;	///< 衝突判定管理
+	const Player* m_pPlayer;				///< プレイヤー
 
-	std::unique_ptr<Capsule> m_capsuleCollider;///< 筒コライダー
+	// ワイヤー探索設定 
+	float m_detectionRadius;
+	float m_wireLength;  ///< ワイヤーの長さ
+	float m_wireRadius;  ///< 判定する半径
+	MyLib::Ray m_shootingRay;
 
-	float m_detectionRadius;	///< 検出半径
+	// 探索結果のキャッシュ (管理対象)
+	std::vector<DirectX::SimpleMath::Vector3> m_grappleTargetPositionCache;	///< 目標座標キャッシュ
 
-	const Camera* m_pCamera; ///< カメラ
+	// デバッグ・描画リソース
+	std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionColor>> m_primitiveBatch; ///< プリミティブバッチ（レイ描画用）
 
-	const Player* m_pPlayer; ///< プレイヤー
-
-	// デバック用
-	std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionColor>> m_primitiveBatch;
+	const Camera* m_pCamera;
 
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
@@ -89,10 +93,11 @@ public:
 		const CommonResources* pCommonResources, 
 		CollisionManager* pCollisionManager, 
 		const float& detectionRadius,
-		const Player* pPlayer);
+		const Player* pPlayer,
+		const Camera* pCamera);
 
 	// 更新処理
-	void Update(float deltaTime, const Camera* pCamera, MyLib::Ray wireShootingRay, const float& length, const float& radius);
+	void Update();
 
 	// 描画処理
 	void Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& projection);
@@ -100,8 +105,7 @@ public:
 	// 終了処理
 	void Finalize();
 
-
-	void PreCollision() override;
+	void PostCollision() override;
 	// 衝突処理
 	void OnCollision(GameObject* pHitObject, ICollider* pHitCollider) override ;
 
@@ -109,6 +113,8 @@ public:
 
 	// 取得/設定
 public:
+	// 検索するパラメータの設定
+	void SetSearchParameters(DirectX::SimpleMath::Vector3 wireShootingDirection, const float& length, const float& radius);
 
 	// 活動しているかどうか
 	bool IsActive() const override { return true; }
@@ -126,5 +132,32 @@ public:
 // 内部実装
 private:
 
+	// 目標座標を探す
+	void RequestSearchingTargetPosition();
+
+	// 飛ばすレイを元に目標座標を取得する(旧バージョン)
+	void SearchTargetPositionForShootingRay(MyLib::Ray shootingRay);
+
+	// いくつかの点から目標座標を取得する
+	void SearchTargetPositionForSeveralPosition();
+
+	// 調べる方向を取得する
+	std::vector<DirectX::SimpleMath::Vector3> GetSearchDirections() const;
+
+	// カプセルコライダーの作成
+	static Capsule CreateCapsuleCollider(const DirectX::SimpleMath::Vector3& origin, const DirectX::SimpleMath::Vector3& direction, const float& length, const float& radius) ;
+
+	// 衝突情報を元に接地座標を算出する
+	bool CalcWireTargetPosition(
+		DirectX::SimpleMath::Vector3* pTargetPosition, 
+		const Capsule& hitCapsuleCollider,
+		const GameObject* pHitObject, 
+		const ICollider* pHitCollider);
+
+	// 方向からカプセルコライダーを算出し目標座標の候補を取得する
+	std::vector<DirectX::SimpleMath::Vector3> GetTargetPositionCandidatesForDirection(std::vector<DirectX::SimpleMath::Vector3> searchDirections);
+
+	// 最も遠い目標座標を取得する
+	DirectX::SimpleMath::Vector3 GetFarTargetPosition(std::vector<DirectX::SimpleMath::Vector3> targetPositions);
 
 };
