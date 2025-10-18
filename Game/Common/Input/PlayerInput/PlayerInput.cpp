@@ -1,0 +1,174 @@
+/*****************************************************************//**
+ * @file    PlayerInput.h
+ * @brief   プレイヤー入力に関するソースファイル
+ *
+ * @author  松下大暉
+ * @date    2025/10/15
+ *********************************************************************/
+
+// ヘッダファイルの読み込み ===================================================
+#include "pch.h"
+#include "PlayerInput.h"
+
+
+using namespace DirectX;
+
+// メンバ関数の定義 ===========================================================
+/**
+ * @brief コンストラクタ
+ *
+ * @param[in] なし
+ */
+PlayerInput::PlayerInput()
+	: m_pKeyboardStateTracker	{ nullptr }
+	, m_pMouseStateTracker		{ nullptr }
+{
+	m_inputs[ActionID::STEPPING].buttons.emplace_back(MouseButtons::RIGHT_BUTTON);
+
+	m_inputs[ActionID::WIRE_SHOOTING].buttons.emplace_back(MouseButtons::LEFT_BUTTON);
+
+	m_inputs[ActionID::JUMPING].keys.emplace_back(Keyboard::Space);
+
+
+	m_inputs[ActionID::LEFT_MOVE].keys.emplace_back(Keyboard::Left);
+	m_inputs[ActionID::LEFT_MOVE].keys.emplace_back(Keyboard::A);
+
+	m_inputs[ActionID::RIGHT_MOVE].keys.emplace_back(Keyboard::Right);
+	m_inputs[ActionID::RIGHT_MOVE].keys.emplace_back(Keyboard::D);
+
+	m_inputs[ActionID::FRONT_MOVE].keys.emplace_back(Keyboard::Up);
+	m_inputs[ActionID::FRONT_MOVE].keys.emplace_back(Keyboard::W);
+
+	m_inputs[ActionID::BACK_MOVE].keys.emplace_back(Keyboard::Back);
+	m_inputs[ActionID::BACK_MOVE].keys.emplace_back(Keyboard::S);
+
+
+
+}
+
+
+
+/**
+ * @brief デストラクタ
+ */
+PlayerInput::~PlayerInput()
+{
+
+}
+
+/**
+ * @brief 更新処理
+ * 
+ * @param[in] pKeyboardStateTracker　キーボード情報
+ * @param[in] pMouseStateTracker	 マウス情報
+ */
+void PlayerInput::Update(
+	const DirectX::Keyboard::KeyboardStateTracker* pKeyboardStateTracker, 
+	const DirectX::Mouse::ButtonStateTracker* pMouseStateTracker)
+{
+	// リセット
+	m_currentInputState.clear();
+
+	m_pKeyboardStateTracker = pKeyboardStateTracker;
+	m_pMouseStateTracker	= pMouseStateTracker;
+}
+
+/**
+ * @brief 入力されたかどうか
+ * 
+ * @param[in] actitonID　動作ID
+ * @param[in] inputOptionオプション [デフォルトはDOWN]
+ * 
+ * @returns true  入力された
+ * @returns false 入力されていない
+ */
+bool PlayerInput::IsInput(const ActionID& actionID, const InputOption& inputOption)
+{
+	// 既にデータに入っているかどうか
+	if (m_currentInputState.count(actionID)
+		&& m_currentInputState[actionID].count(inputOption))
+	{
+		// あればそれを送る
+		return m_currentInputState[actionID][inputOption];
+	}
+
+	InputData inputData = m_inputs[actionID];
+
+	bool result = false;
+
+	if (!m_pKeyboardStateTracker->GetLastState().IsKeyDown(Keyboard::None))
+	{
+		// キーボードの確認
+		for (auto& key : inputData.keys)
+		{
+			if (result) { break; }
+
+			switch (inputOption)
+			{
+				// 押している時
+			case PlayerInput::InputOption::DOWN:
+				result = m_pKeyboardStateTracker->GetLastState().IsKeyDown(key);
+				break;
+				// 押された時
+			case PlayerInput::InputOption::PRESSED:
+				result = m_pKeyboardStateTracker->IsKeyPressed(key);
+				break;
+				// 離された時
+			case PlayerInput::InputOption::RELEASED:
+				result = m_pKeyboardStateTracker->IsKeyReleased(key);
+				break;
+			default:
+				break;
+			}
+		}
+	}
+
+	
+	auto checkInput = [&](Mouse::ButtonStateTracker::ButtonState buttonState) {
+		switch (inputOption)
+		{
+			// 押している時
+		case PlayerInput::InputOption::DOWN:
+			if (buttonState == Mouse::ButtonStateTracker::ButtonState::HELD) {return true;}
+			break;
+			// 押された時
+		case PlayerInput::InputOption::PRESSED:
+			if (buttonState == Mouse::ButtonStateTracker::ButtonState::PRESSED) { return true; }
+			break;
+			// 離された時
+		case PlayerInput::InputOption::RELEASED:
+			if (buttonState == Mouse::ButtonStateTracker::ButtonState::RELEASED) { return true; }
+			break;
+		default:
+			break;
+		}
+		return false;
+	};
+	
+	const int buttonNum = 3;
+	DirectX::Mouse::ButtonStateTracker::ButtonState buttonStates[buttonNum] = {m_pMouseStateTracker->leftButton, m_pMouseStateTracker->rightButton, m_pMouseStateTracker->middleButton};
+	int buttonInt[buttonNum] = { static_cast<int>(MouseButtons::LEFT_BUTTON),  static_cast<int>(MouseButtons::RIGHT_BUTTON), static_cast<int>(MouseButtons::MIDDLE_BUTTON) };
+	// マウスの確認
+	for (auto& button : inputData.buttons)
+	{
+		if (result) { break; }
+
+
+		for (int i = 0; i < buttonNum; i++)
+		{
+			// ボタンの確認
+			if (button == static_cast<MouseButtons>(buttonInt[i]))
+			{			
+				result = checkInput(buttonStates[i]);
+			}
+		}
+
+	}
+
+	// 結果の登録
+	m_currentInputState[actionID][inputOption] = result;
+
+	return result;
+}
+
+
