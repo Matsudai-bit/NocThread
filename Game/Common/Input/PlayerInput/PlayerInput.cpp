@@ -23,7 +23,7 @@ PlayerInput::PlayerInput()
 	: m_pKeyboardStateTracker	{ nullptr }
 	, m_pMouseStateTracker		{ nullptr }
 {
-	m_inputs[ActionID::STEPPING].buttons.emplace_back(MouseButtons::RIGHT_BUTTTON);
+	m_inputs[ActionID::STEPPING].buttons.emplace_back(MouseButtons::RIGHT_BUTTON);
 
 	m_inputs[ActionID::WIRE_SHOOTING].buttons.emplace_back(MouseButtons::LEFT_BUTTON);
 
@@ -96,89 +96,73 @@ bool PlayerInput::IsInput(const ActionID& actionID, const InputOption& inputOpti
 
 	bool result = false;
 
-	// キーボードの確認
-	for (auto& key : inputData.keys)
+	if (!m_pKeyboardStateTracker->GetLastState().IsKeyDown(Keyboard::None))
 	{
-		switch (inputOption)
+		// キーボードの確認
+		for (auto& key : inputData.keys)
 		{
-		// 押している時
-		case PlayerInput::InputOption::DOWN:
-			result = m_pKeyboardStateTracker->GetLastState().IsKeyDown(key);
-			break;
-		// 押された時
-		case PlayerInput::InputOption::PRESSED:
-			result = m_pKeyboardStateTracker->IsKeyPressed(key);
-			break;
-		// 離された時
-		case PlayerInput::InputOption::RELEASED:
-			result = m_pKeyboardStateTracker->IsKeyReleased(key);
-			break;
-		default:
-			break;
-		}
-	}
+			if (result) { break; }
 
-	// マウスの確認
-	for (auto& button : inputData.buttons)
-	{
-		auto checkInput = [&](Mouse::ButtonStateTracker::ButtonState buttonState) {
 			switch (inputOption)
 			{
 				// 押している時
 			case PlayerInput::InputOption::DOWN:
-				if (m_pMouseStateTracker->leftButton == Mouse::ButtonStateTracker::ButtonState::HELD) { return true; }
+				result = m_pKeyboardStateTracker->GetLastState().IsKeyDown(key);
 				break;
 				// 押された時
 			case PlayerInput::InputOption::PRESSED:
-				if (m_pMouseStateTracker->leftButton == Mouse::ButtonStateTracker::ButtonState::PRESSED) { return true; }
+				result = m_pKeyboardStateTracker->IsKeyPressed(key);
 				break;
 				// 離された時
 			case PlayerInput::InputOption::RELEASED:
-				if (m_pMouseStateTracker->leftButton == Mouse::ButtonStateTracker::ButtonState::RELEASED) { return true; }
+				result = m_pKeyboardStateTracker->IsKeyReleased(key);
 				break;
 			default:
 				break;
 			}
-			return false;
-		};
+		}
+	}
 
-		int buttonInt[] = { static_cast<int>(MouseButtons::LEFT_BUTTON),  static_cast<int>(MouseButtons::RIGHT_BUTTTON), static_cast<int>(MouseButtons::MIDDLE_BUTTTON) };
+	
+	auto checkInput = [&](Mouse::ButtonStateTracker::ButtonState buttonState) {
+		switch (inputOption)
+		{
+			// 押している時
+		case PlayerInput::InputOption::DOWN:
+			if (buttonState == Mouse::ButtonStateTracker::ButtonState::HELD) {return true;}
+			break;
+			// 押された時
+		case PlayerInput::InputOption::PRESSED:
+			if (buttonState == Mouse::ButtonStateTracker::ButtonState::PRESSED) { return true; }
+			break;
+			// 離された時
+		case PlayerInput::InputOption::RELEASED:
+			if (buttonState == Mouse::ButtonStateTracker::ButtonState::RELEASED) { return true; }
+			break;
+		default:
+			break;
+		}
+		return false;
+	};
+	
+	const int buttonNum = 3;
+	DirectX::Mouse::ButtonStateTracker::ButtonState buttonStates[buttonNum] = {m_pMouseStateTracker->leftButton, m_pMouseStateTracker->rightButton, m_pMouseStateTracker->middleButton};
+	int buttonInt[buttonNum] = { static_cast<int>(MouseButtons::LEFT_BUTTON),  static_cast<int>(MouseButtons::RIGHT_BUTTON), static_cast<int>(MouseButtons::MIDDLE_BUTTON) };
+	// マウスの確認
+	for (auto& button : inputData.buttons)
+	{
+		if (result) { break; }
 
-		for (int i = 0; i < 3; i++)
+
+		for (int i = 0; i < buttonNum; i++)
 		{
 			// ボタンの確認
 			if (button == static_cast<MouseButtons>(buttonInt[i]))
-			{
-			
-				result = checkInput(m_pMouseStateTracker->leftButton);
+			{			
+				result = checkInput(buttonStates[i]);
 			}
 		}
 
-		//// 左ボタンの確認
-		//if (button == MouseButtons::LEFT_BUTTON)
-		//{
-		//	if (checkInput(m_pMouseStateTracker->leftButton))
-		//	{
-		//		result = true;
-		//	}
-		//}
-		//// 右ボタンの確認
-		//if (button == MouseButtons::RIGHT_BUTTTON)
-		//{
-		//	if (checkInput(m_pMouseStateTracker->rightButton))
-		//	{
-		//		result = true;
-		//	}
-		//}
-		//// 間のボタンの確認
-		//if (button == MouseButtons::MIDDLE_BUTTTON)
-		//{
-		//	if (checkInput(m_pMouseStateTracker->middleButton))
-		//	{
-		//		result = true;
-		//	}
-		//}
-		//
 	}
 
 	// 結果の登録
