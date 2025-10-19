@@ -271,8 +271,6 @@ public:
 	// 状態の変更要求
 	void RequestChangeState(State state);
 
-	// 要求状態のリセット
-	void ResetRequestedState();
 
 // 取得/設定
 public:
