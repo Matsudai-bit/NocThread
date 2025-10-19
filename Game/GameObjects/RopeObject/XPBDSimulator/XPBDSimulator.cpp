@@ -147,7 +147,6 @@ void XPBDSimulator::Initialize(Parameter parameter, RopeObject* pRopeObject)
  */
 void XPBDSimulator::Update(float deltaTime)
 {
-
 	// **** 固定点以外の位置をデータに反映 ****
 	for (auto& particle : m_particles)
 	{
