@@ -300,7 +300,7 @@ void Player::Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::Simple
 	//GetCommonResources()->GetDebugFont()->AddString(100, 130, Colors::White, L"speed : %f ", GetVelocity().Length());
 
 	// ワイヤー照準検出器の表示
-	//m_wireTargetFinder->Draw(view, projection);
+	m_wireTargetFinder->Draw(view, projection);
 
 	//m_collider->Draw(context, view, proj);
 
@@ -547,7 +547,7 @@ void Player::Move(const float& deltaTime)
  */
 void Player::ApplyWireSimulator(const float& deltaTime)
 {
-	m_wire->ApplyWireSimulator(deltaTime);
+	m_wire->ApplyWireSimulator(deltaTime );
 
 }
 

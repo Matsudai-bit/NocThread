@@ -53,12 +53,12 @@ private:
 public:
 
 	// 上下左右に広がるグリッドを想定したサンプリング
-	static constexpr int SEARCH_DIRECTION_NUM = 5; // 定数化推奨
-	static constexpr float SEARCH_ANGLE_STEP_YAW = 8.0f;
-	static constexpr float SEARCH_ANGLE_OFFSET_YAW = 48.0f;
-	static constexpr float SEARCH_ANGLE_STEP_PITCH = 8.0f;
+	static constexpr int	SEARCH_DIRECTION_NUM = 5; 
+	static constexpr float	SEARCH_ANGLE_STEP_YAW = 8.0f;
+	static constexpr float	SEARCH_ANGLE_OFFSET_YAW = 48.0f;
+	static constexpr float	SEARCH_ANGLE_STEP_PITCH = 10.0f;
 
-	static constexpr float SEARCH_ANGLE_START_PITCH = 15.f;
+	static constexpr float	SEARCH_ANGLE_START_PITCH = 20.f;
 
 // データメンバの宣言 -----------------------------------------------
 private:

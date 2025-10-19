@@ -421,8 +421,8 @@ std::vector<DirectX::SimpleMath::Vector3> WireTargetFinder::GetTargetPositionCan
 			for (size_t i = 0; i < hitGameObjects.size(); i++)
 			{
 				// ˆ——p•Ï”
-				auto pHitObject = hitGameObjects[i];
-				auto pHitCollider = hitColliders[i];
+				auto pHitObject		= hitGameObjects[i];
+				auto pHitCollider	= hitColliders[i];
 
 				SimpleMath::Vector3 targetPosition;
 

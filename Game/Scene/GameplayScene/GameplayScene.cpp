@@ -104,50 +104,69 @@ GameplayScene::~GameplayScene()
 void GameplayScene::Initialize()
 {
     using namespace SimpleMath;
-
     CreateWindowSizeDependentResources();
 
-    // BGMを鳴らす
-    SoundManager::GetInstance()->RemoveAll();
-    SoundManager::GetInstance()->Play(SoundPaths::BGM_INGAME, true);
-
+    // 処理に使用するものたちの取得
     DX::DeviceResources*    pDeviceResources    = GetCommonResources()->GetDeviceResources();
     CommonStates*           pStates             = GetCommonResources()->GetCommonStates();
     ID3D11DeviceContext*    context             = GetCommonResources()->GetDeviceResources()->GetD3DDeviceContext();
 
-    // 衝突管理の生成
-    m_collisionManager  =   std::make_unique<CollisionManager>();
-    // グリッド床の生成
-    m_gridFloor         =   std::make_unique<Imase::GridFloor>(pDeviceResources->GetD3DDevice(), pDeviceResources->GetD3DDeviceContext(), pStates);
 
-    // キャンバスの設定
+    // **** ステートマシーンの作成 ****
+    m_stateMachine = std::make_unique <StateMachine<GameplayScene>>(this);
+    // **** 最初の状態 ****
+    m_stateMachine->ChangeState<NormalGameplayState>();
+
+
+    // **** ゲーム経過時間のリセット *****
+    m_gamePlayingTimeCounter.Reset();
+
+
+    // リザルトデータの初期化処理
+    ResultData::GetInstance()->Reset();
+
+    
+    // **** BGMを鳴らす ****
+    SoundManager::GetInstance()->RemoveAll();
+    SoundManager::GetInstance()->Play(SoundPaths::BGM_INGAME, true);
+
+    
+    // **** 衝突管理の生成 ****
+    m_collisionManager  =   std::make_unique<CollisionManager>();
+
+
+    // **** UI関連処理 後にクラス化して分離する ****
     m_canvas = std::make_unique<Canvas>();
-    // スプライトの生成
-    m_scopeSprite = std::make_unique<Sprite>();
- 
     // キャンバスの初期化処理
     m_canvas->Initialize(context);
-
+    // **** 画面中央スプライトの生成 ****
+    m_scopeSprite = std::make_unique<Sprite>();
     // スプライトの初期化処理
     m_scopeSprite->Initialize(GetCommonResources()->GetResourceManager()->CreateTexture("scope.dds"));
     m_scopeSprite->SetPosition(DirectX::SimpleMath::Vector2(Screen::Get()->GetCenterXF(), Screen::Get()->GetCenterYF() - 140.f *  Screen::Get()->GetScreenScale()));
     m_scopeSprite->SetScale(0.09f * Screen::Get()->GetScreenScale());
     m_canvas->AddSprite(m_scopeSprite.get());
+ 
+
+    // **** エフェクト官吏の作成 ****
     m_gameEffectManager = std::make_unique<GameEffectManager>();
     // 現在使用するエフェクト管理の取得
     GameEffectController::GetInstance()->SetGameEffectManager(m_gameEffectManager.get());
     // メインカメラの設定 
     MainCamera::GetInstance()->SetCamera(m_playerCamera.get());
-    // **** ゲームオブジェクトの作成 *****    
-    // プレイヤーカメラの初期化処理
-    m_playerCamera->Initialize(GetCommonResources(), m_collisionManager.get());
+
+
+    // **** 各種ゲームオブジェクトの作成 *****    
     
     // 床の生成
     m_floor = std::make_unique<Floor>();
     // 床の初期化
     m_floor->Initialize(SimpleMath::Vector3(0.0f, 0.0f, 0.0f), GetCommonResources(), m_collisionManager.get());
 
-    // 壁の生成
+    // ---- プレイヤー関連 後に管理クラスを作る ----------
+    // プレイヤーカメラの初期化処理
+    m_playerCamera->Initialize(GetCommonResources(), m_collisionManager.get());
+
     // プレイヤーの生成
     m_player = std::make_unique<Player>();
     // プレイヤーの初期化
@@ -161,6 +180,7 @@ void GameplayScene::Initialize()
     m_playerController = std::make_unique<PlayerController>(m_player.get(), m_playerCamera.get());
     // カメラにプレイヤーを設定する
     m_playerCamera->SetPlayer(m_player.get());
+    // ---------------------------- ここまで
 
     // 敵管理の作成
     m_enemyManager = std::make_unique<EnemyManager>();
@@ -170,22 +190,11 @@ void GameplayScene::Initialize()
     m_spawnManager = std::make_unique<SpawnManager>();
     m_spawnManager->Initialize(m_enemyManager.get(), &m_escapeHelicopter, GetCommonResources(), m_collisionManager.get());
 
+    // ステージ作成
     CreateStage();
   
-    // モデルの読み込み
+    // **** 天球の作成 ****
     m_skySphere = GetCommonResources()->GetResourceManager()->CreateModel("skyDome.sdkmesh");
-
-    // ステートマシーンの作成
-    m_stateMachine = std::make_unique <StateMachine<GameplayScene>>(this);
-    // 最初の状態
-    m_stateMachine->ChangeState<NormalGameplayState>();
-
-    // 経過時間のリセット
-    m_gamePlayingTimeCounter.Reset();
-
-    ResultData::GetInstance()->Reset();
-
-
 
 }
 
