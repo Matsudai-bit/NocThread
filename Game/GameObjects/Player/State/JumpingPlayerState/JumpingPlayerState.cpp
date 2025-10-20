@@ -58,6 +58,9 @@ void JumpingPlayerState::OnStartState()
  */
 void JumpingPlayerState::OnUpdate(float deltaTime)
 {
+	// マウストラック
+	auto mouseTrack = GetOwner()->GetCommonResources()->GetMouseTracker();
+
 	if (m_isJumping == false)
 	{
 		// ジャンプ
@@ -77,6 +80,14 @@ void JumpingPlayerState::OnUpdate(float deltaTime)
 	if (GetOwner()->IsGround())
 	{
 		GetOwner()->RequestChangeState(Player::State::IDLE);
+	}
+
+	if (mouseTrack->leftButton == Mouse::ButtonStateTracker::PRESSED)
+	{
+		if (GetOwner()->CanShootWire())
+		{
+			GetOwner()->ShootWire();
+		}
 	}
 
 	//GetOwner()->GetCommonResources()->GetDebugFont()->AddString(10, 90, Colors::White, L"Walk");

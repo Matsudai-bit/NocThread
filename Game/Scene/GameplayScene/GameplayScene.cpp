@@ -41,7 +41,7 @@
 // ゲームオブジェクト管理系
 #include "Game/Common/GameObjectManager/EnemyManager/EnemyManager.h"
 #include "Game/Common/SpawnManager/SpawnManager.h"
-
+#include "Game/Manager/PlayerManager/PlayerManager.h"
 
 #include "Game/Common/Camera/PlayerCamera/PlayerCamera.h"
 #include "Game/GameObjects/Player/PlayerController/PlayerController.h"
@@ -167,19 +167,13 @@ void GameplayScene::Initialize()
     // プレイヤーカメラの初期化処理
     m_playerCamera->Initialize(GetCommonResources(), m_collisionManager.get());
 
-    // プレイヤーの生成
-    m_player = std::make_unique<Player>();
-    // プレイヤーの初期化
-    m_player->Initialize(GetCommonResources(), m_collisionManager.get(), m_playerCamera.get());
 
-    // プレイヤー影の作成
-    m_playerShadow = std::make_unique<CircularShadow>();
-    m_playerShadow->Initialize(GetCommonResources()->GetDeviceResources(), 0.01f);
-   
-    // プレイヤーコントローラの作成
-    m_playerController = std::make_unique<PlayerController>(m_player.get(), m_playerCamera.get());
-    // カメラにプレイヤーを設定する
-    m_playerCamera->SetPlayer(m_player.get());
+    //// プレイヤー管理の生成
+    m_playerManager = std::make_unique<PlayerManager>();
+    m_playerManager->Initialize(GetCommonResources(), m_collisionManager.get(), m_playerCamera.get());
+    //// カメラにプレイヤーを設定する
+    m_playerCamera->SetPlayer(m_playerManager->GetPlayer());
+    
     // ---------------------------- ここまで
 
     // 敵管理の作成
@@ -299,10 +293,7 @@ void GameplayScene::UpdateInGameObjects(float deltaTime)
     // 衝突管理の更新処理
     m_collisionManager->Update();
 
-    // プレイヤーコントローラの更新処理
-    m_playerController->Update(deltaTime, GetCommonResources()->GetKeyboardTracker(), GetCommonResources()->GetMouseTracker());
-    // プレイヤーの更新処理
-    m_player->Update(deltaTime,  m_proj);
+    m_playerManager->Update(deltaTime, m_proj);
 
     for (auto& stageObj : m_stageObject)
     {
@@ -350,7 +341,7 @@ void GameplayScene::DrawInGameObjects()
     m_floor->Draw(view, m_proj);
 
     // プレイヤーの描画処理
-    m_player->Draw(view, m_proj);
+    m_playerManager->Draw(view, m_proj);
 
 
     for (auto& stageObj : m_stageObject)
@@ -403,13 +394,12 @@ void GameplayScene::DrawInGameObjects()
 
 
     SimpleMath::Matrix world = SimpleMath::Matrix::CreateScale(300.0f);
-    world *= SimpleMath::Matrix::CreateTranslation(m_player->GetPosition());
+    world *= SimpleMath::Matrix::CreateTranslation(m_playerManager->GetPlayer()->GetPosition());
 
     m_skySphere.Draw(GetCommonResources()->GetDeviceResources()->GetD3DDeviceContext(), *GetCommonResources()->GetCommonStates(), world, view, m_proj);
     // ゲームエフェクト管理の描画処理
     m_gameEffectManager->Draw(view, m_proj);
-    //
-    m_playerShadow->Draw(view, m_proj, states, m_player->GetPosition());
+
 
 
     m_canvas->Draw(states);

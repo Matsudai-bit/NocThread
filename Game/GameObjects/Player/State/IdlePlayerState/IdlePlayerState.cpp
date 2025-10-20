@@ -60,7 +60,7 @@ void IdlePlayerState::OnStartState()
 void IdlePlayerState::OnUpdate(float deltaTime)
 {
 	// マウストラック
-	auto mosueTrack = GetOwner()->GetCommonResources()->GetMouseTracker();
+	auto mouseTrack = GetOwner()->GetCommonResources()->GetMouseTracker();
 
 	// 物理の適用
 	GetOwner()->ApplyPhysic(deltaTime);
@@ -71,7 +71,7 @@ void IdlePlayerState::OnUpdate(float deltaTime)
 		GetOwner()->RequestChangeState(Player::State::WALKING);
 	}
 
-	if (mosueTrack->leftButton == Mouse::ButtonStateTracker::PRESSED)
+	if (mouseTrack->leftButton == Mouse::ButtonStateTracker::PRESSED)
 	{
 		if (GetOwner()->CanShootWire())
 		{

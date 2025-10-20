@@ -35,7 +35,7 @@ public:
 private:
 
 	Player* m_pPlayer; // 操作対象
-	Camera* m_pCamera; // カメラ
+	const Camera* m_pCamera; // カメラ
 
 	std::unique_ptr<PlayerInput> m_playerInput;
 	
@@ -44,7 +44,7 @@ private:
 // コンストラクタ/デストラクタ
 public:
 	// コンストラクタ
-	PlayerController(Player* pPlayer, Camera* pCamera);
+	PlayerController(Player* pPlayer, const Camera* pCamera);
 
 	// デストラクタ
 	~PlayerController();
@@ -53,7 +53,7 @@ public:
 // 操作
 public:
 	// 初期化処理
-	void Initialize(Player* pPlayer, Camera* pCamera);
+	void Initialize(Player* pPlayer, const Camera* pCamera);
 
 	// 更新処理
 	void Update(float deltaTime, const DirectX::Keyboard::KeyboardStateTracker* pKeyboardStateTracker, const DirectX::Mouse::ButtonStateTracker* pMouseStateTracker);

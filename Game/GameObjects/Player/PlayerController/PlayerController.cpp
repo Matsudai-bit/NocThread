@@ -23,7 +23,7 @@ using namespace DirectX;
  *
  * @param[in] ‚È‚µ
  */
-PlayerController::PlayerController(Player* pPlayer, Camera* pCamera)
+PlayerController::PlayerController( Player* pPlayer, const Camera* pCamera)
 {
 	Initialize(pPlayer, pCamera);
 }
@@ -47,7 +47,7 @@ PlayerController::~PlayerController()
  *
  * @return ‚È‚µ
  */
-void PlayerController::Initialize(Player* pPlayer, Camera* pCamera)
+void PlayerController::Initialize(Player* pPlayer,const Camera* pCamera)
 {
 	m_pPlayer = pPlayer;
 	m_pCamera = pCamera;

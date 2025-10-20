@@ -23,7 +23,7 @@
  */
 namespace MyLib
 {
-	constexpr float DEFAULT_EPSILON = 1e-5f;
+	//constexpr float DEFAULT_EPSILON = 1e-5f;
 
 
 	/**
@@ -50,7 +50,7 @@ namespace MyLib
 	 * @return Œë·‚ğ“ü‚ê‚Ä“™‰¿‚©‚Ç‚¤‚©
 	 */
 	template <typename T>
-	inline bool ApproxEqual(T a, T b, float epsilon = DEFAULT_EPSILON)
+	inline bool ApproxEqual(T a, T b, float epsilon = 1e-5f)
 	{
 		return std::abs(a - b) <= epsilon;
 	}

@@ -118,12 +118,14 @@ void WireTargetFinder::Draw(const DirectX::SimpleMath::Matrix& view, const Direc
 	{
 		DX::DrawRay(m_primitiveBatch.get(), m_pPlayer->GetPosition(), direction * 30.0f, false, Colors::Yellow);
 	}
+	
+	m_primitiveBatch->End();
+
 	for (auto& data : m_grappleTargetPositionCache)
 	{
 
 		a->Draw(SimpleMath::Matrix::CreateTranslation(data), view, projection, Colors::Blue, nullptr, true);
 	}
-	m_primitiveBatch->End();
 
 }
 
@@ -408,7 +410,7 @@ std::vector<DirectX::SimpleMath::Vector3> WireTargetFinder::GetTargetPositionCan
 
 	for (Vector3 direction : searchDirections)
 	{
-		Capsule capsule = CreateCapsuleCollider(m_pPlayer->GetPosition(), direction, m_wireLength , m_wireRadius);
+		Capsule capsule = CreateCapsuleCollider(m_pPlayer->GetPosition(), direction, m_wireLength * std::abs(direction.y * 1.3f), m_wireRadius);
 
 		// Õ“Ëî•ñ
 		std::vector<const GameObject*> hitGameObjects{};

@@ -81,7 +81,7 @@ public:
 	void GetWindowSize(int& windowWidth, int& windowHeight);
 
 	// プレイヤーの設定
-	void SetPlayer(Player* pPlayer);
+	void SetPlayer(const Player* pPlayer);
 
 	// 衝突処理
 	void OnCollision(GameObject* pHitObject, ICollider* pHitCollider) override;

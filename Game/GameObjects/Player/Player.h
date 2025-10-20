@@ -36,6 +36,7 @@ class PlayerCamera;			// カメラ
 class WireSystemSubject;// ワイヤーシステムの観察対象
 class Wire;				// ワイヤー
 class WireTargetFinder;		// ワイヤー照準
+class PlayerInput;		// プレイヤー入力
 
 namespace MyLib
 {
@@ -139,6 +140,7 @@ private:
 	// システム
 	CollisionManager* m_pCollisionManager;
 	std::unique_ptr<StateMachine<Player>>	m_stateMachine;	///< ステートマシーン
+	PlayerInput* m_pPlayerInput;	///< プレイヤーの入力機構
 
 	// イベントに関するモノ
 	DirectX::SimpleMath::Vector3 m_requestedMove;			///<　リクエストされた移動ベクトル
@@ -165,8 +167,6 @@ private:
 	// 状態
 	State m_state;
 
-	State m_requestedState; ///< 要求状態
-
 	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_inputLayout;
 	std::unique_ptr<DirectX::BasicEffect> m_basicEffect; ///< ベーシックエフェクト　ものを描画する時の必要なものが用意されているクラス　基本形態
 	
@@ -184,7 +184,7 @@ public:
 // 操作
 public:
 	// 初期化処理
-	void Initialize(CommonResources* pCommonResources, CollisionManager* pCollisionManager, const PlayerCamera* pPlayerCamera);
+	void Initialize(CommonResources* pCommonResources, CollisionManager* pCollisionManager, const PlayerCamera* pPlayerCamera, PlayerInput* pPlayerInput);
 
 	// 更新処理
 	void Update(float deltaTime, const DirectX::SimpleMath::Matrix& proj);
@@ -307,8 +307,6 @@ public:
 	// 地面にいるかどうか
 	bool IsGround() const { return m_isGround; }
 
-	// 要求状態の取得
-	State GetRequestedState() { return m_requestedState; }
 
 
 // 内部実装

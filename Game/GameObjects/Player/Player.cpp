@@ -66,6 +66,7 @@ Player::Player()
 	, m_isActive{ true }
 	, m_canStep{ true }
 	, m_state{ State::IDLE }
+	, m_pPlayerInput{ nullptr }
 {
 	m_cursorPos = DirectX::SimpleMath::Vector2(Screen::Get()->GetCenterXF(), Screen::Get()->GetCenterYF() -  CURSOR_Y_OFFSET_SCALE * Screen::Get()->GetScreenScale());
 	// メッセージへの登録
@@ -81,18 +82,21 @@ Player::~Player()
 {
 }
 
-
 /**
  * @brief 初期化処理
- *
- * @param[in] pCommonResources 共通リソース
- *
- * @return なし
+ * 
+ * @param[in] pCommonResources	共通リソース
+ * @param[in] pCollisionManager	衝突管理
+ * @param[in] pPlayerCamera		プレイヤーカメラ
+ * @param[in] pPlayerInput		プレイヤー入力
  */
-void Player::Initialize(CommonResources* pCommonResources, CollisionManager* pCollisionManager, const PlayerCamera* pPlayerCamera)
+void Player::Initialize(CommonResources* pCommonResources, CollisionManager* pCollisionManager, const PlayerCamera* pPlayerCamera, PlayerInput* pPlayerInput)
 {
 	using namespace SimpleMath;
 	m_pPlayerCamera = pPlayerCamera;
+
+	// プレイヤー入力の取得
+	m_pPlayerInput = pPlayerInput;
 
 	// 共通リソースの設定
 	SetCommonResources(pCommonResources);
@@ -224,7 +228,7 @@ void Player::Update(float deltaTime, const DirectX::SimpleMath::Matrix& proj)
  * @brief 描画処理
  * 
  * @param[in] view　ビュー行列
- * @param[in] proj　射影行列
+ * @param[in] projection　射影行列
  */
 void Player::Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& projection)
 {
@@ -256,7 +260,6 @@ void Player::Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::Simple
 	Matrix world = defaultRotation * defaultTransform * scale * rotation * transform;
 
 
-	m_model.Draw(context, *GetCommonResources()->GetCommonStates(), world, view, projection);
 	auto drawBones = DirectX::ModelBone::MakeArray(m_model.bones.size());
 	// ボーン数を取得する
 	size_t nbones = m_model.bones.size();
@@ -269,7 +272,6 @@ void Player::Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::Simple
 	// アニメーションモデルを描画する
 	m_model.DrawSkinned(context, *states, nbones, drawBones.get(), world, view, projection);
 
-	m_model.Draw(context, *states, world, view, projection);
 
 	// **** 軸の描画 ****
 
@@ -300,7 +302,7 @@ void Player::Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::Simple
 	//GetCommonResources()->GetDebugFont()->AddString(100, 130, Colors::White, L"speed : %f ", GetVelocity().Length());
 
 	// ワイヤー照準検出器の表示
-	m_wireTargetFinder->Draw(view, projection);
+	//m_wireTargetFinder->Draw(view, projection);
 
 	//m_collider->Draw(context, view, proj);
 

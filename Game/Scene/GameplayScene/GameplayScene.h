@@ -47,10 +47,8 @@ class SpawnManager;		// 出現管理
 class EnemyManager;		// 敵管理
 class Wall;				// 壁
 class Segment;			// 線分
-class Player;			// プレイヤー
 class Building;			// 建物
 class PlayerCamera;		// プレイヤーのカメラ
-class PlayerController;	// プレイヤーコントローラ
 class Canvas;			// キャンバス
 class Sprite;			// スプライト
 class StageObject;		// ステージオブジェクト
@@ -60,6 +58,7 @@ class EscapeHelicopter;	// ヘリコプター
 class IEnemyFactory;	
 class CircularShadow;	// 丸影
 class BuildingManager;  // 建物管理
+class PlayerManager;	// プレイヤー管理
 
 class RopeObject;
 class ParticleObject;
@@ -111,7 +110,7 @@ private:
 
     // システム
     std::unique_ptr<CollisionManager>   m_collisionManager; ///< 衝突管理
-	std::unique_ptr<PlayerController>	m_playerController;	///< プレイヤーのコントローラ
+	//std::unique_ptr<PlayerController>	m_playerController;	///< プレイヤーのコントローラ
 	std::unique_ptr<GameEffectManager>	m_gameEffectManager;///< ゲームエフェクト管理
 
 	// スプライト関連
@@ -119,22 +118,21 @@ private:
 	std::unique_ptr<Sprite> m_scopeSprite; // スプライト
 
 	// ゲームオブジェクト管理系
-	std::unique_ptr<SpawnManager>	m_spawnManager;	///< 生成管理
-	std::unique_ptr<EnemyManager>	m_enemyManager;	///< 敵管理
+	std::unique_ptr<SpawnManager>	m_spawnManager;		///< 生成管理
+	std::unique_ptr<EnemyManager>	m_enemyManager;		///< 敵管理
+	std::unique_ptr<BuildingManager>m_buildingManager;	///< 建物管理
+	std::unique_ptr<PlayerManager>	m_playerManager;	///< プレイヤー管理
 
 
 	// ゲームオブジェクト
 	std::unique_ptr<Floor>						m_floor;		///< 床
-	std::unique_ptr<Player>						m_player;		///< プレイヤー
 	std::vector<std::unique_ptr<StageObject>>	m_stageObject;	///< ステージオブジェクト
 	std::unique_ptr<Treasure>					m_treasure;		///< お宝
 	std::vector<std::unique_ptr<Building>>		m_buildings;	////< 建物
 	std::vector< std::unique_ptr<EscapeHelicopter>>				m_escapeHelicopter;///< 脱出用ヘリコプター
-	std::unique_ptr<BuildingManager>			m_buildingManager;///< 建物管理
 
 	// その他
 	DirectX::Model m_skySphere;	///< 天球
-	std::unique_ptr<CircularShadow> m_playerShadow;	///< プレイヤーの影
 
 	std::vector <std::function<void()>> m_eventStack;
 	ElapsedTimeCounter m_gamePlayingTimeCounter; ///< ゲームのプレイ時間の

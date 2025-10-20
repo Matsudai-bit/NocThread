@@ -374,6 +374,9 @@
     <Filter Include="Game\Common\EntityManager">
       <UniqueIdentifier>{ec7f0dc5-f908-4e5e-990a-af05d5c2c7b0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\GameObjects\Player\PlayerManager">
+      <UniqueIdentifier>{e9529cf0-0b6d-473b-aa18-73b512d7b270}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -749,6 +752,10 @@
       <Filter>Game\Common\EntityManager</Filter>
     </ClInclude>
     <ClInclude Include="Game\Manager\BuildingManager\BuildingManager.h" />
+    <ClInclude Include="Game\Common\Input\PlayerInput\PlayerInput.h" />
+    <ClInclude Include="Game\Manager\PlayerManager\PlayerManager.h">
+      <Filter>Game\GameObjects\Player\PlayerManager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -1067,6 +1074,10 @@
       <Filter>Game\Common\EntityManager</Filter>
     </ClCompile>
     <ClCompile Include="Game\Manager\BuildingManager\BuildingManager.cpp" />
+    <ClCompile Include="Game\Common\Input\PlayerInput\PlayerInput.cpp" />
+    <ClCompile Include="Game\Manager\PlayerManager\PlayerManager.cpp">
+      <Filter>Game\GameObjects\Player\PlayerManager</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />
