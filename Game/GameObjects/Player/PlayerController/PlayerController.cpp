@@ -12,7 +12,6 @@
 
 #include "Game/GameObjects/Player/Player.h"
 #include "Game/Common/Camera/Camera.h"
-#include "Game/Common/Input/PlayerInput/PlayerInput.h"
 
 using namespace DirectX;
 
@@ -51,8 +50,6 @@ void PlayerController::Initialize(Player* pPlayer,const Camera* pCamera)
 {
 	m_pPlayer = pPlayer;
 	m_pCamera = pCamera;
-
-	m_playerInput = std::make_unique<PlayerInput>();
 }
 
 
@@ -68,9 +65,6 @@ void PlayerController::Update(float deltaTime, const Keyboard::KeyboardStateTrac
 {
 	UNREFERENCED_PARAMETER(deltaTime);
 
-	m_playerInput->Update(pKeyboardStateTracker, pMouseStateTracker);
-
-
 	auto kb = pKeyboardStateTracker->GetLastState();
 	auto mouse = pMouseStateTracker->GetLastState();
 
@@ -78,16 +72,13 @@ void PlayerController::Update(float deltaTime, const Keyboard::KeyboardStateTrac
 	SimpleMath::Vector3 movementDirection = SimpleMath::Vector3::Zero;
 
 	// 奥へ
-	if (m_playerInput->IsInput(PlayerInput::ActionID::FRONT_MOVE))
-	{
-		movementDirection += SimpleMath::Vector3::Forward;
-	}
+	if (kb.W)	movementDirection += SimpleMath::Vector3::Forward;
 	// 手前へ
-	if (m_playerInput->IsInput(PlayerInput::ActionID::BACK_MOVE)) { movementDirection += SimpleMath::Vector3::Backward; }
+	if (kb.S)	movementDirection += SimpleMath::Vector3::Backward;
 	// 右へ
-	if (m_playerInput->IsInput(PlayerInput::ActionID::RIGHT_MOVE)) { movementDirection += SimpleMath::Vector3::Right; }
+	if (kb.D)	movementDirection += SimpleMath::Vector3::Right;
 	// 左へ
-	if (m_playerInput->IsInput(PlayerInput::ActionID::LEFT_MOVE)) { movementDirection += SimpleMath::Vector3::Left; }
+	if (kb.A)	movementDirection += SimpleMath::Vector3::Left;
 
 	// 入力がないときは移動しない
 	if (movementDirection.LengthSquared() > 0.0f)
@@ -114,13 +105,13 @@ void PlayerController::Update(float deltaTime, const Keyboard::KeyboardStateTrac
 	}
 
 	// ジャンプ
-	if (m_playerInput->IsInput(PlayerInput::ActionID::JUMPING))
+	if (pKeyboardStateTracker->IsKeyPressed(Keyboard::Space))
 	{
 		m_pPlayer->RequestJump();
 	}
 
 	// ステップ
-	if (m_playerInput->IsInput(PlayerInput::ActionID::STEPPING))
+	if (pMouseStateTracker->rightButton == Mouse::ButtonStateTracker::PRESSED)
 	{
 		m_pPlayer->RequestStep();
 	}

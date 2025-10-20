@@ -39,8 +39,8 @@ public:
 	enum class MouseButtons
 	{
 		LEFT_BUTTON,
-		RIGHT_BUTTON,
-		MIDDLE_BUTTON,
+		RIGHT_BUTTTON,
+		MIDDLE_BUTTTON,
 	};
 
 	enum class InputOption
