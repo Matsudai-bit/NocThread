@@ -378,23 +378,23 @@ void PlayerCamera::Motion(int x, int y)
 
 		m_rotate *= q;
 
-		//// 制限したい角度（ラジアン）
-		//const float MAX_PITCH_RADIAN = XMConvertToRadians(60.0f);//XM_PIDIV2; // 90度
-		//const float MIN_PITCH_RADIAN = -XM_PIDIV2 / 2.0f; // -90度
+		// 制限したい角度（ラジアン）
+		const float MAX_PITCH_RADIAN = XMConvertToRadians(60.0f);//XM_PIDIV2; // 90度
+		const float MIN_PITCH_RADIAN = -XM_PIDIV2 / 2.0f; // -90度
 
-		//// 現在のオイラー角の取得 (Pitch, Yaw, Roll の順で入る可能性が高いですが、X軸はPitchと仮定)
-		//SimpleMath::Vector3 euler = m_rotate.ToEuler();
+		// 現在のオイラー角の取得 (Pitch, Yaw, Roll の順で入る可能性が高いですが、X軸はPitchと仮定)
+		SimpleMath::Vector3 euler = m_rotate.ToEuler();
 
-		//// X軸（ピッチ角）を-90度から+90度の範囲に直接クランプする
-		//// SimpleMath::ToEuler() が返す角度は、通常 -π から +π の範囲に収まっているため、
-		//// 符号を個別に計算する必要はありません。
-		//euler.x = MyLib::Clamp(euler.x, MIN_PITCH_RADIAN, MAX_PITCH_RADIAN);
+		// X軸（ピッチ角）を-90度から+90度の範囲に直接クランプする
+		// SimpleMath::ToEuler() が返す角度は、通常 -π から +π の範囲に収まっているため、
+		// 符号を個別に計算する必要はありません。
+		euler.x = MyLib::Clamp(euler.x, MIN_PITCH_RADIAN, MAX_PITCH_RADIAN);
 
-		//// クランプしたオイラー角から新しいクォータニオンを生成し直す
-		//// SimpleMath::CreateFromYawPitchRoll は (Yaw, Pitch, Roll) の順
-		//m_rotate = SimpleMath::Quaternion::CreateFromYawPitchRoll(euler.y, euler.x, 0);
+		// クランプしたオイラー角から新しいクォータニオンを生成し直す
+		// SimpleMath::CreateFromYawPitchRoll は (Yaw, Pitch, Roll) の順
+		m_rotate = SimpleMath::Quaternion::CreateFromYawPitchRoll(euler.y, euler.x, 0);
 
-		//
+		
 	}
 	// 現在のマウス位置を保存
 	m_mousePrevX = x;
