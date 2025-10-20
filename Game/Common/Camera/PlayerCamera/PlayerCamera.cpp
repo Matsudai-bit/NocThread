@@ -228,7 +228,7 @@ DirectX::SimpleMath::Vector3 PlayerCamera::CalculateCameraPosition(const DirectX
 	Vector3 forward = Vector3::TransformNormal(localForward, rot);
 
 	// 注視点 (Target) の計算 (プレイヤーの少し前方)
-	Vector3 target = playerPos + forward * 20.0f;
+	Vector3 target = playerPos + forward * 15.0f;
 	SetTarget(target); // 基底クラスに設定
 
 	// 理想的な視点目標位置の計算
@@ -242,7 +242,7 @@ DirectX::SimpleMath::Vector3 PlayerCamera::CalculateCameraPosition(const DirectX
 	{
 
 		
-		m_nextCameraTargetPosition = playerPos + (-forward * 10.0f) + Vector3(0.0f, 2.5f, 0.0f);
+		m_nextCameraTargetPosition = nextPositionTmp;
 	}
 	return eyeCurrentCameraPosition;
 }
