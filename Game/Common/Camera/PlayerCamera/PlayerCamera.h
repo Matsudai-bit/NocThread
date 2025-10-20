@@ -59,6 +59,9 @@ private:
 	DirectX::SimpleMath::Vector3 m_overlapTotal;
 	DirectX::SimpleMath::Vector3 m_nextCameraTargetPosition;
 
+	DirectX::SimpleMath::Vector3 m_prevResultCameraPosition;
+	DirectX::SimpleMath::Vector3 m_prevTargetCameraPosition;
+	DirectX::SimpleMath::Vector3 m_resultCameraPosition;
 private:
 
 

@@ -106,6 +106,11 @@ void PlayerCamera::Update(float deltaTime)
 
 	// カメラの追従位置と最終設定を更新
 	UpdateCameraPosition(deltaTime, targetCameraPosition);
+
+	GetCommonResources()->GetDebugFont()->AddString(10, 50, Colors::Red, L"EyePosition (%f, %f, %f) ", GetEye().x, GetEye().y, GetEye().z);
+	GetCommonResources()->GetDebugFont()->AddString(10, 100, Colors::Red, L"Target (%f, %f, %f)", GetTarget().x, GetTarget().y, GetTarget().z);
+	GetCommonResources()->GetDebugFont()->AddString(10, 150, Colors::Red, L"ResultTarget (%f, %f, %f)", m_resultCameraPosition.x, m_resultCameraPosition.y, m_resultCameraPosition.z);
+	GetCommonResources()->GetDebugFont()->AddString(10, 200, Colors::Red, L"PrevResultTarget (%f, %f, %f)", m_prevResultCameraPosition.x, m_prevResultCameraPosition.y, m_prevResultCameraPosition.z);
 }
 
 /**
@@ -188,6 +193,8 @@ void PlayerCamera::PostCollision()
 
 		m_overlapTotal = SimpleMath::Vector3::Zero;
 	}
+
+	m_resultCameraPosition = m_nextCameraTargetPosition;
 }
 
 /**
@@ -228,20 +235,20 @@ DirectX::SimpleMath::Vector3 PlayerCamera::CalculateCameraPosition(const DirectX
 	Vector3 forward = Vector3::TransformNormal(localForward, rot);
 
 	// 注視点 (Target) の計算 (プレイヤーの少し前方)
-	Vector3 target = playerPos + forward * 15.0f;
+	Vector3 target = playerPos + forward * 1.0f;
 	SetTarget(target); // 基底クラスに設定
 
 	// 理想的な視点目標位置の計算
 	// プレイヤーの後方 (距離 10.0f) + 高さ補正
 	Vector3 nextPositionTmp = playerPos + (-forward * 10.0f) + Vector3(0.0f, 0.5f, 0.0f);
-	Vector3 eyeCurrentCameraPosition =  m_nextCameraTargetPosition ;
+	//Vector3 eyeCurrentCameraPosition =  (SimpleMath::Vector3::Distance(m_prevResultCameraPosition, m_resultCameraPosition) > 500.f * 500.f) ? m_resultCameraPosition : m_prevResultCameraPosition;
+	Vector3 eyeCurrentCameraPosition = m_nextCameraTargetPosition;
 
+	m_prevResultCameraPosition = m_resultCameraPosition;
 
 	// 目標位置の更新（滑らかさ維持のため、わずかな変化でも更新を維持）
-	if (Vector3::Distance(nextPositionTmp, m_nextCameraTargetPosition) >= 0.01f)
+	if (Vector3::Distance(nextPositionTmp, eyeCurrentCameraPosition) >= 0.01f)
 	{
-
-		
 		m_nextCameraTargetPosition = nextPositionTmp;
 	}
 	return eyeCurrentCameraPosition;
@@ -255,6 +262,19 @@ DirectX::SimpleMath::Vector3 PlayerCamera::CalculateCameraPosition(const DirectX
 void PlayerCamera::UpdateCameraPosition(float deltaTime, const DirectX::SimpleMath::Vector3& targetCameraPosition)
 {
 	using namespace SimpleMath;
+
+	SimpleMath::Vector3 target;
+	if (SimpleMath::Vector3::Distance(targetCameraPosition, m_prevTargetCameraPosition) > 0.5f)
+	{
+		m_prevTargetCameraPosition = targetCameraPosition;
+		//target = targetCameraPosition;
+	}
+	else
+	{
+		m_prevTargetCameraPosition = m_prevResultCameraPosition;
+		//starget = m_prevTargetCameraPosition;
+	}
+
 
 	//  現在の視点位置を取得
 	Vector3 currentEye = GetEye();
@@ -293,7 +313,7 @@ void PlayerCamera::UpdateCameraPosition(float deltaTime, const DirectX::SimpleMa
 
 	// ゲームオブジェクト側の座標・コライダー更新
 	SetPosition(GetEye());
-	m_sphereCollider->Transform(m_nextCameraTargetPosition); // 追従目標位置でコライダーを更新
+	m_sphereCollider->Transform(targetCameraPosition); // 追従目標位置でコライダーを更新
 }
 
 /**
