@@ -25,6 +25,7 @@
 #include "Game/Common/Helper/MovementHelper/MovementHelper.h"
 #include "Game/Common//Helper/PhysicsHelper/PhysicsHelper.h"
 #include "Game/Common/WireTargetFinder/WireTargetFinder.h"
+#include "Game/Common/Input/PlayerInput/PlayerInput.h"
 
 // イベントシステム
 #include "Game/Common/Event/WireSystemObserver/WireSystemSubject.h"
@@ -39,6 +40,7 @@
 #include "Game/GameObjects/Player/State/WireActionPlayerState/WireActionPlayerState.h"
 #include "Game/GameObjects/Player/State/WireGrabbingPlayerState/WireGrabbingPlayerState.cpp.h"
 #include "Game/GameObjects/Player/State/WireThrowing/WireThrowingPlayerState.cpp.h"
+#include "Game/GameObjects/Player/State/ShootingWireState/ShootingWirePlayerState.h"
 
 // ゲームオブジェクト
 #include "Game/GameObjects/Wire/Wire.h"
@@ -357,13 +359,8 @@ void Player::OnCollision(GameObject* pHitObject, ICollider* pHitCollider)
  */
 void Player::OnCollisionWire(GameObject* pHitObject)
 {
-	if (pHitObject->GetTag() == GameObjectTag::WALL ||
-		pHitObject->GetTag() == GameObjectTag::BUILDING ||
-		pHitObject->GetTag() == GameObjectTag::ESCAPE_HELICOPTER)
-	{
-		RequestChangeState(Player::State::WIRE_ACTION);
+	m_collisionWire(pHitObject);
 
-	}
 }
 
 
@@ -642,6 +639,9 @@ void Player::RequestChangeState(State state)
 	case Player::State::WIRE_THROWING:
 		m_stateMachine->ChangeState<WireThrowingPlayerState>();
 		break;
+	case Player::State::WIRE_SHOOTING:
+		m_stateMachine->ChangeState<ShootingWirePlayerState>();
+		break;
 	default:
 		break;
 	}
@@ -727,6 +727,16 @@ DirectX::SimpleMath::Vector3 Player::CalcGrabbingPosition() const
 bool Player::CanShootWire() const
 {
 	return m_wireTargetFinder->IsFindTarget();
+}
+
+/**
+ * @brief ワイヤー衝突時に呼ぶ関数を登録する
+ * 
+ * @param[in] wireCollision　衝突関数
+ */
+void Player::SetWireCollisionFunction(std::function<void(const GameObject*)> wireCollision)
+{
+	m_collisionWire = wireCollision;
 }
 
 void Player::ChangeAnimation(const std::string& animationFilePath)
@@ -869,7 +879,7 @@ void Player::RequestStep()
 void Player::PushOut(DirectX::SimpleMath::Vector3 overlap)
 {
 	// 押し出す
-	SetPosition(GetPosition() + overlap);
+	SetPosition(GetPosition() + overlap * 0.99f);
 
 	m_collider->Transform(GetPosition());
 }
