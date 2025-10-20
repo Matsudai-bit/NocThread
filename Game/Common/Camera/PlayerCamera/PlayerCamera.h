@@ -59,9 +59,6 @@ private:
 	DirectX::SimpleMath::Vector3 m_overlapTotal;
 	DirectX::SimpleMath::Vector3 m_nextCameraTargetPosition;
 
-	DirectX::SimpleMath::Vector3 m_prevResultCameraPosition;
-	DirectX::SimpleMath::Vector3 m_prevTargetCameraPosition;
-	DirectX::SimpleMath::Vector3 m_resultCameraPosition;
 private:
 
 
@@ -90,6 +87,7 @@ public:
 	void OnCollision(GameObject* pHitObject, ICollider* pHitCollider) override;
 
 	void PostCollision() override;
+	void PreCollision() override;
 
 	// 取得/設定
 public:
@@ -106,8 +104,11 @@ private:
 	// 回転の更新処理
 	void UpdateRotation(int mouseX, int mouseY);
 
-	// カメラの注視点の算出
-	DirectX::SimpleMath::Vector3 CalculateCameraPosition(const DirectX::SimpleMath::Vector3& playerPos);
+	// カメラの目標地点の算出
+	static DirectX::SimpleMath::Vector3 CalculateCameraTargetPosition(
+		const DirectX::SimpleMath::Quaternion& cameraRotate, 
+		const DirectX::SimpleMath::Vector3& playerPos,
+		const DirectX::SimpleMath::Vector3& prevNextCameraTargetPosition);
 
 	// カメラの位置の更新処理
 	void UpdateCameraPosition(float deltaTime, const DirectX::SimpleMath::Vector3& targetCameraPosition);

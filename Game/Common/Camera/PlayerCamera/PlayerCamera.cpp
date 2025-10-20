@@ -101,16 +101,16 @@ void PlayerCamera::Update(float deltaTime)
 	// 回転の更新
 	UpdateRotation(mouseX, mouseY);
 
-	// カメラの注視点と目標位置を計算
-	auto targetCameraPosition = CalculateCameraPosition(m_pPlayer->GetPosition());
+	// カメラ座標と注視点の更新処理
+	UpdateCameraPosition(deltaTime, m_nextCameraTargetPosition);
 
-	// カメラの追従位置と最終設定を更新
-	UpdateCameraPosition(deltaTime, targetCameraPosition);
+	// 次のカメラの目標位置を計算
+	m_nextCameraTargetPosition = CalculateCameraTargetPosition(m_rotate, m_pPlayer->GetPosition(), m_nextCameraTargetPosition);
 
-	GetCommonResources()->GetDebugFont()->AddString(10, 50, Colors::Red, L"EyePosition (%f, %f, %f) ", GetEye().x, GetEye().y, GetEye().z);
-	GetCommonResources()->GetDebugFont()->AddString(10, 100, Colors::Red, L"Target (%f, %f, %f)", GetTarget().x, GetTarget().y, GetTarget().z);
-	GetCommonResources()->GetDebugFont()->AddString(10, 150, Colors::Red, L"ResultTarget (%f, %f, %f)", m_resultCameraPosition.x, m_resultCameraPosition.y, m_resultCameraPosition.z);
-	GetCommonResources()->GetDebugFont()->AddString(10, 200, Colors::Red, L"PrevResultTarget (%f, %f, %f)", m_prevResultCameraPosition.x, m_prevResultCameraPosition.y, m_prevResultCameraPosition.z);
+	//// カメラの追従位置と最終設定を更新
+	//GetCommonResources()->GetDebugFont()->AddString(10, 50, Colors::Red, L"EyePosition (%f, %f, %f) ", GetEye().x, GetEye().y, GetEye().z);
+	//GetCommonResources()->GetDebugFont()->AddString(10, 100, Colors::Red, L"Target (%f, %f, %f)", GetTarget().x, GetTarget().y, GetTarget().z);
+
 }
 
 /**
@@ -187,14 +187,21 @@ void PlayerCamera::PostCollision()
 		SimpleMath::Vector3 overlap = m_overlapTotal;
 
 		// **** 押し出し ****
-		m_nextCameraTargetPosition = PhysicsHelper::PushOut(overlap  , m_nextCameraTargetPosition);
+		SimpleMath::Vector3 nextCameraTargetPositionTmp = PhysicsHelper::PushOut(overlap  , GetEye());
 
-
-
-		m_overlapTotal = SimpleMath::Vector3::Zero;
+		if (SimpleMath::Vector3::DistanceSquared(nextCameraTargetPositionTmp, m_nextCameraTargetPosition) > 2.0f * 2.0f)
+		{
+			SetEye(nextCameraTargetPositionTmp);
+			//m_nextCameraTargetPosition = nextCameraTargetPositionTmp;
+		}
 	}
 
-	m_resultCameraPosition = m_nextCameraTargetPosition;
+}
+
+void PlayerCamera::PreCollision()
+{
+	m_overlapTotal = SimpleMath::Vector3::Zero;
+
 }
 
 /**
@@ -218,63 +225,55 @@ void PlayerCamera::UpdateRotation(int mouseX, int mouseY)
 }
 
 /**
- * @brief カメラの注視点の算出
+ * @brief カメラの目標地点の算出
  * 
- * @param[in] playerPos　プレイヤー座標
+ * @param[in] cameraRotate					カメラの回転
+ * @param[in] playerPos						プレイヤー座標
+ * @param[in] prevNextCameraTargetPosition	前フレームの目標地点
+ * @return 
  */
-DirectX::SimpleMath::Vector3 PlayerCamera::CalculateCameraPosition(const DirectX::SimpleMath::Vector3& playerPos)
+DirectX::SimpleMath::Vector3 PlayerCamera::CalculateCameraTargetPosition(
+	const DirectX::SimpleMath::Quaternion& cameraRotate,
+	const DirectX::SimpleMath::Vector3& playerPos,
+	const DirectX::SimpleMath::Vector3& prevNextCameraTargetPosition)
 {
 	using namespace SimpleMath;
 
 	// クォータニオンから行列に変換
-	Matrix rot = Matrix::CreateFromQuaternion(m_rotate);
+	Matrix rot = Matrix::CreateFromQuaternion(cameraRotate);
 
 	// プレイヤーの前方方向を取得
-	Vector3 localForward = Vector3(0.0f, -0.4f, -1.0f); // 単位ベクトル (-1.0f)
+	Vector3 localForward = Vector3(0.0f, -0.1f, -1.0f); // 単位ベクトル (-1.0f)
 	localForward.Normalize();
 	Vector3 forward = Vector3::TransformNormal(localForward, rot);
 
-	// 注視点 (Target) の計算 (プレイヤーの少し前方)
-	Vector3 target = playerPos + forward * 1.0f;
-	SetTarget(target); // 基底クラスに設定
-
 	// 理想的な視点目標位置の計算
 	// プレイヤーの後方 (距離 10.0f) + 高さ補正
-	Vector3 nextPositionTmp = playerPos + (-forward * 10.0f) + Vector3(0.0f, 0.5f, 0.0f);
-	//Vector3 eyeCurrentCameraPosition =  (SimpleMath::Vector3::Distance(m_prevResultCameraPosition, m_resultCameraPosition) > 500.f * 500.f) ? m_resultCameraPosition : m_prevResultCameraPosition;
-	Vector3 eyeCurrentCameraPosition = m_nextCameraTargetPosition;
-
-	m_prevResultCameraPosition = m_resultCameraPosition;
+	Vector3 nextPosition = prevNextCameraTargetPosition;
+	Vector3 nextPositionTmp = playerPos + (-forward * 12.5f) + Vector3(0.0f, 0.5f, 0.0f);
 
 	// 目標位置の更新（滑らかさ維持のため、わずかな変化でも更新を維持）
-	if (Vector3::Distance(nextPositionTmp, eyeCurrentCameraPosition) >= 0.01f)
+	if (Vector3::Distance(nextPositionTmp, nextPosition) >= 0.01f)
 	{
-		m_nextCameraTargetPosition = nextPositionTmp;
+		nextPosition = nextPositionTmp;
 	}
-	return eyeCurrentCameraPosition;
+	return nextPosition;
 }
 
 /**
- * @brief カメラ座標の更新処理
+ * @brief カメラ座標と注視点の更新処理
  * 
- * @param[in] deltaTime　経過時間
+ * @param[in] deltaTime				経過時間
+ * @param[in] targetCameraPosition	カメラの目標座標
  */
 void PlayerCamera::UpdateCameraPosition(float deltaTime, const DirectX::SimpleMath::Vector3& targetCameraPosition)
 {
 	using namespace SimpleMath;
 
-	SimpleMath::Vector3 target;
-	if (SimpleMath::Vector3::Distance(targetCameraPosition, m_prevTargetCameraPosition) > 0.5f)
-	{
-		m_prevTargetCameraPosition = targetCameraPosition;
-		//target = targetCameraPosition;
-	}
-	else
-	{
-		m_prevTargetCameraPosition = m_prevResultCameraPosition;
-		//starget = m_prevTargetCameraPosition;
-	}
-
+	
+	// Upベクトルの計算
+	// 注: Upベクトル計算は、CalculateCameraTarget 内の rot を使用するため、ロジックを調整する必要があります
+	const Matrix rot = Matrix::CreateFromQuaternion(m_rotate);
 
 	//  現在の視点位置を取得
 	Vector3 currentEye = GetEye();
@@ -282,14 +281,16 @@ void PlayerCamera::UpdateCameraPosition(float deltaTime, const DirectX::SimpleMa
 	// 目標位置への滑らかな追従処理 (線形補間 LERP / 減速運動)
 
 	// 目標位置までのベクトル
-	Vector3 velocity = (targetCameraPosition - currentEye) * 20.0f * deltaTime;
+	Vector3 eyeVelocity = (targetCameraPosition - currentEye) * 20.0f * deltaTime;
+
+	
 
 	// プレイヤー位置と現在の視点位置の距離
 
 	// 距離が一定以上離れていれば追従
-	if (Vector3::Distance(targetCameraPosition, currentEye) > 2.0f) 
+	if (Vector3::Distance(targetCameraPosition, currentEye) > 0.1f)
 	{
-		currentEye += velocity;
+		currentEye += eyeVelocity;
 	}
 	else if (Vector3::Distance(targetCameraPosition, currentEye) > 0.001f)
 	{
@@ -297,9 +298,13 @@ void PlayerCamera::UpdateCameraPosition(float deltaTime, const DirectX::SimpleMa
 		currentEye = targetCameraPosition;
 	}
 
-	// Upベクトルの計算
-	// 注: Upベクトル計算は、CalculateCameraTarget 内の rot を使用するため、ロジックを調整する必要があります
-	Matrix rot = Matrix::CreateFromQuaternion(m_rotate);
+	// **** 注視点の算出処理 ****
+	// カメラ座標からプレイヤーを見た方向を算出
+	Vector3 lookPlayerDirection = m_pPlayer->GetPosition() - currentEye;// Vector3(0.0f, -0.4f, -1.0f); // 単位ベクトル (-1.0f)
+	lookPlayerDirection.Normalize();
+	// 注視点の算出
+	Vector3 target = m_pPlayer->GetPosition() + lookPlayerDirection  * 20.0f;
+	
 	Vector3 up(0.0f, 1.0f, 0.0f);
 	up = Vector3::TransformNormal(up, rot);
 
@@ -307,13 +312,15 @@ void PlayerCamera::UpdateCameraPosition(float deltaTime, const DirectX::SimpleMa
 	up.x *= 0.1f;
 	up.z *= 0.1f;
 
+
 	// 基底クラスへの最終設定
 	SetEye(currentEye);
+	SetTarget(target);
 	SetUp(up);
 
 	// ゲームオブジェクト側の座標・コライダー更新
 	SetPosition(GetEye());
-	m_sphereCollider->Transform(targetCameraPosition); // 追従目標位置でコライダーを更新
+	m_sphereCollider->Transform(GetEye()); // 追従目標位置でコライダーを更新
 }
 
 /**
