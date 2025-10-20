@@ -77,7 +77,7 @@ void PlayerCamera::Initialize(CommonResources* pCommonResources, CollisionManage
 	// 衝突管理への登録
 	pCollisionManager->AddCollisionObjectData(this, m_sphereCollider.get());
 
-	m_eyeTargetPosition = SimpleMath::Vector3::Zero;
+	m_nextCameraTargetPosition = SimpleMath::Vector3::Zero;
 }
 
 /**
@@ -102,10 +102,10 @@ void PlayerCamera::Update(float deltaTime)
 	UpdateRotation(mouseX, mouseY);
 
 	// カメラの注視点と目標位置を計算
-	CalculateCameraTarget(m_pPlayer->GetPosition());
+	auto targetCameraPosition = CalculateCameraPosition(m_pPlayer->GetPosition());
 
 	// カメラの追従位置と最終設定を更新
-	UpdateCameraPosition(deltaTime);
+	UpdateCameraPosition(deltaTime, targetCameraPosition);
 }
 
 /**
@@ -182,7 +182,7 @@ void PlayerCamera::PostCollision()
 		SimpleMath::Vector3 overlap = m_overlapTotal;
 
 		// **** 押し出し ****
-		m_eyeTargetPosition = PhysicsHelper::PushOut(overlap  , m_eyeTargetPosition);
+		m_nextCameraTargetPosition = PhysicsHelper::PushOut(overlap  , m_nextCameraTargetPosition);
 
 
 
@@ -215,7 +215,7 @@ void PlayerCamera::UpdateRotation(int mouseX, int mouseY)
  * 
  * @param[in] playerPos　プレイヤー座標
  */
-void PlayerCamera::CalculateCameraTarget(const DirectX::SimpleMath::Vector3& playerPos)
+DirectX::SimpleMath::Vector3 PlayerCamera::CalculateCameraPosition(const DirectX::SimpleMath::Vector3& playerPos)
 {
 	using namespace SimpleMath;
 
@@ -223,22 +223,28 @@ void PlayerCamera::CalculateCameraTarget(const DirectX::SimpleMath::Vector3& pla
 	Matrix rot = Matrix::CreateFromQuaternion(m_rotate);
 
 	// プレイヤーの前方方向を取得
-	Vector3 localForward = Vector3(0.0f, 0.0f, -1.0f); // 単位ベクトル (-1.0f)
+	Vector3 localForward = Vector3(0.0f, -0.4f, -1.0f); // 単位ベクトル (-1.0f)
+	localForward.Normalize();
 	Vector3 forward = Vector3::TransformNormal(localForward, rot);
 
 	// 注視点 (Target) の計算 (プレイヤーの少し前方)
-	Vector3 target = playerPos + forward * 2.0f;
+	Vector3 target = playerPos + forward * 20.0f;
 	SetTarget(target); // 基底クラスに設定
 
 	// 理想的な視点目標位置の計算
 	// プレイヤーの後方 (距離 10.0f) + 高さ補正
-	Vector3 eyeTargetPositionTmp = playerPos + (-forward * 10.0f) + Vector3(0.0f, 2.5f, 0.0f);
+	Vector3 nextPositionTmp = playerPos + (-forward * 10.0f) + Vector3(0.0f, 0.5f, 0.0f);
+	Vector3 eyeCurrentCameraPosition =  m_nextCameraTargetPosition ;
+
 
 	// 目標位置の更新（滑らかさ維持のため、わずかな変化でも更新を維持）
-	if (Vector3::Distance(eyeTargetPositionTmp, m_eyeTargetPosition) >= 0.01f)
+	if (Vector3::Distance(nextPositionTmp, m_nextCameraTargetPosition) >= 0.01f)
 	{
-		m_eyeTargetPosition = eyeTargetPositionTmp;
+
+		
+		m_nextCameraTargetPosition = playerPos + (-forward * 10.0f) + Vector3(0.0f, 2.5f, 0.0f);
 	}
+	return eyeCurrentCameraPosition;
 }
 
 /**
@@ -246,7 +252,7 @@ void PlayerCamera::CalculateCameraTarget(const DirectX::SimpleMath::Vector3& pla
  * 
  * @param[in] deltaTime　経過時間
  */
-void PlayerCamera::UpdateCameraPosition(float deltaTime)
+void PlayerCamera::UpdateCameraPosition(float deltaTime, const DirectX::SimpleMath::Vector3& targetCameraPosition)
 {
 	using namespace SimpleMath;
 
@@ -256,19 +262,19 @@ void PlayerCamera::UpdateCameraPosition(float deltaTime)
 	// 目標位置への滑らかな追従処理 (線形補間 LERP / 減速運動)
 
 	// 目標位置までのベクトル
-	Vector3 velocity = (m_eyeTargetPosition - currentEye) * 20.0f * deltaTime;
+	Vector3 velocity = (targetCameraPosition - currentEye) * 20.0f * deltaTime;
 
 	// プレイヤー位置と現在の視点位置の距離
 
 	// 距離が一定以上離れていれば追従
-	if (Vector3::Distance(m_eyeTargetPosition, currentEye) > 2.0f) 
+	if (Vector3::Distance(targetCameraPosition, currentEye) > 2.0f) 
 	{
 		currentEye += velocity;
 	}
-	else if (Vector3::Distance(m_eyeTargetPosition, currentEye) > 0.001f)
+	else if (Vector3::Distance(targetCameraPosition, currentEye) > 0.001f)
 	{
 		// 収束時の振動防止のため、最後の微調整を行う
-		currentEye = m_eyeTargetPosition;
+		currentEye = targetCameraPosition;
 	}
 
 	// Upベクトルの計算
@@ -287,7 +293,7 @@ void PlayerCamera::UpdateCameraPosition(float deltaTime)
 
 	// ゲームオブジェクト側の座標・コライダー更新
 	SetPosition(GetEye());
-	m_sphereCollider->Transform(m_eyeTargetPosition); // 追従目標位置でコライダーを更新
+	m_sphereCollider->Transform(m_nextCameraTargetPosition); // 追従目標位置でコライダーを更新
 }
 
 /**

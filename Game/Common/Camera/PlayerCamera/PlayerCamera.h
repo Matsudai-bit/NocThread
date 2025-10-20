@@ -57,7 +57,7 @@ private:
 	std::unique_ptr<Sphere> m_sphereCollider;	///< 球コライダー
 
 	DirectX::SimpleMath::Vector3 m_overlapTotal;
-	DirectX::SimpleMath::Vector3 m_eyeTargetPosition;
+	DirectX::SimpleMath::Vector3 m_nextCameraTargetPosition;
 
 private:
 
@@ -104,10 +104,10 @@ private:
 	void UpdateRotation(int mouseX, int mouseY);
 
 	// カメラの注視点の算出
-	void CalculateCameraTarget(const DirectX::SimpleMath::Vector3& playerPos);
+	DirectX::SimpleMath::Vector3 CalculateCameraPosition(const DirectX::SimpleMath::Vector3& playerPos);
 
 	// カメラの位置の更新処理
-	void UpdateCameraPosition(float deltaTime);
+	void UpdateCameraPosition(float deltaTime, const DirectX::SimpleMath::Vector3& targetCameraPosition);
 
 	// 建物との衝突判定処理
 	void OnCollisionWithBuilding(GameObject* pHitObject, ICollider* pHitCollider);
