@@ -59,7 +59,7 @@ void PlayerManager::Initialize(CommonResources* pCommonResources, CollisionManag
 
 	// プレイヤーの影の作成
 	m_playerShadow = std::make_unique<CircularShadow>();
-	m_playerShadow->Initialize(m_pCommonResources->GetDeviceResources(), 0.001f);
+	m_playerShadow->Initialize(m_pCommonResources->GetDeviceResources(), 0.01f);
 
 	// プレイヤーコントローラの作成
 	m_playerController = std::make_unique<PlayerController>(m_player.get(), pPlayerCamera);

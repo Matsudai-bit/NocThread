@@ -25,8 +25,6 @@
 
 using namespace DirectX;
 
-/// @brief デフォルトのカメラ距離（未使用、将来的な拡張用）
-const float PlayerCamera::DEFAULT_CAMERA_DISTANCE = 5.0f;
 
 
 /**
@@ -42,7 +40,7 @@ PlayerCamera::PlayerCamera(int windowWidth, int windowHeight,  DirectX::Mouse::B
 	, m_sx{}, m_sy{}
 	, m_mousePrevX{}, m_mousePrevY{}
 	, m_pPlayer{ nullptr }
-	, m_isStartUpdatig{ true }
+	, m_isStartUpdating{ true }
 	, m_pMouseTracker{ pMouseTracker }
 {
 	SetWindowSize(windowWidth, windowHeight);
@@ -62,7 +60,7 @@ PlayerCamera::PlayerCamera(int windowWidth, int windowHeight,  DirectX::Mouse::B
 
 /**
  * @brief 初期化処理
- * 
+ *
  * @param[in] pCommonResources　共通リソース
  * @param[in] pCollisionManager 衝突管理
  */
@@ -72,7 +70,7 @@ void PlayerCamera::Initialize(CommonResources* pCommonResources, CollisionManage
 
 	// 球コライダーの作成
 	m_sphereCollider = std::make_unique<Sphere>();
-	m_sphereCollider->SetRadius(1.0f);
+	m_sphereCollider->SetRadius(COLLIDER_RADIUS);
 
 	// 衝突管理への登録
 	pCollisionManager->AddCollisionObjectData(this, m_sphereCollider.get());
@@ -160,17 +158,9 @@ void PlayerCamera::SetPlayer(const Player* pPlayer)
 void PlayerCamera::OnCollision(GameObject* pHitObject, ICollider* pHitCollider)
 {
 
-	if (pHitObject->GetTag() == GameObjectTag::FLOOR)
-	{
-		//OnCollisionWithFloor(pHitObject, pHitCollider);
-
-	}
-
 	if (pHitObject->GetTag() == GameObjectTag::BUILDING)
 	{
-	
 		OnCollisionWithBuilding(pHitObject, pHitCollider);
-		
 	}
 }
 
@@ -181,18 +171,17 @@ void PlayerCamera::OnCollision(GameObject* pHitObject, ICollider* pHitCollider)
  */
 void PlayerCamera::PostCollision()
 {
-	if (std::abs(m_overlapTotal.LengthSquared()) > 0.0f)
+	if (std::abs(m_overlapTotal.LengthSquared()) > OVERLAP_THRESHOLD)
 	{
 
 		SimpleMath::Vector3 overlap = m_overlapTotal;
 
 		// **** 押し出し ****
-		SimpleMath::Vector3 nextCameraTargetPositionTmp = PhysicsHelper::PushOut(overlap  , GetEye());
+		SimpleMath::Vector3 nextCameraTargetPositionTmp = PhysicsHelper::PushOut(overlap, GetEye());
 
-		if (SimpleMath::Vector3::DistanceSquared(nextCameraTargetPositionTmp, m_nextCameraTargetPosition) > 2.0f * 2.0f)
+		if (SimpleMath::Vector3::DistanceSquared(nextCameraTargetPositionTmp, m_nextCameraTargetPosition) > DISTANCE_SQUARED_THRESHOLD)
 		{
 			SetEye(nextCameraTargetPositionTmp);
-			//m_nextCameraTargetPosition = nextCameraTargetPositionTmp;
 		}
 	}
 
@@ -206,7 +195,7 @@ void PlayerCamera::PreCollision()
 
 /**
  * @brief 回転の更新処理
- * 
+ *
  * @param[in] mouseX　マウス座標X
  * @param[in] mouseY　マウス座標Y
  */
@@ -216,11 +205,11 @@ void PlayerCamera::UpdateRotation(int mouseX, int mouseY)
 	Motion(mouseX, mouseY);
 
 	// 初回フレームの初期化
-	if (m_isStartUpdatig)
+	if (m_isStartUpdating)
 	{
 		m_mousePrevX = mouseX;
 		m_mousePrevY = mouseY;
-		m_isStartUpdatig = false;
+		m_isStartUpdating = false;
 	}
 }
 
@@ -243,17 +232,17 @@ DirectX::SimpleMath::Vector3 PlayerCamera::CalculateCameraTargetPosition(
 	Matrix rot = Matrix::CreateFromQuaternion(cameraRotate);
 
 	// プレイヤーの前方方向を取得
-	Vector3 localForward = Vector3(0.0f, -0.1f, -1.0f); // 単位ベクトル (-1.0f)
+	Vector3 localForward = Vector3(0.0f, LOCAL_FORWARD_Y, LOCAL_FORWARD_Z); // 単位ベクトル (-1.0f)
 	localForward.Normalize();
 	Vector3 forward = Vector3::TransformNormal(localForward, rot);
 
 	// 理想的な視点目標位置の計算
 	// プレイヤーの後方 (距離 10.0f) + 高さ補正
 	Vector3 nextPosition = prevNextCameraTargetPosition;
-	Vector3 nextPositionTmp = playerPos + (-forward * 12.5f) + Vector3(0.0f, 0.5f, 0.0f);
+	Vector3 nextPositionTmp = playerPos + (-forward * FOLLOW_DISTANCE) + Vector3(0.0f, FOLLOW_OFFSET_Y, 0.0f);
 
 	// 目標位置の更新（滑らかさ維持のため、わずかな変化でも更新を維持）
-	if (Vector3::Distance(nextPositionTmp, nextPosition) >= 0.01f)
+	if (Vector3::Distance(nextPositionTmp, nextPosition) >= TARGET_POSITION_UPDATE_THRESHOLD)
 	{
 		nextPosition = nextPositionTmp;
 	}
@@ -270,29 +259,29 @@ void PlayerCamera::UpdateCameraPosition(float deltaTime, const DirectX::SimpleMa
 {
 	using namespace SimpleMath;
 
-	
+
 	// Upベクトルの計算
 	// 注: Upベクトル計算は、CalculateCameraTarget 内の rot を使用するため、ロジックを調整する必要があります
 	const Matrix rot = Matrix::CreateFromQuaternion(m_rotate);
 
-	//  現在の視点位置を取得
+	//  現在の視点位置を取得
 	Vector3 currentEye = GetEye();
 
 	// 目標位置への滑らかな追従処理 (線形補間 LERP / 減速運動)
 
 	// 目標位置までのベクトル
-	Vector3 eyeVelocity = (targetCameraPosition - currentEye) * 20.0f * deltaTime;
+	Vector3 eyeVelocity = (targetCameraPosition - currentEye) * FOLLOW_SPEED_MULTIPLIER * deltaTime;
 
-	
+
 
 	// プレイヤー位置と現在の視点位置の距離
 
 	// 距離が一定以上離れていれば追従
-	if (Vector3::Distance(targetCameraPosition, currentEye) > 0.1f)
+	if (Vector3::Distance(targetCameraPosition, currentEye) > TARGET_STOP_DISTANCE_LARGE)
 	{
 		currentEye += eyeVelocity;
 	}
-	else if (Vector3::Distance(targetCameraPosition, currentEye) > 0.001f)
+	else if (Vector3::Distance(targetCameraPosition, currentEye) > TARGET_STOP_DISTANCE_SMALL)
 	{
 		// 収束時の振動防止のため、最後の微調整を行う
 		currentEye = targetCameraPosition;
@@ -300,17 +289,17 @@ void PlayerCamera::UpdateCameraPosition(float deltaTime, const DirectX::SimpleMa
 
 	// **** 注視点の算出処理 ****
 	// カメラ座標からプレイヤーを見た方向を算出
-	Vector3 lookPlayerDirection = m_pPlayer->GetPosition() - currentEye;// Vector3(0.0f, -0.4f, -1.0f); // 単位ベクトル (-1.0f)
+	Vector3 lookPlayerDirection = m_pPlayer->GetPosition() - currentEye;
 	lookPlayerDirection.Normalize();
 	// 注視点の算出
-	Vector3 target = m_pPlayer->GetPosition() + lookPlayerDirection  * 20.0f;
-	
+	Vector3 target = m_pPlayer->GetPosition() + lookPlayerDirection * LOOK_TARGET_DISTANCE;
+
 	Vector3 up(0.0f, 1.0f, 0.0f);
 	up = Vector3::TransformNormal(up, rot);
 
 	// 1/10 にする (ロールを制御する特殊な補正。通常は行いませんが、元のコードを踏襲)
-	up.x *= 0.1f;
-	up.z *= 0.1f;
+	up.x *= UP_VECTOR_CORRECTION_FACTOR;
+	up.z *= UP_VECTOR_CORRECTION_FACTOR;
 
 
 	// 基底クラスへの最終設定
@@ -350,7 +339,7 @@ void PlayerCamera::OnCollisionWithBuilding(GameObject* pHitObject, ICollider* pH
 	// 押し出し方向ベクトル（累積方向 + 今回の方向）
 	SimpleMath::Vector3 combinedDirection = totalOverlapNormal + overlapDir;
 
-	if (combinedDirection.LengthSquared() < 1e-6f)
+	if (combinedDirection.LengthSquared() < SQUARED_ZERO_THRESHOLD)
 		return;
 
 	combinedDirection.Normalize();
@@ -384,12 +373,12 @@ void PlayerCamera::Motion(int x, int y)
 	float dy = static_cast<float>(y) * m_sy;
 
 	// 変化があった場合のみ回転を更新
-	if ((std::abs(dx) + std::abs(dy)) > 0.001f)
+	if ((std::abs(dx) + std::abs(dy)) > MOUSE_INPUT_THRESHOLD)
 	{
 
 		// ラジアン変換（1画面分をπラジアンに相当）
-		float rotY = dx */* XM_PI * */ 200.0f;
-		float rotX = -dy */* XM_PI **/ 200.0f;
+		float rotY = dx * ROTATION_SENSITIVITY;
+		float rotX = -dy * ROTATION_SENSITIVITY;
 
 		// 現在の回転クォータニオンを行列化
 		SimpleMath::Matrix rotateMatrix = SimpleMath::Matrix::CreateFromQuaternion(m_rotate);
@@ -411,23 +400,17 @@ void PlayerCamera::Motion(int x, int y)
 
 		m_rotate *= q;
 
-		// 制限したい角度（ラジアン）
-		const float MAX_PITCH_RADIAN = XMConvertToRadians(60.0f);//XM_PIDIV2; // 90度
-		const float MIN_PITCH_RADIAN = -XM_PIDIV2 / 2.0f; // -90度
 
-		// 現在のオイラー角の取得 (Pitch, Yaw, Roll の順で入る可能性が高いですが、X軸はPitchと仮定)
+		// 現在のオイラー角の取得 
 		SimpleMath::Vector3 euler = m_rotate.ToEuler();
 
-		// X軸（ピッチ角）を-90度から+90度の範囲に直接クランプする
-		// SimpleMath::ToEuler() が返す角度は、通常 -π から +π の範囲に収まっているため、
-		// 符号を個別に計算する必要はありません。
+		// X軸（ピッチ角）を範囲に直接クランプする
 		euler.x = MyLib::Clamp(euler.x, MIN_PITCH_RADIAN, MAX_PITCH_RADIAN);
 
 		// クランプしたオイラー角から新しいクォータニオンを生成し直す
-		// SimpleMath::CreateFromYawPitchRoll は (Yaw, Pitch, Roll) の順
 		m_rotate = SimpleMath::Quaternion::CreateFromYawPitchRoll(euler.y, euler.x, 0);
 
-		
+
 	}
 	// 現在のマウス位置を保存
 	m_mousePrevX = x;

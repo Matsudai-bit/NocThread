@@ -25,15 +25,52 @@ class PlayerCamera
 	, public MovableObject
 
 {
+// 定数
+public:
+
 
 	// カメラの距離
-	static const float DEFAULT_CAMERA_DISTANCE;
+	static constexpr float DEFAULT_CAMERA_DISTANCE = 5.0f;
+
+
+	static constexpr float MAX_PITCH_RADIAN = DirectX::XMConvertToRadians(60.0f);
+	static constexpr float MIN_PITCH_RADIAN = DirectX::XMConvertToRadians(-80.0f);
+
+	// 衝突体関連 
+	static constexpr float COLLIDER_RADIUS = 1.0f;                             // 衝突判定用球コライダーの半径
+
+	// 物理・衝突処理の閾値 
+	static constexpr float SQUARED_ZERO_THRESHOLD = 1e-6f;                     // ベクトル長二乗のゼロ判定閾値 (OnCollisionWithBuildingで使用)
+	static constexpr float OVERLAP_THRESHOLD = 0.0f;                           // 押し出し処理を行うベクトル長二乗の閾値 (PostCollisionで使用)
+	static constexpr float DISTANCE_SQUARED_THRESHOLD = 2.0f * 2.0f;           // 押し出し後の強制位置更新を行う距離の閾値 (PostCollisionで使用, 2.0f^2)
+
+	// マウス入力・感度 
+	static constexpr float MOUSE_INPUT_THRESHOLD = 0.001f;                     // マウス入力変化を検出する閾値
+	static constexpr float ROTATION_SENSITIVITY = 200.0f;                      // マウス移動量から回転ラジアンへの変換係数（感度）
+
+	// カメラの追従設定 
+	static constexpr float FOLLOW_DISTANCE = 12.5f;                            // プレイヤー後方からの理想的な追従距離
+	static constexpr float FOLLOW_OFFSET_Y = 0.5f;                             // 理想的な追従位置のY軸（高さ）補正
+	static constexpr float TARGET_POSITION_UPDATE_THRESHOLD = 0.01f;           // 目標位置の更新を維持するための微小な変化閾値
+	static constexpr float TARGET_STOP_DISTANCE_LARGE = 0.1f;                  // 追従を続ける距離の閾値 (速度 LERP)
+	static constexpr float TARGET_STOP_DISTANCE_SMALL = 0.001f;                // 追従を停止し、位置を一致させる距離の閾値
+
+	// カメラの速度設定 
+	static constexpr float FOLLOW_SPEED_MULTIPLIER = 20.0f;                    // 目標位置への追従速度係数 (LERP/減速運動係数)
+
+	// 注視点とローカル方向 
+	static constexpr float LOOK_TARGET_DISTANCE = 20.0f;                       // 注視点計算に使う、プレイヤーからの前方距離
+	static constexpr float LOCAL_FORWARD_Y = -0.1f;                            // 理想的なカメラ視点計算に使うローカル前方ベクトルのY成分
+	static constexpr float LOCAL_FORWARD_Z = -1.0f;                            // 理想的なカメラ視点計算に使うローカル前方ベクトルのZ成分
+
+	// Upベクトル補正 
+	static constexpr float UP_VECTOR_CORRECTION_FACTOR = 0.1f;
 
 private:
 
 	const Player* m_pPlayer;
 
-	bool m_isStartUpdatig;
+	bool m_isStartUpdating;
 
 	// 回転
 	DirectX::SimpleMath::Quaternion m_rotate;
