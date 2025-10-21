@@ -34,6 +34,7 @@
 #include "Game/Common/StateMachine/StateMachine.h"
 #include "Game/Common/ElapsedTimeCounter/ElapsedTimeCounter.h"
 
+
 // ゲームオブジェクト
 #include "Game/GameObjects/RopeObject/RopeObject.h"
 #include "Game/GameObjects/RopeObject/XPBDSimulator/XPBDSimulator.h"
@@ -112,6 +113,7 @@ private:
     std::unique_ptr<CollisionManager>   m_collisionManager; ///< 衝突管理
 	//std::unique_ptr<PlayerController>	m_playerController;	///< プレイヤーのコントローラ
 	std::unique_ptr<GameEffectManager>	m_gameEffectManager;///< ゲームエフェクト管理
+	
 
 	// スプライト関連
 	std::unique_ptr<Canvas> m_canvas; // スプライト表示用

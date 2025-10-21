@@ -25,7 +25,6 @@
 #include "Game/Common/Helper/MovementHelper/MovementHelper.h"
 #include "Game/Common//Helper/PhysicsHelper/PhysicsHelper.h"
 #include "Game/Common/WireTargetFinder/WireTargetFinder.h"
-#include "Game/Common/Input/PlayerInput/PlayerInput.h"
 
 // イベントシステム
 #include "Game/Common/Event/WireSystemObserver/WireSystemSubject.h"
@@ -92,7 +91,7 @@ Player::~Player()
  * @param[in] pPlayerCamera		プレイヤーカメラ
  * @param[in] pPlayerInput		プレイヤー入力
  */
-void Player::Initialize(CommonResources* pCommonResources, CollisionManager* pCollisionManager, const PlayerCamera* pPlayerCamera, PlayerInput* pPlayerInput)
+void Player::Initialize(CommonResources* pCommonResources, CollisionManager* pCollisionManager, const PlayerCamera* pPlayerCamera, InputSystem<InputActionType::PlyayerActionID>* pPlayerInput)
 {
 	using namespace SimpleMath;
 	m_pPlayerCamera = pPlayerCamera;

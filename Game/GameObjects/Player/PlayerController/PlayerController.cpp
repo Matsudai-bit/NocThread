@@ -12,7 +12,8 @@
 
 #include "Game/GameObjects/Player/Player.h"
 #include "Game/Common/Camera/Camera.h"
-#include "Game/Common/Input/PlayerInput/PlayerInput.h"
+
+#include "Game/Common/Input/InputBindingFactory/InputBindingFactory.h"
 
 using namespace DirectX;
 
@@ -52,7 +53,8 @@ void PlayerController::Initialize(Player* pPlayer,const Camera* pCamera)
 	m_pPlayer = pPlayer;
 	m_pCamera = pCamera;
 
-	m_playerInput = std::make_unique<PlayerInput>();
+	m_playerInput = InputBindingFactory::CreatePlayerInput();
+
 }
 
 
@@ -64,11 +66,11 @@ void PlayerController::Initialize(Player* pPlayer,const Camera* pCamera)
  *
  * @return なし
  */
-void PlayerController::Update(float deltaTime, const Keyboard::KeyboardStateTracker* pKeyboardStateTracker, const Mouse::ButtonStateTracker* pMouseStateTracker)
+void PlayerController::Update(float deltaTime, const Keyboard::KeyboardStateTracker* pKeyboardStateTracker, const Mouse::ButtonStateTracker* pMouseStateTracker, const DirectX::GamePad::ButtonStateTracker* pGamePadStateTracker)
 {
 	UNREFERENCED_PARAMETER(deltaTime);
 
-	m_playerInput->Update(pKeyboardStateTracker, pMouseStateTracker);
+	m_playerInput->Update(pKeyboardStateTracker, pMouseStateTracker, pGamePadStateTracker);
 
 
 	auto kb = pKeyboardStateTracker->GetLastState();
@@ -78,16 +80,16 @@ void PlayerController::Update(float deltaTime, const Keyboard::KeyboardStateTrac
 	SimpleMath::Vector3 movementDirection = SimpleMath::Vector3::Zero;
 
 	// 奥へ
-	if (m_playerInput->IsInput(PlayerInput::ActionID::FRONT_MOVE))
+	if (m_playerInput->IsInput(InputActionType::PlyayerActionID::FRONT_MOVE))
 	{
 		movementDirection += SimpleMath::Vector3::Forward;
 	}
 	// 手前へ
-	if (m_playerInput->IsInput(PlayerInput::ActionID::BACK_MOVE)) { movementDirection += SimpleMath::Vector3::Backward; }
+	if (m_playerInput->IsInput(InputActionType::PlyayerActionID::BACK_MOVE)) { movementDirection += SimpleMath::Vector3::Backward; }
 	// 右へ
-	if (m_playerInput->IsInput(PlayerInput::ActionID::RIGHT_MOVE)) { movementDirection += SimpleMath::Vector3::Right; }
+	if (m_playerInput->IsInput(InputActionType::PlyayerActionID::RIGHT_MOVE)) { movementDirection += SimpleMath::Vector3::Right; }
 	// 左へ
-	if (m_playerInput->IsInput(PlayerInput::ActionID::LEFT_MOVE)) { movementDirection += SimpleMath::Vector3::Left; }
+	if (m_playerInput->IsInput(InputActionType::PlyayerActionID::LEFT_MOVE)) { movementDirection += SimpleMath::Vector3::Left; }
 
 	// 入力がないときは移動しない
 	if (movementDirection.LengthSquared() > 0.0f)
@@ -114,13 +116,13 @@ void PlayerController::Update(float deltaTime, const Keyboard::KeyboardStateTrac
 	}
 
 	// ジャンプ
-	if (m_playerInput->IsInput(PlayerInput::ActionID::JUMPING))
+	if (m_playerInput->IsInput(InputActionType::PlyayerActionID::JUMPING))
 	{
 		m_pPlayer->RequestJump();
 	}
 
 	// ステップ
-	if (m_playerInput->IsInput(PlayerInput::ActionID::STEPPING))
+	if (m_playerInput->IsInput(InputActionType::PlyayerActionID::STEPPING))
 	{
 		m_pPlayer->RequestStep();
 	}

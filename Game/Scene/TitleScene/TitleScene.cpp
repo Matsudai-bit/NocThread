@@ -156,7 +156,11 @@ void TitleScene::Update(float deltaTime)
 	}
 	else
 	{
-		m_tutorialWindow->Update(deltaTime, *GetCommonResources()->GetKeyboardTracker());
+		m_tutorialWindow->Update(
+			deltaTime,
+			GetCommonResources()->GetKeyboardTracker(),
+			GetCommonResources()->GetMouseTracker(), 
+			GetCommonResources()->GetGamePadTracker());
 	}
 
 

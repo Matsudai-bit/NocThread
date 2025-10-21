@@ -1,9 +1,9 @@
 /*****************************************************************//**
- * @file    PlayerController.h
- * @brief   PlayerControllerに関するヘッダーファイル
+ * @file    InputBindingFactory.h
+ * @brief   入力と動作の紐づけを作成するファクトリーに関するヘッダーファイル
  *
  * @author  松下大暉
- * @date    2025/06/15
+ * @date    2025/10/22
  *********************************************************************/
 
 // 多重インクルードの防止 =====================================================
@@ -18,14 +18,12 @@
 #include "Game/Common/Input/InputActionType/InputActionType.h"
 
 // クラスの前方宣言 ===================================================
-class Player;	// プレイヤー
-class Camera;	// カメラ
 
 // クラスの定義 ===============================================================
 /**
- * @brief プレイヤーのコントローラ
+ * @brief 入力と動作の紐づけを作成するファクトリー
  */
-class PlayerController
+class InputBindingFactory
 {
 // クラス定数の宣言 -------------------------------------------------
 public:
@@ -35,43 +33,26 @@ public:
 // データメンバの宣言 -----------------------------------------------
 private:
 
-	Player* m_pPlayer; // 操作対象
-	const Camera* m_pCamera; // カメラ
 
-	std::unique_ptr<InputSystem<InputActionType::PlyayerActionID>> m_playerInput;
-	
 
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
 public:
 	// コンストラクタ
-	PlayerController(Player* pPlayer, const Camera* pCamera);
+	InputBindingFactory();
 
 	// デストラクタ
-	~PlayerController();
+	~InputBindingFactory();
 
 
 // 操作
 public:
-	// 初期化処理
-	void Initialize(Player* pPlayer, const Camera* pCamera);
 
-	// 更新処理
-	void Update(float deltaTime, const DirectX::Keyboard::KeyboardStateTracker* pKeyboardStateTracker, const DirectX::Mouse::ButtonStateTracker* pMouseStateTracker, const DirectX::GamePad::ButtonStateTracker* pGamePadStateTracker);
+  static std::unique_ptr<InputSystem<InputActionType::PlyayerActionID>> CreatePlayerInput();
 
-	// 描画処理
-	void Draw();
+  static std::unique_ptr<InputSystem<InputActionType::UIActionID>> CreateUIInput();
 
-	// 終了処理
-	void Finalize();
-
-
-// 取得/設定
-public:
-
-
-// 内部実装
-private:
-
+  static std::unique_ptr<InputSystem<InputActionType::SystemActionID>> CreateSystemInput();
+	
 
 };

@@ -16,6 +16,7 @@
 #include "Game/Common/ResourceManager/ResourceManager.h"
 #include "Game/Common/UserInterfaceTool/Sprite/Sprite.h"
 #include "Game/Common/UserInterfaceTool/Canvas/Canvas.h"
+#include "Game/Common/Input/InputBindingFactory/InputBindingFactory.h"
 
 #include "Library/MyLib/EasingKit/EasingKit.h"
 
@@ -102,6 +103,8 @@ void PoseMenu::Initialize(Canvas* pCanvas, const CommonResources* pCommonResourc
 
 	m_ElapsedTimeCounter.Reset();
 
+	// “ü—Í‚Ìì¬
+	m_uiInput = InputBindingFactory::CreateUIInput();
 }
 
 
@@ -115,6 +118,11 @@ void PoseMenu::Initialize(Canvas* pCanvas, const CommonResources* pCommonResourc
  */
 void PoseMenu::Update(float deltaTime)
 {
+	// “ü—Í‚ÌXVˆ—
+	m_uiInput->Update(
+		m_pCommonResources->GetKeyboardTracker(),
+		m_pCommonResources->GetMouseTracker(),
+		m_pCommonResources->GetGamePadTracker());
 
 	// ‰ÁŽZ
 	m_ElapsedTimeCounter.UpperTime(deltaTime);
@@ -205,7 +213,7 @@ bool PoseMenu::CanMoveDownSelector() const
 {
 	auto keyboardTracker = m_pCommonResources->GetKeyboardTracker();
 
-	return (keyboardTracker->IsKeyPressed(Keyboard::Down) || keyboardTracker->IsKeyPressed(Keyboard::S));
+	return (m_uiInput->IsInput(InputActionType::UIActionID::DOWN_MOVE, InputSystem<InputActionType::UIActionID>::InputOption::PRESSED));
 }
 
 /**
@@ -217,7 +225,7 @@ bool PoseMenu::CanMoveUpSelector() const
 {
 	auto keyboardTracker = m_pCommonResources->GetKeyboardTracker();
 
-	return (keyboardTracker->IsKeyPressed(Keyboard::Up) || keyboardTracker->IsKeyPressed(Keyboard::W));
+	return (m_uiInput->IsInput(InputActionType::UIActionID::UP_MOVE, InputSystem<InputActionType::UIActionID>::InputOption::PRESSED));
 }
 
 /**
@@ -229,5 +237,5 @@ bool PoseMenu::CanPush() const
 {
 	auto keyboardTracker = m_pCommonResources->GetKeyboardTracker();
 
-	return (keyboardTracker->IsKeyPressed(Keyboard::Space) || keyboardTracker->IsKeyPressed(Keyboard::Enter));
+	return (m_uiInput->IsInput(InputActionType::UIActionID::CONFIRM, InputSystem<InputActionType::UIActionID>::InputOption::PRESSED));
 }

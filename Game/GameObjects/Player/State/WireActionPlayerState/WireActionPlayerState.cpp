@@ -76,7 +76,7 @@ void WireActionPlayerState::OnUpdate(float deltaTime)
 	// ˆÚ“®
 	GetOwner()->Move(deltaTime);
 
-	if (mosueTrack->leftButton == Mouse::ButtonStateTracker::RELEASED)
+	if (GetOwner()->GetPlayerInput()->IsInput(InputActionType::PlyayerActionID::RELEASE_WIRE, InputSystem< InputActionType::PlyayerActionID>::InputOption::RELEASED))
 	{
 		GetOwner()->RequestChangeState(Player::State::WALKING);
 

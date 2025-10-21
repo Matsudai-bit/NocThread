@@ -19,6 +19,8 @@
 
 #include "Game/Common/Line2D/Line2D.h"
 #include "Game/Common/ElapsedTimeCounter/ElapsedTimeCounter.h"
+#include "Game/Common/Input/InputSystem/InputSystem.h"
+#include "Game/Common/Input/InputActionType/InputActionType.h"
 
 // クラスの前方宣言 ===================================================
 class CommonResources;  // 共通リソース
@@ -70,6 +72,7 @@ private:
 
 	ElapsedTimeCounter m_ElapsedTimeCounter; ///< 経過時間カウンター
 
+	std::unique_ptr < InputSystem<InputActionType::UIActionID>> m_uiInput; ///< UI入力
 
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ

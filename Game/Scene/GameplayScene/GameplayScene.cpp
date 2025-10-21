@@ -117,6 +117,7 @@ void GameplayScene::Initialize()
     // **** 最初の状態 ****
     m_stateMachine->ChangeState<NormalGameplayState>();
 
+   
 
     // **** ゲーム経過時間のリセット *****
     m_gamePlayingTimeCounter.Reset();
@@ -202,6 +203,8 @@ void GameplayScene::Initialize()
  */
 void GameplayScene::Update(float deltaTime)
 {
+   
+
     // 状態の更新処理
     m_stateMachine->Update(deltaTime);
 

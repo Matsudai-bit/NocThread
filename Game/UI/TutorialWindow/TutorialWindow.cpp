@@ -14,6 +14,8 @@
 #include "Game/Common/Screen.h"
 #include "Game/Common/UserInterfaceTool/Sprite/Sprite.h"
 
+#include "Game/Common/Input/InputBindingFactory/InputBindingFactory.h"
+
 using namespace DirectX;
 
 
@@ -80,6 +82,9 @@ void TutorialWindow::Initialize(ResourceManager* pResourceManager, std::function
 	m_tutorialSprites[2]->SetScale(0.6f * screen->GetScreenScale());
 	m_tutorialSprites[3]->SetScale(1.0f * screen->GetScreenScale());
 	m_tutorialSprites[4]->SetScale(1.0f * screen->GetScreenScale());
+
+	// UI入力の作成
+	m_uiInput = InputBindingFactory::CreateUIInput();
 }
 
 /**
@@ -89,15 +94,21 @@ void TutorialWindow::Initialize(ResourceManager* pResourceManager, std::function
  *
  * @return なし
  */
-void TutorialWindow::Update(float deltaTime, const DirectX::Keyboard::KeyboardStateTracker& keyboardStateTracker)
+void TutorialWindow::Update(
+	float deltaTime, 
+	const DirectX::Keyboard::KeyboardStateTracker* pKeyboardStateTracker,
+	const DirectX::Mouse::ButtonStateTracker* pMouseStateTracker,
+	const DirectX::GamePad::ButtonStateTracker* pGamePadStateTracker)
 {
 	UNREFERENCED_PARAMETER(deltaTime);
 
-	if (CanMoveRight(keyboardStateTracker))
+	m_uiInput->Update(pKeyboardStateTracker, pMouseStateTracker, pGamePadStateTracker);
+
+	if (CanMoveRight())
 	{
 		m_currentTutorialSpriteIndex++;
 	}
-	if (CanMoveLeft(keyboardStateTracker))
+	if (CanMoveLeft())
 	{
 		m_currentTutorialSpriteIndex--;
 	}
@@ -107,9 +118,8 @@ void TutorialWindow::Update(float deltaTime, const DirectX::Keyboard::KeyboardSt
 	m_currentTutorialSpriteIndex = (m_currentTutorialSpriteIndex + static_cast<int>(max)) % static_cast<int>(max);
 
 	// 終了するかどうか
-	if (keyboardStateTracker.IsKeyPressed(Keyboard::Escape) ||
-		keyboardStateTracker.IsKeyPressed(Keyboard::Space) ||
-		keyboardStateTracker.IsKeyPressed(Keyboard::Enter))
+	if (m_uiInput->IsInput(InputActionType::UIActionID::CONFIRM, InputSystem<InputActionType::UIActionID>::InputOption::PRESSED) ||
+		m_uiInput->IsInput(InputActionType::UIActionID::CANCEL, InputSystem<InputActionType::UIActionID>::InputOption::PRESSED))
 	{
 		m_closeWindow();
 	}
@@ -178,24 +188,24 @@ void TutorialWindow::DrawSprite(DirectX::SpriteBatch* pSpriteBatch)
 }
 
 /**
- * @brief 下にセレクターが動くことが出来るかどうか
+ * @brief 右にセレクターが動くことが出来るかどうか
  *
  * @return true 可能
  */
-bool TutorialWindow::CanMoveRight(const DirectX::Keyboard::KeyboardStateTracker& keyboardStateTracker) const
+bool TutorialWindow::CanMoveRight() const
 {
 
-	return (keyboardStateTracker.IsKeyPressed(Keyboard::Right) || keyboardStateTracker.IsKeyPressed(Keyboard::D));
+	return (m_uiInput->IsInput(InputActionType::UIActionID::RIGHT_MOVE, InputSystem<InputActionType::UIActionID>::InputOption::PRESSED));
 }
 
 /**
- * @brief 上にセレクターが動くことが出来るかどうか
+ * @brief 左にセレクターが動くことが出来るかどうか
  *
  * @return true 可能
  */
-bool TutorialWindow::CanMoveLeft(const DirectX::Keyboard::KeyboardStateTracker& keyboardStateTracker) const
+bool TutorialWindow::CanMoveLeft() const
 {
 
-	return (keyboardStateTracker.IsKeyPressed(Keyboard::Left) || keyboardStateTracker.IsKeyPressed(Keyboard::A));
+	return (m_uiInput->IsInput(InputActionType::UIActionID::LEFT_MOVE, InputSystem<InputActionType::UIActionID>::InputOption::PRESSED));
 }
 

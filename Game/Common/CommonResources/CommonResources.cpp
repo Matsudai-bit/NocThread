@@ -25,6 +25,7 @@ using namespace DirectX;
  * @param[in] pResourceManger	リソース管理
  * @param[in] pKeyboardState	キーボードの状態
  * @param[in] pMouseState		マウスの状態
+ * @param[in] pGamePadState		ゲームパッドの状態
  */
 CommonResources::CommonResources(
 	DX::StepTimer*			pStepTimer,
@@ -33,7 +34,8 @@ CommonResources::CommonResources(
 	Imase::DebugFont*		pDebugFont,
 	ResourceManager*		pResourceManager,
 	Keyboard::KeyboardStateTracker* pKeyboardState,
-	Mouse::ButtonStateTracker* pMouseState)
+	Mouse::ButtonStateTracker* pMouseState,
+	DirectX::GamePad::ButtonStateTracker* pGamePadState)
 	: m_pStepTimer		{pStepTimer}
 	, m_pDeviceResources{pDeviceResources}
 	, m_pCommonStates	{pCommonStates}
@@ -41,6 +43,7 @@ CommonResources::CommonResources(
 	,m_pResourceManager {pResourceManager}
 	, m_pKeyboardState	{ pKeyboardState }
 	, m_pMouseState		{ pMouseState }
+	, m_pGamePadState	{ pGamePadState }
 
 {
 
@@ -125,4 +128,16 @@ DirectX::Mouse::ButtonStateTracker* CommonResources::GetMouseTracker() const
 {
 	return m_pMouseState;
 }
+
+/**
+ * @brief ゲームパッドの取得
+ * 
+ * @return ゲームパッド
+ */
+DirectX::GamePad::ButtonStateTracker* CommonResources::GetGamePadTracker() const
+{
+	return m_pGamePadState;
+}
+
+
 

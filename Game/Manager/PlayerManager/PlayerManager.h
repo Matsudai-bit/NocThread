@@ -13,7 +13,8 @@
 
 
 // ヘッダファイルの読み込み ===================================================
-#include "Game/Common/Input/PlayerInput/PlayerInput.h"
+#include "Game/Common/Input/InputActionType/InputActionType.h"
+#include "Game/Common/Input/InputSystem/InputSystem.h"
 #include "Game/Common/Shadow/CircularShadow/CircularShadow.h"
 
 // クラスの前方宣言 ===================================================
@@ -37,7 +38,7 @@ public:
 private:
 		
 	std::unique_ptr<Player>	m_player;						///< プレイヤー
-	std::unique_ptr<PlayerInput> m_playerInput;				///< プレイヤー入力
+	std::unique_ptr<InputSystem<InputActionType::PlyayerActionID>> m_playerInput;				///< プレイヤー入力
 	std::unique_ptr<PlayerController> m_playerController;	///< プレイヤーコントローラ
 
 	std::unique_ptr< CircularShadow> m_playerShadow; ///< プレイヤーの影

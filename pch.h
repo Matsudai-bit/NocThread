@@ -102,3 +102,5 @@ namespace DX
 #include "Model.h"
 #include "DDSTextureLoader.h"
 #include "Audio.h"
+#include "GamePad.h"
+

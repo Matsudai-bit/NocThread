@@ -14,6 +14,8 @@
 
 // ヘッダファイルの読み込み ===================================================
 #include "Game/Common/UserInterfaceTool/Sprite/ISprite2D.h"
+#include "Game/Common/Input/InputSystem/InputSystem.h"
+#include "Game/Common/Input/InputActionType/InputActionType.h"
 
 #include <memory>
 #include <vector>
@@ -45,6 +47,7 @@ private:
 
 	std::function<void()> m_closeWindow;
 
+	std::unique_ptr < InputSystem<InputActionType::UIActionID>> m_uiInput; ///< UI入力
 
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
@@ -62,7 +65,11 @@ public:
 	void Initialize(ResourceManager* pResourceManager, std::function<void()> closeWindow);
 
 	// 更新処理
-	void Update(float deltaTime, const DirectX::Keyboard::KeyboardStateTracker& keyboardStateTracker);
+	void Update(
+		float deltaTime,
+		const DirectX::Keyboard::KeyboardStateTracker* pKeyboardStateTracker,
+		const DirectX::Mouse::ButtonStateTracker* pMouseStateTracker,
+		const DirectX::GamePad::ButtonStateTracker* pGamePadStateTracker);
 	// 描画処理
 	void Draw();
 	// 終了処理
@@ -78,8 +85,8 @@ public:
 private:
 
 	// 右に動くことが出来るかどうか
-	bool CanMoveRight(const DirectX::Keyboard::KeyboardStateTracker& keyboardStateTracker) const;
+	bool CanMoveRight() const;
 	// 上に動くことが出来るかどうか
-	bool CanMoveLeft(const DirectX::Keyboard::KeyboardStateTracker& keyboardStateTracker) const;
+	bool CanMoveLeft() const;
 
 };

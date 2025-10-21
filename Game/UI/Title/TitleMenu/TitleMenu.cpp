@@ -16,6 +16,7 @@
 #include "Game/Common/ResourceManager/ResourceManager.h"
 #include "Game/Common/UserInterfaceTool/Sprite/Sprite.h"
 #include "Game/Common/UserInterfaceTool/Canvas/Canvas.h"
+#include "Game/Common/Input/InputBindingFactory/InputBindingFactory.h"
 
 #include "Library/MyLib/EasingKit/EasingKit.h"
 
@@ -100,6 +101,8 @@ void TitleMenu::Initialize(Canvas* pCanvas, const CommonResources* pCommonResour
 
 	m_ElapsedTimeCounter.Reset();
 
+	// UI入力システムの作成
+	m_uiInput = InputBindingFactory::CreateUIInput();
 }
 
 
@@ -113,6 +116,8 @@ void TitleMenu::Initialize(Canvas* pCanvas, const CommonResources* pCommonResour
  */
 void TitleMenu::Update(float deltaTime)
 {
+	// 入力の更新処理
+	m_uiInput->Update(m_pCommonResources->GetKeyboardTracker(), m_pCommonResources->GetMouseTracker(), m_pCommonResources->GetGamePadTracker());
 
 	// 加算
 	m_ElapsedTimeCounter.UpperTime(deltaTime);
@@ -201,9 +206,8 @@ void TitleMenu::Finalize()
  */
 bool TitleMenu::CanMoveDownSelector() const
 {
-	auto keyboardTracker = m_pCommonResources->GetKeyboardTracker();
 
-	return (keyboardTracker->IsKeyPressed(Keyboard::Down) || keyboardTracker->IsKeyPressed(Keyboard::S));
+	return (m_uiInput->IsInput(InputActionType::UIActionID::DOWN_MOVE, InputSystem<InputActionType::UIActionID>::InputOption::PRESSED));
 }
 
 /**
@@ -213,9 +217,8 @@ bool TitleMenu::CanMoveDownSelector() const
  */
 bool TitleMenu::CanMoveUpSelector() const
 {
-	auto keyboardTracker = m_pCommonResources->GetKeyboardTracker();
 
-	return (keyboardTracker->IsKeyPressed(Keyboard::Up) || keyboardTracker->IsKeyPressed(Keyboard::W));
+	return (m_uiInput->IsInput(InputActionType::UIActionID::UP_MOVE, InputSystem<InputActionType::UIActionID>::InputOption::PRESSED));
 }
 
 /**
@@ -225,7 +228,5 @@ bool TitleMenu::CanMoveUpSelector() const
  */
 bool TitleMenu::CanPush() const
 {
-	auto keyboardTracker = m_pCommonResources->GetKeyboardTracker();
-
-	return (keyboardTracker->IsKeyPressed(Keyboard::Space) || keyboardTracker->IsKeyPressed(Keyboard::Enter));
+	return (m_uiInput->IsInput(InputActionType::UIActionID::CONFIRM, InputSystem<InputActionType::UIActionID>::InputOption::PRESSED));
 }
