@@ -29,7 +29,7 @@ class ShootingWirePlayerState : public StateBase<Player>
 // クラス定数の宣言 -------------------------------------------------
 public:
 
-	static constexpr float FLY_UPPER_ACCELERATION = 40.0f;
+	static constexpr float FLY_UPP_ACCELERATION = 40.0f;
 
 // データメンバの宣言 -----------------------------------------------
 private:
