@@ -53,6 +53,9 @@ void ShootingWirePlayerState::OnStartState()
 
 	// ƒƒCƒ„[Õ“ËŽž‚ÉŒÄ‚Î‚ê‚éŠÖ”‚Ì“o˜^
 	GetOwner()->SetWireCollisionFunction([this](const GameObject* pHitObject) { OnCollisionWire(pHitObject); });
+
+	// YŽ²‚Ì‘¬“x‚ð‚È‚­‚·
+	GetOwner()->ResetVelocityY();
 }
 
 /**
@@ -72,7 +75,7 @@ void ShootingWirePlayerState::OnUpdate(float deltaTime)
 	}
 
 	// ‚Ó‚í‚Á‚Æ‚·‚éˆ—‚ð‚·‚é
-	GetOwner()->AddForceToVelocityY(100.0f * deltaTime);
+	GetOwner()->AddForceToVelocityY(50.0f * deltaTime);
 	GetOwner()->ApplyGravity(deltaTime);
 
 	GetOwner()->Move(deltaTime);
@@ -100,5 +103,14 @@ void ShootingWirePlayerState::OnCollisionWire(const GameObject* pHitObject)
 	{
 		GetOwner()->RequestChangeState(Player::State::WIRE_ACTION);
 	}
+}
+
+/**
+ * @brief ó‘ÔI—¹Žž‚ÉŒÄ‚Î‚ê‚é
+ * 
+ */
+void ShootingWirePlayerState::OnExitState()
+{
+	GetOwner()->SetWireCollisionFunction([](const GameObject* pHitObject) {});
 }
 

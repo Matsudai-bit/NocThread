@@ -62,6 +62,9 @@ public:
 	// ƒƒCƒ„[‚ªÕ“Ë‚µ‚½‚É‚æ‚Î‚ê‚é
 	void OnCollisionWire(const GameObject* pHitObject);
 
+	// ó‘ÔI—¹‚ÉŒÄ‚Î‚ê‚é
+	void OnExitState() override;
+
 // æ“¾/İ’è
 public:
 
