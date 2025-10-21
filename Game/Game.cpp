@@ -45,7 +45,15 @@ Game::Game() noexcept(false)
 
 Game::~Game()
 {
-
+    // 例：デバイスを取得している場合
+    ID3D11Debug* d3dDebug = nullptr;
+    HRESULT hr = m_deviceResources->GetD3DDevice()->QueryInterface(__uuidof(ID3D11Debug), (void**)&d3dDebug);
+    if (SUCCEEDED(hr) && d3dDebug)
+    {
+        // 以下のフラグを指定することで、より詳細な情報を出力できる
+        d3dDebug->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL | D3D11_RLDO_SUMMARY);
+        d3dDebug->Release();
+    }
     // フルスクリーン状態であれば、ウィンドウモードに戻す
     if (m_fullscreen && m_deviceResources->GetSwapChain())
     {
@@ -74,6 +82,7 @@ Game::~Game()
     ImGui_ImplWin32_Shutdown();
     ImGui::DestroyContext();
 
+    SoundManager::GetInstance()->RemoveAll();
     m_resourceManager->Clear();
 
     m_sceneManager->Finalize();

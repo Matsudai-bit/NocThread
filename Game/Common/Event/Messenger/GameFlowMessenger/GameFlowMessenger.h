@@ -48,7 +48,7 @@ private:
 	GameFlowMessenger() = default;
 public :
 	// デストラクタ
-	~GameFlowMessenger() = default;
+	~GameFlowMessenger() ;
 
 
 // 操作

@@ -83,7 +83,7 @@ public:
 	DirectX::SoundEffect* CreateSoundEffect(const std::string& fileName);
 
 	// サウンドエフェクトの解放関数
-	void ReleaseSoundEffect(const wchar_t* name);
+	void ReleaseSoundEffect();
 
 	// 全リソースの開放
 	void Clear();

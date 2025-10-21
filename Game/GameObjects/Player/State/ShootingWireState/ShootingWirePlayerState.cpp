@@ -15,6 +15,7 @@
 #include "Game/GameObjects/Player/State/WireActionPlayerState/WireActionPlayerState.h"
 #include "Game/Common/CommonResources/CommonResources.h"
 #include "Library/ImaseLib/DebugFont.h"
+#include "Game/Common/Input/PlayerInput/PlayerInput.h"
 
 
 using namespace DirectX;
@@ -65,8 +66,16 @@ void ShootingWirePlayerState::OnUpdate(float deltaTime)
 	auto mouseTrack = GetOwner()->GetCommonResources()->GetMouseTracker();
 
 	// マウスを離したら強制終了する
+	if (GetOwner()->GetPlayerInput()->IsInput(PlayerInput::ActionID::RELEASE_WIRE, PlayerInput::InputOption::RELEASED))
+	{
+		GetOwner()->RequestChangeState(Player::State::IDLE);
+	}
 
 	// ふわっとする処理をする
+	GetOwner()->AddForceToVelocityY(100.0f * deltaTime);
+	GetOwner()->ApplyGravity(deltaTime);
+
+	GetOwner()->Move(deltaTime);
 
 }
 

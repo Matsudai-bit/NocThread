@@ -129,17 +129,17 @@ public:
 	 */
 	void ClearState()
 	{
-		//m_fnChangeState =
-		//	[&]()
-		//	{
-		//		StateBase<OwnerType>* pNowState = GetNowState();
-		//		if (pNowState == nullptr)
-		//		{
-		//			return;
-		//		}
-		//		pNowState->CallExit();
-		//		m_stateList.clear();
-		//	};
+		m_fnChangeState =
+			[&]()
+			{
+				StateBase<OwnerType>* pNowState = GetNowState();
+				if (pNowState == nullptr)
+				{
+					return;
+				}
+				pNowState->CallExit();
+				m_stateList.clear();
+			};
 	}
 
 

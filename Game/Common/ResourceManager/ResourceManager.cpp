@@ -152,11 +152,10 @@ DirectX::SoundEffect* ResourceManager::CreateSoundEffect(const std::string& file
 }
 
 // サウンドエフェクトの解放関数
-void ResourceManager::ReleaseSoundEffect(const wchar_t* name)
+void ResourceManager::ReleaseSoundEffect()
 {
-    if (!m_soundCache.count(name)) return;
 
-    m_soundCache.erase(name);
+    m_soundCache.clear();
 }
 
 /**
@@ -169,6 +168,7 @@ void ResourceManager::Clear()
 
     ReleaseTexture();
     ReleaseModel();
+    ReleaseSoundEffect();
 
     m_mutex.unlock();
 
