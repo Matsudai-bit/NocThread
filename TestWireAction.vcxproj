@@ -249,6 +249,7 @@
     <ClInclude Include="Game\GameObjects\Player\PlayerController\PlayerController.h" />
     <ClInclude Include="Game\GameObjects\Player\State\IdlePlayerState\IdlePlayerState.h" />
     <ClInclude Include="Game\GameObjects\Player\State\JumpingPlayerState\JumpingPlayerState.h" />
+    <ClInclude Include="Game\GameObjects\Player\State\ShootingWireState\ShootingWirePlayerState.h" />
     <ClInclude Include="Game\GameObjects\Player\State\SteppingPlayerState\SteppingPlayerState.h" />
     <ClInclude Include="Game\GameObjects\Player\State\WalkPlayerState\WalkPlayerState.h" />
     <ClInclude Include="Game\GameObjects\Player\State\WireActionPlayerState\WireActionPlayerState.h" />
@@ -366,6 +367,7 @@
     <ClCompile Include="Game\GameObjects\Player\PlayerController\PlayerController.cpp" />
     <ClCompile Include="Game\GameObjects\Player\State\IdlePlayerState\IdlePlayerState.cpp" />
     <ClCompile Include="Game\GameObjects\Player\State\JumpingPlayerState\JumpingPlayerState.cpp" />
+    <ClCompile Include="Game\GameObjects\Player\State\ShootingWireState\ShootingWirePlayerState.cpp" />
     <ClCompile Include="Game\GameObjects\Player\State\SteppingPlayerState\SteppingPlayerState.cpp" />
     <ClCompile Include="Game\GameObjects\Player\State\WalkPlayerState\WalkPlayerState.cpp" />
     <ClCompile Include="Game\GameObjects\Player\State\WireActionPlayerState\WireActionPlayerState.cpp" />

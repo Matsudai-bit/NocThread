@@ -30,7 +30,7 @@ WireSystemSubject::WireSystemSubject()
  */
 WireSystemSubject::~WireSystemSubject()
 {
-
+	m_observers.clear();
 }
 
 /**

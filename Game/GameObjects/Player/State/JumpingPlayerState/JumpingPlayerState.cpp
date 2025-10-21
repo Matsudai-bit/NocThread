@@ -84,9 +84,9 @@ void JumpingPlayerState::OnUpdate(float deltaTime)
 
 	if (mouseTrack->leftButton == Mouse::ButtonStateTracker::PRESSED)
 	{
-		if (GetOwner()->CanShootWire())
+		if (!GetOwner()->IsGround() && GetOwner()->CanShootWire())
 		{
-			GetOwner()->ShootWire();
+			GetOwner()->RequestChangeState(Player::State::WIRE_SHOOTING);
 		}
 	}
 

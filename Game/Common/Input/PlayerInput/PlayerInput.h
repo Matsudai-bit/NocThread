@@ -33,6 +33,7 @@ public:
 		LEFT_MOVE,
 		BACK_MOVE,
 		WIRE_SHOOTING,
+		RELEASE_WIRE,
 		STEPPING,
 	};
 

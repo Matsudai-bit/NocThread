@@ -14,6 +14,7 @@
 
 // ヘッダファイルの読み込み ===================================================
 #include <memory>
+#include <functional>
 
 #include "Game/GameObjects/Common/GameObject.h"
 #include "Game/GameObjects/Common/MovableObject/MovableObject.h"
@@ -69,6 +70,7 @@ public:
 		WALKING,		// 歩く
 		JUMPING,		// 跳ぶ
 		STTEPPING,		// ステップ
+		WIRE_SHOOTING,	// ワイヤーを発射する
 		WIRE_ACTION,	// ワイヤーアクション
 		WIRE_GRABBING,	// ワイヤーで掴む
 		WIRE_THROWING	// ワイヤーで投げる
@@ -114,7 +116,7 @@ public:
 	static constexpr int WIRE_SIMULATION_ITERATIONS = 1;             // XPBDシミュレーションの標準的な反復回数
 	static constexpr float WIRE_TARGET_FINDER_RADIUS = 30.0f;        // WireTargetFinderに渡す初期半径（探索距離）
 	static constexpr float WIRE_RELEASE_VELOCITY_MULTIPLIER = 3.0f;  // ワイヤー解放時の速度倍率
-	static constexpr float SHOOT_WIRE_INITIAL_SPEED = 300.0f;        // ワイヤーの初期発射速度
+	static constexpr float SHOOT_WIRE_INITIAL_SPEED = 100.0f;        // ワイヤーの初期発射速度
 	static constexpr float GRABBING_DISTANCE = 1.5f;                 // 掴み位置計算のための固定距離
 	static constexpr float ROTATE_SPEED_FACTOR = 0.1f;               // 移動方向への回転速度（スムージング）係数
 
@@ -136,6 +138,8 @@ private:
 	// 衝突関連
 	std::unique_ptr<Sphere> m_collider;	///< コライダー
 	DirectX::SimpleMath::Vector3 m_overlapTotal;
+	std::function<void(const GameObject*)> m_collisionWire;
+
 
 	// システム
 	CollisionManager* m_pCollisionManager;
@@ -271,6 +275,8 @@ public:
 	// 状態の変更要求
 	void RequestChangeState(State state);
 
+	// 地面にいるかどうか
+	bool IsGround() const { return m_isGround; }
 
 // 取得/設定
 public:
@@ -304,9 +310,12 @@ public:
 	// ワイヤーを発射できるかどうか
 	bool CanShootWire() const;
 
-	// 地面にいるかどうか
-	bool IsGround() const { return m_isGround; }
 
+	// プレイヤー入力の取得
+	PlayerInput* GetPlayerInput() { return m_pPlayerInput; }
+
+	// ワイヤーの衝突時に呼ぶ関数を設定する
+	void SetWireCollisionFunction(std::function<void(const GameObject*)> collisionWire);
 
 
 // 内部実装

@@ -26,6 +26,7 @@ PlayerInput::PlayerInput()
 	m_inputs[ActionID::STEPPING].buttons.emplace_back(MouseButtons::RIGHT_BUTTON);
 
 	m_inputs[ActionID::WIRE_SHOOTING].buttons.emplace_back(MouseButtons::LEFT_BUTTON);
+	m_inputs[ActionID::RELEASE_WIRE].buttons.emplace_back(MouseButtons::LEFT_BUTTON);
 
 	m_inputs[ActionID::JUMPING].keys.emplace_back(Keyboard::Space);
 

@@ -1,9 +1,9 @@
 /*****************************************************************//**
- * @file    GameFlowMessenger.h
- * @brief   ゲーム進行のイベントのメッセージ送出クラスに関するヘッダーファイル
+ * @file    ShootingWirePlayerState.h
+ * @brief   ワイヤー発射状態のプレイヤーに関するヘッダーファイル
  *
  * @author  松下大暉
- * @date    2025/08/24
+ * @date    2025/10/21
  *********************************************************************/
 
 // 多重インクルードの防止 =====================================================
@@ -13,20 +13,18 @@
 
 
 // ヘッダファイルの読み込み ===================================================
-#include <memory>
-#include <vector>
+#include "Game/Common/StateMachine/StateBase/StateBase.h"
 
-#include "Game/Common/Event/Messenger/GameFlowMessenger/GameFlowEventID.h"
 
 // クラスの前方宣言 ===================================================
-class IGameFlowObserver;
-
+class Player;
+class GameObject;
 
 // クラスの定義 ===============================================================
 /**
- * @brief ゲーム進行のイベントのメッセージ送出クラス (シングルトン)
+ * @brief ワイヤー発射状態のプレイヤー
  */
-class GameFlowMessenger final
+class ShootingWirePlayerState : public StateBase<Player>
 {
 // クラス定数の宣言 -------------------------------------------------
 public:
@@ -35,40 +33,40 @@ public:
 
 // データメンバの宣言 -----------------------------------------------
 private:
-	
-	// インスタンス
-	static std::unique_ptr<GameFlowMessenger> s_instance;
 
-	std::vector<IGameFlowObserver*> m_observers; ///< 監視者
-
+	bool m_isJumping;
 
 // メンバ関数の宣言 -------------------------------------------------
-private:
+// コンストラクタ/デストラクタ
+public:
 	// コンストラクタ
-	GameFlowMessenger() = default;
-public :
+	ShootingWirePlayerState();
+
 	// デストラクタ
-	~GameFlowMessenger() ;
+	~ShootingWirePlayerState();
 
 
 // 操作
 public:
 
-	// 監視者の登録
-	void RegistrObserver(IGameFlowObserver* observer);
+	// 状態開始時に呼ばれる
+	void OnStartState() override;
 
-	// 通知
-	void Notify(GameFlowEventID eventID);
 
-	// 全て削除
-	void RemoveAllObserver();
+	// 更新処理
+	void OnUpdate(float deltaTime) override;
+
+	// 描画処理
+	void OnDraw() override;
+
+	// ワイヤーが衝突した時によばれる
+	void OnCollisionWire(const GameObject* pHitObject);
+
+	// 状態終了時に呼ばれる
+	void OnExitState() override;
 
 // 取得/設定
 public:
-
-	// インスタンスの取得
-	static  GameFlowMessenger* GetInstance();
-
 
 
 // 内部実装

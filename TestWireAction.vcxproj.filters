@@ -377,6 +377,9 @@
     <Filter Include="Game\GameObjects\Player\PlayerManager">
       <UniqueIdentifier>{e9529cf0-0b6d-473b-aa18-73b512d7b270}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\GameObjects\Player\State\ShootingWire">
+      <UniqueIdentifier>{ad123bb5-e8eb-4e96-ae11-9f3244d7e934}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -756,6 +759,9 @@
     <ClInclude Include="Game\Manager\PlayerManager\PlayerManager.h">
       <Filter>Game\GameObjects\Player\PlayerManager</Filter>
     </ClInclude>
+    <ClInclude Include="Game\GameObjects\Player\State\ShootingWireState\ShootingWirePlayerState.h">
+      <Filter>Game\GameObjects\Player\State\ShootingWire</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -1077,6 +1083,9 @@
     <ClCompile Include="Game\Common\Input\PlayerInput\PlayerInput.cpp" />
     <ClCompile Include="Game\Manager\PlayerManager\PlayerManager.cpp">
       <Filter>Game\GameObjects\Player\PlayerManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\GameObjects\Player\State\ShootingWireState\ShootingWirePlayerState.cpp">
+      <Filter>Game\GameObjects\Player\State\ShootingWire</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

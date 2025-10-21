@@ -240,6 +240,7 @@ void GameplayScene::Render()
  */
 void GameplayScene::Finalize()
 {
+    m_stateMachine->ClearState();
 }
 
 /**

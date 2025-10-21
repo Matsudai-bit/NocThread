@@ -18,6 +18,11 @@ std::unique_ptr<GameFlowMessenger> GameFlowMessenger::s_instance = nullptr;
 // ƒƒ“ƒoŠÖ”‚Ì’è‹` ===========================================================
 
 
+GameFlowMessenger::~GameFlowMessenger()
+{
+    m_observers.clear();
+}
+
 /**
  * @brief ŠÄ‹Ò‚Ì“o˜^
  * 
