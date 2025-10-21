@@ -14,7 +14,8 @@
 
 // ヘッダファイルの読み込み ===================================================
 #include "Game/Common/StateMachine/StateBase/StateBase.h"
-
+#include "Game/Common/Input/InputSystem/InputSystem.h"
+#include "Game/Common/Input/InputActionType/InputActionType.h"
 
 // クラスの前方宣言 ===================================================
 class GameplayScene; // ゲームプレイシーン
@@ -34,7 +35,7 @@ public:
 // データメンバの宣言 -----------------------------------------------
 private:
 
-
+	std::unique_ptr < InputSystem<InputActionType::SystemActionID>> m_systemInput; ///< ゲームシステムの入力判断
 
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ

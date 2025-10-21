@@ -69,7 +69,7 @@ void WalkPlayerState::OnUpdate(float deltaTime)
 		GetOwner()->RequestChangeState(Player::State::IDLE);
 	}
 
-	if (mouseTrack->leftButton == Mouse::ButtonStateTracker::PRESSED)
+	if (GetOwner()->GetPlayerInput()->IsInput(InputActionType::PlyayerActionID::WIRE_SHOOTING))
 	{
 		if (!GetOwner()->IsGround() && GetOwner()->CanShootWire())
 		{

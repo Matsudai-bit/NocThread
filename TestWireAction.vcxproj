@@ -212,7 +212,9 @@
     <ClInclude Include="Game\Common\GameObjectRegistry\GameObjectRegistry.h" />
     <ClInclude Include="Game\Common\Helper\MovementHelper\MovementHelper.h" />
     <ClInclude Include="Game\Common\Helper\PhysicsHelper\PhysicsHelper.h" />
-    <ClInclude Include="Game\Common\Input\PlayerInput\PlayerInput.h" />
+    <ClInclude Include="Game\Common\Input\InputActionType\InputActionType.h" />
+    <ClInclude Include="Game\Common\Input\InputBindingFactory\InputBindingFactory.h" />
+    <ClInclude Include="Game\Common\Input\InputSystem\InputSystem.h" />
     <ClInclude Include="Game\Common\Line2D\Line2D.h" />
     <ClInclude Include="Game\Common\ResourceManager\ResourceManager.h" />
     <ClInclude Include="Game\Common\ResultData\ResultData.h" />
@@ -337,7 +339,9 @@
     <ClCompile Include="Game\Common\GameObjectRegistry\GameObjectRegistry.cpp" />
     <ClCompile Include="Game\Common\Helper\MovementHelper\MovementHelper.cpp" />
     <ClCompile Include="Game\Common\Helper\PhysicsHelper\PhysicsHelper.cpp" />
-    <ClCompile Include="Game\Common\Input\PlayerInput\PlayerInput.cpp" />
+    <ClCompile Include="Game\Common\Input\InputActionType\InputActionType.cpp" />
+    <ClCompile Include="Game\Common\Input\InputBindingFactory\InputBindingFactory.cpp" />
+    <ClCompile Include="Game\Common\Input\InputSystem\InputSystem.cpp" />
     <ClCompile Include="Game\Common\Line2D\Line2D.cpp" />
     <ClCompile Include="Game\Common\ResourceManager\ResourceManager.cpp" />
     <ClCompile Include="Game\Common\ResultData\ResultData.cpp" />

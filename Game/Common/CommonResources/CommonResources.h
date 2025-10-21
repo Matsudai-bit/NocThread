@@ -56,6 +56,7 @@ private:
 
 	DirectX::Keyboard::KeyboardStateTracker*	m_pKeyboardState;	///< キーボードの状態
 	DirectX::Mouse::ButtonStateTracker*			m_pMouseState;		///< マウスの状態
+	DirectX::GamePad::ButtonStateTracker*		m_pGamePadState;	///< ゲームパッドの状態
 
 
 // メンバ関数の宣言 -------------------------------------------------
@@ -69,7 +70,8 @@ public:
 		Imase::DebugFont*		pDebugFont,
 		ResourceManager*		pResourceManager,
 		DirectX::Keyboard::KeyboardStateTracker*pKeyboardState,
-		DirectX::Mouse::ButtonStateTracker*		pMouseState);
+		DirectX::Mouse::ButtonStateTracker*		pMouseState,
+		DirectX::GamePad::ButtonStateTracker*	pGamePadState);
 
 	// デストラクタ
 	~CommonResources();
@@ -98,5 +100,8 @@ public:
 
 	// マウストラッカー取得
 	DirectX::Mouse::ButtonStateTracker* GetMouseTracker() const;
+
+	// ゲームパッドの取得
+	DirectX::GamePad::ButtonStateTracker* GetGamePadTracker() const;
 
 };

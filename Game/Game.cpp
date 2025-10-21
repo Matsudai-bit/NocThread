@@ -128,8 +128,9 @@ void Game::Initialize(HWND window, int width, int height)
     m_sceneManager = std::make_unique<MyLib::SceneManager<CommonResources>>();
 
     // トラッカーの作成
-    m_keyboardStateTracker = std::make_unique<Keyboard::KeyboardStateTracker>();
-    m_mouseStateTracker = std::make_unique<Mouse::ButtonStateTracker>();
+    m_keyboardStateTracker  = std::make_unique<Keyboard::KeyboardStateTracker>();
+    m_mouseStateTracker     = std::make_unique<Mouse::ButtonStateTracker>();
+    m_gamePadStateTracker   = std::make_unique<GamePad::ButtonStateTracker>();
 
     // 共通リソースの生成
     m_commonResources = std::make_unique<CommonResources>(
@@ -139,7 +140,8 @@ void Game::Initialize(HWND window, int width, int height)
         m_debugFont.get(),
         m_resourceManager.get(),
         m_keyboardStateTracker.get(),
-        m_mouseStateTracker.get()
+        m_mouseStateTracker.get(),
+        m_gamePadStateTracker.get()
     );
 
     // **** 初期化処理 ****
@@ -204,12 +206,16 @@ void Game::Update(DX::StepTimer const& timer)
     float deltaTime = float(timer.GetElapsedSeconds());
 
     // キーボードトラッカーの更新処理
-    auto kb = DirectX::Keyboard::Get().GetState();
+    auto kb = Keyboard::Get().GetState();
     m_keyboardStateTracker->Update(kb);
 
     // マウストラッカーの更新処理
-    auto mouse = DirectX::Mouse::Get().GetState();
+    auto mouse = Mouse::Get().GetState();
     m_mouseStateTracker->Update(mouse);
+
+    // ゲームパッドトラッカーの更新処理
+    auto gamePad = GamePad::Get().GetState(0);
+    m_gamePadStateTracker->Update(gamePad);
 
     // シーン管理の更新処理
     m_sceneManager->Update(deltaTime);

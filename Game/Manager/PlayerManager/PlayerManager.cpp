@@ -15,6 +15,9 @@
 #include "Game/GameObjects/Player/PlayerController/PlayerController.h"
 #include "Game/Common/Camera/PlayerCamera/PlayerCamera.h"
 
+#include "Game/Common/Input/InputBindingFactory/InputBindingFactory.h"
+
+
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
@@ -51,7 +54,7 @@ void PlayerManager::Initialize(CommonResources* pCommonResources, CollisionManag
 	m_pCommonResources = pCommonResources;
 
 	// プレイヤーインプットの作成
-	m_playerInput = std::make_unique<PlayerInput>();
+	m_playerInput = InputBindingFactory::CreatePlayerInput();
 
 	// プレイヤーの作成
 	m_player = std::make_unique<Player>();
@@ -78,12 +81,12 @@ void PlayerManager::Initialize(CommonResources* pCommonResources, CollisionManag
 void PlayerManager::Update(float deltaTime, const DirectX::SimpleMath::Matrix& proj)
 {
 	// プレイヤーの入力
-	m_playerInput->Update(m_pCommonResources->GetKeyboardTracker(), m_pCommonResources->GetMouseTracker());
+	m_playerInput->Update(m_pCommonResources->GetKeyboardTracker(), m_pCommonResources->GetMouseTracker(), m_pCommonResources->GetGamePadTracker());
 
 	// プレイヤーの更新処理
 	m_player->Update(deltaTime, proj);
 
-	m_playerController->Update(deltaTime, m_pCommonResources->GetKeyboardTracker(), m_pCommonResources->GetMouseTracker());
+	m_playerController->Update(deltaTime, m_pCommonResources->GetKeyboardTracker(), m_pCommonResources->GetMouseTracker(), m_pCommonResources->GetGamePadTracker());
 
 }
 

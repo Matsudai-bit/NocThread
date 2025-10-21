@@ -25,6 +25,8 @@
 
 #include "Game/GameObjects/Wire/IWireHolder/IWireHolder.h"
 #include "Game/Common/Event/Messenger/GameFlowMessenger/IGameFlowObserver.h"
+#include "Game/Common/Input/InputActionType/InputActionType.h"
+#include "Game/Common/Input/InputSystem/InputSystem.h"
 
 #include "Library/DirectXFramework/Animation.h"
 
@@ -37,7 +39,6 @@ class PlayerCamera;			// カメラ
 class WireSystemSubject;// ワイヤーシステムの観察対象
 class Wire;				// ワイヤー
 class WireTargetFinder;		// ワイヤー照準
-class PlayerInput;		// プレイヤー入力
 
 namespace MyLib
 {
@@ -144,7 +145,7 @@ private:
 	// システム
 	CollisionManager* m_pCollisionManager;
 	std::unique_ptr<StateMachine<Player>>	m_stateMachine;	///< ステートマシーン
-	PlayerInput* m_pPlayerInput;	///< プレイヤーの入力機構
+	InputSystem<InputActionType::PlyayerActionID>* m_pPlayerInput;	///< プレイヤーの入力機構
 
 	// イベントに関するモノ
 	DirectX::SimpleMath::Vector3 m_requestedMove;			///<　リクエストされた移動ベクトル
@@ -188,7 +189,7 @@ public:
 // 操作
 public:
 	// 初期化処理
-	void Initialize(CommonResources* pCommonResources, CollisionManager* pCollisionManager, const PlayerCamera* pPlayerCamera, PlayerInput* pPlayerInput);
+	void Initialize(CommonResources* pCommonResources, CollisionManager* pCollisionManager, const PlayerCamera* pPlayerCamera, InputSystem<InputActionType::PlyayerActionID>* pPlayerInput);
 
 	// 更新処理
 	void Update(float deltaTime, const DirectX::SimpleMath::Matrix& proj);
@@ -312,7 +313,7 @@ public:
 
 
 	// プレイヤー入力の取得
-	PlayerInput* GetPlayerInput() { return m_pPlayerInput; }
+	InputSystem<InputActionType::PlyayerActionID>* GetPlayerInput() { return m_pPlayerInput; }
 
 	// ワイヤーの衝突時に呼ぶ関数を設定する
 	void SetWireCollisionFunction(std::function<void(const GameObject*)> collisionWire);

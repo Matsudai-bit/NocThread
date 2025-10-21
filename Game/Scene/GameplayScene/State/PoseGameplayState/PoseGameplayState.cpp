@@ -19,6 +19,8 @@
 #include "Game/Common/ResourceManager/ResourceManager.h"
 #include "Game/Common/Screen.h"
 #include "Game/Common/DeviceResources.h"
+#include "Game/Common/Input/InputBindingFactory/InputBindingFactory.h"
+
 
 #include "Game/UI/TutorialWindow/TutorialWindow.h"
 
@@ -130,6 +132,9 @@ void PoseGameplayState::OnStartState()
 	// チュートリアルウィンドウの作成
 	m_tutorialWindow = std::make_unique<TutorialWindow>();
 	m_tutorialWindow->Initialize(resourceManager, [this]() {OnCloseTutorialWindow(); });
+
+	// 入力の作成
+	m_systemInput = InputBindingFactory::CreateSystemInput();
 }
 
 /**
@@ -141,6 +146,12 @@ void PoseGameplayState::OnUpdate(float deltaTime)
 {
 	UNREFERENCED_PARAMETER(deltaTime);
 
+	// 入力の更新処理
+	m_systemInput->Update(
+		GetOwner()->GetCommonResources()->GetKeyboardTracker(),
+		GetOwner()->GetCommonResources()->GetMouseTracker(),
+		GetOwner()->GetCommonResources()->GetGamePadTracker());
+
 	auto keyboardStateTracker = GetOwner()->GetCommonResources()->GetKeyboardTracker();
 
 
@@ -149,7 +160,7 @@ void PoseGameplayState::OnUpdate(float deltaTime)
 	{
 		// ポーズメニューの更新処理
 		m_poseMenu->Update(deltaTime);
-		if (keyboardStateTracker->IsKeyPressed(Keyboard::Escape))
+		if (m_systemInput->IsInput(InputActionType::SystemActionID::PAUSE, InputSystem<InputActionType::SystemActionID>::InputOption::PRESSED))
 		{
 			// ゲームに戻る
 			ContinueGame();
@@ -157,7 +168,12 @@ void PoseGameplayState::OnUpdate(float deltaTime)
 	}
 	else
 	{
-		m_tutorialWindow->Update(deltaTime, *keyboardStateTracker);
+		// チュートリアルウィンドウの更新処理
+		m_tutorialWindow->Update(
+			deltaTime,
+			GetOwner()->GetCommonResources()->GetKeyboardTracker(),
+			GetOwner()->GetCommonResources()->GetMouseTracker(), 
+			GetOwner()->GetCommonResources()->GetGamePadTracker());
 	}
 }
 

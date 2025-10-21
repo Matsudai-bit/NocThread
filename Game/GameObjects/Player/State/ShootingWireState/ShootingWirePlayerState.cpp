@@ -15,7 +15,8 @@
 #include "Game/GameObjects/Player/State/WireActionPlayerState/WireActionPlayerState.h"
 #include "Game/Common/CommonResources/CommonResources.h"
 #include "Library/ImaseLib/DebugFont.h"
-#include "Game/Common/Input/PlayerInput/PlayerInput.h"
+#include "Game/Common/Input/InputSystem/InputSystem.h"
+#include "Game/Common/Input/InputActionType/InputActionType.h"
 
 
 using namespace DirectX;
@@ -65,17 +66,15 @@ void ShootingWirePlayerState::OnStartState()
  */
 void ShootingWirePlayerState::OnUpdate(float deltaTime)
 {
-	// マウストラック
-	auto mouseTrack = GetOwner()->GetCommonResources()->GetMouseTracker();
 
 	// マウスを離したら強制終了する
-	if (GetOwner()->GetPlayerInput()->IsInput(PlayerInput::ActionID::RELEASE_WIRE, PlayerInput::InputOption::RELEASED))
+	if (GetOwner()->GetPlayerInput()->IsInput(InputActionType::PlyayerActionID::RELEASE_WIRE, InputSystem<InputActionType::PlyayerActionID>::InputOption::RELEASED))
 	{
 		GetOwner()->RequestChangeState(Player::State::IDLE);
 	}
 
 	// ふわっとする処理をする
-	GetOwner()->AddForceToVelocityY(50.0f * deltaTime);
+	GetOwner()->AddForceToVelocityY(FLY_UPP_ACCELERATION * deltaTime);
 	GetOwner()->ApplyGravity(deltaTime);
 
 	GetOwner()->Move(deltaTime);

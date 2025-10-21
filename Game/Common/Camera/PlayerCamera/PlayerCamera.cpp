@@ -86,15 +86,29 @@ void PlayerCamera::Initialize(CommonResources* pCommonResources, CollisionManage
  */
 void PlayerCamera::Update(float deltaTime)
 {
+	int mouseX = 0;
+	int mouseY = 0;
 
 	// マウス状態を取得
-	auto state = m_pMouseTracker->GetLastState();
+	auto gamepad = GetCommonResources()->GetGamePadTracker()->GetLastState();
+	if (gamepad.IsConnected())
+	{
+		mouseX = gamepad.thumbSticks.rightX * 15.0f;
+		mouseY = -gamepad.thumbSticks.rightY * 10.0f;
+	}
+	else
+	{
+		auto state = m_pMouseTracker->GetLastState();
 
-	// 相対モードでばない（カメラFPS視点など）場合は処理をスキップ
-	if (state.positionMode != Mouse::MODE_RELATIVE) return;
+		// 相対モードでばない（カメラFPS視点など）場合は処理をスキップ
+		if (state.positionMode != Mouse::MODE_RELATIVE) return;
 
-	int mouseX = state.x;
-	int mouseY = state.y;
+		mouseX = state.x;
+		mouseY = state.y;
+	}
+	
+
+
 
 	// 回転の更新
 	UpdateRotation(mouseX, mouseY);

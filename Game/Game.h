@@ -40,9 +40,12 @@ private:
     std::unique_ptr<CommonResources> m_commonResources;     ///< 共通リソース
     std::unique_ptr<MyLib::SceneManager<CommonResources>>       m_sceneManager;     ///< シーン管理
     std::unique_ptr<ResourceManager>    m_resourceManager;  ///< リソース管理
-    std::unique_ptr<DirectX::Keyboard::KeyboardStateTracker>    m_keyboardStateTracker; ///< キーボードトラッカー
-    std::unique_ptr<DirectX::Mouse::ButtonStateTracker>         m_mouseStateTracker;   ///< マウストラッカー
     std::unique_ptr<DirectX::AudioEngine>                       m_audioEngine;          ///< オーディオエンジン
+
+    // 入力デバイス
+    std::unique_ptr<DirectX::Mouse::ButtonStateTracker>         m_mouseStateTracker;    ///< マウストラッカー
+    std::unique_ptr<DirectX::Keyboard::KeyboardStateTracker>    m_keyboardStateTracker; ///< キーボードトラッカー
+    std::unique_ptr<DirectX::GamePad::ButtonStateTracker>       m_gamePadStateTracker;  ///< ゲームパッドトラッカー
 
 public:
 

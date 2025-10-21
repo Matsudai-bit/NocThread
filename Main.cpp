@@ -77,9 +77,10 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
     // キーボードの作成
     std::unique_ptr<Keyboard> keyboard = std::make_unique<Keyboard>();
-
     // マウスの作成
-    std::unique_ptr<Mouse> mouse = std::make_unique<Mouse>();
+    std::unique_ptr<Mouse> mouse        = std::make_unique<Mouse>();
+    // ゲームパッドの作成
+    std::unique_ptr<GamePad> gamepad    = std::make_unique<GamePad>();
 
     g_game = std::make_unique<Game>();
 
