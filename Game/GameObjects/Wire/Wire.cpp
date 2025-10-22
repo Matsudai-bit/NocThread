@@ -132,9 +132,12 @@ void Wire::Update(float deltaTime)
 
 	if (m_isExtention)
 	{
+		SimpleMath::Vector3 direction = m_wireTargetPosition - m_extentionRay.origin;
+		direction.Normalize();
+		SimpleMath::Vector3 wireVelocity = m_wireSpeed * direction;
 
 		auto particle = m_ropeObject->GetParticles()->back();
-		SimpleMath::Vector3 pos = particle->GetPosition() + m_wireVelocity * deltaTime;
+		SimpleMath::Vector3 pos = particle->GetPosition() + wireVelocity * deltaTime;
 
 		float lengthSqr = SimpleMath::Vector3::DistanceSquared(m_owner.pGameObject->GetPosition(), pos);
 
@@ -234,6 +237,8 @@ void Wire::Reset()
 	m_particleObjects.clear();
 
 	m_isExtention = false;
+
+	m_isActive = false;
 }
 
 /**
@@ -278,6 +283,38 @@ void Wire::ShootWire(const DirectX::SimpleMath::Vector3& origin, const DirectX::
 	m_ropeObject->AddParticle(m_particleObjects.back().get());
 
 
+}
+
+void Wire::ShootWireToTarget(const DirectX::SimpleMath::Vector3& origin, const DirectX::SimpleMath::Vector3& targetPosition, const float& speed)
+{
+	using namespace SimpleMath;
+
+	Reset();
+
+	m_extentionRay.origin = origin;
+	Vector3 direction = targetPosition - origin;
+	direction.Normalize();
+	m_extentionRay.direction = direction;
+	m_extentionRay.direction.Normalize();
+
+	m_wireTargetPosition = targetPosition;
+	m_wireSpeed = speed;
+
+	m_isActive = true;
+	m_isExtention = true;
+	m_wireVelocity = direction;
+
+	m_collider->Set(origin, origin, true);
+
+	m_pCollisionManager->AddCollisionObjectData(this, m_collider.get());
+
+	m_particleObjects.emplace_back(std::make_unique<ParticleObject>());
+	m_particleObjects.back()->SetPosition(origin);
+	m_ropeObject->AddParticle(m_particleObjects.back().get());
+
+	m_particleObjects.emplace_back(std::make_unique<ParticleObject>());
+	m_particleObjects.back()->SetPosition(origin);
+	m_ropeObject->AddParticle(m_particleObjects.back().get());
 }
 
 /**
@@ -486,5 +523,15 @@ ParticleObject* Wire::GetBackPivot() const
 ParticleObject* Wire::GetFrontPivot() const
 {
 	return m_ropeObject->GetParticles()->front();
+}
+
+/**
+ * @brief å¥ì_ç¿ïWÇÃê›íË
+ * 
+ * @param[in] origin
+ */
+void Wire::SetOriginPosition(const DirectX::SimpleMath::Vector3& origin)
+{
+	m_extentionRay.origin = origin;
 }
 

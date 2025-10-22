@@ -78,6 +78,9 @@ private:
 	XPBDSimulator::Parameter m_simulationParam;
 
 	DirectX::SimpleMath::Vector3 m_wireVelocity;
+	DirectX::SimpleMath::Vector3 m_wireTargetPosition; ///< ワイヤーの目標地点
+	float m_wireSpeed; ///< ワイヤーの速さ
+
 	bool m_isActive;
 
 	OwnerData m_owner;
@@ -102,7 +105,7 @@ public:
 		CommonResources*	pCommonResources,
 		CollisionManager*	pCollisionManager,
 		const XPBDSimulator::Parameter& simulationParam,
-		const float& length,
+		const float&		length,
 		const GameObject*	pOwnerGameObject,
 		const MovableObject* pMovableObject,
 		IWireHolder*		pHolderInterface,
@@ -125,6 +128,7 @@ public:
 
 	// ワイヤーの発射
 	void ShootWire(const DirectX::SimpleMath::Vector3&  origin, const DirectX::SimpleMath::Vector3& wireVelocity);
+	void ShootWireToTarget(const DirectX::SimpleMath::Vector3&  origin, const DirectX::SimpleMath::Vector3& targetPosition, const float& speed);
 
 	// ワイヤーの作成
 	bool CreateRope(const DirectX::SimpleMath::Vector3& origin, const DirectX::SimpleMath::Vector3& direction, const  int& particleNum, const float& length, const XPBDSimulator::Parameter& param);
@@ -152,6 +156,9 @@ public:
 	// 主軸のパーティクルの取得
 	ParticleObject* GetBackPivot() const;
 	ParticleObject* GetFrontPivot() const;
+
+	// ワイヤーの原点座標の設定
+	void SetOriginPosition(const DirectX::SimpleMath::Vector3& origin);
 	
 
 // 内部実装

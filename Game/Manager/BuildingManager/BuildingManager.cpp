@@ -35,7 +35,7 @@ struct BuildingSaveData // 名前をSaveDataから変更して衝突を避ける
 // 2. JSON 自動変換関数の定義 (構造体の外、グローバルスコープ)
 // -------------------------------------------------------------------
 
-// Vector3Data の変換
+// Vector3Data の変換 ---------------------------------------
 void to_json(json& j, const Vector3Data& p)
 {
 	j = json{ {"x", p.x}, {"y", p.y}, {"z", p.z} };
@@ -48,7 +48,7 @@ void from_json(const json& j, Vector3Data& p)
 	j.at("z").get_to(p.z);
 }
 
-// BuildingSaveData の変換
+// BuildingSaveData の変換 ---------------------------------------
 void to_json(json& j, const BuildingSaveData& s)
 {
 	j = json{

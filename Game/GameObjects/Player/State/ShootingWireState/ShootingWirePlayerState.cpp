@@ -18,6 +18,7 @@
 #include "Game/Common/Input/InputSystem/InputSystem.h"
 #include "Game/Common/Input/InputActionType/InputActionType.h"
 
+#include "Game/GameObjects/Wire/Wire.h"
 
 using namespace DirectX;
 
@@ -56,7 +57,7 @@ void ShootingWirePlayerState::OnStartState()
 	GetOwner()->SetWireCollisionFunction([this](const GameObject* pHitObject) { OnCollisionWire(pHitObject); });
 
 	// Y軸の速度をなくす
-	GetOwner()->ResetVelocityY();
+	//GetOwner()->ResetVelocityY();
 }
 
 /**
@@ -68,16 +69,21 @@ void ShootingWirePlayerState::OnUpdate(float deltaTime)
 {
 
 	// マウスを離したら強制終了する
-	if (GetOwner()->GetPlayerInput()->IsInput(InputActionType::PlyayerActionID::RELEASE_WIRE, InputSystem<InputActionType::PlyayerActionID>::InputOption::RELEASED))
+	if (!GetOwner()->GetWire()->IsActive() ||
+		GetOwner()->GetPlayerInput()->IsInput(InputActionType::PlyayerActionID::RELEASE_WIRE, InputSystem<InputActionType::PlyayerActionID>::InputOption::RELEASED))
 	{
 		GetOwner()->RequestChangeState(Player::State::IDLE);
 	}
+
 
 	// ふわっとする処理をする
 	GetOwner()->AddForceToVelocityY(FLY_UPP_ACCELERATION * deltaTime);
 	GetOwner()->ApplyGravity(deltaTime);
 
 	GetOwner()->Move(deltaTime);
+
+	// ワイヤーの原点の設定
+	GetOwner()->GetWire()->SetOriginPosition(GetOwner()->GetPosition());
 
 }
 

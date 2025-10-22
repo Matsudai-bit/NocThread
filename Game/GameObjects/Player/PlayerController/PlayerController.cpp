@@ -114,15 +114,16 @@ void PlayerController::Update(float deltaTime, const Keyboard::KeyboardStateTrac
 		// 移動方向の設定
 		m_pPlayer->RequestedMovement(worldMovementDir);
 	}
-
+	bool isJumpSuccess = false;
 	// ジャンプ
-	if (m_playerInput->IsInput(InputActionType::PlyayerActionID::JUMPING))
+	if (m_playerInput->IsInput(InputActionType::PlyayerActionID::JUMPING, InputSystem<InputActionType::PlyayerActionID>::InputOption::PRESSED))
 	{
-		m_pPlayer->RequestJump();
+		isJumpSuccess = m_pPlayer->RequestJump();
 	}
 
 	// ステップ
-	if (m_playerInput->IsInput(InputActionType::PlyayerActionID::STEPPING))
+	if (m_playerInput->IsInput(InputActionType::PlyayerActionID::STEPPING, InputSystem<InputActionType::PlyayerActionID>::InputOption::PRESSED)
+		&& !isJumpSuccess)
 	{
 		m_pPlayer->RequestStep();
 	}

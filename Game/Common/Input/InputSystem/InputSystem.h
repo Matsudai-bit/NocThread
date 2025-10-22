@@ -36,9 +36,10 @@ public:
 */
 	enum class InputOption
 	{
-		DOWN,
-		PRESSED,
-		RELEASED
+		DOWN,		// ‰Ÿ‚µ‚Ä‚¢‚é
+		PRESSED,	// ‰Ÿ‚µ‚½uŠÔ
+		RELEASED,	// —£‚µ‚½uŠÔ
+		UP			// ‰Ÿ‚µ‚Ä‚¢‚È‚¢
 	};
 // —ñ‹“Œ^ -------------------------------------------------
 public:
@@ -275,10 +276,19 @@ public:
 				case InputSystem::InputOption::RELEASED:
 					result = m_pKeyboardStateTracker->IsKeyReleased(key);
 					break;
+					// ‰Ÿ‚µ‚Ä‚¢‚È‚¢
+				case InputOption::UP:
+					result = m_pKeyboardStateTracker->GetLastState().IsKeyUp(key);
+					break;
 				default:
 					break;
 				}
 			}
+		}
+		// ‚à‚µ‰Ÿ‚µ‚Ä‚¢‚È‚¢ó‘Ô‚ğŒ©‚Ä‚¢‚ê‚Î
+		else if (InputOption::UP == inputOption)
+		{
+			result = true;
 		}
 
 		return result;
@@ -304,6 +314,10 @@ public:
 				// —£‚³‚ê‚½
 			case InputOption::RELEASED:
 				if (buttonState == Mouse::ButtonStateTracker::ButtonState::RELEASED) { return true; }
+				break;
+				// ‰Ÿ‚µ‚Ä‚¢‚È‚¢
+			case InputOption::UP:
+				if (buttonState == Mouse::ButtonStateTracker::ButtonState::UP) { return true; }
 				break;
 			default:
 				break;
@@ -361,6 +375,10 @@ public:
 				// —£‚³‚ê‚½
 			case InputOption::RELEASED:
 				if (buttonState == GamePad::ButtonStateTracker::ButtonState::RELEASED) { return true; }
+				break;
+				// ‰Ÿ‚µ‚Ä‚¢‚È‚¢
+			case InputOption::UP:
+				if (buttonState == GamePad::ButtonStateTracker::ButtonState::UP) { return true; }
 				break;
 			default:
 				break;

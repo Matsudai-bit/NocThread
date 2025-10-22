@@ -203,11 +203,11 @@ public:
 // 動作要求関連
 public:
 	// 移動要求
-	void RequestedMovement(DirectX::SimpleMath::Vector3 moveDirection);
+	bool RequestedMovement(DirectX::SimpleMath::Vector3 moveDirection);
 	// ジャンプに要求
-	void RequestJump();
+	bool RequestJump();
 	// ステップ要求
-	void RequestStep();
+	bool RequestStep();
 
 // 動作処理関連
 public:

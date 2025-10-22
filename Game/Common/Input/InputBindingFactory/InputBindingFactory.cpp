@@ -45,7 +45,7 @@ std::unique_ptr<InputSystem<InputActionType::PlyayerActionID>> InputBindingFacto
 	// *** 入力の登録 ****
 	// ステップ
 	playerInput->RegisterMouseInput(ActionID::STEPPING, InputSystem<ActionID>::MouseButtons::RIGHT_BUTTON);
-	playerInput->RegisterGamePadInput(ActionID::STEPPING, InputSystem<ActionID>::GamePadButtons::B);
+	playerInput->RegisterGamePadInput(ActionID::STEPPING, InputSystem<ActionID>::GamePadButtons::A);
 
 	// ワイヤー発射
 	playerInput->RegisterMouseInput(ActionID::WIRE_SHOOTING,InputSystem<ActionID>::MouseButtons::LEFT_BUTTON);

@@ -142,7 +142,9 @@ void Player::Initialize(CommonResources* pCommonResources, CollisionManager* pCo
 	param.gravity = Vector3(0.0f, -9.8f / GRAVITY_DIVISOR, 0.0f);
 	param.iterations = WIRE_SIMULATION_ITERATIONS;
 
-	m_wire->Initialize(pCommonResources, pCollisionManager, param, WIRE_LENGTH, this, this, this, m_wireSystemSubject.get());
+	// ワイヤーの初期化処理　
+	// ワイヤーの長さは余裕をもつため1.5倍までとする
+	m_wire->Initialize(pCommonResources, pCollisionManager, param, WIRE_LENGTH  * 1.5f, this, this, this, m_wireSystemSubject.get());
 
 
 	// デフォルト回転の初期化
@@ -507,7 +509,7 @@ void Player::OnGameFlowEvent(GameFlowEventID eventID)
  * 
  * @param[in] moveDirection
  */
-void Player::RequestedMovement(DirectX::SimpleMath::Vector3 moveDirection)
+bool Player::RequestedMovement(DirectX::SimpleMath::Vector3 moveDirection)
 {
 
 	// 正規化
@@ -516,6 +518,7 @@ void Player::RequestedMovement(DirectX::SimpleMath::Vector3 moveDirection)
 	}
 
 	m_requestedMove = moveDirection;
+	return true;
 }
 
 /**
@@ -801,7 +804,8 @@ void Player::ShootWire()
 	Vector3 wireLaunchDirection = m_wireTargetFinder->GetTargetPosition() - GetPosition();
 	wireLaunchDirection.Normalize();
 
-	m_wire->ShootWire(GetPosition(), wireLaunchDirection * SHOOT_WIRE_INITIAL_SPEED);
+	//m_wire->ShootWire(GetPosition(), wireLaunchDirection * SHOOT_WIRE_INITIAL_SPEED);
+	m_wire->ShootWireToTarget(GetPosition(), m_wireTargetFinder->GetTargetPosition(), SHOOT_WIRE_INITIAL_SPEED);
 
 }
 
@@ -844,30 +848,34 @@ void Player::Jump(float deltaTime)
  * 
  * @return 成功かどうか
  */
-void Player::RequestJump()
+bool Player::RequestJump()
 {
-	if (!m_isGround) { return; }
+	if (!m_isGround) { return false; }
 
 	if (m_state == State::WIRE_ACTION ||
 		m_state == State::WIRE_GRABBING ||
 		m_state == State::WIRE_THROWING ||
 		m_state == State::JUMPING)
-	{ return; }
+	{ return false; }
 
 	RequestChangeState(State::JUMPING);
+	return true;
 
 }
 
 /**
  * @brief ステップ要求
  */
-void Player::RequestStep()
+bool Player::RequestStep()
 {
-	if (m_canStep)
+	if (m_canStep && !m_isGround )
 	{
 		RequestChangeState(State::STTEPPING);
 		m_canStep = false;
+		return true;
 	}
+
+	return false;
 }
 
 /**
