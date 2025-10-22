@@ -481,7 +481,7 @@ void GameplayScene::CreateStage()
     m_treasure->Initialize(GetCommonResources(), m_collisionManager.get());
 
     m_buildingManager = std::make_unique<BuildingManager>();
-    m_buildingManager->Initialize();
+    m_buildingManager->Initialize(GetCommonResources());
     m_buildingManager->RequestCreate(m_collisionManager.get(), GetCommonResources());
    // m_buildingManager->Save();
     // ****** ここまで ******************************************************

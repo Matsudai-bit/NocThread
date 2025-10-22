@@ -53,7 +53,7 @@ void main(
 	    //	上記の結果に、ビュー行列を掛け算する
         element.Pos = mul(element.Pos, matView);
 	    //	上記の結果に、プロジェクション行列を掛け算する
-        element.Pos = mul(element.Pos, matProj);
+      //  element.Pos = mul(element.Pos, matProj);
 
         element.Color = input[0].Color;
         

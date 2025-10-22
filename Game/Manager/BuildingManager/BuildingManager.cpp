@@ -8,11 +8,35 @@
 
 // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
+#include <iostream>
 #include <fstream>
 #include "BuildingManager.h"
-#include <iostream>
+
+#include "Game/Common/DeviceResources.h"
+#include "Game/Common/CommonResources/CommonResources.h"
+#include "Library/DirectXFramework/ReadData.h"
+
+#include "Game/Common/GameEffect/GameEffectController.h"
+#include "Game/Common/GameEffect/Effects/SimpleParticle/SimpleParticle.h"
+#include "Game/Common/Camera/MainCamera/MainCamera.h"
 
 using json = nlohmann::json;
+
+
+ std::vector<D3D11_INPUT_ELEMENT_DESC> INPUT_LAYOUT = {
+	// slot0 共通
+		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT,    0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "COLOR",    0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT,       0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+
+		// slot1 インスタンス
+		{ "WORLD",    0, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_INSTANCE_DATA, 1 },
+		{ "WORLD",    1, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_INSTANCE_DATA, 1},
+		{ "WORLD",    2, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_INSTANCE_DATA, 1 },
+		{ "WORLD",    3, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_INSTANCE_DATA, 1 },
+
+			
+};
 
 // -------------------------------------------------------------------
 // 1. データ構造の定義 (BuildingManagerクラスの外へ移動)
@@ -92,10 +116,62 @@ BuildingManager::~BuildingManager()
  *
  * @return なし
  */
-void BuildingManager::Initialize()
+void BuildingManager::Initialize(const CommonResources* pCommonResources)
 {
-	m_buildings.clear();
+	m_pCommonResources = pCommonResources;
 
+	auto device = pCommonResources->GetDeviceResources()->GetD3DDevice();
+
+	m_buildings.clear();
+	GameEffectManager::EffectClip clip;
+	clip.isLoop = true;
+	GameEffectController::GetInstance()->PlayEffect(
+		std::make_unique<SimpleParticle>(
+			pCommonResources->GetDeviceResources(), DirectX::SimpleMath::Vector3::Zero, MainCamera::GetInstance()->GetCamera()), clip);
+
+	
+	// インスタンスバッファ生成
+	{
+		D3D11_BUFFER_DESC bd = {};
+		bd.Usage = D3D11_USAGE_DYNAMIC;
+		bd.ByteWidth = sizeof(InstanceBuffer) * MAX_INSTANCE;
+		bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+		bd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+		device->CreateBuffer(&bd, NULL, m_instanceBuffer.ReleaseAndGetAddressOf());
+	}
+
+	// 定数バッファの作成
+	D3D11_BUFFER_DESC bufferDesc = {};
+	ZeroMemory(&bufferDesc, sizeof(bufferDesc));
+	bufferDesc.ByteWidth = static_cast<UINT>(sizeof(ConstantBuffer));
+	bufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+	bufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	bufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+
+	DX::ThrowIfFailed(
+		device->CreateBuffer(&bufferDesc, nullptr, &m_constantBuffer)
+	);
+
+	// 頂点シェーダの作成
+	std::vector<uint8_t> vs = DX::ReadData(L"Resources/Shaders/InatancedRender_VS.cso");
+	
+	DX::ThrowIfFailed(
+		device->CreateVertexShader(vs.data(), vs.size(), nullptr, m_vs.ReleaseAndGetAddressOf())
+	);
+
+	// ピクセルシェーダの作成
+	std::vector<uint8_t> ps = DX::ReadData(L"Resources/Shaders/InatancedRender_PS.cso");
+
+	DX::ThrowIfFailed(
+		device->CreatePixelShader(ps.data(), ps.size(), nullptr, m_ps.ReleaseAndGetAddressOf())
+	);
+
+	// インプットレイアウトの作成
+	device->CreateInputLayout(
+		&INPUT_LAYOUT[0],
+		static_cast<UINT>(INPUT_LAYOUT.size()),
+		vs.data(), vs.size(),
+		m_inputLayout.ReleaseAndGetAddressOf());
 
 }
 
@@ -110,6 +186,9 @@ void BuildingManager::Initialize()
  */
 void BuildingManager::Update(float deltaTime)
 {
+
+
+
 	// 建物の更新処理
 	for (auto& building : m_buildings)
 	{
@@ -127,11 +206,127 @@ void BuildingManager::Update(float deltaTime)
  */
 void BuildingManager::Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& projection)
 {
-	// 建物の描画処理
-	for (auto& building : m_buildings)
-	{
-		building->Draw(view, projection);
-	}
+	using namespace DirectX;
+	auto context = m_pCommonResources->GetDeviceResources()->GetD3DDeviceContext();
+
+	auto model = m_pCommonResources->GetResourceManager()->CreateModel("building_01.sdkmesh");
+
+	auto vertexBuffer = model.meshes.back()->meshParts.back()->vertexBuffer;
+	auto vertexStride = model.meshes.back()->meshParts.back()->vertexStride;
+	auto indexCount = model.meshes.back()->meshParts.back()->indexCount;
+	auto indexBuffer = model.meshes.back()->meshParts.back()->indexBuffer;
+	
+
+	D3D11_MAPPED_SUBRESOURCE msr;
+
+	// インスタンスデータの作成
+	// バッファに入れていく
+	context->Map(m_instanceBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
+
+	// データ場所設定・カウントリセット
+	m_pInstanceData = (InstanceBuffer*)msr.pData;
+	//int instanceCount = 1;
+
+	auto& instanceData = m_pInstanceData[0];
+
+	SimpleMath::Matrix world = SimpleMath::Matrix::CreateTranslation(SimpleMath::Vector3(5.0f, 0, 0));
+	instanceData.world = world.Transpose();
+
+	context->Unmap(m_instanceBuffer.Get(), 0);
+
+	D3D11_MAPPED_SUBRESOURCE msr2;
+
+	// 定数バッファにデータを設定する
+	context->Map(m_constantBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &msr2);
+
+	auto constantData = (ConstantBuffer*)msr2.pData;
+
+	constantData->viewProjMatrix = ((view) * (projection)).Transpose();
+
+	context->Unmap(m_constantBuffer.Get(), 0);
+
+	// 定数バッファをバインド
+
+	context->VSSetConstantBuffers(0, 1, m_constantBuffer.GetAddressOf());
+
+	// バッファを設定する
+	// 頂点バッファを描画パイプラインに設定
+	ID3D11Buffer* pBuf[2] = { vertexBuffer.Get(), m_instanceBuffer.Get() };
+	UINT stride[2] = { vertexStride, sizeof(SimpleMath::Matrix) };
+	UINT offset[2] = { 0, 0 };
+	context->IASetVertexBuffers(0, 2, pBuf, stride, offset);
+
+	// インデックスバッファの設定
+	context->IASetIndexBuffer(indexBuffer.Get(), DXGI_FORMAT_R32_UINT /* または R16_UINT */, 0);
+
+	// 頂点シェーダの設定
+	context->VSSetShader(m_vs.Get(), nullptr, 0);
+
+	// ピクセルシェーダの設定
+	context->PSSetShader(m_ps.Get(), nullptr, 0);
+
+	context->IASetInputLayout(m_inputLayout.Get());
+
+	context->OMSetDepthStencilState(m_pCommonResources->GetCommonStates()->DepthDefault(), 0);
+
+	//	カリングはなし
+	context->RSSetState(m_pCommonResources->GetCommonStates()->CullNone());
+	context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+
+
+	context->DrawIndexedInstanced(indexCount, 1, 0, 0, 0);
+
+	//	シェーダの登録を解除しておく
+	context->VSSetShader(nullptr, nullptr, 0);
+
+	
+	//// 建物の描画処理
+	//for (auto& building : m_buildings)
+	//{
+	//	building->Draw(view, projection);
+	//}
+
+
+	//auto model = m_pCommonResources->GetResourceManager()->CreateModel("Helicopter.sdkmesh");
+
+	//auto vertexBuffer = model.meshes.back()->meshParts.back()->vertexBuffer;
+	//auto vertexStride = model.meshes.back()->meshParts.back()->vertexStride;
+	//auto indexCount = model.meshes.back()->meshParts.back()->indexCount;
+	//auto indexBuffer = model.meshes.back()->meshParts.back()->indexBuffer;
+
+
+	//// 定数バッファ更新
+	//D3D11_MAPPED_SUBRESOURCE msr2;
+	//context->Map(m_constantBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &msr2);
+	//auto constantData = (ConstantBuffer*)msr2.pData;
+	//constantData->viewProjMatrix = (view * projection).Transpose();
+	//context->Unmap(m_constantBuffer.Get(), 0);
+
+	//context->VSSetConstantBuffers(0, 1, m_constantBuffer.GetAddressOf());
+
+	//// InputLayout / Shader
+	//context->IASetInputLayout(m_inputLayout.Get());
+	//context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	//context->VSSetShader(m_vs.Get(), nullptr, 0);
+	//context->PSSetShader(m_ps.Get(), nullptr, 0);
+
+	//context->RSSetState(m_pCommonResources->GetCommonStates()->CullNone());
+	//context->OMSetDepthStencilState(m_pCommonResources->GetCommonStates()->DepthDefault(), 0);
+
+
+	//// 頂点・インスタンスバッファ設定
+	//ID3D11Buffer* vertexBuffers[2] = { vertexBuffer.Get(), m_instanceBuffer.Get() };
+	//UINT strides[2] = { vertexStride, sizeof(InstanceBuffer) };
+	//UINT offsets[2] = { 0, 0 };
+	//context->IASetVertexBuffers(0, 2, vertexBuffers, strides, offsets);
+
+	//// インデックスバッファ
+	//context->IASetIndexBuffer(indexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
+
+	//// 描画
+	//int instanceCount = 1;
+	//context->DrawIndexedInstanced(indexCount, instanceCount, 0, 0, 0);
+
 }
 
 

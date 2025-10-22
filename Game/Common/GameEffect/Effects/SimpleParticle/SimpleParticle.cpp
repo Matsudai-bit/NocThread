@@ -201,7 +201,7 @@ void SimpleParticle::Draw(const DirectX::SimpleMath::Matrix& view, const DirectX
 	ConstantBuffer cb = {};
 	cb.matWorldTranspose = world.Transpose();
 	cb.matProj = proj.Transpose();
-	cb.matView = view.Transpose();
+	cb.matView = (view* proj).Transpose();
 	cb.objectTarget = m_pCamera->GetEye();
 	cb.scale = 0.5f;
 

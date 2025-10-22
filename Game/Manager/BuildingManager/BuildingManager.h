@@ -17,6 +17,7 @@
 #include <vector>
 
 #include "Game/GameObjects/Prop/Building/Building.h"
+#include "Game/Common/ResourceManager/ResourceManager.h"
 
 // クラスの前方宣言 ===================================================
 class CollisionManager;
@@ -30,8 +31,21 @@ class BuildingManager
 {
 // クラス定数の宣言 -------------------------------------------------
 public:
+	static constexpr int MAX_INSTANCE = 1024;
 
+// 構造体
+private:
 
+	struct  InstanceBuffer
+	{
+		DirectX::SimpleMath::Matrix world;
+	};
+
+	// 定数バッファ
+	struct ConstantBuffer
+	{
+		DirectX::SimpleMath::Matrix viewProjMatrix;
+	};
 
 // データメンバの宣言 -----------------------------------------------
 private:
@@ -39,6 +53,21 @@ private:
 	std::vector<std::unique_ptr<Building>> m_buildings; ///< 建物
 
 	nlohmann::json m_stageJson;
+
+
+	const CommonResources* m_pCommonResources;
+
+	// インスタンシング描画用
+	Microsoft::WRL::ComPtr<ID3D11Buffer> m_vertexBuffer;		///< インスタンシング用バッファ
+	Microsoft::WRL::ComPtr<ID3D11Buffer> m_instanceBuffer;		///< インスタンシング用バッファ
+	Microsoft::WRL::ComPtr<ID3D11Buffer> m_constantBuffer;		///< 定数バッファ
+	InstanceBuffer*  m_pInstanceData;		///< インスタンシング用バッファ
+
+	// 頂点シェーダ
+	Microsoft::WRL::ComPtr <ID3D11VertexShader> m_vs;
+	Microsoft::WRL::ComPtr <ID3D11PixelShader> m_ps;
+	 
+	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_inputLayout;	///< インプットレイアウト
 
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
@@ -53,7 +82,7 @@ public:
 // 操作
 public:
 	// 初期化処理
-	void Initialize();
+	void Initialize(const CommonResources* pCommonResources);
 
 	// 更新処理
 	void Update(float deltaTime);

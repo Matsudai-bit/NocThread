@@ -380,6 +380,9 @@
     <Filter Include="Game\GameObjects\Player\State\ShootingWire">
       <UniqueIdentifier>{ad123bb5-e8eb-4e96-ae11-9f3244d7e934}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resources\Shaders\InatancedRender">
+      <UniqueIdentifier>{51479def-758c-4687-abf5-9e8414c53c67}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -755,13 +758,15 @@
       <Filter>Game\Common\EntityManager</Filter>
     </ClInclude>
     <ClInclude Include="Game\Manager\BuildingManager\BuildingManager.h" />
-    <ClInclude Include="Game\Common\Input\PlayerInput\PlayerInput.h" />
     <ClInclude Include="Game\Manager\PlayerManager\PlayerManager.h">
       <Filter>Game\GameObjects\Player\PlayerManager</Filter>
     </ClInclude>
     <ClInclude Include="Game\GameObjects\Player\State\ShootingWireState\ShootingWirePlayerState.h">
       <Filter>Game\GameObjects\Player\State\ShootingWire</Filter>
     </ClInclude>
+    <ClInclude Include="Game\Common\Input\InputActionType\InputActionType.h" />
+    <ClInclude Include="Game\Common\Input\InputBindingFactory\InputBindingFactory.h" />
+    <ClInclude Include="Game\Common\Input\InputSystem\InputSystem.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -1080,13 +1085,15 @@
       <Filter>Game\Common\EntityManager</Filter>
     </ClCompile>
     <ClCompile Include="Game\Manager\BuildingManager\BuildingManager.cpp" />
-    <ClCompile Include="Game\Common\Input\PlayerInput\PlayerInput.cpp" />
     <ClCompile Include="Game\Manager\PlayerManager\PlayerManager.cpp">
       <Filter>Game\GameObjects\Player\PlayerManager</Filter>
     </ClCompile>
     <ClCompile Include="Game\GameObjects\Player\State\ShootingWireState\ShootingWirePlayerState.cpp">
       <Filter>Game\GameObjects\Player\State\ShootingWire</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Common\Input\InputActionType\InputActionType.cpp" />
+    <ClCompile Include="Game\Common\Input\InputBindingFactory\InputBindingFactory.cpp" />
+    <ClCompile Include="Game\Common\Input\InputSystem\InputSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />
@@ -1128,6 +1135,12 @@
     </FxCompile>
     <FxCompile Include="Shaders\SimpleParticle\SimpleParticle_VS.hlsl">
       <Filter>Resources\Shaders\SimpleParticle</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\InatancedRender\InatancedRender_VS.hlsl">
+      <Filter>Resources\Shaders\InatancedRender</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\InatancedRender\InatancedRender_PS.hlsl">
+      <Filter>Resources\Shaders\InatancedRender</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>
