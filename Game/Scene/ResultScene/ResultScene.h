@@ -18,6 +18,9 @@
 #include "Game/Manager/SceneManager/SceneManager.h"
 #include "Game/Common/StateMachine/StateMachine.h"
 
+#include "Game/Common/Input/InputSystem/InputSystem.h"
+#include "Game/Common/Input/InputActionType/InputActionType.h"
+
 // クラスの宣言 ===============================================================
 class CommonResources;  // 共通リソース
 class Canvas;			// キャンバス
@@ -49,6 +52,8 @@ private:
 
 	// ステートマシーン
 	std::unique_ptr<StateMachine<ResultScene>> m_stateMachine; ///< ステートマシーン
+
+	std::unique_ptr<InputSystem<InputActionType::UIActionID>> m_inputSystem; ///< 入力システム
 
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ

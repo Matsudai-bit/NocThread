@@ -43,6 +43,7 @@
 
 // ゲームオブジェクト
 #include "Game/GameObjects/Wire/Wire.h"
+#include "Game/Common/GameObjectRegistry/GameObjectRegistry.h"
 
 // 外部ライブラリ・ツール
 #include "Library/ImaseLib/DebugDraw.h"
@@ -223,6 +224,8 @@ void Player::Update(float deltaTime, const DirectX::SimpleMath::Matrix& proj)
 	// ワイヤー照準検出器の設定
 	m_wireTargetFinder->SetSearchParameters(GetWireShootingRay().direction, WIRE_LENGTH, 0.5f);
 	m_wireTargetFinder->Update();
+	
+	
 }
 
 
@@ -298,6 +301,12 @@ void Player::Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::Simple
 	/*m_primitiveBatch->Begin();
 	DX::DrawRay(m_primitiveBatch.get(), GetPosition(), forward, false, Colors::Red);
 	m_primitiveBatch->End();*/
+
+	// 目標方向の描画
+	SimpleMath::Vector3 targetDirection = m_targetPosition - GetPosition();
+	m_primitiveBatch->Begin();
+	DX::DrawRay(m_primitiveBatch.get(), GetPosition(), targetDirection, false, m_targetGuideColor);
+	m_primitiveBatch->End();
 
 
 	//GetCommonResources()->GetDebugFont()->AddString(100, 90, Colors::White, L"position : %f, %f, %f ", GetPosition().x, GetPosition().y, GetPosition().z);
@@ -501,7 +510,25 @@ void Player::OnWireGrabbed(GameObject* pGrabGameObject)
  */
 void Player::OnGameFlowEvent(GameFlowEventID eventID)
 {
-	UNREFERENCED_PARAMETER(eventID);
+	switch (eventID)
+	{
+	case GameFlowEventID::GAME_START:
+		// 対象座標の取得
+		m_targetPosition = GameObjectRegistry::GetInstance()->GetGameObject(GameObjectTag::TREASURE)->GetPosition();
+		m_targetGuideColor = Colors::LightGreen;
+		break;
+		case GameFlowEventID::SPAWN_HELICOPTER:
+		// 対象座標の更新
+		m_targetPosition = GameObjectRegistry::GetInstance()->GetGameObject(GameObjectTag::ESCAPE_HELICOPTER)->GetPosition();
+		m_targetGuideColor = Colors::Purple;
+		break;
+	case GameFlowEventID::PLAYER_DIE:
+		break;
+	case GameFlowEventID::ESCAPE_SUCCESS:
+		break;
+	default:
+		break;
+	}
 }
 
 /**

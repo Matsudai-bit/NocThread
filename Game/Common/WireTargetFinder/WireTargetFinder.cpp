@@ -264,7 +264,7 @@ std::vector<DirectX::SimpleMath::Vector3> WireTargetFinder::GetSearchDirections(
 	Vector3 cameraDirection = m_pCamera->GetTarget() - m_pCamera->GetEye();
 	cameraDirection.Normalize();
 	// 検索の中心線
-	Vector3 centerDirection = m_pPlayer->GetForward();
+	Vector3 centerDirection = cameraDirection;
 	centerDirection.y = 0.0f;
 
 	// XとYのオフセットを計算する行列 (回転はcenterDirection基準)

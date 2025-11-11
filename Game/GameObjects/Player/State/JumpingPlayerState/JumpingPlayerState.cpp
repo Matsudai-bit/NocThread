@@ -58,9 +58,6 @@ void JumpingPlayerState::OnStartState()
  */
 void JumpingPlayerState::OnUpdate(float deltaTime)
 {
-	// マウストラック
-	auto mouseTrack = GetOwner()->GetCommonResources()->GetMouseTracker();
-
 	if (m_isJumping == false)
 	{
 		// ジャンプ

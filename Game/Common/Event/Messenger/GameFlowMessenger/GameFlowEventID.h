@@ -14,7 +14,10 @@
  */
 enum class GameFlowEventID
 {
+	GAME_START,		// ゲーム開始
+
 	STOLE_TREASURE, // 宝物を盗んだ
+	SPAWN_HELICOPTER,// ヘリコプターの出現
 	PLAYER_DIE,		// プレイヤーの志望
 	
 	ESCAPE_SUCCESS, // 脱出成功

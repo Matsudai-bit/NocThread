@@ -132,15 +132,21 @@ void Wire::Update(float deltaTime)
 
 	if (m_isExtention)
 	{
+		// 方向を求める
 		SimpleMath::Vector3 direction = m_wireTargetPosition - m_extentionRay.origin;
 		direction.Normalize();
+
+		// 方向に速さの加えて速度を決める
 		SimpleMath::Vector3 wireVelocity = m_wireSpeed * direction;
 
+		// 最後尾（飛んでいる）のパーティクルを取得する
 		auto particle = m_ropeObject->GetParticles()->back();
+		// パーティクルの座標を更新する
 		SimpleMath::Vector3 pos = particle->GetPosition() + wireVelocity * deltaTime;
 
-		float lengthSqr = SimpleMath::Vector3::DistanceSquared(m_owner.pGameObject->GetPosition(), pos);
 
+		// 距離が指定された以上になった場合終了する
+		float lengthSqr = SimpleMath::Vector3::DistanceSquared(m_owner.pGameObject->GetPosition(), pos);
 		if (lengthSqr >= m_length * m_length)
 		{
 			Reset();
@@ -169,9 +175,9 @@ void Wire::Update(float deltaTime)
  */
 void Wire::Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj)
 {
+	if (m_isActive == false) { return; }
 	auto states = GetCommonResources()->GetCommonStates();
 	auto context = GetCommonResources()->GetDeviceResources()->GetD3DDeviceContext();
-
 
 	m_ropeObject->Draw(view, proj);
 

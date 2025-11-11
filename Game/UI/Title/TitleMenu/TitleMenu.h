@@ -35,8 +35,29 @@ class TitleMenu
 {
 // クラス定数の宣言 -------------------------------------------------
 public:
-	static constexpr float MAX_SELECTOR_LENGTH = 400.0f;
-	static constexpr float EASING_TIME = 1.0f;
+	// --- ファイルパス関連 ---
+	static constexpr const char* TEXTURE_PATH_PLAY		= "Title/title_font_play.dds";		///< 「PLAY」フォントテクスチャのファイルパス
+	static constexpr const char* TEXTURE_PATH_TUTORIAL	= "Title/title_font_tutorial.dds";	///< 「TUTORIAL」フォントテクスチャのファイルパス
+	static constexpr const char* TEXTURE_PATH_SETTING	= "Title/title_font_setting.dds";	///< 「SETTING」フォントテクスチャのファイルパス
+	static constexpr const char* TEXTURE_PATH_QUIT		= "Title/title_font_quit.dds";		///< 「QUIT」フォントテクスチャのファイルパス
+
+	// --- スプライトスケール関連 ---
+	static constexpr float FONT_SPRITE_SCALE = 0.35f;	///< メニューフォントの基本スケール
+
+	// --- 座標・余白関連 ---
+	static constexpr float MENU_MARGIN_X		= 280.0f;	///< メニュー全体の左端からのX座標オフセット
+	static constexpr float MENU_MARGIN_Y		= 20.0f;	///< メニューアイテム間のY方向マージン
+	static constexpr float FIXED_POS_Y_OFFSET	= 30.0f;	///< メニュー全体に適用されるY座標調整オフセット
+
+
+	// --- セレクターアニメーション・描画関連 ---
+	static constexpr float EASING_TIME			= 1.0f;		///< セレクターアニメーションのイージング時間 (秒)
+	static constexpr float MAX_SELECTOR_LENGTH	= 500.0f;	///< セレクターの最大長さの仮定義
+
+	static constexpr float SELECTOR_WIDTH_OFFSET		= 20.0f;	///< セレクターの長さに追加される幅オフセット
+	static constexpr float SELECTOR_MIN_LENGTH_RATIO	= 0.2f;		///< セレクターの最小長さの比率 (MAX_SELECTOR_LENGTHに対する割合)
+	static constexpr float SELECTOR_CURSOR_Y_OFFSET		= 30.0f;	///< セレクターのY座標調整オフセット
+	static constexpr float SELECTOR_LINE_THICKNESS		= 2.0f;		///< セレクターとして描画するラインの太さ
 
 // 列挙型の宣言　 -------------------------------------------------
 public:

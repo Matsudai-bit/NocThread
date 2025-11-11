@@ -59,9 +59,6 @@ void IdlePlayerState::OnStartState()
  */
 void IdlePlayerState::OnUpdate(float deltaTime)
 {
-	// マウストラック
-	auto mouseTrack = GetOwner()->GetCommonResources()->GetMouseTracker();
-
 	// 物理の適用
 	GetOwner()->ApplyPhysic(deltaTime);
 
@@ -71,10 +68,16 @@ void IdlePlayerState::OnUpdate(float deltaTime)
 		GetOwner()->RequestChangeState(Player::State::WALKING);
 	}
 
-	if (GetOwner()->GetPlayerInput()->IsInput(InputActionType::PlyayerActionID::WIRE_SHOOTING))
+	// プレイヤーの入力機構の取得
+	auto inputSystem = GetOwner()->GetPlayerInput();
+
+	// ワイヤー発射の入力がされたかどうか
+	if (inputSystem->IsInput(InputActionType::PlyayerActionID::WIRE_SHOOTING))
 	{
+		// ワイヤー発射が可能かどうか
 		if (!GetOwner()->IsGround() && GetOwner()->CanShootWire())
 		{
+			// ワイヤー発射状態にする
 			GetOwner()->RequestChangeState(Player::State::WIRE_SHOOTING);
 		}
 	}

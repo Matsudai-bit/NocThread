@@ -77,6 +77,7 @@ class GameplayScene
 {
 	// クラス定数の宣言 -------------------------------------------------
 public:
+	// 紐のパラメータ
 	static constexpr int	PARTICLE_NUM	= 50;
 	static constexpr float	ROPE_LENGTH		= 1.5f;
 
@@ -89,6 +90,27 @@ public:
 	static constexpr float	ROPE_FIXIBLILLITY = 0.000000006f; 
 
 
+	// --- カメラ設定関連 ---
+	static constexpr float CAMERA_FOV_DEGREES	= 45.0f;	///< 射影行列の視野角 (度)
+	static constexpr float CAMERA_NEAR_CLIP		= 0.1f;		///< 射影行列のニアクリップ距離
+	static constexpr float CAMERA_FAR_CLIP		= 450.0f;	///< 射影行列のファークリップ距離
+
+	// --- UI関連 (スコープ) ---
+	static constexpr const char* SCOPE_TEXTURE_PATH = "scope.dds"; ///< スコープスプライトのテクスチャファイルパス
+	static constexpr float SCOPE_Y_OFFSET			= 140.0f;		///< スコープスプライトのY軸調整オフセット
+	static constexpr float SCOPE_SCALE				= 0.09f;		///< スコープスプライトのスケール
+
+
+	// --- スカイボックス関連 ---
+	static constexpr float SKYSPHERE_SCALE = 300.0f;	///< 天球（スカイスフィア）のスケール値
+
+	// --- ステージ配置関連 (お宝候補地) ---
+	// お宝候補地1
+	static constexpr DirectX::SimpleMath::Vector3 TREASURE_POS_CANDIDATE_1 = { 20.0f, 42.0f, -70.0f };
+	// お宝候補地2
+	static constexpr DirectX::SimpleMath::Vector3 TREASURE_POS_CANDIDATE_2 = { -120.0f, 55.6f, -240.2f };
+	// お宝候補地3
+	static constexpr DirectX::SimpleMath::Vector3 TREASURE_POS_CANDIDATE_3 = { 190.0f, 50.6f, -70.2f };
 
 
 // データメンバの宣言 -----------------------------------------------
@@ -183,6 +205,8 @@ public:
 // 取得/設定
 public:
 
+	// キャンバスの取得
+	Canvas* GetCanvas() const;
 
 // 内部実装
 private:

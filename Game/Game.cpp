@@ -45,15 +45,15 @@ Game::Game() noexcept(false)
 
 Game::~Game()
 {
-    // 例：デバイスを取得している場合
-    ID3D11Debug* d3dDebug = nullptr;
-    HRESULT hr = m_deviceResources->GetD3DDevice()->QueryInterface(__uuidof(ID3D11Debug), (void**)&d3dDebug);
-    if (SUCCEEDED(hr) && d3dDebug)
-    {
-        // 以下のフラグを指定することで、より詳細な情報を出力できる
-        d3dDebug->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL | D3D11_RLDO_SUMMARY);
-        d3dDebug->Release();
-    }
+    //// 例：デバイスを取得している場合
+    //ID3D11Debug* d3dDebug = nullptr;
+    //HRESULT hr = m_deviceResources->GetD3DDevice()->QueryInterface(__uuidof(ID3D11Debug), (void**)&d3dDebug);
+    //if (SUCCEEDED(hr) && d3dDebug)
+    //{
+    //    // 以下のフラグを指定することで、より詳細な情報を出力できる
+    //    d3dDebug->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL | D3D11_RLDO_SUMMARY);
+    //    d3dDebug->Release();
+    //}
     // フルスクリーン状態であれば、ウィンドウモードに戻す
     if (m_fullscreen && m_deviceResources->GetSwapChain())
     {
@@ -257,13 +257,13 @@ void Game::Render()
 
 
     // FPSを取得する
-    uint32_t fps = m_timer.GetFramesPerSecond();
+    //uint32_t fps = m_timer.GetFramesPerSecond();
 
     // FPSの表示
-    m_debugFont->AddString(0, 0, Colors::White, L"FPS=%d", fps);
+    //m_debugFont->AddString(0, 0, Colors::White, L"FPS=%d", fps);
 
-    // デバッグフォントの描画
-    m_debugFont->Render(m_states.get());
+    //// デバッグフォントの描画
+    //m_debugFont->Render(m_states.get());
 
        // ****  ImGuiの描画処理 ****
     ImGui::Render();

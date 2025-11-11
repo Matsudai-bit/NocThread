@@ -117,7 +117,7 @@ public:
 	static constexpr int WIRE_SIMULATION_ITERATIONS = 1;             // XPBDシミュレーションの標準的な反復回数
 	static constexpr float WIRE_TARGET_FINDER_RADIUS = 30.0f;        // WireTargetFinderに渡す初期半径（探索距離）
 	static constexpr float WIRE_RELEASE_VELOCITY_MULTIPLIER = 3.0f;  // ワイヤー解放時の速度倍率
-	static constexpr float SHOOT_WIRE_INITIAL_SPEED = 100.0f;        // ワイヤーの初期発射速度
+	static constexpr float SHOOT_WIRE_INITIAL_SPEED = 200.0f;        // ワイヤーの初期発射速度
 	static constexpr float GRABBING_DISTANCE = 1.5f;                 // 掴み位置計算のための固定距離
 	static constexpr float ROTATE_SPEED_FACTOR = 0.1f;               // 移動方向への回転速度（スムージング）係数
 
@@ -174,6 +174,10 @@ private:
 
 	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_inputLayout;
 	std::unique_ptr<DirectX::BasicEffect> m_basicEffect; ///< ベーシックエフェクト　ものを描画する時の必要なものが用意されているクラス　基本形態
+
+	// デバック（検証）用
+	DirectX::SimpleMath::Vector3 m_targetPosition;	///< プレイヤーの目標位置の座標
+	DirectX::SimpleMath::Vector4 m_targetGuideColor;///< プレイヤーの目標位置のガイド色
 	
 
 // メンバ関数の宣言 -------------------------------------------------

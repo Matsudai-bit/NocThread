@@ -55,9 +55,6 @@ void WalkPlayerState::OnStartState()
  */
 void WalkPlayerState::OnUpdate(float deltaTime)
 {
-	// マウストラック
-	auto mouseTrack = GetOwner()->GetCommonResources()->GetMouseTracker();
-
 	// 物理の適用
 	GetOwner()->ApplyPhysic(deltaTime);
 

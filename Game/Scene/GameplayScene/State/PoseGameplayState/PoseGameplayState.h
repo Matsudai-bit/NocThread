@@ -38,7 +38,42 @@ class PoseGameplayState
 // クラス定数の宣言 -------------------------------------------------
 public:
 
+	// --- ファイルパス関連 ---
+	static constexpr const char* TEXTURE_PATH_ALPHA				= "Pose/pose_alpha.dds";				///< 背景アルファテクスチャのファイルパス
+	static constexpr const char* TEXTURE_PATH_FONT_POSE			= "Pose/pose_font_pose.dds";			///< 「POSE」フォントテクスチャのファイルパス
+	static constexpr const char* TEXTURE_PATH_FONT_OPERATING	= "Pose/pose_font_operating.dds";		///< 「操作説明」フォントテクスチャのファイルパス
+	static constexpr const char* TEXTURE_PATH_OPERATING_PC		= "Pose/pose_operating_pc.dds";			///< 操作説明UI (PC) のテクスチャファイルパス
+	static constexpr const char* TEXTURE_PATH_OPERATING_GAMEPAD = "Pose/pose_operating_gamepad.dds";	///< 操作説明UI (ゲームパッド) のテクスチャファイルパス
+	static constexpr const char* TEXTURE_PATH_MANUAL_PC			= "Manual/ui_manual_pc.dds";			///< マニュアルUI (PC) のテクスチャファイルパス
+	static constexpr const char* TEXTURE_PATH_MANUAL_GAMEPAD	= "Manual/ui_manual_gamepad.dds";		///< マニュアルUI (ゲームパッド) のテクスチャファイルパス
 
+
+	// --- 座標オフセット関連 ---
+	static constexpr float FONT_POSE_POS_X_OFFSET		= 160.0f;	///< 「POSE」フォントの左端からのX座標オフセット
+	static constexpr float FONT_POSE_POS_Y_OFFSET		= 100.0f;	///< 「POSE」フォントの下端からのY座標オフセット
+	static constexpr float FONT_OPERATING_POS_X_OFFSET	= 450.0f;	///< 「操作説明」フォントの右端からのX座標オフセット
+	static constexpr float FONT_OPERATING_POS_Y_OFFSET	= 80.0f;	///< 「操作説明」フォントの上端からのY座標オフセット
+	static constexpr float OPERATING_UI_POS_X_OFFSET	= 300.0f;	///< 操作説明UIの右端からのX座標オフセット
+	static constexpr float OPERATING_UI_POS_Y_OFFSET	= 40.0f;	///< 操作説明UIの中心からのY座標オフセット
+	static constexpr float MANUAL_UI_POS_X_OFFSET		= 200.0f;	///< マニュアルUIの左端からのX座標オフセット
+	static constexpr float MANUAL_UI_POS_Y_OFFSET		= 30.0f;	///< マニュアルUIの下端からのY座標オフセット
+
+
+	// --- スプライトスケール関連 ---
+	static constexpr float ALPHA_SPRITE_SCALE				= 1.4f;		///< 背景アルファスプライトの基本スケール
+	static constexpr float FONT_SPRITE_SCALE				= 0.35f;	///< フォントスプライトの基本スケール
+	static constexpr float OPERATING_SPRITE_SCALE_PC		= 0.275f;	///< 操作説明スプライト (PC) の基本スケール
+	static constexpr float OPERATING_SPRITE_SCALE_GAMEPAD	= 0.65f;	///< 操作説明スプライト (ゲームパッド) の基本スケール
+	static constexpr float MANUAL_SPRITE_SCALE				= 0.12f;	///< マニュアルスプライトの基本スケール
+
+
+	// --- ライン描画関連 ---
+	static constexpr float LINE0_ANGLE_DEGREE	= 70.0f;	///< 1本目のラインの角度 (度)
+	static constexpr float LINE1_ANGLE_DEGREE	= 60.0f;	///< 2本目のラインの角度 (度)
+	static constexpr float LINE0_POS_X_OFFSET	= 400.0f;	///< 1本目のラインのX座標中心からのオフセット
+	static constexpr float LINE1_POS_X_OFFSET	= 100.0f;	///< 2本目のラインのX座標中心からのオフセット
+	static constexpr float LINE_LENGTH			= 1000.0f;	///< ラインの長さ
+	static constexpr float LINE_THICKNESS		= 2.0f;		///< ラインの太さ
 
 // データメンバの宣言 -----------------------------------------------
 private:
@@ -48,6 +83,7 @@ private:
 	std::unique_ptr<Sprite> m_poseFontSprite;			///< ポーズフォントのスプライト
 	std::unique_ptr<Sprite> m_operatingFontSprite;		///< 操作方法フォントのスプライト
 	std::unique_ptr<Sprite> m_operatingSprite;			///< 操作方法のスプライト
+	std::unique_ptr<Sprite>	m_manualSprite;				///< 操作説明スプライト
 
 	std::unique_ptr<Canvas> m_canvas;					///< キャンバス　
 
@@ -59,6 +95,7 @@ private:
 
 	// 簡易フラグ
 	bool m_isDisplayingTutorialWindow;
+	bool m_isPrevConnectedGamepad;  ///< 直前フレームでゲームパッドが接続されていたかどうか
 
 	std::unique_ptr < InputSystem<InputActionType::SystemActionID>> m_systemInput; ///< ゲームシステムの入力判断
 // メンバ関数の宣言 -------------------------------------------------
@@ -100,4 +137,8 @@ private:
 
 	// チュートリアルウィンドウを閉じる際の処理
 	void OnCloseTutorialWindow();
+
+
+	//@brief 現在のガイドガイドUIの変更を試みる
+	bool TryChangeCurrentGuideUI();
 };

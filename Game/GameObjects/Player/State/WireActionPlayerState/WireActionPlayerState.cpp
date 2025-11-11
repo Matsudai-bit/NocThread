@@ -57,13 +57,10 @@ void WireActionPlayerState::OnStartState()
  */
 void WireActionPlayerState::OnUpdate(float deltaTime)
 {
-	// マウストラック
-	auto mosueTrack = GetOwner()->GetCommonResources()->GetMouseTracker();
-
 	GetOwner()->SetVelocity(GetOwner()->GetWire()->GetStartVelocity());
 
 	// ワイヤーアクション挙動
-	GetOwner()->BehaviourWireAction(deltaTime, 1.0f);
+	GetOwner()->BehaviourWireAction(deltaTime, 1.4f);
 
 	// 物理の適用
 	//GetOwner()->ApplyPhysic(deltaTime);
@@ -78,6 +75,7 @@ void WireActionPlayerState::OnUpdate(float deltaTime)
 
 	if (GetOwner()->GetPlayerInput()->IsInput(InputActionType::PlyayerActionID::RELEASE_WIRE, InputSystem< InputActionType::PlyayerActionID>::InputOption::RELEASED))
 	{
+		//GetOwner()->GetWire()->Reset();
 		GetOwner()->RequestChangeState(Player::State::WALKING);
 
 	}

@@ -13,13 +13,14 @@
 
 
 // ヘッダファイルの読み込み ===================================================
+#include <memory>
 #include "Game/Common/StateMachine/StateBase/StateBase.h"
 #include "Game/Common/Input/InputSystem/InputSystem.h"
 #include "Game/Common/Input/InputActionType/InputActionType.h"
 
 // クラスの前方宣言 ===================================================
 class GameplayScene; // ゲームプレイシーン
-
+class Sprite;
 // クラスの定義 ===============================================================
 /**
  * @brief ゲームプレイシーンの通常状態
@@ -34,8 +35,11 @@ public:
 
 // データメンバの宣言 -----------------------------------------------
 private:
+	std::unique_ptr<Sprite>	m_manualSprite;				///< 操作ガイドスプライト
 
 	std::unique_ptr < InputSystem<InputActionType::SystemActionID>> m_systemInput; ///< ゲームシステムの入力判断
+
+	bool m_isPrevConnectedGamepad; ///< ゲームパッドが接続されているかどうか
 
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
@@ -51,6 +55,7 @@ public:
 public:
 	// 開始処理
 	void OnStartState() override;
+	void OnExitState() override;
 
 	// 更新処理
 	void OnUpdate(float deltaTime) override;
@@ -68,5 +73,7 @@ public:
 // 内部実装
 private:
 
+	// 現在のガイドガイドUIの変更を試みる
+	bool TryChangeCurrentGuideUI();
 
 };

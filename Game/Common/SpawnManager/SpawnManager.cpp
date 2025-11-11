@@ -33,6 +33,7 @@ SpawnManager::SpawnManager()
 	, m_pCommonResources	{ nullptr }
 	, m_pCollisionManager	{ nullptr }
 	, m_stoleTreasure		{ false }
+	, m_pEscapeHelicopters	{}
 {
 
 }
@@ -193,8 +194,8 @@ void SpawnManager::OnStealingTreasures()
 	
 	std::vector<Vector3> helicopterPositions =
 	{
-		Vector3(-100.0f, 60.6f, 80.2f),
-		Vector3(100.0f, 60.6f, 80.2f),
+		Vector3(-90.0f, 80.6f, 70.2f),
+		Vector3(130.0f, 80.6f, 120.2f),
 		Vector3(-100.0f, 60.6f, -130.2f),
 		Vector3(160.0f, 60.6f, -100.2f),
 	};
@@ -211,9 +212,7 @@ void SpawnManager::OnStealingTreasures()
 	std::vector<float> weights = { 0.5f, 0.25f, 0.15f, 0.0f}; // 例: 0番目が50%の確率で出る
 	std::discrete_distribution<> dist(weights.begin(), weights.end());
 
-	int selectedIndex = dist(engine);
-
-	auto& position = helicopterPositions[selectedIndex];
+	auto position = helicopterPositions.front();//helicopterPositions[selectedIndex];
 	
 
 	// 脱出用ヘリコプターの生成
@@ -221,7 +220,8 @@ void SpawnManager::OnStealingTreasures()
 	m_pEscapeHelicopters->back()->Initialize(m_pCommonResources, m_pCollisionManager);
 	m_pEscapeHelicopters->back()->SetPosition(position);
 
-
+	// ヘリコプター出現を通知
+	GameFlowMessenger::GetInstance()->Notify(GameFlowEventID::SPAWN_HELICOPTER);
 	
 }
 
@@ -263,6 +263,7 @@ void SpawnManager::SpawnEnemy()
 
 		m_enemyPool.push_back(std::move(enemy));
 	}
+
 }
 
 
