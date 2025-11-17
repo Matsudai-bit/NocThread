@@ -184,9 +184,8 @@ void Player::Initialize(const CommonResources* pCommonResources, CollisionManage
  * 
  * @param[in] deltaTime	経過時間
  * @param[in] camera		カメラ
- * @param[in] proj			射影行列
  */
-void Player::Update(float deltaTime, const DirectX::SimpleMath::Matrix& proj)
+void Player::Update(float deltaTime)
 {
 	if (m_isActive == false) { return; }
 
@@ -201,10 +200,6 @@ void Player::Update(float deltaTime, const DirectX::SimpleMath::Matrix& proj)
 
 	// ワイヤーの更新処理
 	m_wire->Update(deltaTime);
-
-	
-	// 射影行列の保存
-	m_proj = proj;
 
 	// 状態の更新処理
 	m_stateMachine->Update(deltaTime);
@@ -240,6 +235,8 @@ void Player::Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::Simple
 {
 	using namespace SimpleMath;
 	if (m_isActive == false) { return; }
+
+	m_projection = projection;
 
 	// ワイヤーの描画処理
 	m_wire->Draw(view, projection);
@@ -823,7 +820,7 @@ void Player::ShootWire()
 	MyLib::CalcScreenToWorldRay(
 		m_cursorPos.x, m_cursorPos.y,
 		Screen::Get()->GetWidthF(), Screen::Get()->GetHeightF(),
-		GetCamera()->GetEye(), GetCamera()->GetView(), GetProj(),
+		GetCamera()->GetEye(), GetCamera()->GetView(), GetProjection(),
 		&ray.direction, &ray.origin);
 	Vector3 maxPos = ray.origin + ray.direction * MAX_TARGETING_RAY_DISTANCE;
 
@@ -931,7 +928,7 @@ MyLib::Ray Player::GetWireShootingRay() const
 	MyLib::CalcScreenToWorldRay(
 		m_cursorPos.x, m_cursorPos.y,
 		Screen::Get()->GetWidthF(), Screen::Get()->GetHeightF(),
-		GetCamera()->GetEye(), GetCamera()->GetView(), GetProj(),
+		GetCamera()->GetEye(), GetCamera()->GetView(), GetProjection(),
 		&ray.direction, &ray.origin);
 
 

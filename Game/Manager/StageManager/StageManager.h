@@ -69,7 +69,6 @@ class GameEffectManager;
  * @brief ステージ管理
  */
 class StageManager 
-	: public IGameFlowObserver
 {
 	// クラス定数の宣言 -------------------------------------------------
 public:
@@ -92,9 +91,9 @@ public:
 	static constexpr float CAMERA_FAR_CLIP = 450.0f;	///< 射影行列のファークリップ距離
 
 	// --- UI関連 (スコープ) ---
-	static constexpr const char* SCOPE_TEXTURE_PATH = "scope.dds"; ///< スコープスプライトのテクスチャファイルパス
-	static constexpr float SCOPE_Y_OFFSET = 140.0f;		///< スコープスプライトのY軸調整オフセット
-	static constexpr float SCOPE_SCALE = 0.09f;		///< スコープスプライトのスケール
+	static constexpr const char*	SCOPE_TEXTURE_PATH = "scope.dds"; ///< スコープスプライトのテクスチャファイルパス
+	static constexpr float			SCOPE_Y_OFFSET = 140.0f;		///< スコープスプライトのY軸調整オフセット
+	static constexpr float			SCOPE_SCALE = 0.09f;		///< スコープスプライトのスケール
 
 
 	// --- スカイボックス関連 ---
@@ -116,24 +115,13 @@ private:
 	// リソース関連
 	const CommonResources* m_pCommonResources;
 
-	// 射影行列
-	DirectX::SimpleMath::Matrix m_proj;
 
 	// グリッドの床
 	std::unique_ptr<Imase::GridFloor> m_gridFloor;
-	// デバッグカメラ
-	std::unique_ptr<Imase::DebugCamera> m_debugCamera;
+
 	std::unique_ptr<PlayerCamera>		m_playerCamera;
 
-	// システム
-	std::unique_ptr<CollisionManager>   m_collisionManager; ///< 衝突管理
-	//std::unique_ptr<PlayerController>	m_playerController;	///< プレイヤーのコントローラ
-	std::unique_ptr<GameEffectManager>	m_gameEffectManager;///< ゲームエフェクト管理
-
-
 	// スプライト関連
-	std::unique_ptr<Canvas> m_canvas; // スプライト表示用
-	std::unique_ptr<Sprite> m_scopeSprite; // スプライト
 
 	// ゲームオブジェクト管理系
 	std::unique_ptr<SpawnManager>	m_spawnManager;		///< 生成管理
@@ -153,7 +141,6 @@ private:
 	DirectX::Model m_skySphere;	///< 天球
 
 	std::vector <std::function<void()>> m_eventStack;
-	ElapsedTimeCounter m_gamePlayingTimeCounter; ///< ゲームのプレイ時間の
 
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
@@ -180,7 +167,7 @@ public:
 	// ウインドウサイズに依存するリソースを作成する
 	void CreateWindowSizeDependentResources() ;
 
-	void CreateStage();
+	void CreateStage(CollisionManager* pCollisionManager);
 
 
 	// 挙動関連
@@ -188,20 +175,16 @@ public:
 	// インゲームのゲームオブジェクトを更新する
 	void UpdateInGameObjects(float deltaTime);
 	// インゲームのゲームオブジェクトを描画する
-	void DrawInGameObjects();
+	void DrawInGameObjects(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& projection);
 
 	// 通知関連
 public:
-	// イベントメッセージを受け取る
-	void OnGameFlowEvent(GameFlowEventID eventID) override;
 
 
 
 	// 取得/設定
 public:
 
-	// キャンバスの取得
-	Canvas* GetCanvas() const;
 
 	// 内部実装
 private:

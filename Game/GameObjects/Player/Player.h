@@ -132,7 +132,7 @@ private:
 
 	// グラフィック関連
 	const PlayerCamera* m_pPlayerCamera;
-	DirectX::SimpleMath::Matrix m_proj;
+	DirectX::SimpleMath::Matrix m_projection;
 	DX::AnimationSDKMESH m_animation;	///< アニメーション
 	DirectX::Model m_model;					///< モデル
 
@@ -196,7 +196,7 @@ public:
 	void Initialize(const CommonResources* pCommonResources, CollisionManager* pCollisionManager, const PlayerCamera* pPlayerCamera, InputSystem<InputActionType::PlyayerActionID>* pPlayerInput);
 
 	// 更新処理
-	void Update(float deltaTime, const DirectX::SimpleMath::Matrix& proj);
+	void Update(float deltaTime);
 
 	// 描画処理
 	void Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& projection);
@@ -296,7 +296,7 @@ public:
 	const PlayerCamera* GetCamera() const { return m_pPlayerCamera; }
 
 	// 射影行列の取得
-	DirectX::SimpleMath::Matrix GetProj() const { return m_proj; }
+	DirectX::SimpleMath::Matrix GetProjection() const { return m_projection; }
 
 	// ワイヤーシステムの取得
 	WireSystemSubject* GetWireSystem() { return m_wireSystemSubject.get(); }

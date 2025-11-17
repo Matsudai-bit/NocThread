@@ -61,7 +61,7 @@ public:
 	void Initialize(const CommonResources* pCommonResources, CollisionManager* pCollisionManager, const PlayerCamera* pPlayerCamera);
 
 	// XVˆ—
-	void Update(float deltaTime, const DirectX::SimpleMath::Matrix& proj);
+	void Update(float deltaTime);
 
 	// •`‰æˆ—
 	void Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& projection);

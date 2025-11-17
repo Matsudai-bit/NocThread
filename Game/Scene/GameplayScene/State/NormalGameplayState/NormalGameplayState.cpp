@@ -89,7 +89,7 @@ void NormalGameplayState::OnUpdate(float deltaTime)
 	GetOwner()->GetCommonResources()->GetGamePadTracker());
 
 	// ゲームオブジェクトの更新処理
-	GetOwner()->GetStageManager()->UpdateInGameObjects(deltaTime);
+	GetOwner()->UpdateInGameObjects(deltaTime);
 
 
 	if (m_systemInput->IsInput(InputActionType::SystemActionID::PAUSE, InputSystem<InputActionType::SystemActionID>::InputOption::PRESSED))
@@ -106,7 +106,7 @@ void NormalGameplayState::OnUpdate(float deltaTime)
 
 void NormalGameplayState::OnDraw()
 {
-	GetOwner()->GetStageManager()->DrawInGameObjects();
+	GetOwner()->DrawInGameObjects();
 
 }
 

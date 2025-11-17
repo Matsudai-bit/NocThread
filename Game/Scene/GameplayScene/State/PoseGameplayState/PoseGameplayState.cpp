@@ -194,7 +194,7 @@ void PoseGameplayState::OnDraw()
 	auto states = GetOwner()->GetCommonResources()->GetCommonStates();
 	auto screen = Screen::Get();
 
-	GetOwner()->GetStageManager()->DrawInGameObjects();
+	GetOwner()->DrawInGameObjects();
 
 
 

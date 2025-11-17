@@ -73,10 +73,7 @@ using namespace DirectX;
 StageManager::StageManager(const CommonResources* pCommonResources)
 	: m_pCommonResources{ pCommonResources }
 {
-	GameObjectRegistry::GetInstance()->Clear();
 
-	GameFlowMessenger::GetInstance()->RemoveAllObserver();
-	GameFlowMessenger::GetInstance()->RegistrObserver(this);
 }
 
 
@@ -88,8 +85,6 @@ StageManager::~StageManager()
 {
 }
 
-#include "Game/Common/GameEffect/GameEffectController.h"
-#include "Game/Common/GameEffect/Effects/SimpleParticle/SimpleParticle.h"
 
 /**
  * @brief 初期化処理
@@ -101,55 +96,7 @@ StageManager::~StageManager()
 void StageManager::Initialize()
 {
 	using namespace SimpleMath;
-	CreateWindowSizeDependentResources();
 
-	// 処理に使用するものたちの取得
-	ID3D11DeviceContext* context = m_pCommonResources->GetDeviceResources()->GetD3DDeviceContext();
-
-	// **** ゲーム経過時間のリセット *****
-	m_gamePlayingTimeCounter.Reset();
-
-
-	// リザルトデータの初期化処理
-	ResultData::GetInstance()->Reset();
-
-
-	// **** BGMを鳴らす ****
-	SoundManager::GetInstance()->RemoveAll();
-	SoundManager::GetInstance()->Play(SoundPaths::BGM_INGAME, true);
-
-
-	// **** 衝突管理の生成 ****
-	m_collisionManager = std::make_unique<CollisionManager>();
-
-
-	// **** UI関連処理 後にクラス化して分離する ****
-	m_canvas = std::make_unique<Canvas>();
-	// キャンバスの初期化処理
-	m_canvas->Initialize(context);
-	// **** 画面中央スプライトの生成 ****
-
-	// 今は使わない
-	//m_scopeSprite = std::make_unique<Sprite>();
-	//// スプライトの初期化処理
-	//m_scopeSprite->Initialize(m_pCommonResources->GetResourceManager()->CreateTexture(SCOPE_TEXTURE_PATH));
-	//m_scopeSprite->SetPosition(DirectX::SimpleMath::Vector2(Screen::Get()->GetCenterXF(), Screen::Get()->GetCenterYF() - SCOPE_Y_OFFSET * Screen::Get()->GetScreenScale()));
-	//m_scopeSprite->SetScale(SCOPE_SCALE * Screen::Get()->GetScreenScale());
-	//	m_canvas->AddSprite(m_scopeSprite.get());
-
-
-		// **** エフェクト官吏の作成 ****
-	m_gameEffectManager = std::make_unique<GameEffectManager>();
-	// 現在使用するエフェクト管理の取得
-	GameEffectController::GetInstance()->SetGameEffectManager(m_gameEffectManager.get());
-	// メインカメラの設定 
-	MainCamera::GetInstance()->SetCamera(m_playerCamera.get());
-
-
-	
-
-	// ***** ゲーム開始通知 *****
-	GameFlowMessenger::GetInstance()->Notify(GameFlowEventID::GAME_START);
 }
 
 
@@ -204,17 +151,8 @@ void StageManager::CreateWindowSizeDependentResources()
 	float width = static_cast<float>(windowSize.right);
 	float height = static_cast<float>(windowSize.bottom);
 
-	// デバッグカメラの作成
-	m_debugCamera = std::make_unique<Imase::DebugCamera>(static_cast<int>(width), static_cast<int>(height));
-
 	// プレイヤーカメラの作成
 	m_playerCamera = std::make_unique<PlayerCamera>(static_cast<int>(width), static_cast<int>(height), m_pCommonResources->GetMouseTracker());
-
-	// 射影行列の作成
-	m_proj = SimpleMath::Matrix::CreatePerspectiveFieldOfView(
-		XMConvertToRadians(CAMERA_FOV_DEGREES)
-		, static_cast<float>(width) / static_cast<float>(height)
-		, CAMERA_NEAR_CLIP, CAMERA_FAR_CLIP); // farを少し伸ばす
 }
 
 /**
@@ -225,26 +163,14 @@ void StageManager::UpdateInGameObjects(float deltaTime)
 {
 	auto kb = Keyboard::Get().GetState();
 
-	// ゲームプレイ時間の加算
-	m_gamePlayingTimeCounter.UpperTime(deltaTime);
-
-	// ゲームエフェクト管理の更新処理
-	m_gameEffectManager->Update(deltaTime);
 
 	// 出現管理の更新処理
 	m_spawnManager->Update(deltaTime);
 
-	// デバックカメラの更新
-	m_debugCamera->Update();
-
-	auto mouse = Mouse::Get().GetState();
-
 	m_playerCamera->Update(deltaTime);
 
-	// 衝突管理の更新処理
-	m_collisionManager->Update();
 
-	m_playerManager->Update(deltaTime, m_proj);
+	m_playerManager->Update(deltaTime);
 
 	for (auto& stageObj : m_stageObject)
 	{
@@ -271,49 +197,42 @@ void StageManager::UpdateInGameObjects(float deltaTime)
 /**
  * @brief インゲームのオブジェクトを描画する
  * */
-void StageManager::DrawInGameObjects()
+void StageManager::DrawInGameObjects(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& projection)
 {
 	if (m_pCommonResources == nullptr) return;
-
-
-
-	// デバッグカメラからビュー行列を取得する
-	SimpleMath::Matrix view = MainCamera::GetInstance()->GetCamera()->GetView();
-	GameEffectController::GetInstance()->SetView(view);
-	GameEffectController::GetInstance()->SetProjection(m_proj);
 
 	// 共通リソース
 	auto states = m_pCommonResources->GetCommonStates();
 
 	// グリッド床の描画
-	//m_gridFloor->Render(context, view, m_proj);
+	//m_gridFloor->Render(context, view, projection);
 
-	m_floor->Draw(view, m_proj);
+	m_floor->Draw(view, projection);
 
 	// プレイヤーの描画処理
-	m_playerManager->Draw(view, m_proj);
+	m_playerManager->Draw(view, projection);
 
 
 	for (auto& stageObj : m_stageObject)
 	{
-		stageObj->Draw(view, m_proj);
+		stageObj->Draw(view, projection);
 	}
 
 	// 建物の描画処理
-	m_buildingManager->Draw(view, m_proj);
+	m_buildingManager->Draw(view, projection);
 
 	// 脱出用ヘリコプターの描画処理
 	for (auto& helicopter : m_escapeHelicopter)
 	{
-		helicopter->Draw(view, m_proj);
+		helicopter->Draw(view, projection);
 	}
 
 
 	// 敵管理の描画処理
-	m_enemyManager->Draw(view, m_proj);
+	m_enemyManager->Draw(view, projection);
 
 	// お宝の描画処理
-	m_treasure->Draw(view, m_proj);
+	m_treasure->Draw(view, projection);
 
 	// スカイボックスの描画処理
 
@@ -340,50 +259,10 @@ void StageManager::DrawInGameObjects()
 	SimpleMath::Matrix world = SimpleMath::Matrix::CreateScale(SKYSPHERE_SCALE);
 	world *= SimpleMath::Matrix::CreateTranslation(m_playerManager->GetPlayer()->GetPosition());
 
-	m_skySphere.Draw(m_pCommonResources->GetDeviceResources()->GetD3DDeviceContext(), *m_pCommonResources->GetCommonStates(), world, view, m_proj);
-	// ゲームエフェクト管理の描画処理
-	m_gameEffectManager->Draw(view, m_proj);
-
-
-
-	m_canvas->Draw(states);
+	m_skySphere.Draw(m_pCommonResources->GetDeviceResources()->GetD3DDeviceContext(), *m_pCommonResources->GetCommonStates(), world, view, projection);
 }
 
-/**
- * @brief イベントメッセージを受け取る
- * * @param[in] eventID
- */
-void StageManager::OnGameFlowEvent(GameFlowEventID eventID)
-{
-	switch (eventID)
-	{
-	case GameFlowEventID::STOLE_TREASURE:
-		break;
-	case GameFlowEventID::PLAYER_DIE:
-		m_eventStack.emplace_back([&]() {
-			OnEndScene();
-			ResultData::GetInstance()->SetResultData(m_gamePlayingTimeCounter.GetdeltaTime(), false);
-			});
-		break;
-	case GameFlowEventID::ESCAPE_SUCCESS:
-		m_eventStack.emplace_back([&]() {
-			OnEndScene();
-			ResultData::GetInstance()->SetResultData(m_gamePlayingTimeCounter.GetdeltaTime(), true);
-			});
-		break;
-	default:
-		break;
-	}
-}
 
-/**
- * @brief キャンバス
- * * @return キャンバス
- */
-Canvas* StageManager::GetCanvas() const
-{
-	return m_canvas.get();
-}
 
 // シーンの終了
 void StageManager::OnEndScene()
@@ -400,9 +279,10 @@ void StageManager::OnEndScene()
 /**
  * @brief ステージの生成
  * */
-void StageManager::CreateStage()
+void StageManager::CreateStage(CollisionManager* pCollisionManager)
 {
 	using namespace SimpleMath;
+	CreateWindowSizeDependentResources();
 
 
 	// ----- 各種ゲームオブジェクトの作成 -------
@@ -410,14 +290,17 @@ void StageManager::CreateStage()
 	// **** 床の生成 *****
 	m_floor = std::make_unique<Floor>();
 	// 床の初期化
-	m_floor->Initialize(SimpleMath::Vector3(0.0f, 0.0f, 0.0f), m_pCommonResources, m_collisionManager.get());
+	m_floor->Initialize(SimpleMath::Vector3(0.0f, 0.0f, 0.0f), m_pCommonResources, pCollisionManager);
 
 	// **** プレイヤーカメラの初期化処理 ****
-	m_playerCamera->Initialize(m_pCommonResources, m_collisionManager.get());
+	m_playerCamera->Initialize(m_pCommonResources, pCollisionManager);
+
+	// メインカメラの設定 
+	MainCamera::GetInstance()->SetCamera(m_playerCamera.get());
 
 	// ***** プレイヤー管理の生成 *****
 	m_playerManager = std::make_unique<PlayerManager>();
-	m_playerManager->Initialize(m_pCommonResources, m_collisionManager.get(), m_playerCamera.get());
+	m_playerManager->Initialize(m_pCommonResources, pCollisionManager, m_playerCamera.get());
 	//// カメラにプレイヤーを設定する
 	m_playerCamera->SetPlayer(m_playerManager->GetPlayer());
 
@@ -428,7 +311,7 @@ void StageManager::CreateStage()
 
 	// ***** 出現管理の作成 *****
 	m_spawnManager = std::make_unique<SpawnManager>();
-	m_spawnManager->Initialize(m_enemyManager.get(), &m_escapeHelicopter, m_pCommonResources, m_collisionManager.get());
+	m_spawnManager->Initialize(m_enemyManager.get(), &m_escapeHelicopter, m_pCommonResources, pCollisionManager);
 
 	// ***** ステージ作成 *****
 	//CreateStage();
@@ -454,11 +337,11 @@ void StageManager::CreateStage()
 	// お宝の生成
 	m_treasure = std::make_unique<Treasure>();
 	m_treasure->SetPosition(treasurePosition);
-	m_treasure->Initialize(m_pCommonResources, m_collisionManager.get());
+	m_treasure->Initialize(m_pCommonResources, pCollisionManager);
 
 	m_buildingManager = std::make_unique<BuildingManager>();
 	m_buildingManager->Initialize();
-	m_buildingManager->RequestCreate(m_collisionManager.get(), m_pCommonResources);
+	m_buildingManager->RequestCreate(pCollisionManager, m_pCommonResources);
 	// m_buildingManager->Save();
 	// ****** ここまで ******************************************************
 

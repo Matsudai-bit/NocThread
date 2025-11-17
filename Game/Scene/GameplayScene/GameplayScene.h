@@ -101,16 +101,7 @@ public:
 	static constexpr float SCOPE_SCALE				= 0.09f;		///< スコープスプライトのスケール
 
 
-	// --- スカイボックス関連 ---
-	static constexpr float SKYSPHERE_SCALE = 300.0f;	///< 天球（スカイスフィア）のスケール値
 
-	// --- ステージ配置関連 (お宝候補地) ---
-	// お宝候補地1
-	static constexpr DirectX::SimpleMath::Vector3 TREASURE_POS_CANDIDATE_1 = { 20.0f, 42.0f, -70.0f };
-	// お宝候補地2
-	static constexpr DirectX::SimpleMath::Vector3 TREASURE_POS_CANDIDATE_2 = { -120.0f, 55.6f, -240.2f };
-	// お宝候補地3
-	static constexpr DirectX::SimpleMath::Vector3 TREASURE_POS_CANDIDATE_3 = { 190.0f, 50.6f, -70.2f };
 
 
 // データメンバの宣言 -----------------------------------------------
@@ -119,21 +110,16 @@ private:
 	// 状態
 	std::unique_ptr<StateMachine<GameplayScene>> m_stateMachine; ///< ステートマシーン
 
-	// リソース関連
-
-
     // 射影行列
-    DirectX::SimpleMath::Matrix m_proj;
+    DirectX::SimpleMath::Matrix m_projection;
 
     // グリッドの床
     std::unique_ptr<Imase::GridFloor> m_gridFloor;
     // デバッグカメラ
     std::unique_ptr<Imase::DebugCamera> m_debugCamera;
-    std::unique_ptr<PlayerCamera>		m_playerCamera;
 
     // システム
     std::unique_ptr<CollisionManager>   m_collisionManager; ///< 衝突管理
-	//std::unique_ptr<PlayerController>	m_playerController;	///< プレイヤーのコントローラ
 	std::unique_ptr<GameEffectManager>	m_gameEffectManager;///< ゲームエフェクト管理
 	
 
@@ -141,26 +127,11 @@ private:
 	std::unique_ptr<Canvas> m_canvas; // スプライト表示用
 	std::unique_ptr<Sprite> m_scopeSprite; // スプライト
 
-	// ゲームオブジェクト管理系
-	std::unique_ptr<SpawnManager>	m_spawnManager;		///< 生成管理
-	std::unique_ptr<EnemyManager>	m_enemyManager;		///< 敵管理
-	std::unique_ptr<BuildingManager>m_buildingManager;	///< 建物管理
-	std::unique_ptr<PlayerManager>	m_playerManager;	///< プレイヤー管理
-
-
-	// ゲームオブジェクト
-	std::unique_ptr<Floor>						m_floor;		///< 床
-	std::vector<std::unique_ptr<StageObject>>	m_stageObject;	///< ステージオブジェクト
-	std::unique_ptr<Treasure>					m_treasure;		///< お宝
-	std::vector<std::unique_ptr<Building>>		m_buildings;	////< 建物
-	std::vector< std::unique_ptr<EscapeHelicopter>>				m_escapeHelicopter;///< 脱出用ヘリコプター
-
 	// その他
-	DirectX::Model m_skySphere;	///< 天球
 	std::unique_ptr<StageManager> m_stageManager;
 
 	std::vector <std::function<void()>> m_eventStack;
-	ElapsedTimeCounter m_gamePlayingTimeCounter; ///< ゲームのプレイ時間の
+	ElapsedTimeCounter m_gamePlayingTimeCounter;		///< ゲームのプレイ時間カウンター
 
 
 // メンバ関数の宣言 -------------------------------------------------

@@ -112,26 +112,16 @@ void GameplayScene::Initialize()
 	// 処理に使用するものたちの取得
 	ID3D11DeviceContext* context = GetCommonResources()->GetDeviceResources()->GetD3DDeviceContext();
 
-
 	// **** ステートマシーンの作成 ****
 	m_stateMachine = std::make_unique <StateMachine<GameplayScene>>(this);
 	// **** 最初の状態 ****
 	m_stateMachine->ChangeState<NormalGameplayState>();
 
-
-
 	// **** ゲーム経過時間のリセット *****
 	m_gamePlayingTimeCounter.Reset();
 
-
 	// リザルトデータの初期化処理
 	ResultData::GetInstance()->Reset();
-
-
-	// **** BGMを鳴らす ****
-	SoundManager::GetInstance()->RemoveAll();
-	SoundManager::GetInstance()->Play(SoundPaths::BGM_INGAME, true);
-
 
 	// **** 衝突管理の生成 ****
 	m_collisionManager = std::make_unique<CollisionManager>();
@@ -141,60 +131,20 @@ void GameplayScene::Initialize()
 	m_canvas = std::make_unique<Canvas>();
 	// キャンバスの初期化処理
 	m_canvas->Initialize(context);
-	// **** 画面中央スプライトの生成 ****
 
-	// 今は使わない
-	//m_scopeSprite = std::make_unique<Sprite>();
-	//// スプライトの初期化処理
-	//m_scopeSprite->Initialize(GetCommonResources()->GetResourceManager()->CreateTexture(SCOPE_TEXTURE_PATH));
-	//m_scopeSprite->SetPosition(DirectX::SimpleMath::Vector2(Screen::Get()->GetCenterXF(), Screen::Get()->GetCenterYF() - SCOPE_Y_OFFSET * Screen::Get()->GetScreenScale()));
-	//m_scopeSprite->SetScale(SCOPE_SCALE * Screen::Get()->GetScreenScale());
-	//	m_canvas->AddSprite(m_scopeSprite.get());
-
-
-		// **** エフェクト官吏の作成 ****
+	// **** エフェクト管理の作成 ****
 	m_gameEffectManager = std::make_unique<GameEffectManager>();
 	// 現在使用するエフェクト管理の取得
 	GameEffectController::GetInstance()->SetGameEffectManager(m_gameEffectManager.get());
-	// メインカメラの設定 
-	MainCamera::GetInstance()->SetCamera(m_playerCamera.get());
 
-
-	// ----- 各種ゲームオブジェクトの作成 -------
-
-	// **** 床の生成 *****
-	m_floor = std::make_unique<Floor>();
-	// 床の初期化
-	m_floor->Initialize(SimpleMath::Vector3(0.0f, 0.0f, 0.0f), GetCommonResources(), m_collisionManager.get());
-
-	// **** プレイヤーカメラの初期化処理 ****
-	m_playerCamera->Initialize(GetCommonResources(), m_collisionManager.get());
-
-	// ***** プレイヤー管理の生成 *****
-	m_playerManager = std::make_unique<PlayerManager>();
-	m_playerManager->Initialize(GetCommonResources(), m_collisionManager.get(), m_playerCamera.get());
-	//// カメラにプレイヤーを設定する
-	m_playerCamera->SetPlayer(m_playerManager->GetPlayer());
-
-
-	// ***** 敵管理の作成 *****
-	m_enemyManager = std::make_unique<EnemyManager>();
-	m_enemyManager->Initialize();
-
-	// ***** 出現管理の作成 *****
-	m_spawnManager = std::make_unique<SpawnManager>();
-	m_spawnManager->Initialize(m_enemyManager.get(), &m_escapeHelicopter, GetCommonResources(), m_collisionManager.get());
-
-	// ***** ステージ作成 *****
+	// **** ステージの作成 ****
 	CreateStage();
 
-	// **** 天球の作成 ****
-	m_skySphere = GetCommonResources()->GetResourceManager()->CreateModel("skyDome.sdkmesh");
 
-	// **** ステージ管理の作成 ****
-	m_stageManager = std::make_unique<StageManager>(GetCommonResources());
-	m_stageManager->Initialize();
-	m_stageManager->CreateStage();
+	// **** BGMを鳴らす ****
+	SoundManager::GetInstance()->RemoveAll();
+	SoundManager::GetInstance()->Play(SoundPaths::BGM_INGAME, true);
+
 
 	// ***** ゲーム開始通知 *****
 	GameFlowMessenger::GetInstance()->Notify(GameFlowEventID::GAME_START);
@@ -210,10 +160,10 @@ void GameplayScene::Initialize()
  */
 void GameplayScene::Update(float deltaTime)
 {
-
-
 	// 状態の更新処理
 	m_stateMachine->Update(deltaTime);
+
+	m_collisionManager->Update();
 
 	// イベントスタックの解消(仮実装)
 	for (auto& event : m_eventStack)
@@ -266,11 +216,8 @@ void GameplayScene::CreateWindowSizeDependentResources()
 	// デバッグカメラの作成
 	m_debugCamera = std::make_unique<Imase::DebugCamera>(static_cast<int>(width), static_cast<int>(height));
 
-	// プレイヤーカメラの作成
-	m_playerCamera = std::make_unique<PlayerCamera>(static_cast<int>(width), static_cast<int>(height), GetCommonResources()->GetMouseTracker());
-
 	// 射影行列の作成
-	m_proj = SimpleMath::Matrix::CreatePerspectiveFieldOfView(
+	m_projection = SimpleMath::Matrix::CreatePerspectiveFieldOfView(
 		XMConvertToRadians(CAMERA_FOV_DEGREES)
 		, static_cast<float>(width) / static_cast<float>(height)
 		, CAMERA_NEAR_CLIP, CAMERA_FAR_CLIP); // farを少し伸ばす
@@ -290,40 +237,14 @@ void GameplayScene::UpdateInGameObjects(float deltaTime)
 	// ゲームエフェクト管理の更新処理
 	m_gameEffectManager->Update(deltaTime);
 
-	// 出現管理の更新処理
-	m_spawnManager->Update(deltaTime);
-
 	// デバックカメラの更新
 	m_debugCamera->Update();
 
 	auto mouse = Mouse::Get().GetState();
 
-	m_playerCamera->Update(deltaTime);
-
+	m_stageManager->UpdateInGameObjects(deltaTime);
 	// 衝突管理の更新処理
 	m_collisionManager->Update();
-
-	m_playerManager->Update(deltaTime, m_proj);
-
-	for (auto& stageObj : m_stageObject)
-	{
-		stageObj->Update(deltaTime);
-	}
-
-	// お宝の更新処理
-	m_treasure->Update(deltaTime);
-
-	// 敵の更新処理
-	m_enemyManager->Update(deltaTime);
-
-	// 脱出用ヘリコプターの更新処理
-	for (auto& helicopter : m_escapeHelicopter)
-	{
-		helicopter->Update(deltaTime);
-	}
-
-
-
 
 }
 
@@ -339,69 +260,15 @@ void GameplayScene::DrawInGameObjects()
 	// デバッグカメラからビュー行列を取得する
 	SimpleMath::Matrix view = MainCamera::GetInstance()->GetCamera()->GetView();
 	GameEffectController::GetInstance()->SetView(view);
-	GameEffectController::GetInstance()->SetProjection(m_proj);
+	GameEffectController::GetInstance()->SetProjection(m_projection);
 
 	// 共通リソース
 	auto states = GetCommonResources()->GetCommonStates();
 
-	// グリッド床の描画
-	//m_gridFloor->Render(context, view, m_proj);
-
-	m_floor->Draw(view, m_proj);
-
-	// プレイヤーの描画処理
-	m_playerManager->Draw(view, m_proj);
-
-
-	for (auto& stageObj : m_stageObject)
-	{
-		stageObj->Draw(view, m_proj);
-	}
-
-	// 建物の描画処理
-	m_buildingManager->Draw(view, m_proj);
-
-	// 脱出用ヘリコプターの描画処理
-	for (auto& helicopter : m_escapeHelicopter)
-	{
-		helicopter->Draw(view, m_proj);
-	}
-
-
-	// 敵管理の描画処理
-	m_enemyManager->Draw(view, m_proj);
-
-	// お宝の描画処理
-	m_treasure->Draw(view, m_proj);
-
-	// スカイボックスの描画処理
-
-	m_skySphere.UpdateEffects([](IEffect* effect)
-		{
-			auto lights = dynamic_cast<IEffectLights*>(effect);
-
-			if (lights)
-			{
-				lights->SetLightEnabled(0, false);
-				lights->SetLightEnabled(1, false);
-				lights->SetLightEnabled(2, false);
-			}
-
-			auto basicEffect = dynamic_cast<BasicEffect*>(effect);
-			if (basicEffect)
-				basicEffect->SetEmissiveColor(Colors::White);
-
-
-		});
-
-
-
-	SimpleMath::Matrix world = SimpleMath::Matrix::CreateScale(SKYSPHERE_SCALE);
-	world *= SimpleMath::Matrix::CreateTranslation(m_playerManager->GetPlayer()->GetPosition());
-
-	m_skySphere.Draw(GetCommonResources()->GetDeviceResources()->GetD3DDeviceContext(), *GetCommonResources()->GetCommonStates(), world, view, m_proj);
+	m_stageManager->DrawInGameObjects(view, m_projection);
+	
 	// ゲームエフェクト管理の描画処理
-	m_gameEffectManager->Draw(view, m_proj);
+	m_gameEffectManager->Draw(view, m_projection);
 
 
 
@@ -473,33 +340,10 @@ void GameplayScene::OnEndScene()
  * */
 void GameplayScene::CreateStage()
 {
-	using namespace SimpleMath;
-	// ハードウェア乱数源からシードを生成
-	static std::random_device seed_gen;
-
-	// シードを使って乱数エンジンを初期化
-	std::mt19937 engine(seed_gen());
-
-	std::vector<Vector3> randomPosition =
-	{
-		TREASURE_POS_CANDIDATE_1,
-		TREASURE_POS_CANDIDATE_2,
-		TREASURE_POS_CANDIDATE_3,
-	};
-	std::shuffle(randomPosition.begin(), randomPosition.end(), engine);
-	auto& treasurePosition = randomPosition.front();
-
-	// お宝の生成
-	m_treasure = std::make_unique<Treasure>();
-	m_treasure->SetPosition(treasurePosition);
-	m_treasure->Initialize(GetCommonResources(), m_collisionManager.get());
-
-	m_buildingManager = std::make_unique<BuildingManager>();
-	m_buildingManager->Initialize();
-	m_buildingManager->RequestCreate(m_collisionManager.get(), GetCommonResources());
-	// m_buildingManager->Save();
-	// ****** ここまで ******************************************************
-
-
+	// ステージ管理の作成
+	m_stageManager = std::make_unique<StageManager>(GetCommonResources());
+	
+	m_stageManager->Initialize();
+	m_stageManager->CreateStage(m_collisionManager.get());
 
 }
