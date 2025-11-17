@@ -90,7 +90,7 @@ public:
 // ‘€ì
 public:
 	// ‰Šú‰»ˆ—
-	void Initialize(const DirectX::SimpleMath::Vector3& pos, CommonResources* pCommonResources, CollisionManager* pCollisionManager);
+	void Initialize(const DirectX::SimpleMath::Vector3& pos, const CommonResources* pCommonResources, CollisionManager* pCollisionManager);
 
 	// XVˆ—
 	void Update(float deltaTime);

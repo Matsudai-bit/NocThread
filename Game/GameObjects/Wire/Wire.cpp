@@ -72,7 +72,7 @@ Wire::~Wire()
  * @param[out] wireSystemSubject ワイヤーシステムの観察者
  */
 void Wire::Initialize(
-	CommonResources*	pCommonResources,
+	const CommonResources*	pCommonResources,
 	CollisionManager*	pCollisionManager,
 	const XPBDSimulator::Parameter& simulationParam,
 	const float& length,

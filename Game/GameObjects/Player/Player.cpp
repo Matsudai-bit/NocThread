@@ -92,7 +92,7 @@ Player::~Player()
  * @param[in] pPlayerCamera		プレイヤーカメラ
  * @param[in] pPlayerInput		プレイヤー入力
  */
-void Player::Initialize(CommonResources* pCommonResources, CollisionManager* pCollisionManager, const PlayerCamera* pPlayerCamera, InputSystem<InputActionType::PlyayerActionID>* pPlayerInput)
+void Player::Initialize(const CommonResources* pCommonResources, CollisionManager* pCollisionManager, const PlayerCamera* pPlayerCamera, InputSystem<InputActionType::PlyayerActionID>* pPlayerInput)
 {
 	using namespace SimpleMath;
 	m_pPlayerCamera = pPlayerCamera;

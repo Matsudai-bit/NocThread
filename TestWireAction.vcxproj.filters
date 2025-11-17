@@ -380,6 +380,9 @@
     <Filter Include="Game\GameObjects\Player\State\ShootingWire">
       <UniqueIdentifier>{ad123bb5-e8eb-4e96-ae11-9f3244d7e934}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\Common\StageManager">
+      <UniqueIdentifier>{14387b5c-ae5b-480c-8151-48ce7309d821}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -755,12 +758,17 @@
       <Filter>Game\Common\EntityManager</Filter>
     </ClInclude>
     <ClInclude Include="Game\Manager\BuildingManager\BuildingManager.h" />
-    <ClInclude Include="Game\Common\Input\PlayerInput\PlayerInput.h" />
     <ClInclude Include="Game\Manager\PlayerManager\PlayerManager.h">
       <Filter>Game\GameObjects\Player\PlayerManager</Filter>
     </ClInclude>
     <ClInclude Include="Game\GameObjects\Player\State\ShootingWireState\ShootingWirePlayerState.h">
       <Filter>Game\GameObjects\Player\State\ShootingWire</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Common\Input\InputActionType\InputActionType.h" />
+    <ClInclude Include="Game\Common\Input\InputBindingFactory\InputBindingFactory.h" />
+    <ClInclude Include="Game\Common\Input\InputSystem\InputSystem.h" />
+    <ClInclude Include="Game\Manager\StageManager\StageManager.h">
+      <Filter>Game\Common\StageManager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1080,12 +1088,17 @@
       <Filter>Game\Common\EntityManager</Filter>
     </ClCompile>
     <ClCompile Include="Game\Manager\BuildingManager\BuildingManager.cpp" />
-    <ClCompile Include="Game\Common\Input\PlayerInput\PlayerInput.cpp" />
     <ClCompile Include="Game\Manager\PlayerManager\PlayerManager.cpp">
       <Filter>Game\GameObjects\Player\PlayerManager</Filter>
     </ClCompile>
     <ClCompile Include="Game\GameObjects\Player\State\ShootingWireState\ShootingWirePlayerState.cpp">
       <Filter>Game\GameObjects\Player\State\ShootingWire</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Common\Input\InputActionType\InputActionType.cpp" />
+    <ClCompile Include="Game\Common\Input\InputBindingFactory\InputBindingFactory.cpp" />
+    <ClCompile Include="Game\Common\Input\InputSystem\InputSystem.cpp" />
+    <ClCompile Include="Game\Manager\StageManager\StageManager.cpp">
+      <Filter>Game\Common\StageManager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

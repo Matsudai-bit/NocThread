@@ -74,7 +74,7 @@ public:
 // ‘€ì
 public:
 	// ‰Šú‰»ˆ—
-	void Initialize(EnemyManager* pEnemyManager, std::vector<std::unique_ptr<EscapeHelicopter>>* pEscapeHelicopters,CommonResources* pCommonResources, CollisionManager* pCollisionManager);
+	void Initialize(EnemyManager* pEnemyManager, std::vector<std::unique_ptr<EscapeHelicopter>>* pEscapeHelicopters,const CommonResources* pCommonResources, CollisionManager* pCollisionManager);
 
 	// XVˆ—
 	void Update(float deltaTime);

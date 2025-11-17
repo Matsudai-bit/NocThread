@@ -102,7 +102,7 @@ public:
 public:
 	// ‰Šú‰»ˆ—
 	void Initialize(
-		CommonResources*	pCommonResources,
+		const CommonResources*	pCommonResources,
 		CollisionManager*	pCollisionManager,
 		const XPBDSimulator::Parameter& simulationParam,
 		const float&		length,

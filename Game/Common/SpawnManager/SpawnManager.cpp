@@ -57,7 +57,9 @@ SpawnManager::~SpawnManager()
  *
  * @return ‚È‚µ
  */
-void SpawnManager::Initialize(EnemyManager* pEnemyManager, std::vector<std::unique_ptr<EscapeHelicopter>>* pEscapeHelicopters, CommonResources* pCommonResources, CollisionManager* pCollisionManager)
+void SpawnManager::Initialize(
+	EnemyManager* pEnemyManager,
+	std::vector<std::unique_ptr<EscapeHelicopter>>* pEscapeHelicopters,const CommonResources* pCommonResources, CollisionManager* pCollisionManager)
 {
 	m_pEnemyManager = pEnemyManager;
 	m_pEscapeHelicopters = pEscapeHelicopters;

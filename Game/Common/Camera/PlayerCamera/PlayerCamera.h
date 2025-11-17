@@ -106,7 +106,7 @@ public:
 	PlayerCamera(int windowWidth, int windowHeight,  DirectX::Mouse::ButtonStateTracker* pMouseTracker);
 
 	// 初期化処理
-	void Initialize(CommonResources* pCommonResources, CollisionManager* pCollisionManager);
+	void Initialize(const CommonResources* pCommonResources, CollisionManager* pCollisionManager);
 
 	// デバッグカメラの更新
 	void Update(float deltaTime);

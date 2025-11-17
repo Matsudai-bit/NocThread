@@ -64,7 +64,7 @@ PlayerCamera::PlayerCamera(int windowWidth, int windowHeight,  DirectX::Mouse::B
  * @param[in] pCommonResources　共通リソース
  * @param[in] pCollisionManager 衝突管理
  */
-void PlayerCamera::Initialize(CommonResources* pCommonResources, CollisionManager* pCollisionManager)
+void PlayerCamera::Initialize(const CommonResources* pCommonResources, CollisionManager* pCollisionManager)
 {
 	SetCommonResources(pCommonResources);
 

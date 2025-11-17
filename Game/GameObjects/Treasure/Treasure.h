@@ -58,7 +58,7 @@ public:
 // ‘€ì
 public:
 	// ‰Šú‰»ˆ—
-	void Initialize(CommonResources* pCommonResources, CollisionManager* pCollisionManager);
+	void Initialize(const CommonResources* pCommonResources, CollisionManager* pCollisionManager);
 
 	// XVˆ—
 	void Update(float deltaTime);
