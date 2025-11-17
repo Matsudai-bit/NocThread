@@ -34,7 +34,6 @@
 #include "Game/Common/StateMachine/StateMachine.h"
 #include "Game/Common/ElapsedTimeCounter/ElapsedTimeCounter.h"
 
-
 // ゲームオブジェクト
 #include "Game/GameObjects/RopeObject/RopeObject.h"
 #include "Game/GameObjects/RopeObject/XPBDSimulator/XPBDSimulator.h"
@@ -66,6 +65,7 @@ class ParticleObject;
 class XPBDSimulator;
 class GameEffectManager;
 
+class StageManager;		// ステージ管理
 
 // クラスの定義 ===============================================================
 /**
@@ -157,9 +157,11 @@ private:
 
 	// その他
 	DirectX::Model m_skySphere;	///< 天球
+	std::unique_ptr<StageManager> m_stageManager;
 
 	std::vector <std::function<void()>> m_eventStack;
 	ElapsedTimeCounter m_gamePlayingTimeCounter; ///< ゲームのプレイ時間の
+
 
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
@@ -207,6 +209,9 @@ public:
 
 	// キャンバスの取得
 	Canvas* GetCanvas() const;
+
+	// ステージ管理の取得
+	StageManager* GetStageManager() const;
 
 // 内部実装
 private:

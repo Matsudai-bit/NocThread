@@ -56,6 +56,8 @@
 #include "Game/Common/Event/Messenger/GameFlowMessenger/GameFlowMessenger.h"
 #include <random>
 
+#include "Game/Manager/StageManager/StageManager.h"
+
 // 状態
 #include "Game/Scene/GameplayScene/State/NormalGameplayState/NormalGameplayState.h"
 #include "Game/Scene/GameplayScene/State/PoseGameplayState/PoseGameplayState.h"
@@ -188,6 +190,11 @@ void GameplayScene::Initialize()
 
 	// **** 天球の作成 ****
 	m_skySphere = GetCommonResources()->GetResourceManager()->CreateModel("skyDome.sdkmesh");
+
+	// **** ステージ管理の作成 ****
+	m_stageManager = std::make_unique<StageManager>(GetCommonResources());
+	m_stageManager->Initialize();
+	m_stageManager->CreateStage();
 
 	// ***** ゲーム開始通知 *****
 	GameFlowMessenger::GetInstance()->Notify(GameFlowEventID::GAME_START);
@@ -437,6 +444,16 @@ void GameplayScene::OnGameFlowEvent(GameFlowEventID eventID)
 Canvas* GameplayScene::GetCanvas() const
 {
 	return m_canvas.get();
+}
+
+/**
+ * @brief ステージ管理の取得
+ * 
+ * @return ステージ管理
+ */
+StageManager* GameplayScene::GetStageManager() const
+{
+	return m_stageManager.get();
 }
 
 // シーンの終了

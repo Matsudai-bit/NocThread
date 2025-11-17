@@ -43,7 +43,7 @@ private:
 
 	std::unique_ptr< CircularShadow> m_playerShadow; ///< プレイヤーの影
 
-	CommonResources* m_pCommonResources; ///< 共通リソース
+	const CommonResources* m_pCommonResources; ///< 共通リソース
 
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ

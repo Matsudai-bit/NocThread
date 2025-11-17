@@ -180,6 +180,9 @@ public:
 	// ウインドウサイズに依存するリソースを作成する
 	void CreateWindowSizeDependentResources() ;
 
+	void CreateStage();
+
+
 	// 挙動関連
 public:
 	// インゲームのゲームオブジェクトを更新する
@@ -205,6 +208,5 @@ private:
 
 	void OnEndScene();
 
-	void CreateStage();
 
 };

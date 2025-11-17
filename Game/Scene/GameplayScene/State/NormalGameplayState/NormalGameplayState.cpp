@@ -21,6 +21,7 @@
 #include "Game/Common/Screen.h"
 #include "Game/Common/ResourceManager/ResourceManager.h"
 
+#include "Game/Manager/StageManager/StageManager.h"
 using namespace DirectX;
 
 // メンバ関数の定義 ===========================================================
@@ -88,7 +89,7 @@ void NormalGameplayState::OnUpdate(float deltaTime)
 	GetOwner()->GetCommonResources()->GetGamePadTracker());
 
 	// ゲームオブジェクトの更新処理
-	GetOwner()->UpdateInGameObjects(deltaTime);
+	GetOwner()->GetStageManager()->UpdateInGameObjects(deltaTime);
 
 
 	if (m_systemInput->IsInput(InputActionType::SystemActionID::PAUSE, InputSystem<InputActionType::SystemActionID>::InputOption::PRESSED))
@@ -105,7 +106,7 @@ void NormalGameplayState::OnUpdate(float deltaTime)
 
 void NormalGameplayState::OnDraw()
 {
-	GetOwner()->DrawInGameObjects();
+	GetOwner()->GetStageManager()->DrawInGameObjects();
 
 }
 

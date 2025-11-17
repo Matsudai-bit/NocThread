@@ -146,36 +146,7 @@ void StageManager::Initialize()
 	MainCamera::GetInstance()->SetCamera(m_playerCamera.get());
 
 
-	// ----- 各種ゲームオブジェクトの作成 -------
-
-	// **** 床の生成 *****
-	m_floor = std::make_unique<Floor>();
-	// 床の初期化
-	m_floor->Initialize(SimpleMath::Vector3(0.0f, 0.0f, 0.0f), m_pCommonResources, m_collisionManager.get());
-
-	// **** プレイヤーカメラの初期化処理 ****
-	m_playerCamera->Initialize(m_pCommonResources, m_collisionManager.get());
-
-	// ***** プレイヤー管理の生成 *****
-	m_playerManager = std::make_unique<PlayerManager>();
-	m_playerManager->Initialize(m_pCommonResources, m_collisionManager.get(), m_playerCamera.get());
-	//// カメラにプレイヤーを設定する
-	m_playerCamera->SetPlayer(m_playerManager->GetPlayer());
-
-
-	// ***** 敵管理の作成 *****
-	m_enemyManager = std::make_unique<EnemyManager>();
-	m_enemyManager->Initialize();
-
-	// ***** 出現管理の作成 *****
-	m_spawnManager = std::make_unique<SpawnManager>();
-	m_spawnManager->Initialize(m_enemyManager.get(), &m_escapeHelicopter, m_pCommonResources, m_collisionManager.get());
-
-	// ***** ステージ作成 *****
-	CreateStage();
-
-	// **** 天球の作成 ****
-	m_skySphere = m_pCommonResources->GetResourceManager()->CreateModel("skyDome.sdkmesh");
+	
 
 	// ***** ゲーム開始通知 *****
 	GameFlowMessenger::GetInstance()->Notify(GameFlowEventID::GAME_START);
@@ -432,6 +403,39 @@ void StageManager::OnEndScene()
 void StageManager::CreateStage()
 {
 	using namespace SimpleMath;
+
+
+	// ----- 各種ゲームオブジェクトの作成 -------
+
+	// **** 床の生成 *****
+	m_floor = std::make_unique<Floor>();
+	// 床の初期化
+	m_floor->Initialize(SimpleMath::Vector3(0.0f, 0.0f, 0.0f), m_pCommonResources, m_collisionManager.get());
+
+	// **** プレイヤーカメラの初期化処理 ****
+	m_playerCamera->Initialize(m_pCommonResources, m_collisionManager.get());
+
+	// ***** プレイヤー管理の生成 *****
+	m_playerManager = std::make_unique<PlayerManager>();
+	m_playerManager->Initialize(m_pCommonResources, m_collisionManager.get(), m_playerCamera.get());
+	//// カメラにプレイヤーを設定する
+	m_playerCamera->SetPlayer(m_playerManager->GetPlayer());
+
+
+	// ***** 敵管理の作成 *****
+	m_enemyManager = std::make_unique<EnemyManager>();
+	m_enemyManager->Initialize();
+
+	// ***** 出現管理の作成 *****
+	m_spawnManager = std::make_unique<SpawnManager>();
+	m_spawnManager->Initialize(m_enemyManager.get(), &m_escapeHelicopter, m_pCommonResources, m_collisionManager.get());
+
+	// ***** ステージ作成 *****
+	//CreateStage();
+
+	// **** 天球の作成 ****
+	m_skySphere = m_pCommonResources->GetResourceManager()->CreateModel("skyDome.sdkmesh");
+
 	// ハードウェア乱数源からシードを生成
 	static std::random_device seed_gen;
 

@@ -30,6 +30,8 @@
 // ó‘Ô
 #include "Game/Scene/GameplayScene/State/NormalGameplayState/NormalGameplayState.h"
 
+#include "Game/Manager/StageManager/StageManager.h"
+
 using namespace DirectX;
 
 // ƒƒ“ƒoŠÖ”‚Ì’è‹` ===========================================================
@@ -192,7 +194,7 @@ void PoseGameplayState::OnDraw()
 	auto states = GetOwner()->GetCommonResources()->GetCommonStates();
 	auto screen = Screen::Get();
 
-	GetOwner()->DrawInGameObjects();
+	GetOwner()->GetStageManager()->DrawInGameObjects();
 
 
 
