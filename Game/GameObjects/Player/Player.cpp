@@ -219,8 +219,7 @@ void Player::Update(float deltaTime)
 	// ƒƒCƒ„[Æ€ŒŸoŠí‚ÌÝ’è
 	m_wireTargetFinder->SetSearchParameters(GetWireShootingRay().direction, WIRE_LENGTH, 0.5f);
 	m_wireTargetFinder->Update();
-	
-	
+		
 }
 
 

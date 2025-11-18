@@ -163,7 +163,6 @@ void GameplayScene::Update(float deltaTime)
 	// 状態の更新処理
 	m_stateMachine->Update(deltaTime);
 
-	m_collisionManager->Update();
 
 	// イベントスタックの解消(仮実装)
 	for (auto& event : m_eventStack)
@@ -242,9 +241,10 @@ void GameplayScene::UpdateInGameObjects(float deltaTime)
 
 	auto mouse = Mouse::Get().GetState();
 
-	m_stageManager->UpdateInGameObjects(deltaTime);
 	// 衝突管理の更新処理
 	m_collisionManager->Update();
+
+	m_stageManager->UpdateInGameObjects(deltaTime);
 
 }
 
