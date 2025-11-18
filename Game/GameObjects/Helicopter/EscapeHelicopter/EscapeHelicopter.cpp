@@ -15,6 +15,7 @@
 #include "Game/Common/ResourceManager/ResourceManager.h"
 
 #include "Game/Common/Event/Messenger/GameFlowMessenger/GameFlowMessenger.h"
+#include "Game/Common/Camera/Camera.h"
 
 using namespace DirectX;
 
@@ -86,7 +87,7 @@ void EscapeHelicopter::Update(float deltaTime)
  * @param[in] view　ビュー行列
  * @param[in] proj	射影行列
  */
-void EscapeHelicopter::Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj)
+void EscapeHelicopter::Draw(const Camera& camera)
 {
 	using namespace SimpleMath;
 
@@ -103,15 +104,15 @@ void EscapeHelicopter::Draw(const DirectX::SimpleMath::Matrix& view, const Direc
 		GetCommonResources()->GetDeviceResources()->GetD3DDeviceContext(),
 		*GetCommonResources()->GetCommonStates(),
 		world,
-		view,
-		proj);
+		camera.GetViewMatrix(),
+		camera.GetProjectionMatrix());
 
 	// 目印
 	auto cylinder = DirectX::GeometricPrimitive::CreateCylinder(context, 1000.f, 0.5f);
 
 	world = SimpleMath::Matrix::Identity;
 	world *= Matrix::CreateTranslation(GetPosition());
-	cylinder->Draw(world, view, proj, Colors::Purple);
+	cylinder->Draw(world, camera.GetViewMatrix(), camera.GetProjectionMatrix(), Colors::Purple);
 
 
 	// コライダーの表示

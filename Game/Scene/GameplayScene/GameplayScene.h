@@ -111,7 +111,7 @@ private:
 	std::unique_ptr<StateMachine<GameplayScene>> m_stateMachine; ///< ステートマシーン
 
     // 射影行列
-    DirectX::SimpleMath::Matrix m_projection;
+    //DirectX::SimpleMath::Matrix m_projection;
 
     // グリッドの床
     std::unique_ptr<Imase::GridFloor> m_gridFloor;

@@ -41,6 +41,8 @@ private:
 	DirectX::SimpleMath::Matrix m_view;			///< ビュー行列
 	DirectX::SimpleMath::Matrix m_projection;	///< 射影行列
 
+	const Camera* m_pCamera; ///< 現在のカメラ
+
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
 private:
@@ -66,11 +68,9 @@ public:
 	// 描画処理
 	void Draw();
 
-	// ビュー行列の設定
-	void SetView(const DirectX::SimpleMath::Matrix& view);
-	// 射影行列の設定
-	void SetProjection(const DirectX::SimpleMath::Matrix& projection);
-
+	// 現在のカメラの設定
+	void SetCamera(const Camera* pCamera);
+	
 // 取得/設定
 public:
 

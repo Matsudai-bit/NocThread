@@ -17,7 +17,7 @@
 #include "Game/Common/CommonResources/CommonResources.h"
 #include "Game/Common/ResourceManager/ResourceManager.h"
 #include "Game/Common/Event/WireSystemObserver/WireEventData.h"
-
+#include "Game/Common/Camera/Camera.h"
 
 
 using namespace DirectX;
@@ -117,7 +117,7 @@ void StageObject::Update(float deltaTime)
  *
  * @return ‚È‚µ
  */
-void StageObject::Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj)
+void StageObject::Draw(const Camera& camera)
 {
 	if (m_isActive == false) return;
 
@@ -136,7 +136,7 @@ void StageObject::Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::S
 	Matrix world = scale * rotate * transform;
 
 
-	m_model.Draw(context, *GetCommonResources()->GetCommonStates(), world, view, proj);
+	m_model.Draw(context, *GetCommonResources()->GetCommonStates(), world,  camera.GetViewMatrix(), camera.GetProjectionMatrix());
 
 }
 

@@ -10,6 +10,7 @@
 #include "pch.h"
 #include "CircularShadow.h"
 
+#include "Game/Common/Camera/Camera.h"
 #include "Library/DirectXFramework/ReadData.h"
 
 using namespace DirectX;
@@ -129,7 +130,7 @@ void CircularShadow::Initialize(DX::DeviceResources* pDeviceResources, const flo
  * @param[in] states 共通リソース
  * @param[in] shadowOwnerPosition　影の所有者座標
  */
-void CircularShadow::Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj, DirectX::CommonStates* states, const DirectX::SimpleMath::Vector3& shadowOwnerPosition)
+void CircularShadow::Draw(const Camera& camera, DirectX::CommonStates* states, const DirectX::SimpleMath::Vector3& shadowOwnerPosition)
 {
 	auto context = m_pDeviceResources->GetD3DDeviceContext();
 
@@ -153,8 +154,8 @@ void CircularShadow::Draw(const DirectX::SimpleMath::Matrix& view, const DirectX
 	// 定数バッファにデータを設定する
 	ConstantBuffer cb = {};
 	cb.matWorldTranspose = world.Transpose();
-	cb.matProj = proj.Transpose();
-	cb.matView = view.Transpose();
+	cb.matProj = camera.GetProjectionMatrix().Transpose();
+	cb.matView = camera.GetViewMatrix().Transpose();
 	cb.alphaValue = SimpleMath::Vector4(1.0f / (distance * 0.4f));
 
 	//	受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）

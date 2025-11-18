@@ -175,7 +175,7 @@ public:
 	// インゲームのゲームオブジェクトを更新する
 	void UpdateInGameObjects(float deltaTime);
 	// インゲームのゲームオブジェクトを描画する
-	void DrawInGameObjects(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& projection);
+	void DrawInGameObjects(const Camera& camera);
 
 	// 通知関連
 public:

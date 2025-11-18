@@ -101,7 +101,7 @@ void WireTargetFinder::Update()
  *
  * @return ‚È‚µ
  */
-void WireTargetFinder::Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& projection)
+void WireTargetFinder::Draw(const Camera& camera)
 {
 	auto context = GetCommonResources()->GetDeviceResources()->GetD3DDeviceContext();
 
@@ -124,7 +124,7 @@ void WireTargetFinder::Draw(const DirectX::SimpleMath::Matrix& view, const Direc
 	for (auto& data : m_grappleTargetPositionCache)
 	{
 
-		a->Draw(SimpleMath::Matrix::CreateTranslation(data), view, projection, Colors::Blue, nullptr, true);
+		a->Draw(SimpleMath::Matrix::CreateTranslation(data), camera.GetViewMatrix(), camera.GetProjectionMatrix(), Colors::Blue, nullptr, true);
 	}
 
 }

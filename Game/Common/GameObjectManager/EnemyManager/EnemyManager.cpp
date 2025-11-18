@@ -74,11 +74,11 @@ void EnemyManager::Update(float deltaTime)
  *
  * @return ‚È‚µ
  */
-void EnemyManager::Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj)
+void EnemyManager::Draw(const Camera& camera)
 {
 	for (auto& enemy : m_enemies)
 	{
-		enemy->Draw(view, proj);
+		enemy->Draw(camera);
 	}
 }
 

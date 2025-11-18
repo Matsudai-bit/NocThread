@@ -52,7 +52,7 @@ public:
 	// XVˆ—
 	virtual void Update(float deltaTime) = 0;
 	// •`‰æˆ—
-	virtual void Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj) = 0;
+	virtual void Draw(const Camera& camera) = 0;
 
 	// Ä¶‚µ‚Ä‚é‚©‚Ç‚¤‚©
 	virtual bool IsPlaying() const = 0;

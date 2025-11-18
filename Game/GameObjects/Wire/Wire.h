@@ -115,7 +115,7 @@ public:
 	void Update(float deltaTime);
 
 	// •`‰æˆ—
-	void Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj);
+	void Draw(const Camera& camera);
 
 	// I—¹ˆ—
 	void Finalize();

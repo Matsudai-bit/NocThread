@@ -19,6 +19,7 @@
 
 // クラスの前方宣言 ===================================================
 class CommonResources;	// 共通リソース
+class Camera;			// カメラ
 
 // クラスの定義 ===============================================================
 /**
@@ -65,7 +66,7 @@ public:
 	void Update(float deltaTime);
 
 	// 描画処理
-	void Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj);
+	void Draw(const Camera& camera);
 
 	// 終了処理
 	void Finalize();

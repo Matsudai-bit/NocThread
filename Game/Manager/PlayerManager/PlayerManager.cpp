@@ -99,13 +99,13 @@ void PlayerManager::Update(float deltaTime)
  *
  * @return なし
  */
-void PlayerManager::Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& projection)
+void PlayerManager::Draw(const Camera& camera)
 {
 	// プレイヤーの描画
-	m_player->Draw(view,projection);
+	m_player->Draw(camera);
 
 	// プレイヤーの影
-	m_playerShadow->Draw(view, projection, m_pCommonResources->GetCommonStates(), m_player->GetPosition());
+	m_playerShadow->Draw(camera, m_pCommonResources->GetCommonStates(), m_player->GetPosition());
 
 }
 

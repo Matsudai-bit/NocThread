@@ -15,6 +15,7 @@
 #include "Game/Common/Collision/CollisionManager/CollisionManager.h"
 
 #include "Game/Common/DeviceResources.h"
+#include "Game/Common/Camera/Camera.h"
 
 using namespace DirectX;
 
@@ -107,7 +108,7 @@ void Building::Update(float deltaTime)
  * @param[in] view
  * @param[in] proj
  */
-void Building::Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj)
+void Building::Draw(const Camera& camera)
 {
 	using namespace SimpleMath;
 
@@ -122,7 +123,7 @@ void Building::Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::Simp
 	world *= Matrix::CreateFromQuaternion(GetRotate());
 	world *= Matrix::CreateTranslation(GetPosition());
 
-	m_model.Draw(context, *states, world, view, proj);
+	m_model.Draw(context, *states, world, camera.GetViewMatrix(), camera.GetProjectionMatrix());
 
 	//for (auto& collider : m_collider)
 	//{

@@ -18,6 +18,7 @@
 
 // クラスの前方宣言 ===================================================
 class IEntity; // エンティティインターフェース
+class Camera;  // カメラ
 
 // クラスの定義 ===============================================================
 /**
@@ -54,7 +55,7 @@ public:
 	void UpdateEntity(float deltaTime);
 
 	// 描画処理
-	void DrawEntity(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj);
+	void DrawEntity(const Camera& camera);
 
 	// 終了処理
 	void Finalize();

@@ -14,6 +14,8 @@
 #include "Game/Common/CommonResources/CommonResources.h"
 #include "Library/ImaseLib/DebugFont.h"
 
+#include "Game/Common/Camera/Camera.h"
+
 using namespace DirectX;
 
 
@@ -137,7 +139,7 @@ void Floor::Update(float deltaTime)
  *
  * @return なし
  */
-void Floor::Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj)
+void Floor::Draw(const Camera& camera)
 {
 
     auto context = GetCommonResources()->GetDeviceResources()->GetD3DDeviceContext();
@@ -165,9 +167,9 @@ void Floor::Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleM
     SimpleMath::Matrix world = /*rotationZ * rotationX*/ SimpleMath::Matrix::Identity;
     m_effect->SetWorld(world);
     // ビュー行列
-    m_effect->SetView(view);
+    m_effect->SetView(camera.GetViewMatrix());
     // 射影行列
-    m_effect->SetProjection(proj);
+    m_effect->SetProjection(camera.GetProjectionMatrix());
 
     // テクスチャ
     m_effect->SetTexture(m_texture.Get());

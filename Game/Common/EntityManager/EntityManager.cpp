@@ -61,13 +61,12 @@ void EntityManager::UpdateEntity(float deltaTime)
 /**
  * @brief エンティティの描画処理
  * 
- * @param[in] view　ビュー行列
- * @param[in] proj	射影行列
+ * @param[in] camera　カメラ
  */
-void EntityManager::DrawEntity(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj)
+void EntityManager::DrawEntity(const Camera& camera)
 {
-	UNREFERENCED_PARAMETER(view);
-	UNREFERENCED_PARAMETER(proj);
+	UNREFERENCED_PARAMETER(camera);
+	
 }
 
 /**

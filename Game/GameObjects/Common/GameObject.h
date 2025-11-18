@@ -88,7 +88,7 @@ public:
 	//void Update(float deltaTime) override;
 
 	//// •`‰æˆ—
-	//void Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& projection) override;
+	//void Draw(const Camera& camera) override;
 
 
 	// Œ^‚ğ“o˜^‚·‚é

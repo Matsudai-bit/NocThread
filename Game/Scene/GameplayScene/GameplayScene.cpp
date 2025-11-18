@@ -215,11 +215,11 @@ void GameplayScene::CreateWindowSizeDependentResources()
 	// デバッグカメラの作成
 	m_debugCamera = std::make_unique<Imase::DebugCamera>(static_cast<int>(width), static_cast<int>(height));
 
-	// 射影行列の作成
-	m_projection = SimpleMath::Matrix::CreatePerspectiveFieldOfView(
-		XMConvertToRadians(CAMERA_FOV_DEGREES)
-		, static_cast<float>(width) / static_cast<float>(height)
-		, CAMERA_NEAR_CLIP, CAMERA_FAR_CLIP); // farを少し伸ばす
+	//// 射影行列の作成
+	//m_projection = SimpleMath::Matrix::CreatePerspectiveFieldOfView(
+	//	XMConvertToRadians(CAMERA_FOV_DEGREES)
+	//	, static_cast<float>(width) / static_cast<float>(height)
+	//	, CAMERA_NEAR_CLIP, CAMERA_FAR_CLIP); // farを少し伸ばす
 }
 
 /**
@@ -255,20 +255,19 @@ void GameplayScene::DrawInGameObjects()
 {
 	if (GetCommonResources() == nullptr) return;
 
-
+	auto *pCurrentCamera = MainCamera::GetInstance()->GetCamera();
 
 	// デバッグカメラからビュー行列を取得する
-	SimpleMath::Matrix view = MainCamera::GetInstance()->GetCamera()->GetView();
-	GameEffectController::GetInstance()->SetView(view);
-	GameEffectController::GetInstance()->SetProjection(m_projection);
+	SimpleMath::Matrix view = MainCamera::GetInstance()->GetCamera()->GetViewMatrix();
+	GameEffectController::GetInstance()->SetCamera(pCurrentCamera);
 
 	// 共通リソース
 	auto states = GetCommonResources()->GetCommonStates();
 
-	m_stageManager->DrawInGameObjects(view, m_projection);
+	m_stageManager->DrawInGameObjects(*pCurrentCamera);
 	
 	// ゲームエフェクト管理の描画処理
-	m_gameEffectManager->Draw(view, m_projection);
+	m_gameEffectManager->Draw(*pCurrentCamera);
 
 
 

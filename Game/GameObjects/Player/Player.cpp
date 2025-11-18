@@ -230,15 +230,13 @@ void Player::Update(float deltaTime)
  * @param[in] view　ビュー行列
  * @param[in] projection　射影行列
  */
-void Player::Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& projection)
+void Player::Draw(const Camera& camera)
 {
 	using namespace SimpleMath;
 	if (m_isActive == false) { return; }
 
-	m_projection = projection;
-
 	// ワイヤーの描画処理
-	m_wire->Draw(view, projection);
+	m_wire->Draw(camera);
 
 	// 状態の描画処理
 	m_stateMachine->Draw();
@@ -272,7 +270,7 @@ void Player::Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::Simple
 	// スキン変形用行列を適用する
 	m_animation.ApplySkinMatrix(m_model, nbones, drawBones.get());
 	// アニメーションモデルを描画する
-	m_model.DrawSkinned(context, *states, nbones, drawBones.get(), world, view, projection);
+	m_model.DrawSkinned(context, *states, nbones, drawBones.get(), world, camera.GetViewMatrix(), camera.GetProjectionMatrix());
 
 
 	// **** 軸の描画 ****
@@ -288,8 +286,8 @@ void Player::Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::Simple
 	context->IASetInputLayout(m_inputLayout.Get());
 
 	// ベーシックエフェクト
-	m_basicEffect->SetView(view);
-	m_basicEffect->SetProjection(projection);
+	m_basicEffect->SetView(camera.GetViewMatrix());
+	m_basicEffect->SetProjection(camera.GetProjectionMatrix());
 	m_basicEffect->Apply(context);
 
 	SimpleMath::Vector3 forward = GetForward() * 1.5f;
@@ -819,7 +817,7 @@ void Player::ShootWire()
 	MyLib::CalcScreenToWorldRay(
 		m_cursorPos.x, m_cursorPos.y,
 		Screen::Get()->GetWidthF(), Screen::Get()->GetHeightF(),
-		GetCamera()->GetEye(), GetCamera()->GetView(), GetProjection(),
+		GetCamera()->GetEye(), GetCamera()->GetViewMatrix(), GetCamera()->GetProjectionMatrix(),
 		&ray.direction, &ray.origin);
 	Vector3 maxPos = ray.origin + ray.direction * MAX_TARGETING_RAY_DISTANCE;
 
@@ -927,7 +925,7 @@ MyLib::Ray Player::GetWireShootingRay() const
 	MyLib::CalcScreenToWorldRay(
 		m_cursorPos.x, m_cursorPos.y,
 		Screen::Get()->GetWidthF(), Screen::Get()->GetHeightF(),
-		GetCamera()->GetEye(), GetCamera()->GetView(), GetProjection(),
+		GetCamera()->GetEye(), GetCamera()->GetViewMatrix(), GetCamera()->GetProjectionMatrix(),
 		&ray.direction, &ray.origin);
 
 

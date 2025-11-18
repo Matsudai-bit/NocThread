@@ -197,7 +197,7 @@ void StageManager::UpdateInGameObjects(float deltaTime)
 /**
  * @brief インゲームのオブジェクトを描画する
  * */
-void StageManager::DrawInGameObjects(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& projection)
+void StageManager::DrawInGameObjects(const Camera& camera)
 {
 	if (m_pCommonResources == nullptr) return;
 
@@ -205,34 +205,34 @@ void StageManager::DrawInGameObjects(const DirectX::SimpleMath::Matrix& view, co
 	auto states = m_pCommonResources->GetCommonStates();
 
 	// グリッド床の描画
-	//m_gridFloor->Render(context, view, projection);
+	//m_gridFloor->Render(context, camera);
 
-	m_floor->Draw(view, projection);
+	m_floor->Draw(camera);
 
 	// プレイヤーの描画処理
-	m_playerManager->Draw(view, projection);
+	m_playerManager->Draw(camera);
 
 
 	for (auto& stageObj : m_stageObject)
 	{
-		stageObj->Draw(view, projection);
+		stageObj->Draw(camera);
 	}
 
 	// 建物の描画処理
-	m_buildingManager->Draw(view, projection);
+	m_buildingManager->Draw(camera);
 
 	// 脱出用ヘリコプターの描画処理
 	for (auto& helicopter : m_escapeHelicopter)
 	{
-		helicopter->Draw(view, projection);
+		helicopter->Draw(camera);
 	}
 
 
 	// 敵管理の描画処理
-	m_enemyManager->Draw(view, projection);
+	m_enemyManager->Draw(camera);
 
 	// お宝の描画処理
-	m_treasure->Draw(view, projection);
+	m_treasure->Draw(camera);
 
 	// スカイボックスの描画処理
 
@@ -259,7 +259,7 @@ void StageManager::DrawInGameObjects(const DirectX::SimpleMath::Matrix& view, co
 	SimpleMath::Matrix world = SimpleMath::Matrix::CreateScale(SKYSPHERE_SCALE);
 	world *= SimpleMath::Matrix::CreateTranslation(m_playerManager->GetPlayer()->GetPosition());
 
-	m_skySphere.Draw(m_pCommonResources->GetDeviceResources()->GetD3DDeviceContext(), *m_pCommonResources->GetCommonStates(), world, view, projection);
+	m_skySphere.Draw(m_pCommonResources->GetDeviceResources()->GetD3DDeviceContext(), *m_pCommonResources->GetCommonStates(), world, camera.GetViewMatrix(), camera.GetProjectionMatrix());
 }
 
 

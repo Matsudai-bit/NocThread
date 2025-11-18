@@ -86,6 +86,7 @@ void PlayerCamera::Initialize(const CommonResources* pCommonResources, Collision
  */
 void PlayerCamera::Update(float deltaTime)
 {
+
 	int mouseX = 0;
 	int mouseY = 0;
 
@@ -106,8 +107,6 @@ void PlayerCamera::Update(float deltaTime)
 		mouseX = state.x;
 		mouseY = state.y;
 	}
-	
-
 
 
 	// 回転の更新
@@ -122,6 +121,9 @@ void PlayerCamera::Update(float deltaTime)
 	//// カメラの追従位置と最終設定を更新
 	//GetCommonResources()->GetDebugFont()->AddString(10, 50, Colors::Red, L"EyePosition (%f, %f, %f) ", GetEye().x, GetEye().y, GetEye().z);
 	//GetCommonResources()->GetDebugFont()->AddString(10, 100, Colors::Red, L"Target (%f, %f, %f)", GetTarget().x, GetTarget().y, GetTarget().z);
+
+	// ビュー行列の算出
+	CalcViewMatrix();
 
 }
 

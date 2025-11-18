@@ -25,6 +25,7 @@
 #include "Game/Common/ResultData/ResultData.h"
 
 #include "Game/Common/Screen.h"
+#include "Game/Common/Camera/Camera.h"
 
 using namespace DirectX;
 
@@ -149,13 +150,10 @@ void Enemy::Update(float deltaTime)
     SetRotate(MovementHelper::RotateForMoveDirection(deltaTime, GetRotate(), GetForward(), GetVelocity(), 0.1f));
 }
 
-void Enemy::Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj)
+void Enemy::Draw(const Camera& camera)
 {
 	if (m_isActive == false) { return; }
 	using namespace SimpleMath;
-
-	UNREFERENCED_PARAMETER(proj);
-	UNREFERENCED_PARAMETER(view);
 
 	auto context	= GetCommonResources()->GetDeviceResources()->GetD3DDeviceContext();
 	auto states		= GetCommonResources()->GetCommonStates();
@@ -164,7 +162,7 @@ void Enemy::Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleM
 	world *= Matrix::CreateFromQuaternion(GetRotate());
 	world *= Matrix::CreateTranslation(GetPosition());
 
-	m_model.Draw(context, *states, world, view, proj);
+	m_model.Draw(context, *states, world, camera.GetViewMatrix(), camera.GetProjectionMatrix());
 
 	/*GetCommonResources()->GetDebugFont()->AddString(Screen::Get()->GetRight() - 600.0f, 90, Colors::White, L"position : %f, %f, %f ", GetPosition().x, GetPosition().y, GetPosition().z);
 	GetCommonResources()->GetDebugFont()->AddString(Screen::Get()->GetRight() - 600.0f, 110, Colors::White, L"velocity : %f, %f, %f ", GetVelocity().x, GetVelocity().y, GetVelocity().z);

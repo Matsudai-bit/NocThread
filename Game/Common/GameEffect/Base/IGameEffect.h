@@ -16,6 +16,7 @@
 
 
 // クラスの前方宣言 ===================================================
+class Camera; // カメラ
 
 // クラスの定義 ===============================================================
 /**
@@ -52,7 +53,7 @@ public:
 	// 更新処理
 	virtual void Update(float deltaTime) = 0;
 	// 描画処理
-	virtual void Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj) = 0;
+	virtual void Draw(const Camera& camera) = 0;
 
 // 取得/設定
 public:

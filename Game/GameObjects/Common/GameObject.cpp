@@ -56,7 +56,7 @@ GameObject::~GameObject()
 // * @param[in] view　		ビュー行列
 // * @param[in] projection　	射影行列
 // */
-//void GameObject::Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& projection)
+//void GameObject::Draw(const Camera& camera)
 //{
 //	UNREFERENCED_PARAMETER(view);
 //	UNREFERENCED_PARAMETER(projection);

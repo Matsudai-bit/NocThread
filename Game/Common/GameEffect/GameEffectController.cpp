@@ -21,7 +21,8 @@ std::unique_ptr<GameEffectController> GameEffectController::s_instance = nullptr
  * @param[in] なし
  */
 GameEffectController::GameEffectController()
-    : m_pGameEffectManager{ nullptr }
+    : m_pGameEffectManager  { nullptr }
+    , m_pCamera             { nullptr }
 {
 
 }
@@ -75,27 +76,17 @@ void GameEffectController::Update(float deltaTime)
  */
 void GameEffectController::Draw()
 {
-    m_pGameEffectManager->Draw(m_view, m_projection);
+    m_pGameEffectManager->Draw(*m_pCamera);
 }
 
 /**
- * @brief ビュー行列の設定
+ * @brief カメラの設定
  * 
- * @param[in] view　ビュー行列
+ * @param[in] pCamera　カメラのポインタ
  */
-void GameEffectController::SetView(const DirectX::SimpleMath::Matrix& view)
+void GameEffectController::SetCamera(const Camera* pCamera)
 {
-    m_view = view;
-}
-
-/**
- * @brief 射影行列の設定
- * 
- * @param[in] projection　射影行列
- */
-void GameEffectController::SetProjection(const DirectX::SimpleMath::Matrix& projection)
-{
-    m_projection = projection;
+    m_pCamera = pCamera;
 }
 
 /**

@@ -9,7 +9,7 @@
 // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "GameEffectManager.h"
-
+#include "Game/Common/Camera/Camera.h"
 
 // メンバ関数の定義 ===========================================================
 /**
@@ -125,14 +125,14 @@ void GameEffectManager::Update(float deltaTime)
  * @param[in] view　ビュー行列
  * @param[in] proj  射影行列
  */
-void GameEffectManager::Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj)
+void GameEffectManager::Draw(const Camera& camera)
 {
 	for (auto& effectHandle : m_effectHandles)
 	{
 		std::unique_ptr<IGameEffect>& effect = effectHandle.second.effect;
 
 		// 描画処理
-		effect->Draw(view, proj);
+		effect->Draw(camera);
 	}
 }
 

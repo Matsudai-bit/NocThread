@@ -23,6 +23,8 @@
 #include "Game/Common/Camera/MainCamera/MainCamera.h"
 #include "Game/Common/GameEffect/GameEffectController.h"
 
+#include "Game/Common/Camera/Camera.h"
+
 using namespace DirectX;
 
 
@@ -106,7 +108,7 @@ void Treasure::Update(float deltaTime)
  *
  * @return ‚È‚µ
  */
-void Treasure::Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj)
+void Treasure::Draw(const Camera& camera)
 {
 	if (m_isActive == false) { return; }
 
@@ -138,14 +140,14 @@ void Treasure::Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::Simp
 		}
 	);
 
-	m_model.Draw(context, *states, world, view, proj);
+	m_model.Draw(context, *states, world, camera.GetViewMatrix(), camera.GetProjectionMatrix());
 
 	// –Úˆó
 	auto cylinder = DirectX::GeometricPrimitive::CreateCylinder(context, 1000.f, 0.5f);
 
 	world = SimpleMath::Matrix::Identity;
 	world *= Matrix::CreateTranslation(GetPosition());
-	cylinder->Draw(world, view, proj, Colors::GreenYellow);
+	cylinder->Draw(world, camera.GetViewMatrix(), camera.GetProjectionMatrix(), Colors::GreenYellow);
 
 	//m_collider->Draw(context, view, proj);
 }

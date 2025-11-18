@@ -26,6 +26,8 @@
 
 #include "Game/GameObjects/Wire/IWireHolder/IWireHolder.h"
 
+#include "Game/Common/Camera/Camera.h"
+
 #include "Game/GameObjects/RopeObject/XPBDSimulator/Constraint/CollisionConstraint/CollisionConstraintFactory.h"
 
 
@@ -173,13 +175,13 @@ void Wire::Update(float deltaTime)
  *
  * @return ‚È‚µ
  */
-void Wire::Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj)
+void Wire::Draw(const Camera& camera)
 {
 	if (m_isActive == false) { return; }
 	auto states = GetCommonResources()->GetCommonStates();
 	auto context = GetCommonResources()->GetDeviceResources()->GetD3DDeviceContext();
 
-	m_ropeObject->Draw(view, proj);
+	m_ropeObject->Draw(camera);
 
 	SimpleMath::Matrix world;
 # ifdef DEBUG
@@ -195,7 +197,7 @@ void Wire::Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMa
 
 		world = SimpleMath::Matrix::CreateScale(0.05f);
 		world *= SimpleMath::Matrix::CreateTranslation(obj->GetPosition());
-		ballModel.Draw(context, *states, world, view, proj);
+		ballModel.Draw(context, *states, world, camera.GetViewMatrix(), camera.GetProjectionMatrix());
 	}
 
 # else
@@ -207,13 +209,13 @@ void Wire::Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMa
 		world = SimpleMath::Matrix::Identity;
 		world = SimpleMath::Matrix::CreateScale(0.5f);
 		world *= SimpleMath::Matrix::CreateTranslation(m_particleObjects[0]->GetPosition());
-		ballModel.Draw(context, *states, world, view, proj);
+		ballModel.Draw(context, *states, world, camera.GetViewMatrix(), camera.GetProjectionMatrix());
 	}
 
 # endif
 
 	if (m_particleObjects.size() > 0)
-		m_ropeObject->Draw(view, proj);
+		m_ropeObject->Draw(camera);
 
 }
 

@@ -122,15 +122,14 @@ void BuildingManager::Update(float deltaTime)
 /**
  * @brief •`‰æˆ—
  * 
- * @param[in] view			ƒrƒ…[s—ñ
- * @param[in] projection	ŽË‰es—ñ
+ * @param[in] camera	ƒJƒƒ‰
  */
-void BuildingManager::Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& projection)
+void BuildingManager::Draw(const Camera& camera)
 {
 	// Œš•¨‚Ì•`‰æˆ—
 	for (auto& building : m_buildings)
 	{
-		building->Draw(view, projection);
+		building->Draw(camera);
 	}
 }
 
