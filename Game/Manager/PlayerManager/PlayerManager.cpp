@@ -49,7 +49,7 @@ PlayerManager::~PlayerManager()
  * @param[in] pCollisionManager	衝突管理
  * @param[in] pPlayerCamera		プレイヤーカメラ
  */
-void PlayerManager::Initialize(CommonResources* pCommonResources, CollisionManager* pCollisionManager, const PlayerCamera* pPlayerCamera)
+void PlayerManager::Initialize(const CommonResources* pCommonResources, CollisionManager* pCollisionManager, const PlayerCamera* pPlayerCamera)
 {
 	m_pCommonResources = pCommonResources;
 
@@ -78,13 +78,13 @@ void PlayerManager::Initialize(CommonResources* pCommonResources, CollisionManag
  *
  * @return なし
  */
-void PlayerManager::Update(float deltaTime, const DirectX::SimpleMath::Matrix& proj)
+void PlayerManager::Update(float deltaTime)
 {
 	// プレイヤーの入力
 	m_playerInput->Update(m_pCommonResources->GetKeyboardTracker(), m_pCommonResources->GetMouseTracker(), m_pCommonResources->GetGamePadTracker());
 
 	// プレイヤーの更新処理
-	m_player->Update(deltaTime, proj);
+	m_player->Update(deltaTime);
 
 	m_playerController->Update(deltaTime, m_pCommonResources->GetKeyboardTracker(), m_pCommonResources->GetMouseTracker(), m_pCommonResources->GetGamePadTracker());
 

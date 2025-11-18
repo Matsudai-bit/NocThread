@@ -57,7 +57,7 @@ Treasure::~Treasure()
  * @param[in] pCommonResources　　	共通リソース
  * @param[in] pCollisionManager		衝突管理
  */
-void Treasure::Initialize(CommonResources* pCommonResources, CollisionManager* pCollisionManager)
+void Treasure::Initialize(const CommonResources* pCommonResources, CollisionManager* pCollisionManager)
 {
 	SetScale(2.5f);
 

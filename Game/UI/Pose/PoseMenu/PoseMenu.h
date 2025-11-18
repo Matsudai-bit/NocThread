@@ -36,8 +36,33 @@ class PoseMenu
 {
 // クラス定数の宣言 -------------------------------------------------
 public:
-	static constexpr float MAX_SELECTOR_LENGTH = 500.0f;
-	static constexpr float EASING_TIME = 1.0f;
+
+	// --- ファイルパス関連 ---
+	static constexpr const char* TEXTURE_PATH_CONTINUE		= "Pose/pose_font_continue.dds";	///< 「CONTINUE」フォントテクスチャのファイルパス
+	static constexpr const char* TEXTURE_PATH_TUTORIAL		= "Pose/pose_font_tutorial.dds";	///< 「TUTORIAL」フォントテクスチャのファイルパス
+	static constexpr const char* TEXTURE_PATH_SETTING		= "Pose/pose_font_setting.dds";		///< 「SETTING」フォントテクスチャのファイルパス
+	static constexpr const char* TEXTURE_PATH_RETURN_TITLE	= "Pose/pose_font_returnTitle.dds"; ///< 「RETURN_TITLE」フォントテクスチャのファイルパス
+
+	// --- スプライトスケール関連 ---
+	static constexpr float FONT_SPRITE_SCALE = 0.30f;	///< メニューフォントの基本スケール
+
+	// --- 座標・余白関連 ---
+	static constexpr float MENU_MARGIN_X		= 70.0f;	///< メニューアイテム間のX方向マージンオフセット
+	static constexpr float MENU_MARGIN_Y		= 00.0f;	///< メニューアイテム間のY方向マージンオフセット
+	static constexpr float FIXED_POS_X_OFFSET	= 350.0f;	///< メニュー全体の左端からの固定X座標オフセット
+	static constexpr float FIXED_POS_Y_OFFSET	= 10.0f;	///< メニュー全体の中心からの固定Y座標オフセット
+	static constexpr float RETURN_TITLE_OFFSET_X= 240.0f;	///< 「RETURN_TITLE」アイテムの特殊X座標オフセット
+	static constexpr float RETURN_TITLE_OFFSET_Y= 450.0f;	///< 「RETURN_TITLE」アイテムの特殊Y座標オフセット
+
+
+	// --- セレクターアニメーション・描画関連 ---
+	static constexpr float EASING_TIME			= 1.0f;		///< セレクターアニメーションのイージング時間 (秒)
+	static constexpr float MAX_SELECTOR_LENGTH	= 500.0f;	///< セレクターの最大長さの仮定義
+
+	static constexpr float SELECTOR_WIDTH_OFFSET	= 20.0f;	///< セレクターの長さに追加される幅オフセット
+	static constexpr float SELECTOR_MIN_LENGTH_RATIO= 0.2f;		///< セレクターの最小長さの比率 (MAX_SELECTOR_LENGTHに対する割合)
+	static constexpr float SELECTOR_CURSOR_Y_OFFSET = 30.0f;	///< セレクターのY座標調整オフセット
+	static constexpr float SELECTOR_LINE_THICKNESS	= 2.0f;		///< セレクターとして描画するラインの太さ
 
 // 列挙型の宣言　 -------------------------------------------------
 public:

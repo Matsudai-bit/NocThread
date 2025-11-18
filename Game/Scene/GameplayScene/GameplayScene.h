@@ -34,7 +34,6 @@
 #include "Game/Common/StateMachine/StateMachine.h"
 #include "Game/Common/ElapsedTimeCounter/ElapsedTimeCounter.h"
 
-
 // ゲームオブジェクト
 #include "Game/GameObjects/RopeObject/RopeObject.h"
 #include "Game/GameObjects/RopeObject/XPBDSimulator/XPBDSimulator.h"
@@ -66,6 +65,7 @@ class ParticleObject;
 class XPBDSimulator;
 class GameEffectManager;
 
+class StageManager;		// ステージ管理
 
 // クラスの定義 ===============================================================
 /**
@@ -77,6 +77,7 @@ class GameplayScene
 {
 	// クラス定数の宣言 -------------------------------------------------
 public:
+	// 紐のパラメータ
 	static constexpr int	PARTICLE_NUM	= 50;
 	static constexpr float	ROPE_LENGTH		= 1.5f;
 
@@ -89,6 +90,18 @@ public:
 	static constexpr float	ROPE_FIXIBLILLITY = 0.000000006f; 
 
 
+	// --- カメラ設定関連 ---
+	static constexpr float CAMERA_FOV_DEGREES	= 45.0f;	///< 射影行列の視野角 (度)
+	static constexpr float CAMERA_NEAR_CLIP		= 0.1f;		///< 射影行列のニアクリップ距離
+	static constexpr float CAMERA_FAR_CLIP		= 450.0f;	///< 射影行列のファークリップ距離
+
+	// --- UI関連 (スコープ) ---
+	static constexpr const char* SCOPE_TEXTURE_PATH = "scope.dds"; ///< スコープスプライトのテクスチャファイルパス
+	static constexpr float SCOPE_Y_OFFSET			= 140.0f;		///< スコープスプライトのY軸調整オフセット
+	static constexpr float SCOPE_SCALE				= 0.09f;		///< スコープスプライトのスケール
+
+
+
 
 
 // データメンバの宣言 -----------------------------------------------
@@ -97,21 +110,16 @@ private:
 	// 状態
 	std::unique_ptr<StateMachine<GameplayScene>> m_stateMachine; ///< ステートマシーン
 
-	// リソース関連
-	
-
     // 射影行列
-    DirectX::SimpleMath::Matrix m_proj;
+    DirectX::SimpleMath::Matrix m_projection;
 
     // グリッドの床
     std::unique_ptr<Imase::GridFloor> m_gridFloor;
     // デバッグカメラ
     std::unique_ptr<Imase::DebugCamera> m_debugCamera;
-    std::unique_ptr<PlayerCamera>		m_playerCamera;
 
     // システム
     std::unique_ptr<CollisionManager>   m_collisionManager; ///< 衝突管理
-	//std::unique_ptr<PlayerController>	m_playerController;	///< プレイヤーのコントローラ
 	std::unique_ptr<GameEffectManager>	m_gameEffectManager;///< ゲームエフェクト管理
 	
 
@@ -119,25 +127,12 @@ private:
 	std::unique_ptr<Canvas> m_canvas; // スプライト表示用
 	std::unique_ptr<Sprite> m_scopeSprite; // スプライト
 
-	// ゲームオブジェクト管理系
-	std::unique_ptr<SpawnManager>	m_spawnManager;		///< 生成管理
-	std::unique_ptr<EnemyManager>	m_enemyManager;		///< 敵管理
-	std::unique_ptr<BuildingManager>m_buildingManager;	///< 建物管理
-	std::unique_ptr<PlayerManager>	m_playerManager;	///< プレイヤー管理
-
-
-	// ゲームオブジェクト
-	std::unique_ptr<Floor>						m_floor;		///< 床
-	std::vector<std::unique_ptr<StageObject>>	m_stageObject;	///< ステージオブジェクト
-	std::unique_ptr<Treasure>					m_treasure;		///< お宝
-	std::vector<std::unique_ptr<Building>>		m_buildings;	////< 建物
-	std::vector< std::unique_ptr<EscapeHelicopter>>				m_escapeHelicopter;///< 脱出用ヘリコプター
-
 	// その他
-	DirectX::Model m_skySphere;	///< 天球
+	std::unique_ptr<StageManager> m_stageManager;
 
 	std::vector <std::function<void()>> m_eventStack;
-	ElapsedTimeCounter m_gamePlayingTimeCounter; ///< ゲームのプレイ時間の
+	ElapsedTimeCounter m_gamePlayingTimeCounter;		///< ゲームのプレイ時間カウンター
+
 
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
@@ -183,6 +178,11 @@ public:
 // 取得/設定
 public:
 
+	// キャンバスの取得
+	Canvas* GetCanvas() const;
+
+	// ステージ管理の取得
+	StageManager* GetStageManager() const;
 
 // 内部実装
 private:

@@ -49,7 +49,7 @@ Floor::~Floor()
  *
  * @return Ç»Çµ
  */
-void Floor::Initialize(const DirectX::SimpleMath::Vector3& pos, CommonResources* pCommonResources, CollisionManager* pCollisionManager)
+void Floor::Initialize(const DirectX::SimpleMath::Vector3& pos, const CommonResources* pCommonResources, CollisionManager* pCollisionManager)
 {
     // ã§í ÉäÉ\Å[ÉXÇÃê›íË
     SetCommonResources(pCommonResources);

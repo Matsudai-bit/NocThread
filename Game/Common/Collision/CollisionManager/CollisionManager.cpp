@@ -101,8 +101,11 @@ void CollisionManager::Update()
 			// 処理用オブジェクト
 			GameObject* gameObjectB = m_collisionData[j].pGameObject;
 
+			// ===== 冗長(修正予定） ======
 			if (gameObjectA->GetTag() == GameObjectTag::BUILDING &&
 				gameObjectB->GetTag() == GameObjectTag::BUILDING) continue;
+			// ===========================
+
 			//活動していなければ飛ばす
 			if (gameObjectB->IsActive() == false) continue;
 			if (gameObjectA == gameObjectB) continue;

@@ -31,6 +31,8 @@
 
 #include "Game/Common/ResultData/ResultData.h"
 
+#include "Game/Common/Input/InputBindingFactory/InputBindingFactory.h"
+
 // 状態
 #include "Game/Scene/ResultScene/State/SuccessResultState/SuccessResultState.h"
 #include "Game/Scene/ResultScene/State/FailureResultState/FailureResultState.h"
@@ -107,6 +109,9 @@ void ResultScene::Initialize()
 	m_backgroundAlphaFilterSprite->SetScale(1.60f * Screen::Get()->GetScreenScale());
 
 	SoundManager::GetInstance()->Play(SoundPaths::BGM_RESULT);
+
+	// 入力システムの作成
+	m_inputSystem = InputBindingFactory::CreateUIInput();
 }
 
 
@@ -122,14 +127,13 @@ void ResultScene::Update(float deltaTime)
 {
 	UNREFERENCED_PARAMETER(deltaTime);
 
+	m_inputSystem->Update(GetCommonResources()->GetKeyboardTracker(), GetCommonResources()->GetMouseTracker(), GetCommonResources()->GetGamePadTracker());
 
-	// キーボードの情報取得する
-	auto kbTracker = GetCommonResources()->GetKeyboardTracker();
 
 	// ステートマシーンの更新処理
 	m_stateMachine->Update(deltaTime);
 
-	if (kbTracker->IsKeyPressed(Keyboard::Space))
+	if (m_inputSystem->IsInput(InputActionType::UIActionID::CONFIRM))
 	{
 		ChangeScene<TitleScene, LoadingScreen>();
 	}

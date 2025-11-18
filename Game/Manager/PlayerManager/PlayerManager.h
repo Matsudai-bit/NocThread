@@ -43,7 +43,7 @@ private:
 
 	std::unique_ptr< CircularShadow> m_playerShadow; ///< プレイヤーの影
 
-	CommonResources* m_pCommonResources; ///< 共通リソース
+	const CommonResources* m_pCommonResources; ///< 共通リソース
 
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
@@ -58,10 +58,10 @@ public:
 // 操作
 public:
 	// 初期化処理
-	void Initialize(CommonResources* pCommonResources, CollisionManager* pCollisionManager, const PlayerCamera* pPlayerCamera);
+	void Initialize(const CommonResources* pCommonResources, CollisionManager* pCollisionManager, const PlayerCamera* pPlayerCamera);
 
 	// 更新処理
-	void Update(float deltaTime, const DirectX::SimpleMath::Matrix& proj);
+	void Update(float deltaTime);
 
 	// 描画処理
 	void Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& projection);

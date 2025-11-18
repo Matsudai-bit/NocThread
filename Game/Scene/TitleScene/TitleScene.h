@@ -38,7 +38,26 @@ class TitleScene : public MyLib::Scene<CommonResources>
 // クラス定数の宣言 -------------------------------------------------
 public:
 
-	static constexpr float LOGO_EASING_TIME = 5.0f;
+	static constexpr float LOGO_EASING_TIME = 3.0f; ///< ロゴの透過アニメーションのイージング時間 (秒)
+
+    // --- 座標オフセット関連 ---
+    static constexpr float LOGO_POS_OFFSET_X	= 300.0f;	///< ロゴスプライトの右端からのX座標オフセット
+    static constexpr float LOGO_POS_OFFSET_Y	= 150.0f;	///< ロゴスプライトの上端からのY座標オフセット
+    static constexpr float MANUAL_POS_OFFSET_X	= 300.0f;	///< マニュアルスプライトの右端からのX座標オフセット
+    static constexpr float MANUAL_POS_OFFSET_Y	= 50.0f;	///< マニュアルスプライトの下端からのY座標オフセット
+
+    // --- スケール関連 ---
+    static constexpr float BACKGROUND_SCALE = 0.68f;	///< 背景スプライトの基本スケール
+    static constexpr float ALPHA_SCALE		= 1.68f;	///< アルファマスクスプライトの基本スケール
+    static constexpr float LOGO_SCALE		= 0.68f;	///< ロゴスプライトの基本スケール
+    static constexpr float MANUAL_SCALE		= 0.17f;	///< マニュアルスプライトの基本スケール
+
+	// --- ファイルパス関連 ---
+	static constexpr const char* TEXTURE_PATH_BG			= "Title/title_back.dds";			///< 背景テクスチャのファイルパス
+	static constexpr const char* TEXTURE_PATH_ALPHA			= "Title/title_alpha.dds";			///< アルファマスクテクスチャのファイルパス
+	static constexpr const char* TEXTURE_PATH_LOGO			= "Title/title_logo.dds";			///< タイトルロゴテクスチャのファイルパス
+	static constexpr const char* TEXTURE_PATH_MANUAL_PC		= "Manual/ui_manual_pc.dds";		///< マニュアルUI (PC) のテクスチャファイルパス
+	static constexpr const char* TEXTURE_PATH_MANUAL_GAMEPAD = "Manual/ui_manual_gamepad.dds";  ///< マニュアルUI (ゲームパッド) のテクスチャファイルパス
 
 // データメンバの宣言 -----------------------------------------------
 private:
@@ -52,6 +71,7 @@ private:
 
 	std::unique_ptr<Sprite>				m_alphaSprite;		///< 透過フィルタースプライト
 	std::unique_ptr<Sprite>				m_logoSprite;		///< ロゴスプライト
+	std::unique_ptr<Sprite>				m_manualSprite;		///< 操作説明スプライト
 	
 	std::unique_ptr<TitleMenu>			m_titleMenu;		///< タイトルメニュー
 	std::unique_ptr<TutorialWindow>		m_tutorialWindow;	///< チュートリアルウィンドウ
@@ -64,6 +84,9 @@ private:
 
 	// サウンド
 	int m_bgmSoundID;
+
+	// デバック（検証用）
+	bool m_isPrevConnectedGamepad; ///< 直前フレームでゲームパッドが接続されていたかどうか
 
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
@@ -106,5 +129,8 @@ private:
 
 	// チュートリアルウィンドウを閉じる際の処理
 	void OnCloseTutorialWindow();
+
+	// 現在のガイドUIの変更を試みる
+	bool TryChangeCurrentGuideUI();
 
 };

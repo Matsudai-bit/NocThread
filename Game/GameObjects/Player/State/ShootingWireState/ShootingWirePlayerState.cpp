@@ -72,6 +72,8 @@ void ShootingWirePlayerState::OnUpdate(float deltaTime)
 	if (!GetOwner()->GetWire()->IsActive() ||
 		GetOwner()->GetPlayerInput()->IsInput(InputActionType::PlyayerActionID::RELEASE_WIRE, InputSystem<InputActionType::PlyayerActionID>::InputOption::RELEASED))
 	{
+		GetOwner()->GetWire()->Reset();
+
 		GetOwner()->RequestChangeState(Player::State::IDLE);
 	}
 
@@ -116,6 +118,6 @@ void ShootingWirePlayerState::OnCollisionWire(const GameObject* pHitObject)
  */
 void ShootingWirePlayerState::OnExitState()
 {
-	GetOwner()->SetWireCollisionFunction([](const GameObject* pHitObject) {});
+	GetOwner()->SetWireCollisionFunction([](const GameObject* pHitObject) {UNREFERENCED_PARAMETER(pHitObject); });
 }
 

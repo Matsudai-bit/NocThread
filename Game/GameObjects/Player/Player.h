@@ -55,8 +55,7 @@ namespace MyLib
  * @brief プレイヤー
  */
 class Player 
-	: public GameObject		// ゲームオブジェクト
-	, public MovableObject	// 移動可能オブジェクト
+	: public MovableObject	// 移動可能オブジェクト
 	, public IWireHolder	// ワイヤーの保持者インターフェース
 	, public IGameFlowObserver// ゲーム進行のオブザーバーインターフェース
 {
@@ -117,7 +116,7 @@ public:
 	static constexpr int WIRE_SIMULATION_ITERATIONS = 1;             // XPBDシミュレーションの標準的な反復回数
 	static constexpr float WIRE_TARGET_FINDER_RADIUS = 30.0f;        // WireTargetFinderに渡す初期半径（探索距離）
 	static constexpr float WIRE_RELEASE_VELOCITY_MULTIPLIER = 3.0f;  // ワイヤー解放時の速度倍率
-	static constexpr float SHOOT_WIRE_INITIAL_SPEED = 100.0f;        // ワイヤーの初期発射速度
+	static constexpr float SHOOT_WIRE_INITIAL_SPEED = 200.0f;        // ワイヤーの初期発射速度
 	static constexpr float GRABBING_DISTANCE = 1.5f;                 // 掴み位置計算のための固定距離
 	static constexpr float ROTATE_SPEED_FACTOR = 0.1f;               // 移動方向への回転速度（スムージング）係数
 
@@ -132,7 +131,7 @@ private:
 
 	// グラフィック関連
 	const PlayerCamera* m_pPlayerCamera;
-	DirectX::SimpleMath::Matrix m_proj;
+	DirectX::SimpleMath::Matrix m_projection;
 	DX::AnimationSDKMESH m_animation;	///< アニメーション
 	DirectX::Model m_model;					///< モデル
 
@@ -174,6 +173,10 @@ private:
 
 	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_inputLayout;
 	std::unique_ptr<DirectX::BasicEffect> m_basicEffect; ///< ベーシックエフェクト　ものを描画する時の必要なものが用意されているクラス　基本形態
+
+	// デバック（検証）用
+	DirectX::SimpleMath::Vector3 m_targetPosition;	///< プレイヤーの目標位置の座標
+	DirectX::SimpleMath::Vector4 m_targetGuideColor;///< プレイヤーの目標位置のガイド色
 	
 
 // メンバ関数の宣言 -------------------------------------------------
@@ -189,10 +192,10 @@ public:
 // 操作
 public:
 	// 初期化処理
-	void Initialize(CommonResources* pCommonResources, CollisionManager* pCollisionManager, const PlayerCamera* pPlayerCamera, InputSystem<InputActionType::PlyayerActionID>* pPlayerInput);
+	void Initialize(const CommonResources* pCommonResources, CollisionManager* pCollisionManager, const PlayerCamera* pPlayerCamera, InputSystem<InputActionType::PlyayerActionID>* pPlayerInput);
 
 	// 更新処理
-	void Update(float deltaTime, const DirectX::SimpleMath::Matrix& proj);
+	void Update(float deltaTime);
 
 	// 描画処理
 	void Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& projection);
@@ -292,7 +295,7 @@ public:
 	const PlayerCamera* GetCamera() const { return m_pPlayerCamera; }
 
 	// 射影行列の取得
-	DirectX::SimpleMath::Matrix GetProj() const { return m_proj; }
+	DirectX::SimpleMath::Matrix GetProjection() const { return m_projection; }
 
 	// ワイヤーシステムの取得
 	WireSystemSubject* GetWireSystem() { return m_wireSystemSubject.get(); }

@@ -43,6 +43,7 @@
 
 // ゲームオブジェクト
 #include "Game/GameObjects/Wire/Wire.h"
+#include "Game/Common/GameObjectRegistry/GameObjectRegistry.h"
 
 // 外部ライブラリ・ツール
 #include "Library/ImaseLib/DebugDraw.h"
@@ -91,7 +92,7 @@ Player::~Player()
  * @param[in] pPlayerCamera		プレイヤーカメラ
  * @param[in] pPlayerInput		プレイヤー入力
  */
-void Player::Initialize(CommonResources* pCommonResources, CollisionManager* pCollisionManager, const PlayerCamera* pPlayerCamera, InputSystem<InputActionType::PlyayerActionID>* pPlayerInput)
+void Player::Initialize(const CommonResources* pCommonResources, CollisionManager* pCollisionManager, const PlayerCamera* pPlayerCamera, InputSystem<InputActionType::PlyayerActionID>* pPlayerInput)
 {
 	using namespace SimpleMath;
 	m_pPlayerCamera = pPlayerCamera;
@@ -183,9 +184,8 @@ void Player::Initialize(CommonResources* pCommonResources, CollisionManager* pCo
  * 
  * @param[in] deltaTime	経過時間
  * @param[in] camera		カメラ
- * @param[in] proj			射影行列
  */
-void Player::Update(float deltaTime, const DirectX::SimpleMath::Matrix& proj)
+void Player::Update(float deltaTime)
 {
 	if (m_isActive == false) { return; }
 
@@ -200,10 +200,6 @@ void Player::Update(float deltaTime, const DirectX::SimpleMath::Matrix& proj)
 
 	// ワイヤーの更新処理
 	m_wire->Update(deltaTime);
-
-	
-	// 射影行列の保存
-	m_proj = proj;
 
 	// 状態の更新処理
 	m_stateMachine->Update(deltaTime);
@@ -223,6 +219,7 @@ void Player::Update(float deltaTime, const DirectX::SimpleMath::Matrix& proj)
 	// ワイヤー照準検出器の設定
 	m_wireTargetFinder->SetSearchParameters(GetWireShootingRay().direction, WIRE_LENGTH, 0.5f);
 	m_wireTargetFinder->Update();
+		
 }
 
 
@@ -237,6 +234,8 @@ void Player::Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::Simple
 {
 	using namespace SimpleMath;
 	if (m_isActive == false) { return; }
+
+	m_projection = projection;
 
 	// ワイヤーの描画処理
 	m_wire->Draw(view, projection);
@@ -298,6 +297,12 @@ void Player::Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::Simple
 	/*m_primitiveBatch->Begin();
 	DX::DrawRay(m_primitiveBatch.get(), GetPosition(), forward, false, Colors::Red);
 	m_primitiveBatch->End();*/
+
+	// 目標方向の描画
+	SimpleMath::Vector3 targetDirection = m_targetPosition - GetPosition();
+	m_primitiveBatch->Begin();
+	DX::DrawRay(m_primitiveBatch.get(), GetPosition(), targetDirection, false, m_targetGuideColor);
+	m_primitiveBatch->End();
 
 
 	//GetCommonResources()->GetDebugFont()->AddString(100, 90, Colors::White, L"position : %f, %f, %f ", GetPosition().x, GetPosition().y, GetPosition().z);
@@ -501,7 +506,25 @@ void Player::OnWireGrabbed(GameObject* pGrabGameObject)
  */
 void Player::OnGameFlowEvent(GameFlowEventID eventID)
 {
-	UNREFERENCED_PARAMETER(eventID);
+	switch (eventID)
+	{
+	case GameFlowEventID::GAME_START:
+		// 対象座標の取得
+		m_targetPosition = GameObjectRegistry::GetInstance()->GetGameObject(GameObjectTag::TREASURE)->GetPosition();
+		m_targetGuideColor = Colors::LightGreen;
+		break;
+		case GameFlowEventID::SPAWN_HELICOPTER:
+		// 対象座標の更新
+		m_targetPosition = GameObjectRegistry::GetInstance()->GetGameObject(GameObjectTag::ESCAPE_HELICOPTER)->GetPosition();
+		m_targetGuideColor = Colors::Purple;
+		break;
+	case GameFlowEventID::PLAYER_DIE:
+		break;
+	case GameFlowEventID::ESCAPE_SUCCESS:
+		break;
+	default:
+		break;
+	}
 }
 
 /**
@@ -796,7 +819,7 @@ void Player::ShootWire()
 	MyLib::CalcScreenToWorldRay(
 		m_cursorPos.x, m_cursorPos.y,
 		Screen::Get()->GetWidthF(), Screen::Get()->GetHeightF(),
-		GetCamera()->GetEye(), GetCamera()->GetView(), GetProj(),
+		GetCamera()->GetEye(), GetCamera()->GetView(), GetProjection(),
 		&ray.direction, &ray.origin);
 	Vector3 maxPos = ray.origin + ray.direction * MAX_TARGETING_RAY_DISTANCE;
 
@@ -904,7 +927,7 @@ MyLib::Ray Player::GetWireShootingRay() const
 	MyLib::CalcScreenToWorldRay(
 		m_cursorPos.x, m_cursorPos.y,
 		Screen::Get()->GetWidthF(), Screen::Get()->GetHeightF(),
-		GetCamera()->GetEye(), GetCamera()->GetView(), GetProj(),
+		GetCamera()->GetEye(), GetCamera()->GetView(), GetProjection(),
 		&ray.direction, &ray.origin);
 
 

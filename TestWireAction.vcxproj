@@ -280,6 +280,7 @@
     <ClInclude Include="Game\Manager\BuildingManager\BuildingManager.h" />
     <ClInclude Include="Game\Manager\PlayerManager\PlayerManager.h" />
     <ClInclude Include="Game\Manager\SceneManager\SceneManager.h" />
+    <ClInclude Include="Game\Manager\StageManager\StageManager.h" />
     <ClInclude Include="Game\Scene\GameplayScene\GameplayScene.h" />
     <ClInclude Include="Game\Scene\GameplayScene\State\NormalGameplayState\NormalGameplayState.h" />
     <ClInclude Include="Game\Scene\GameplayScene\State\PoseGameplayState\PoseGameplayState.h" />
@@ -398,6 +399,7 @@
     <ClCompile Include="Game\GameObjects\Wire\Wire.cpp" />
     <ClCompile Include="Game\Manager\BuildingManager\BuildingManager.cpp" />
     <ClCompile Include="Game\Manager\PlayerManager\PlayerManager.cpp" />
+    <ClCompile Include="Game\Manager\StageManager\StageManager.cpp" />
     <ClCompile Include="Game\Scene\GameplayScene\GameplayScene.cpp" />
     <ClCompile Include="Game\Scene\GameplayScene\State\NormalGameplayState\NormalGameplayState.cpp" />
     <ClCompile Include="Game\Scene\GameplayScene\State\PoseGameplayState\PoseGameplayState.cpp" />

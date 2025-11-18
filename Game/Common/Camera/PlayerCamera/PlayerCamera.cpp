@@ -64,7 +64,7 @@ PlayerCamera::PlayerCamera(int windowWidth, int windowHeight,  DirectX::Mouse::B
  * @param[in] pCommonResources　共通リソース
  * @param[in] pCollisionManager 衝突管理
  */
-void PlayerCamera::Initialize(CommonResources* pCommonResources, CollisionManager* pCollisionManager)
+void PlayerCamera::Initialize(const CommonResources* pCommonResources, CollisionManager* pCollisionManager)
 {
 	SetCommonResources(pCommonResources);
 
@@ -93,8 +93,8 @@ void PlayerCamera::Update(float deltaTime)
 	auto gamepad = GetCommonResources()->GetGamePadTracker()->GetLastState();
 	if (gamepad.IsConnected())
 	{
-		mouseX = gamepad.thumbSticks.rightX * 15.0f;
-		mouseY = -gamepad.thumbSticks.rightY * 10.0f;
+		mouseX = static_cast<int>(gamepad.thumbSticks.rightX * 15.0f);
+		mouseY = static_cast<int>(-gamepad.thumbSticks.rightY * 10.0f);
 	}
 	else
 	{

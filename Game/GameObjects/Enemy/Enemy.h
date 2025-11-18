@@ -38,7 +38,6 @@ class IEnemyDrawBehaviour;		// 描画処理インターフェース
  */
 class Enemy
 	: public MovableObject
-	, public GameObject
 	, public IEnemy
 	, public IWireEventObserver
 {

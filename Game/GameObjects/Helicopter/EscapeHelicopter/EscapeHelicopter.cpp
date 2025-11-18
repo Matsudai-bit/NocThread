@@ -111,7 +111,7 @@ void EscapeHelicopter::Draw(const DirectX::SimpleMath::Matrix& view, const Direc
 
 	world = SimpleMath::Matrix::Identity;
 	world *= Matrix::CreateTranslation(GetPosition());
-	cylinder->Draw(world, view, proj, Colors::OrangeRed);
+	cylinder->Draw(world, view, proj, Colors::Purple);
 
 
 	// コライダーの表示
