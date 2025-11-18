@@ -21,7 +21,6 @@ class CollisionManager;
 // デバッグ用カメラクラス
 class PlayerCamera 
 	: public Camera
-	, public GameObject
 	, public MovableObject
 
 {

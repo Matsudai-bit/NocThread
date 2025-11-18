@@ -22,6 +22,7 @@
  * @brief 移動可能オブジェクト
  */
 class MovableObject 
+	: public GameObject
 {
 // クラス定数の宣言 -------------------------------------------------
 public:

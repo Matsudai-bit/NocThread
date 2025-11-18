@@ -31,7 +31,6 @@ class CollisionManager;
 class StageObject
 	: public IWireEventObserver
 	, public MovableObject
-	, public GameObject
 {
 // ƒNƒ‰ƒX’è”‚ÌéŒ¾ -------------------------------------------------
 public:

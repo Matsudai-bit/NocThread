@@ -27,8 +27,7 @@ class CollisionManager;	// 衝突管理
  * @brief 脱出用ヘリコプター
  */
 class EscapeHelicopter
-	: public GameObject
-	, public MovableObject
+	: public MovableObject
 {
 // クラス定数の宣言 -------------------------------------------------
 public:

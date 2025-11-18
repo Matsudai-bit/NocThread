@@ -55,8 +55,7 @@ namespace MyLib
  * @brief プレイヤー
  */
 class Player 
-	: public GameObject		// ゲームオブジェクト
-	, public MovableObject	// 移動可能オブジェクト
+	: public MovableObject	// 移動可能オブジェクト
 	, public IWireHolder	// ワイヤーの保持者インターフェース
 	, public IGameFlowObserver// ゲーム進行のオブザーバーインターフェース
 {
