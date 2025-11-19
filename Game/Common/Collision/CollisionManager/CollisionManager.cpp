@@ -56,18 +56,18 @@ void CollisionManager::Initialize()
 
 
 /**
- * @brief 更新処理
- *
- * @param[in] なし
- *
- * @return なし
+ * @brief タスクの更新処理
+ * 
+ * @param[in] deltaTime　前フレームとの時間差
+ * 
+ * @returns true タスクを継続する
+ * @returns false タスクを削除する
  */
-void CollisionManager::Update()
+bool CollisionManager::UpdateTask(float deltaTime)
 {
 	// 衝突判定の流れ
 	// 衝突判定->衝突処理->押し出し
-
-	if (m_collisionData.empty() || m_collisionData.size() == 0) return;
+	if (m_collisionData.empty() || m_collisionData.size() == 0) return true;
 
 	// 衝突したオブジェクト情報群
 	std::vector<DetectedCollisonData> detectedCollisions{};
@@ -168,6 +168,8 @@ void CollisionManager::Update()
 		collisionObj->PostCollision();
 	}
 
+	// タスクを継続する
+	return true;
 }
 
 

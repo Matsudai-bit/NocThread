@@ -72,6 +72,7 @@ using namespace DirectX;
  */
 StageManager::StageManager(const CommonResources* pCommonResources)
 	: m_pCommonResources{ pCommonResources }
+	, m_isStoppingUpdate{ false }
 {
 
 }
@@ -105,12 +106,14 @@ void StageManager::Initialize()
  *
  * @param[in] deltaTime フレーム間の経過時間
  *
- * @return なし
+ * @returns true タスクを継続する
+ * @returns false タスクを削除する
  */
-void StageManager::Update(float deltaTime)
+bool StageManager::UpdateTask(float deltaTime)
 {
-
-
+	if (m_isStoppingUpdate) { return true; }
+	UpdateInGameObjects(deltaTime);
+	return true;
 }
 
 
@@ -122,9 +125,9 @@ void StageManager::Update(float deltaTime)
  *
  * @return なし
  */
-void StageManager::Render(DirectX::SimpleMath::Matrix& proj, DirectX::SimpleMath::Matrix& view)
+void StageManager::DrawTask(const Camera& camera)
 {
-
+	DrawInGameObjects(camera);
 }
 
 
@@ -249,9 +252,9 @@ void StageManager::DrawInGameObjects(const Camera& camera)
 
 			auto basicEffect = dynamic_cast<BasicEffect*>(effect);
 			if (basicEffect)
+			{
 				basicEffect->SetEmissiveColor(Colors::White);
-
-
+			}
 		});
 
 
@@ -347,4 +350,20 @@ void StageManager::CreateStage(CollisionManager* pCollisionManager)
 
 
 
+}
+
+/**
+ * @brief 更新処理を止める
+ */
+void StageManager::StopUpdating()
+{
+	m_isStoppingUpdate = true;
+}
+
+/**
+ * @brief 更新処理を開始する
+  */
+void StageManager::StartUpdating()
+{
+	m_isStoppingUpdate = false;
 }

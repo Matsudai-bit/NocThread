@@ -127,7 +127,7 @@ void SimpleParticle::Update(float deltaTime)
 	m_timeCounter.UpperTime(deltaTime);
 
 	// 時間が来たら
-	if (m_timeCounter.GetdeltaTime() >= 0.1f)
+	if (m_timeCounter.GetElapsedTime() >= 0.1f)
 	{
 		// パーティクルの生成
 		CreateParticle();

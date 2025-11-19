@@ -133,13 +133,13 @@ void PoseMenu::Update(float deltaTime)
 
 	Sprite* currentSelectElementOfSprite = m_poseFontSprites[m_currentSelectItemForInt].get();
 
-	float ratio = MyLib::EaseOutSine(m_ElapsedTimeCounter.GetdeltaTime() / EASING_TIME);
+	float ratio = MyLib::EaseOutSine(m_ElapsedTimeCounter.GetElapsedTime() / EASING_TIME);
 	float width = static_cast<float>(currentSelectElementOfSprite->GetSpriteWidth()) + SELECTOR_WIDTH_OFFSET * Screen::Get()->GetScreenScale();
 
 	width = MAX_SELECTOR_LENGTH;
 	float length = width * SELECTOR_MIN_LENGTH_RATIO + (width - width * SELECTOR_MIN_LENGTH_RATIO) * Screen::Get()->GetScreenScale() * ratio;
 
-	if (m_ElapsedTimeCounter.GetdeltaTime() >= EASING_TIME)
+	if (m_ElapsedTimeCounter.GetElapsedTime() >= EASING_TIME)
 	{
 		m_ElapsedTimeCounter.Reset();
 	}

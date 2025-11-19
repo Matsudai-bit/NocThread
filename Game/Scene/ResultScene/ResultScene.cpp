@@ -71,6 +71,10 @@ ResultScene::~ResultScene()
  */
 void ResultScene::Initialize()
 {
+
+	auto context = GetCommonResources()->GetDeviceResources()->GetD3DDeviceContext();
+	// 共通リソース
+	auto states = GetCommonResources()->GetCommonStates();
 	// ステートマシーンの作成
 	m_stateMachine = std::make_unique <StateMachine<ResultScene>>(this);
 
@@ -93,8 +97,7 @@ void ResultScene::Initialize()
 	m_backgroundAlphaFilterSprite->Initialize(GetCommonResources()->GetResourceManager()->CreateTexture("Result/result_alpha.dds"));
 
 	// キャンバスの作成
-	m_canvas = std::make_unique<Canvas>();
-	m_canvas->Initialize(GetCommonResources()->GetDeviceResources()->GetD3DDeviceContext());
+	m_canvas = std::make_unique<Canvas>(context, states);
 
 	// キャンバスにスプライトの登録
 	m_canvas->AddSprite(m_backgroundSprite.get());
@@ -151,12 +154,11 @@ void ResultScene::Update(float deltaTime)
  */
 void ResultScene::Render()
 {
-	// 共通リソース
-	auto states = GetCommonResources()->GetCommonStates();
+	
 
 	//GetCommonResources()->GetDebugFont()->AddString(0, 30, Colors::White, L"ResultScene");
 
-	m_canvas->Draw(states);
+	m_canvas->DrawContents();
 
 	// ステートマシーンの描画処理
 	m_stateMachine->Draw();

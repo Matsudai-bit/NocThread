@@ -30,7 +30,7 @@ public:
 	// データメンバの宣言 -----------------------------------------------
 private:
 
-	float m_deltaTime;	///< 経過時間(秒)
+	float m_elapsedTime;	///< 経過時間(秒)
 
 	// メンバ関数の宣言 -------------------------------------------------
 	// コンストラクタ/デストラクタ
@@ -55,7 +55,7 @@ public:
 public:
 
 	// 経過時間の取得
-	float GetdeltaTime() const { return m_deltaTime; };
+	float GetElapsedTime() const { return m_elapsedTime; };
 
 // 内部実装
 private:

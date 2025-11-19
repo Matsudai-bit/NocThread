@@ -119,6 +119,9 @@ public:
 	// •`‰æˆ—
 	void OnDraw() override;
 
+	// I—¹ˆ—
+	void OnExitState() override;
+
 
 
 

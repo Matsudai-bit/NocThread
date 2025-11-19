@@ -61,23 +61,6 @@ void GameEffectController::StopEffect(unsigned int id)
     m_pGameEffectManager->StopEffect(id);
 }
 
-/**
- * @brief 更新処理
- * 
- * @param[in] deltaTime　経過時間
- */
-void GameEffectController::Update(float deltaTime)
-{
-    m_pGameEffectManager->Update(deltaTime);
-}
-
-/**
- * @brief 描画処理
- */
-void GameEffectController::Draw()
-{
-    m_pGameEffectManager->Draw(*m_pCamera);
-}
 
 /**
  * @brief カメラの設定

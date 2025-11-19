@@ -20,9 +20,11 @@ using namespace DirectX;
  *
  * @param[in] なし
  */
-Canvas::Canvas()
+Canvas::Canvas(ID3D11DeviceContext* context, const DirectX::CommonStates* pCommonStates)
+	: m_pCommonStates{ pCommonStates }
 {
-
+	// スプライトバッチの作成
+	m_spriteBatch = std::make_unique<SpriteBatch>(context);
 }
 
 
@@ -38,26 +40,22 @@ Canvas::~Canvas()
 
 
 /**
- * @brief 初期化処理
+ * @brief タスクの描画
  * 
- * @param[in] context	共通デバイス
+ * @param[in] camera　カメラ
  */
-void Canvas::Initialize(ID3D11DeviceContext* context)
+void Canvas::DrawTask(const Camera& camera)
 {
-	// スプライトバッチの作成
-	m_spriteBatch = std::make_unique<SpriteBatch>(context);
+	DrawContents();
 }
-/**
- * @brief 描画処理
- *
- * @param[in] なし
- *
- * @return なし
- */
-void Canvas::Draw(const DirectX::CommonStates* states)
-{
 
-	m_spriteBatch->Begin(SpriteSortMode_Deferred,states->NonPremultiplied());
+/**
+ * @brief 描画
+ * 
+ */
+void Canvas::DrawContents()
+{
+	m_spriteBatch->Begin(SpriteSortMode_Deferred, m_pCommonStates->NonPremultiplied());
 
 	// 描画処理
 	for (auto sprite : m_sprites)

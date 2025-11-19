@@ -13,11 +13,11 @@
 
 
 // ヘッダファイルの読み込み ===================================================
-
+#include "Library/MyLib/TaskManager/TaskManager.h"
 
 // クラスの前方宣言 ===================================================
 class ISprite2D;	// スプライト
-
+class Camera;		// カメラ
 
 
 // クラスの定義 ===============================================================
@@ -25,6 +25,7 @@ class ISprite2D;	// スプライト
  * @brief キャンバス
  */
 class Canvas
+	: public Task
 {
 // クラス定数の宣言 -------------------------------------------------
 public:
@@ -38,12 +39,14 @@ private:
 
 	std::vector<ISprite2D*> m_sprites;						///< スプライト群
 
+	const DirectX::CommonStates* m_pCommonStates;			///< 共通状態
+
 
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
 public:
 	// コンストラクタ
-	Canvas();
+	Canvas(ID3D11DeviceContext* context, const DirectX::CommonStates* pCommonStates);
 
 	// デストラクタ
 	~Canvas();
@@ -51,11 +54,11 @@ public:
 
 // 操作
 public:
-	// 初期化処理
-	void Initialize(ID3D11DeviceContext* context);
+
 
 	// 描画処理
-	void Draw(const DirectX::CommonStates* states);
+	void DrawTask(const Camera& camera) override;
+	void DrawContents();
 
 	// 終了処理
 	void Finalize();

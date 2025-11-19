@@ -62,12 +62,6 @@ public:
 	// エフェクトの停止
 	void StopEffect(unsigned int id);
 
-	// 更新処理
-	void Update(float deltaTime);
-
-	// 描画処理
-	void Draw();
-
 	// 現在のカメラの設定
 	void SetCamera(const Camera* pCamera);
 	

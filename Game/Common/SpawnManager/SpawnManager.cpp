@@ -90,7 +90,7 @@ void SpawnManager::Update(float deltaTime)
 	{
 		m_enemySpawnCounter.UpperTime(deltaTime);
 
-		if (m_enemySpawnCounter.GetdeltaTime() >= 10.0f)
+		if (m_enemySpawnCounter.GetElapsedTime() >= 10.0f)
 		{
 			SpawnEnemy();
 			m_enemySpawnCounter.Reset();

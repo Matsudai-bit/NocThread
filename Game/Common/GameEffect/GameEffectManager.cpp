@@ -150,6 +150,33 @@ void GameEffectManager::Finalize()
 
 }
 
+/**
+ * @brief タスクの更新処理
+ * 
+ * @param[in] deltaTime フレーム間の経過時間
+ *
+ * @returns true タスクを継続する
+ * @returns false タスクを削除する
+ */
+bool GameEffectManager::UpdateTask(float deltaTime)
+{
+	// 更新処理
+	Update(deltaTime);
+
+	return true;
+}
+
+/**
+ * @brief 描画処理
+ * 
+ * @param[in] camera
+ */
+void GameEffectManager::DrawTask(const Camera& camera)
+{
+	// 描画処理
+	Draw(camera);
+}
+
 
 /**
  * @brief コンストラクタ

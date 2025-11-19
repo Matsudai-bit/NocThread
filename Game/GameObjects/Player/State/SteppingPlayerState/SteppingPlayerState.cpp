@@ -73,17 +73,17 @@ void SteppingPlayerState::OnUpdate(float deltaTime)
 
 	m_targetCounter.UpperTime(deltaTime);
 
-	m_currentLerpValue = m_targetCounter.GetdeltaTime() / 0.2f;
-	
+	m_currentLerpValue = m_targetCounter.GetElapsedTime() / 0.2f;
+
 	Vector3 currentPosition = Vector3::Lerp(m_startPosition, m_targetPosition, m_currentLerpValue);
 
 	//GetOwner()->SetPosition(currentPosition);
 
-	GetOwner()->SetVelocity((currentPosition - GetOwner()->GetPosition())/deltaTime);
+	GetOwner()->SetVelocity((currentPosition - GetOwner()->GetPosition()) / deltaTime);
 
 	GetOwner()->Move(deltaTime);
 
-	if (m_targetCounter.GetdeltaTime() >= 0.2f)
+	if (m_targetCounter.GetElapsedTime() >= 0.2f)
 	{
 		GetOwner()->SetPosition(m_targetPosition);
 		GetOwner()->RequestChangeState(Player::State::IDLE);

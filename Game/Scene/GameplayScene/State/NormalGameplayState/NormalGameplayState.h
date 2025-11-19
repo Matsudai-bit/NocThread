@@ -19,7 +19,8 @@
 #include "Game/Common/Input/InputActionType/InputActionType.h"
 
 // クラスの前方宣言 ===================================================
-class GameplayScene; // ゲームプレイシーン
+class GameplayScene;	// ゲームプレイシーン
+class Canvas;			// キャンバス
 class Sprite;
 // クラスの定義 ===============================================================
 /**
@@ -40,6 +41,8 @@ private:
 	std::unique_ptr < InputSystem<InputActionType::SystemActionID>> m_systemInput; ///< ゲームシステムの入力判断
 
 	bool m_isPrevConnectedGamepad; ///< ゲームパッドが接続されているかどうか
+
+	std::unique_ptr<Canvas> m_canvas;		///< キャンバス
 
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ

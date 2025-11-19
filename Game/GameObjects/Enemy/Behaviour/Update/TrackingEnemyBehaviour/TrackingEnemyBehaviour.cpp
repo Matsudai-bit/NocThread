@@ -69,7 +69,7 @@ void TrackingEnemyBehaviour::Update(Enemy* pEnemy, float deltaTime, const Common
 
 	m_playerTargetTimeCounter.UpperTime(deltaTime);
 
-	if (m_playerTargetTimeCounter.GetdeltaTime() >= 1.0f)
+	if (m_playerTargetTimeCounter.GetElapsedTime() >= 1.0f)
 	{
 		const GameObject* pPlayerObject = GameObjectRegistry::GetInstance()->GetGameObject(GameObjectTag::PLAYER);
 		if (pPlayerObject == nullptr) {
