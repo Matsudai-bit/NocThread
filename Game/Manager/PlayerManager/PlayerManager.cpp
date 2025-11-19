@@ -74,11 +74,12 @@ void PlayerManager::Initialize(const CommonResources* pCommonResources, Collisio
 /**
  * @brief 更新処理
  *
- * @param[in] deltaTime 経過時間
+ * @param[in] deltaTime フレーム間の経過時間
  *
- * @return なし
+ * @returns true タスクを継続する
+ * @returns false タスクを削除する
  */
-void PlayerManager::Update(float deltaTime)
+bool PlayerManager::UpdateTask(float deltaTime)
 {
 	// プレイヤーの入力
 	m_playerInput->Update(m_pCommonResources->GetKeyboardTracker(), m_pCommonResources->GetMouseTracker(), m_pCommonResources->GetGamePadTracker());
@@ -88,6 +89,7 @@ void PlayerManager::Update(float deltaTime)
 
 	m_playerController->Update(deltaTime, m_pCommonResources->GetKeyboardTracker(), m_pCommonResources->GetMouseTracker(), m_pCommonResources->GetGamePadTracker());
 
+	return true;
 }
 
 
@@ -95,11 +97,11 @@ void PlayerManager::Update(float deltaTime)
 /**
  * @brief 描画処理
  *
- * @param[in] なし
+ * @param[in] camera カメラ
  *
  * @return なし
  */
-void PlayerManager::Draw(const Camera& camera)
+void PlayerManager::DrawTask(const Camera& camera)
 {
 	// プレイヤーの描画
 	m_player->Draw(camera);

@@ -13,7 +13,7 @@
 
 
 // ヘッダファイルの読み込み ===================================================
-#include "Library/MyLib/TaskManager/TaskManager.h"
+#include "Game/Common/TaskManager/TaskManager.h"
 
 // クラスの前方宣言 ===================================================
 class ISprite2D;	// スプライト

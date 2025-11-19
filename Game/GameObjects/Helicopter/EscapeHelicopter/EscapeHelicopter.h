@@ -57,10 +57,10 @@ public:
 	void Initialize(const CommonResources* pCommonResources, CollisionManager* pCollisionManager);
 
 	// XVˆ—
-	void Update(float deltaTime);
+	bool UpdateTask(float deltaTime) override;
 
 	// •`‰æˆ—
-	void Draw(const Camera& camera);
+	void DrawTask(const Camera& camera) override;
 
 	// I—¹ˆ—
 	void Finalize();

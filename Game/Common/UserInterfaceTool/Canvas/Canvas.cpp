@@ -25,6 +25,8 @@ Canvas::Canvas(ID3D11DeviceContext* context, const DirectX::CommonStates* pCommo
 {
 	// スプライトバッチの作成
 	m_spriteBatch = std::make_unique<SpriteBatch>(context);
+	// タスク名を作る
+	SetName("Canvas");
 }
 
 

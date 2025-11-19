@@ -53,16 +53,19 @@ void EnemyManager::Initialize()
 /**
  * @brief 更新処理
  *
- * @param[in] deltaTime 経過時間
+ * @param[in] deltaTime フレーム間の経過時間
  *
- * @return なし
+ * @returns true タスクを継続する
+ * @returns false タスクを削除する
  */
-void EnemyManager::Update(float deltaTime)
+bool EnemyManager::UpdateTask(float deltaTime)
 {
 	for (auto& enemy : m_enemies)
 	{
 		enemy->Update(deltaTime);
 	}
+
+	return true;
 }
 
 
@@ -74,7 +77,7 @@ void EnemyManager::Update(float deltaTime)
  *
  * @return なし
  */
-void EnemyManager::Draw(const Camera& camera)
+void EnemyManager::DrawTask(const Camera& camera)
 {
 	for (auto& enemy : m_enemies)
 	{

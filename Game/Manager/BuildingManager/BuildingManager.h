@@ -17,6 +17,8 @@
 #include <vector>
 
 #include "Game/GameObjects/Prop/Building/Building.h"
+#include "Game/Common/TaskManager/TaskManager.h"
+
 
 // クラスの前方宣言 ===================================================
 class CollisionManager;
@@ -27,6 +29,7 @@ class CommonResources;
  * @brief 建物管理
  */
 class BuildingManager
+	: public Task
 {
 // クラス定数の宣言 -------------------------------------------------
 public:
@@ -56,10 +59,10 @@ public:
 	void Initialize();
 
 	// 更新処理
-	void Update(float deltaTime);
+	bool UpdateTask(float deltaTime) override;
 
 	// 描画処理
-	void Draw(const Camera& camera);
+	void DrawTask(const Camera& camera) override;
 
 	// 終了処理
 	void Finalize();

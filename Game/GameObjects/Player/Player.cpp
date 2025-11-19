@@ -614,7 +614,6 @@ void Player::ApplyPhysic(const float& deltaTime)
 void Player::ApplyFriction(float deltaTime)
 {
 	// –€ŽC‚ð‰Á‚¦‚é
-
 	SimpleMath::Vector3 velocity = PhysicsHelper::CalculateFrictionVelocity(GetVelocity(), deltaTime, FRICTION, GameObject::GRAVITY_ACCELERATION.Length());
 
 	SetVelocity(velocity);

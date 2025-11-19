@@ -227,6 +227,7 @@
     <ClInclude Include="Game\Common\StateMachine\StateBase\StateBase.h" />
     <ClInclude Include="Game\Common\StateMachine\StateMachine.h" />
     <ClInclude Include="Game\Common\StepTimer.h" />
+    <ClInclude Include="Game\Common\TaskManager\TaskManager.h" />
     <ClInclude Include="Game\Common\UserInterfaceTool\Canvas\Canvas.h" />
     <ClInclude Include="Game\Common\UserInterfaceTool\SpriteAnimator\SpriteAnimator.h" />
     <ClInclude Include="Game\Common\UserInterfaceTool\SpriteNumber\SpriteNumber.h" />
@@ -311,7 +312,6 @@
     <ClInclude Include="Library\MyLib\EasingKit\EasingKit.h" />
     <ClInclude Include="Library\MyLib\MathUtils\MathUtils.h" />
     <ClInclude Include="Library\MyLib\Ray\Ray.h" />
-    <ClInclude Include="Library\MyLib\TaskManager\TaskManager.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="StepTimer.h" />
   </ItemGroup>
@@ -354,6 +354,7 @@
     <ClCompile Include="Game\Common\SpawnManager\SpawnManager.cpp" />
     <ClCompile Include="Game\Common\StateMachine\StateBase\StateBase.cpp" />
     <ClCompile Include="Game\Common\StateMachine\StateMachine.cpp" />
+    <ClCompile Include="Game\Common\TaskManager\TaskManager.cpp" />
     <ClCompile Include="Game\Common\UserInterfaceTool\Canvas\Canvas.cpp" />
     <ClCompile Include="Game\Common\UserInterfaceTool\SpriteAnimator\SpriteAnimator.cpp" />
     <ClCompile Include="Game\Common\UserInterfaceTool\SpriteNumber\SpriteNumber.cpp" />
@@ -449,7 +450,6 @@
     <ClCompile Include="Library\MyLib\DirectXMyToolKit\DirectXMyToolKit.cpp" />
     <ClCompile Include="Library\MyLib\MathUtils\MathUtils.cpp" />
     <ClCompile Include="Library\MyLib\Ray\Ray.cpp" />
-    <ClCompile Include="Library\MyLib\TaskManager\TaskManager.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

@@ -116,18 +116,18 @@ void Floor::Initialize(const DirectX::SimpleMath::Vector3& pos, const CommonReso
 }
 
 
-
 /**
  * @brief 更新処理
  *
- * @param[in] deltaTime 経過時間
+ * @param[in] deltaTime フレーム間の経過時間
  *
- * @return なし
+ * @returns true タスクを継続する
+ * @returns false タスクを削除する
  */
-void Floor::Update(float deltaTime)
+bool Floor::UpdateTask(float deltaTime)
 {
     deltaTime;
-
+    return true;
 }
 
 
@@ -135,11 +135,11 @@ void Floor::Update(float deltaTime)
 /**
  * @brief 描画処理
  *
- * @param[in] なし
+ * @param[in] camera カメラ
  *
  * @return なし
  */
-void Floor::Draw(const Camera& camera)
+void Floor::DrawTask(const Camera& camera)
 {
 
     auto context = GetCommonResources()->GetDeviceResources()->GetD3DDeviceContext();

@@ -20,6 +20,8 @@
 #include "Game/GameObjects/Common/GameObjectEvent/GameObjectEvent.h"
 #include "Game/Common/EntityManager/IEntity.h"
 
+#include "Game/Common/TaskManager/TaskManager.h"
+
 // クラスの前方宣言 ===================================================
 class ICollider;		// コライダー
 class CommonResources;	// 共通リソース
@@ -47,8 +49,10 @@ enum class GameObjectTag
 /**
  * @brief	ゲームオブジェクト
  */
-class GameObject :
-	public ICollision
+class GameObject 
+	: public ICollision
+	, public Task
+
 {
 // クラス定数の宣言 -------------------------------------------------
 public:
@@ -83,13 +87,6 @@ public:
 
 // 操作
 public:
-
-	//// 更新処理
-	//void Update(float deltaTime) override;
-
-	//// 描画処理
-	//void Draw(const Camera& camera) override;
-
 
 	// 型を登録する
 	template<typename ChildType>

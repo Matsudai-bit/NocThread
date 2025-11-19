@@ -69,14 +69,17 @@ void EscapeHelicopter::Initialize(const CommonResources* pCommonResources, Colli
 /**
  * @brief 更新処理
  *
- * @param[in] deltaTime 経過時間
+ * @param[in] deltaTime フレーム間の経過時間
  *
- * @return なし
+ * @returns true タスクを継続する
+ * @returns false タスクを削除する
  */
-void EscapeHelicopter::Update(float deltaTime)
+bool EscapeHelicopter::UpdateTask(float deltaTime)
 {
 	UNREFERENCED_PARAMETER(deltaTime);
 	m_collider->SetCenter(GetPosition());
+
+	return true;
 }
 
 
@@ -87,7 +90,7 @@ void EscapeHelicopter::Update(float deltaTime)
  * @param[in] view　ビュー行列
  * @param[in] proj	射影行列
  */
-void EscapeHelicopter::Draw(const Camera& camera)
+void EscapeHelicopter::DrawTask(const Camera& camera)
 {
 	using namespace SimpleMath;
 

@@ -45,7 +45,7 @@ void Task::ChangeParent(Task* parent)
 /**
  * @brief タスクを有効化する
  */
-void Task::Enable()
+void Task::EnableTask()
 {
 	// 既に有効の場合は飛ばす
 	if (m_isEnabled) { return; }
@@ -56,7 +56,7 @@ void Task::Enable()
 /**
  * @brief タスクを無効化する
  */
-void Task::Disable()
+void Task::DisableTask()
 {
 	// 既に無効の場合は飛ばす
 	if (!m_isEnabled) { return; }
@@ -132,8 +132,23 @@ void TaskManager::AddTask(Task* task)
 	// タスクに名前が付いていない場合は仮で名前を付ける
 	if (task->GetName().empty())
 	{
+		const std::type_info& typeInfo = typeid(*task);
+
+		// type_info::name() メンバー関数で型名文字列を取得する
+		// ただし、返される文字列はコンパイラ依存で装飾されている場合がある (後述の注意点参照)
+		std::string className = typeInfo.name();
+
+		const std::string prefix = "class ";
+
+		// 文字列が "class " で始まるかチェック
+		if (className.rfind(prefix, 0) == 0)
+		{
+			// "class " の長さ分だけ文字列を切り詰める
+			className = className.substr(prefix.length());
+		}
+
 		std::ostringstream ostr;
-		ostr << "Task_" << m_totalTaskCnt;
+		ostr << className  << " : " << m_totalTaskCnt;
 		task->SetName(ostr.str());
 	}
 

@@ -108,7 +108,7 @@ public:
 	void Initialize(const CommonResources* pCommonResources, CollisionManager* pCollisionManager);
 
 	// デバッグカメラの更新
-	void Update(float deltaTime);
+	bool UpdateTask(float deltaTime) override;
 
 	// 画面サイズの設定関数
 	void SetWindowSize(int windowWidth, int windowHeight);

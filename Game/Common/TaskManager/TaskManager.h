@@ -122,10 +122,10 @@ public:
 	}
 
 	// タスクを有効化する
-	void Enable();
+	void EnableTask();
 
 	// タスクを無効化する
-	void Disable();
+	void DisableTask();
 
 	// 有効かどうか
 	bool IsEnabled() const;

@@ -78,13 +78,13 @@ void SpawnManager::Initialize(
 /**
  * @brief 更新処理
  *
- * @param[in] deltaTime 経過時間
+ * @param[in] deltaTime フレーム間の経過時間
  *
- * @return なし
+ * @returns true タスクを継続する
+ * @returns false タスクを削除する
  */
-void SpawnManager::Update(float deltaTime)
+bool SpawnManager::UpdateTask(float deltaTime)
 {
-	UNREFERENCED_PARAMETER(deltaTime);
 
 	if (m_stoleTreasure)
 	{
@@ -102,22 +102,9 @@ void SpawnManager::Update(float deltaTime)
 		eventFunc();
 	}
 	m_eventStack.clear();
+
+	return true;
 }
-
-
-
-/**
- * @brief 描画処理
- *
- * @param[in] なし
- *
- * @return なし
- */
-void SpawnManager::Draw()
-{
-
-}
-
 
 
 /**

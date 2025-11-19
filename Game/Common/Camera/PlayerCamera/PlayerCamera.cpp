@@ -84,7 +84,7 @@ void PlayerCamera::Initialize(const CommonResources* pCommonResources, Collision
  * 毎フレーム呼び出され、マウスの現在位置に応じてカメラの回転を更新し、
  * プレイヤーの位置と方向からビュー行列用の視点と注視点を設定します。
  */
-void PlayerCamera::Update(float deltaTime)
+bool PlayerCamera::UpdateTask(float deltaTime)
 {
 
 	int mouseX = 0;
@@ -102,7 +102,7 @@ void PlayerCamera::Update(float deltaTime)
 		auto state = m_pMouseTracker->GetLastState();
 
 		// 相対モードでばない（カメラFPS視点など）場合は処理をスキップ
-		if (state.positionMode != Mouse::MODE_RELATIVE) return;
+		if (state.positionMode != Mouse::MODE_RELATIVE) return true;
 
 		mouseX = state.x;
 		mouseY = state.y;
@@ -125,6 +125,7 @@ void PlayerCamera::Update(float deltaTime)
 	// ビュー行列の算出
 	CalcViewMatrix();
 
+	return true;
 }
 
 /**

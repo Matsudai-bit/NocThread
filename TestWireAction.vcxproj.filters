@@ -383,7 +383,7 @@
     <Filter Include="Game\Common\StageManager">
       <UniqueIdentifier>{14387b5c-ae5b-480c-8151-48ce7309d821}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Library\MyLib\TaskManager">
+    <Filter Include="Game\Common\TaskManager">
       <UniqueIdentifier>{ccb36434-55c4-46dc-8ddc-eb73595021b6}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -773,8 +773,8 @@
     <ClInclude Include="Game\Manager\StageManager\StageManager.h">
       <Filter>Game\Common\StageManager</Filter>
     </ClInclude>
-    <ClInclude Include="Library\MyLib\TaskManager\TaskManager.h">
-      <Filter>Library\MyLib\TaskManager</Filter>
+    <ClInclude Include="Game\Common\TaskManager\TaskManager.h">
+      <Filter>Game\Common\TaskManager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1106,8 +1106,8 @@
     <ClCompile Include="Game\Manager\StageManager\StageManager.cpp">
       <Filter>Game\Common\StageManager</Filter>
     </ClCompile>
-    <ClCompile Include="Library\MyLib\TaskManager\TaskManager.cpp">
-      <Filter>Library\MyLib\TaskManager</Filter>
+    <ClCompile Include="Game\Common\TaskManager\TaskManager.cpp">
+      <Filter>Game\Common\TaskManager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

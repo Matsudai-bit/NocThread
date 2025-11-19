@@ -104,17 +104,20 @@ void BuildingManager::Initialize()
 /**
  * @brief 更新処理
  *
- * @param[in] deltaTime 経過時間
+ * @param[in] deltaTime フレーム間の経過時間
  *
- * @return なし
+ * @returns true タスクを継続する
+ * @returns false タスクを削除する
  */
-void BuildingManager::Update(float deltaTime)
+bool BuildingManager::UpdateTask(float deltaTime)
 {
 	// 建物の更新処理
 	for (auto& building : m_buildings)
 	{
 		building->Update(deltaTime);
 	}
+
+	return true;
 }
 
 
@@ -124,7 +127,7 @@ void BuildingManager::Update(float deltaTime)
  * 
  * @param[in] camera	カメラ
  */
-void BuildingManager::Draw(const Camera& camera)
+void BuildingManager::DrawTask(const Camera& camera)
 {
 	// 建物の描画処理
 	for (auto& building : m_buildings)

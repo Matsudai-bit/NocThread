@@ -20,7 +20,7 @@
 #include "Library/ImaseLib/DebugDraw.h"         // デバック描画
 #include "Library/ImaseLib/GridFloor.h"         // デバック床
 
-#include "Library/MyLib/TaskManager/TaskManager.h" // タスク（基底クラス）
+#include "Game/Common/TaskManager/TaskManager.h"// タスク（基底クラス）
 #include "Game/Common/Screen.h"
 
 
@@ -63,6 +63,7 @@ class RopeObject;
 class ParticleObject;
 class XPBDSimulator;
 class GameEffectManager;
+class TaskManager;		// タスク管理
 
 
 // クラスの定義 ===============================================================
@@ -171,7 +172,11 @@ public:
 	// ウインドウサイズに依存するリソースを作成する
 	void CreateWindowSizeDependentResources() ;
 
-	void CreateStage(CollisionManager* pCollisionManager);
+	// ステージ作成
+	void CreateStage(CollisionManager* pCollisionManager, TaskManager* pTaskManager);
+
+	// タスクの追加
+	void AddTask(TaskManager* pTaskManager);
 
 	// 更新処理を止める
 	void StopUpdating();

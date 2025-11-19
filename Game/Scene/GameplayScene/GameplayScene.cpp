@@ -14,7 +14,7 @@
 #include "GameplayScene.h"
 
 // ライブラリ
-#include "Library/MyLib/TaskManager/TaskManager.h"
+#include "Game/Common/TaskManager/TaskManager.h"
 
 // DirectX系
 #include "Game/Common/DeviceResources.h"
@@ -89,11 +89,11 @@ void GameplayScene::Initialize()
 	// 基盤の作成
 	CreatePlatform();
 
-	// ステージ作成 
-	CreateStage();
-
 	// タスクの作成
 	CreateTask();
+
+	// ステージ作成 
+	CreateStage();
 
 	// ゲーム開始
 	StartGame();
@@ -244,6 +244,11 @@ void GameplayScene::CreatePlatform()
 
 	// **** ステートマシーンの作成 ****
 	m_stateMachine = std::make_unique <StateMachine<GameplayScene>>(this);
+	// **** タスク管理の作成 ****
+	m_taskManager = std::make_unique<TaskManager>();
+
+	// ステージ管理の作成
+	m_stageManager = std::make_unique<StageManager>(GetCommonResources());
 }
 
 /**
@@ -251,11 +256,9 @@ void GameplayScene::CreatePlatform()
  * */
 void GameplayScene::CreateStage()
 {
-	// ステージ管理の作成
-	m_stageManager = std::make_unique<StageManager>(GetCommonResources());
 	
 	m_stageManager->Initialize();
-	m_stageManager->CreateStage(m_collisionManager.get());
+	m_stageManager->CreateStage(m_collisionManager.get(), m_taskManager.get());
 
 }
 
@@ -265,8 +268,7 @@ void GameplayScene::CreateStage()
  */
 void GameplayScene::CreateTask()
 {
-	// **** タスク管理の作成 ****
-	m_taskManager = std::make_unique<TaskManager>();
+	
 	// **** タスクの登録 ****
 	m_taskManager->AddTask(m_collisionManager.get());	// CollisionManager
 	m_taskManager->AddTask(m_stageManager.get());		// StageManager

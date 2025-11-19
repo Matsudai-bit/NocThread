@@ -90,13 +90,16 @@ void Treasure::Initialize(const CommonResources* pCommonResources, CollisionMana
 /**
  * @brief 更新処理
  *
- * @param[in] deltaTime 経過時間
+ * @param[in] deltaTime フレーム間の経過時間
  *
- * @return なし
+ * @returns true タスクを継続する
+ * @returns false タスクを削除する
  */
-void Treasure::Update(float deltaTime)
+bool Treasure::UpdateTask(float deltaTime)
 {
 	SetRotate(GetRotate() * SimpleMath::Quaternion::CreateFromAxisAngle(SimpleMath::Vector3::Up, XMConvertToRadians(180.0f * deltaTime)));
+
+	return true;
 }
 
 
@@ -108,7 +111,7 @@ void Treasure::Update(float deltaTime)
  *
  * @return なし
  */
-void Treasure::Draw(const Camera& camera)
+void Treasure::DrawTask(const Camera& camera)
 {
 	if (m_isActive == false) { return; }
 

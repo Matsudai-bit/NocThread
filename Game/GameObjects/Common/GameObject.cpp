@@ -39,28 +39,6 @@ GameObject::~GameObject()
 {
 
 }
-//
-///**
-// * @brief 更新処理
-// * 
-// * @param[in] deltaTime　経過時間
-// */
-//void GameObject::Update(float deltaTime)
-//{
-//	UNREFERENCED_PARAMETER(deltaTime);
-//}
-//
-///**
-// * @brief 描画処理
-// * 
-// * @param[in] view　		ビュー行列
-// * @param[in] projection　	射影行列
-// */
-//void GameObject::Draw(const Camera& camera)
-//{
-//	UNREFERENCED_PARAMETER(view);
-//	UNREFERENCED_PARAMETER(projection);
-//}
 
 
 
