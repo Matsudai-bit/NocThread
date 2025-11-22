@@ -15,6 +15,7 @@
 #include "Game/Common/Collision/CollisionManager/CollisionManager.h"
 
 #include "Game/Common/DeviceResources.h"
+#include "Game/Common/Camera/Camera.h"
 
 using namespace DirectX;
 
@@ -54,7 +55,7 @@ void Building::Initialize(const CommonResources* pCommonResources, CollisionMana
 	// ‹¤’ÊƒŠƒ\[ƒX‚ÌÝ’è
 	SetCommonResources(pCommonResources);
 
-	SetScale(0.2f);
+	GetTransform()->SetScale(0.2f);
 	
 	m_colliderExtendOffset.y = -1.0f;
 	m_model = GetCommonResources()->GetResourceManager()->CreateModel("building_01.sdkmesh");
@@ -66,15 +67,15 @@ void Building::Initialize(const CommonResources* pCommonResources, CollisionMana
 
 
 		SimpleMath::Vector3 extents = boundingBox.Extents;
-		extents *= m_extends  *  /** 2.0f*/  GetScale()  * 2.0f;
+		extents *= m_extends  *  /** 2.0f*/  GetTransform()->GetScale()  * 2.0f;
 
-		extents.y = boundingBox.Extents.y * m_extends.y * GetScale() * 1.95f;
+		extents.y = boundingBox.Extents.y * m_extends.y * GetTransform()->GetScale().x * 1.95f;
 
 		
 
 		//m_positionOffset.y = extents.y / 2.0f;
 		
-		std::unique_ptr<AABB> collider = std::make_unique<AABB>( GetPosition() + SimpleMath::Vector3(0.0f, (extents.y / 2.0f) - 0.5f, 0.0f), extents + m_colliderExtendOffset);
+		std::unique_ptr<AABB> collider = std::make_unique<AABB>(GetTransform()->GetPosition() + SimpleMath::Vector3(0.0f, (extents.y / 2.0f) - 0.5f, 0.0f), extents + m_colliderExtendOffset);
 
 		// Õ“ËŠÇ—‚É“o˜^
 		pCollisionManager->AddCollisionObjectData(this, collider.get());
@@ -107,7 +108,7 @@ void Building::Update(float deltaTime)
  * @param[in] view
  * @param[in] proj
  */
-void Building::Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj)
+void Building::Draw(const Camera& camera)
 {
 	using namespace SimpleMath;
 
@@ -118,11 +119,11 @@ void Building::Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::Simp
 
 	
 	
-	world *= Matrix::CreateScale(m_extends *GetScale());
-	world *= Matrix::CreateFromQuaternion(GetRotate());
-	world *= Matrix::CreateTranslation(GetPosition());
+	world *= Matrix::CreateScale(m_extends * GetTransform()->GetScale());
+	world *= Matrix::CreateFromQuaternion(GetTransform()->GetRotation());
+	world *= Matrix::CreateTranslation(GetTransform()->GetPosition());
 
-	m_model.Draw(context, *states, world, view, proj);
+	m_model.Draw(context, *states, world, camera.GetViewMatrix(), camera.GetProjectionMatrix());
 
 	//for (auto& collider : m_collider)
 	//{

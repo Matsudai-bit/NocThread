@@ -17,6 +17,9 @@
 #include "Game/Common/Input/InputSystem/InputSystem.h"
 #include "Game/Common/Shadow/CircularShadow/CircularShadow.h"
 
+#include "Game/Common/TaskManager/TaskManager.h"
+
+
 // クラスの前方宣言 ===================================================
 class CommonResources;	// 共通リソース
 class CollisionManager; // 衝突管理
@@ -28,6 +31,7 @@ class PlayerController;	// プレイヤーコントローラ
  * @brief プレイヤー管理
  */
 class PlayerManager
+	: public Task
 {
 // クラス定数の宣言 -------------------------------------------------
 public:
@@ -61,10 +65,10 @@ public:
 	void Initialize(const CommonResources* pCommonResources, CollisionManager* pCollisionManager, const PlayerCamera* pPlayerCamera);
 
 	// 更新処理
-	void Update(float deltaTime);
+	bool UpdateTask(float deltaTime) override;
 
 	// 描画処理
-	void Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& projection);
+	void DrawTask(const Camera& camera) override;
 
 	// 終了処理
 	void Finalize();

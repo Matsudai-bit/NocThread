@@ -23,6 +23,8 @@
 #include "Game/Common/Camera/MainCamera/MainCamera.h"
 #include "Game/Common/GameEffect/GameEffectController.h"
 
+#include "Game/Common/Camera/Camera.h"
+
 using namespace DirectX;
 
 
@@ -59,7 +61,7 @@ Treasure::~Treasure()
  */
 void Treasure::Initialize(const CommonResources* pCommonResources, CollisionManager* pCollisionManager)
 {
-	SetScale(2.5f);
+	GetTransform()->SetScale(2.5f);
 
 	// 共通リソースの設定
 	SetCommonResources(pCommonResources);
@@ -68,7 +70,7 @@ void Treasure::Initialize(const CommonResources* pCommonResources, CollisionMana
 	m_model = GetCommonResources()->GetResourceManager()->CreateModel("treasure.sdkmesh");
 
 	// コライダーの設定
-	m_collider = std::make_unique<Sphere>(GetPosition(), 1.0f * GetScale());
+	m_collider = std::make_unique<Sphere>(GetTransform()->GetPosition(), 1.0f * GetTransform()->GetScale().x);
 
 	// 衝突管理の登録
 	pCollisionManager->AddCollisionObjectData(this, m_collider.get());
@@ -77,7 +79,7 @@ void Treasure::Initialize(const CommonResources* pCommonResources, CollisionMana
 
 	GameEffectManager::EffectClip clip;
 	clip.isLoop = true;
-	auto simpleParticle = std::make_unique<SimpleParticle>(GetCommonResources()->GetDeviceResources(), GetPosition(), MainCamera::GetInstance()->GetCamera());
+	auto simpleParticle = std::make_unique<SimpleParticle>(GetCommonResources()->GetDeviceResources(), GetTransform()->GetPosition(), MainCamera::GetInstance()->GetCamera());
 	m_effectId	=	GameEffectController::GetInstance()->PlayEffect(std::move(simpleParticle), clip);
 
 	
@@ -88,13 +90,16 @@ void Treasure::Initialize(const CommonResources* pCommonResources, CollisionMana
 /**
  * @brief 更新処理
  *
- * @param[in] deltaTime 経過時間
+ * @param[in] deltaTime フレーム間の経過時間
  *
- * @return なし
+ * @returns true タスクを継続する
+ * @returns false タスクを削除する
  */
-void Treasure::Update(float deltaTime)
+bool Treasure::UpdateTask(float deltaTime)
 {
-	SetRotate(GetRotate() * SimpleMath::Quaternion::CreateFromAxisAngle(SimpleMath::Vector3::Up, XMConvertToRadians(180.0f * deltaTime)));
+	GetTransform()->SetRotation(GetTransform()->GetRotation() * SimpleMath::Quaternion::CreateFromAxisAngle(SimpleMath::Vector3::Up, XMConvertToRadians(180.0f * deltaTime)));
+
+	return true;
 }
 
 
@@ -106,7 +111,7 @@ void Treasure::Update(float deltaTime)
  *
  * @return なし
  */
-void Treasure::Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj)
+void Treasure::DrawTask(const Camera& camera)
 {
 	if (m_isActive == false) { return; }
 
@@ -118,9 +123,9 @@ void Treasure::Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::Simp
 	// **** モデルの描画処理 ****
 	Matrix world = Matrix::Identity;
 
-	world *= Matrix::CreateScale(GetScale());
-	world *= Matrix::CreateFromQuaternion(GetRotate());
-	world *= Matrix::CreateTranslation(GetPosition());
+	world *= Matrix::CreateScale(GetTransform()->GetScale());
+	world *= Matrix::CreateFromQuaternion(GetTransform()->GetRotation());
+	world *= Matrix::CreateTranslation(GetTransform()->GetPosition());
 
 	m_model.UpdateEffects(
 		[](IEffect* effect)
@@ -138,14 +143,14 @@ void Treasure::Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::Simp
 		}
 	);
 
-	m_model.Draw(context, *states, world, view, proj);
+	m_model.Draw(context, *states, world, camera.GetViewMatrix(), camera.GetProjectionMatrix());
 
 	// 目印
 	auto cylinder = DirectX::GeometricPrimitive::CreateCylinder(context, 1000.f, 0.5f);
 
 	world = SimpleMath::Matrix::Identity;
-	world *= Matrix::CreateTranslation(GetPosition());
-	cylinder->Draw(world, view, proj, Colors::GreenYellow);
+	world *= Matrix::CreateTranslation(GetTransform()->GetPosition());
+	cylinder->Draw(world, camera.GetViewMatrix(), camera.GetProjectionMatrix(), Colors::GreenYellow);
 
 	//m_collider->Draw(context, view, proj);
 }

@@ -69,16 +69,16 @@ void FlyingChaserEnemyBehaviour::Update(Enemy* pEnemy, float deltaTime, const Co
 
 	m_playerTargetTimeCounter.UpperTime(deltaTime);
 
-	if (m_playerTargetTimeCounter.GetdeltaTime() >= 1.0f)
+	if (m_playerTargetTimeCounter.GetElapsedTime() >= 1.0f)
 	{
 		const GameObject* pPlayerObject = GameObjectRegistry::GetInstance()->GetGameObject(GameObjectTag::PLAYER);
 		if (pPlayerObject == nullptr) {
 			return;
 		}
 
-		Vector3 playerPosition = pPlayerObject->GetPosition();
+		Vector3 playerPosition = pPlayerObject->GetTransform()->GetPosition();
 
-		m_targetDirection = playerPosition - pEnemy->GetPosition();
+		m_targetDirection = playerPosition - pEnemy->GetTransform()->GetPosition();
 
 		// Y²•ûŒü‚Ìî•ñ‚ğÁ‚·
 		m_targetDirection.Normalize();

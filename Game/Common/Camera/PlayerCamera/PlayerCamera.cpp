@@ -84,8 +84,9 @@ void PlayerCamera::Initialize(const CommonResources* pCommonResources, Collision
  * 毎フレーム呼び出され、マウスの現在位置に応じてカメラの回転を更新し、
  * プレイヤーの位置と方向からビュー行列用の視点と注視点を設定します。
  */
-void PlayerCamera::Update(float deltaTime)
+bool PlayerCamera::UpdateTask(float deltaTime)
 {
+
 	int mouseX = 0;
 	int mouseY = 0;
 
@@ -101,13 +102,11 @@ void PlayerCamera::Update(float deltaTime)
 		auto state = m_pMouseTracker->GetLastState();
 
 		// 相対モードでばない（カメラFPS視点など）場合は処理をスキップ
-		if (state.positionMode != Mouse::MODE_RELATIVE) return;
+		if (state.positionMode != Mouse::MODE_RELATIVE) return true;
 
 		mouseX = state.x;
 		mouseY = state.y;
 	}
-	
-
 
 
 	// 回転の更新
@@ -117,12 +116,16 @@ void PlayerCamera::Update(float deltaTime)
 	UpdateCameraPosition(deltaTime, m_nextCameraTargetPosition);
 
 	// 次のカメラの目標位置を計算
-	m_nextCameraTargetPosition = CalculateCameraTargetPosition(m_rotate, m_pPlayer->GetPosition(), m_nextCameraTargetPosition);
+	m_nextCameraTargetPosition = CalculateCameraTargetPosition(m_rotate, m_pPlayer->GetTransform()->GetPosition(), m_nextCameraTargetPosition);
 
 	//// カメラの追従位置と最終設定を更新
 	//GetCommonResources()->GetDebugFont()->AddString(10, 50, Colors::Red, L"EyePosition (%f, %f, %f) ", GetEye().x, GetEye().y, GetEye().z);
 	//GetCommonResources()->GetDebugFont()->AddString(10, 100, Colors::Red, L"Target (%f, %f, %f)", GetTarget().x, GetTarget().y, GetTarget().z);
 
+	// ビュー行列の算出
+	CalcViewMatrix();
+
+	return true;
 }
 
 /**
@@ -303,10 +306,10 @@ void PlayerCamera::UpdateCameraPosition(float deltaTime, const DirectX::SimpleMa
 
 	// **** 注視点の算出処理 ****
 	// カメラ座標からプレイヤーを見た方向を算出
-	Vector3 lookPlayerDirection = m_pPlayer->GetPosition() - currentEye;
+	Vector3 lookPlayerDirection = m_pPlayer->GetTransform()->GetPosition() - currentEye;
 	lookPlayerDirection.Normalize();
 	// 注視点の算出
-	Vector3 target = m_pPlayer->GetPosition() + lookPlayerDirection * LOOK_TARGET_DISTANCE;
+	Vector3 target = m_pPlayer->GetTransform()->GetPosition() + lookPlayerDirection * LOOK_TARGET_DISTANCE;
 
 	Vector3 up(0.0f, 1.0f, 0.0f);
 	up = Vector3::TransformNormal(up, rot);
@@ -322,7 +325,7 @@ void PlayerCamera::UpdateCameraPosition(float deltaTime, const DirectX::SimpleMa
 	SetUp(up);
 
 	// ゲームオブジェクト側の座標・コライダー更新
-	SetPosition(GetEye());
+	GetTransform()->SetPosition(GetEye());
 	m_sphereCollider->Transform(GetEye()); // 追従目標位置でコライダーを更新
 }
 

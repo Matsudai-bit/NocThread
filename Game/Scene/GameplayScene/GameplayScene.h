@@ -35,37 +35,15 @@
 #include "Game/Common/ElapsedTimeCounter/ElapsedTimeCounter.h"
 
 // ゲームオブジェクト
-#include "Game/GameObjects/RopeObject/RopeObject.h"
-#include "Game/GameObjects/RopeObject/XPBDSimulator/XPBDSimulator.h"
-#include "Game/GameObjects/RopeObject/ParticleObject/ParticleObject.h"
+
 
 // クラスの宣言 ===============================================================
 class CommonResources;  // 共通リソース
-class Floor;			// 床
 class CollisionManager;	// 衝突判定管理
-class SpawnManager;		// 出現管理
-class EnemyManager;		// 敵管理
-class Wall;				// 壁
-class Segment;			// 線分
-class Building;			// 建物
-class PlayerCamera;		// プレイヤーのカメラ
-class Canvas;			// キャンバス
-class Sprite;			// スプライト
-class StageObject;		// ステージオブジェクト
-class Enemy;			// 敵
-class Treasure;			// 宝
-class EscapeHelicopter;	// ヘリコプター
-class IEnemyFactory;	
-class CircularShadow;	// 丸影
-class BuildingManager;  // 建物管理
-class PlayerManager;	// プレイヤー管理
-
-class RopeObject;
-class ParticleObject;
-class XPBDSimulator;
-class GameEffectManager;
-
+class GameEffectManager;// エフェクト管理
 class StageManager;		// ステージ管理
+class TaskManager;		// タスク管理
+
 
 // クラスの定義 ===============================================================
 /**
@@ -89,43 +67,17 @@ public:
 	// 実験
 	static constexpr float	ROPE_FIXIBLILLITY = 0.000000006f; 
 
-
-	// --- カメラ設定関連 ---
-	static constexpr float CAMERA_FOV_DEGREES	= 45.0f;	///< 射影行列の視野角 (度)
-	static constexpr float CAMERA_NEAR_CLIP		= 0.1f;		///< 射影行列のニアクリップ距離
-	static constexpr float CAMERA_FAR_CLIP		= 450.0f;	///< 射影行列のファークリップ距離
-
-	// --- UI関連 (スコープ) ---
-	static constexpr const char* SCOPE_TEXTURE_PATH = "scope.dds"; ///< スコープスプライトのテクスチャファイルパス
-	static constexpr float SCOPE_Y_OFFSET			= 140.0f;		///< スコープスプライトのY軸調整オフセット
-	static constexpr float SCOPE_SCALE				= 0.09f;		///< スコープスプライトのスケール
-
-
-
-
-
 // データメンバの宣言 -----------------------------------------------
 private:
 
 	// 状態
 	std::unique_ptr<StateMachine<GameplayScene>> m_stateMachine; ///< ステートマシーン
 
-    // 射影行列
-    DirectX::SimpleMath::Matrix m_projection;
-
-    // グリッドの床
-    std::unique_ptr<Imase::GridFloor> m_gridFloor;
-    // デバッグカメラ
-    std::unique_ptr<Imase::DebugCamera> m_debugCamera;
-
     // システム
     std::unique_ptr<CollisionManager>   m_collisionManager; ///< 衝突管理
 	std::unique_ptr<GameEffectManager>	m_gameEffectManager;///< ゲームエフェクト管理
-	
+	std::unique_ptr<TaskManager>		m_taskManager;		///< タスク管理
 
-	// スプライト関連
-	std::unique_ptr<Canvas> m_canvas; // スプライト表示用
-	std::unique_ptr<Sprite> m_scopeSprite; // スプライト
 
 	// その他
 	std::unique_ptr<StageManager> m_stageManager;
@@ -158,15 +110,16 @@ public:
 	// 終了処理
 	void Finalize() override;
 
+	// イベントの解消
+	void ResolveEvents();
+
 	// ウインドウサイズに依存するリソースを作成する
 	virtual void CreateWindowSizeDependentResources() override;
+	void OnEndScene();
 
 // 挙動関連
 public:
-	// インゲームのゲームオブジェクトを更新する
-	void UpdateInGameObjects(float deltaTime);
-	// インゲームのゲームオブジェクトを描画する
-	void DrawInGameObjects();
+
 
 // 通知関連
 public:
@@ -178,17 +131,34 @@ public:
 // 取得/設定
 public:
 
-	// キャンバスの取得
-	Canvas* GetCanvas() const;
-
 	// ステージ管理の取得
-	StageManager* GetStageManager() const;
+	StageManager* GetStageManager() const { return m_stageManager.get(); };
+
+	// タスク管理の取得
+	TaskManager* GetTaskManager() const { return m_taskManager.get();	}
 
 // 内部実装
 private:
 
-	void OnEndScene();
+	// --------------------------------------------------------------------
+	// 初期設定関連 
+	// --------------------------------------------------------------------
 
+	// ゲーム開始時のセットアップ
+	void SetUpForGameStart();
+
+	// 基盤の作成
+	void CreatePlatform();
+
+	// ステージの生成
 	void CreateStage();
 
+	// タスクの作成
+	void CreateTask();
+
+	// ゲームを開始する
+	void StartGame();
+
+
 };
+

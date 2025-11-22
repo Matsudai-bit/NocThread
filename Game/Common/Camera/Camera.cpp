@@ -9,6 +9,7 @@
 // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "Camera.h"
+#include "Game/Common/Screen.h"
 
 
 using namespace DirectX;
@@ -23,7 +24,11 @@ Camera::Camera()
 	: m_target	{ SimpleMath::Vector3(0.0f, 0.0f, 0.0f) }
 	, m_eye		{ SimpleMath::Vector3(0.0f, 0.0f, 1.0f) }
 {
-
+	// 射影行列の作成
+	m_projection = SimpleMath::Matrix::CreatePerspectiveFieldOfView(
+		XMConvertToRadians(CAMERA_FOV_DEGREES)
+		, Screen::Get()->GetWidthF() / Screen::Get()->GetHeightF()
+		, CAMERA_NEAR_CLIP, CAMERA_FAR_CLIP); // farを少し伸ばす
 }
 
 
@@ -69,9 +74,9 @@ void Camera::SetUp(const DirectX::SimpleMath::Vector3& up)
  * 
  * @return ビュー行列
  */
-SimpleMath::Matrix Camera::GetView() const
+SimpleMath::Matrix Camera::GetViewMatrix() const
 {
-	return SimpleMath::Matrix::CreateLookAt(m_eye, m_target, m_up);
+	return m_view;
 }
 
 /**
@@ -97,6 +102,21 @@ DirectX::SimpleMath::Vector3 Camera::GetTarget() const
 DirectX::SimpleMath::Vector3 Camera::GetUp() const
 {
 	return m_up;
+}
+
+/**
+ * @brief 射影行列の取得
+ * 
+ * @return 射影行列
+ */
+DirectX::SimpleMath::Matrix Camera::GetProjectionMatrix() const
+{
+	return m_projection;
+}
+
+void Camera::CalcViewMatrix()
+{
+	m_view = SimpleMath::Matrix::CreateLookAt(m_eye, m_target, m_up);
 }
 
 

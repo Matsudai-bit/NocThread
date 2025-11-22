@@ -17,6 +17,7 @@
 #include <vector>
 
 #include "Game/Common/GameEffect/Base/IGameEffect.h"
+#include "Game/Common/TaskManager/TaskManager.h"
 
 // クラスの前方宣言 ===================================================
 
@@ -25,6 +26,7 @@
  * @brief ゲームエフェクト管理
  */
 class GameEffectManager
+	: public Task
 {
 /// 構造体の宣言 ----------------------------------------------------
 public:
@@ -121,14 +123,23 @@ public:
 	// エフェクトの停止
 	void StopEffect(unsigned int id);
 
+	// 終了処理
+	void Finalize();
+
+	// タスクの更新処理
+	bool UpdateTask(float deltaTime) override;
+
+	// 描画処理
+	void DrawTask(const Camera& camera) override;
+
+private:
 	// 更新処理
 	void Update(float deltaTime);
 
 	// 描画処理
-	void Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj);
+	void Draw(const Camera& camera);
 
-	// 終了処理
-	void Finalize();
+
 
 
 // 取得/設定

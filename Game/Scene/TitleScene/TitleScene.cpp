@@ -71,6 +71,9 @@ TitleScene::~TitleScene()
  */
 void TitleScene::Initialize()
 {
+	auto context = GetCommonResources()->GetDeviceResources()->GetD3DDeviceContext();
+	auto states = GetCommonResources()->GetCommonStates();
+
 	auto screen = Screen::Get();
 	// スプライトの作成
 	m_backgroundSprite = std::make_unique<Sprite>();
@@ -84,14 +87,16 @@ void TitleScene::Initialize()
 	// チュートリアルウィンドウの作成
 	m_tutorialWindow = std::make_unique<TutorialWindow>();
 
-	m_backgroundSprite->Initialize(GetCommonResources()->GetResourceManager()->CreateTexture(TEXTURE_PATH_BG));
-	m_alphaSprite->		Initialize(GetCommonResources()->GetResourceManager()->CreateTexture(TEXTURE_PATH_ALPHA));
-	m_logoSprite->		Initialize(GetCommonResources()->GetResourceManager()->CreateTexture(TEXTURE_PATH_LOGO));
-	m_manualSprite->	Initialize(GetCommonResources()->GetResourceManager()->CreateTexture(TEXTURE_PATH_MANUAL_PC));
+	// 処理用変数
+	auto pResourceManager = GetCommonResources()->GetResourceManager();
+
+	m_backgroundSprite->Initialize(pResourceManager->CreateTexture(TEXTURE_PATH_BG));
+	m_alphaSprite->		Initialize(pResourceManager->CreateTexture(TEXTURE_PATH_ALPHA));
+	m_logoSprite->		Initialize(pResourceManager->CreateTexture(TEXTURE_PATH_LOGO));
+	m_manualSprite->	Initialize(pResourceManager->CreateTexture(TEXTURE_PATH_MANUAL_PC));
 
 	// キャンバスの作成
-	m_canvas = std::make_unique<Canvas>();
-	m_canvas->Initialize(GetCommonResources()->GetDeviceResources()->GetD3DDeviceContext());
+	m_canvas = std::make_unique<Canvas>(context, states);
 
 	// キャンバスにスプライトの登録
 	m_canvas->AddSprite(m_backgroundSprite.get());
@@ -145,8 +150,8 @@ void TitleScene::Update(float deltaTime)
 	UNREFERENCED_PARAMETER(deltaTime);
 
 	// ロゴの透過イージング
-	float opacity = MyLib::EaseInOutQuint(m_ElapsedTimeCounter.GetdeltaTime() / LOGO_EASING_TIME);
-	if (m_ElapsedTimeCounter.GetdeltaTime() <= LOGO_EASING_TIME)
+	float opacity = MyLib::EaseInOutQuint(m_ElapsedTimeCounter.GetElapsedTime() / LOGO_EASING_TIME);
+	if (m_ElapsedTimeCounter.GetElapsedTime() <= LOGO_EASING_TIME)
 	{
 		m_ElapsedTimeCounter.UpperTime(deltaTime);
 	}
@@ -195,10 +200,12 @@ void TitleScene::Render()
 
 	//GetCommonResources()->GetDebugFont()->AddString(0, 30, Colors::White, L"TitleScene");
 
-	m_canvas->Draw(states);
+	m_canvas->DrawContents();
 
 	if (m_isDisplayingTutorialWindow == false)
+	{
 		m_titleMenu->Draw();
+	}
 
 }
 

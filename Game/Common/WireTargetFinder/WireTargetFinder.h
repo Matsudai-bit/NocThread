@@ -105,7 +105,7 @@ public:
 	void Update();
 
 	// •`‰æˆ—
-	void Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& projection);
+	void Draw(const Camera& camera);
 
 	// I—¹ˆ—
 	void Finalize();

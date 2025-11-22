@@ -57,6 +57,8 @@ LoadingScreen::~LoadingScreen()
  */
 void LoadingScreen::Initialize()
 {
+	auto context = GetCommonResources()->GetDeviceResources()->GetD3DDeviceContext();
+
 	auto screen = Screen::Get();
 
 	// **** スプライトの作成 ****
@@ -106,8 +108,7 @@ void LoadingScreen::Initialize()
 	m_loadingFontAnimator->Initialize(m_loadingFontSprite.get(), fontAnimationClip);
 
 	// **** キャンバスの作成 ****
-	m_canvas = std::make_unique<Canvas>();
-	m_canvas->Initialize(GetCommonResources()->GetDeviceResources()->GetD3DDeviceContext());
+	m_canvas = std::make_unique<Canvas>(context, GetCommonResources()->GetCommonStates());
 
 	// キャンバスにスプライトの登録
 	m_canvas->AddSprite(m_backgroundSprite.get());
@@ -171,7 +172,7 @@ void LoadingScreen::Render()
 	//GetCommonResources()->GetDebugFont()->AddString(0, 30, Colors::White, L"LoadingScreen");
 
 	// キャンバスの描画処理
-	m_canvas->Draw(states);
+	m_canvas->DrawContents();
 
 }
 

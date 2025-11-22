@@ -194,10 +194,10 @@ void Sphere::SetRadius(const float& radius)
 	m_radius = radius;
 }
 
-void Sphere::Draw(ID3D11DeviceContext1* context, const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj)
+void Sphere::Draw(ID3D11DeviceContext1* context, const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& projection)
 {
 	std::unique_ptr<GeometricPrimitive>  a = GeometricPrimitive::CreateSphere(context, m_radius * 2.0f);
-	a->Draw(SimpleMath::Matrix::CreateTranslation(m_pos), view, proj, Colors::White, nullptr ,true);
+	a->Draw(SimpleMath::Matrix::CreateTranslation(m_pos), view, projection, Colors::White, nullptr ,true);
 }
 
 /**
@@ -665,7 +665,7 @@ void Triangle::Rotate(DirectX::SimpleMath::Vector3 rotate)
  * @brief 描画処理
  * 
  */
-void Triangle::Draw(const SimpleMath::Matrix& view, const SimpleMath::Matrix& proj)
+void Triangle::Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& projection)
 {
 	auto context = m_pDeviceResources->GetD3DDeviceContext();
 
@@ -675,7 +675,7 @@ void Triangle::Draw(const SimpleMath::Matrix& view, const SimpleMath::Matrix& pr
 	m_basicEffect.SetWorld(SimpleMath::Matrix::Identity);
 
 	m_basicEffect.SetView(view);
-	m_basicEffect.SetProjection(proj);
+	m_basicEffect.SetProjection(projection);
 
 	// 適用
 	m_basicEffect.Apply(context);
@@ -2533,11 +2533,11 @@ void Box2D::Rotate(DirectX::SimpleMath::Vector3 rotate)
  * @brief 描画処理
  * 
  */
-void Box2D::Draw(const SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj)
+void Box2D::Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& projection)
 {
 	for (auto& triangle : m_triangles)
 	{
-		triangle->Draw(view, proj);
+		triangle->Draw(view, projection);
 	}
 }
 
@@ -2740,18 +2740,18 @@ bool AABB::IsPointInside(const SimpleMath::Vector3& point) const
 	return true;
 }
 
-void AABB::Draw(ID3D11DeviceContext1* context, const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj)
+void AABB::Draw(ID3D11DeviceContext1* context, const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& projection)
 {
 	std::unique_ptr<GeometricPrimitive> box = GeometricPrimitive::CreateBox(context, m_extend);
 
-	
 
-	box->Draw(SimpleMath::Matrix::CreateTranslation(m_center), view, proj, Colors::Red, nullptr, true);
+
+	box->Draw(SimpleMath::Matrix::CreateTranslation(m_center), view, projection, Colors::Red, nullptr, true);
 }
 
 /**
  * @brief コンストラクタ
- * 
+ *
  * @param[in] axis　	軸
  * @param[in] length	長さ
  * @param[in] position	座標
@@ -2759,17 +2759,17 @@ void AABB::Draw(ID3D11DeviceContext1* context, const DirectX::SimpleMath::Matrix
  */
 Cylinder::Cylinder(const DirectX::SimpleMath::Vector3& axis, const float& length, const DirectX::SimpleMath::Vector3& position, const float& radius)
 	: m_axis{ axis }
-	, m_length	{ length }
+	, m_length{ length }
 	, m_position{ position }
-	, m_radius	{ radius }
+	, m_radius{ radius }
 {
 }
 
 Cylinder::Cylinder()
-	: m_axis	{}
-	, m_length	{}
+	: m_axis{}
+	, m_length{}
 	, m_position{}
-	, m_radius	{}
+	, m_radius{}
 {
 }
 
@@ -2786,7 +2786,7 @@ ColliderType Cylinder::GetColliderType() const
 
 /**
  * @brief 座標の設定
- * 
+ *
  * @param[in] position　座標
  */
 void Cylinder::SetPosition(const DirectX::SimpleMath::Vector3& position)
@@ -2796,7 +2796,7 @@ void Cylinder::SetPosition(const DirectX::SimpleMath::Vector3& position)
 
 /**
  * @brief 軸の設定
- * 
+ *
  * @param[in] axis　軸
  */
 void Cylinder::SetAxis(const DirectX::SimpleMath::Vector3& axis)
@@ -2806,7 +2806,7 @@ void Cylinder::SetAxis(const DirectX::SimpleMath::Vector3& axis)
 
 /**
  * @brief 長さの設定
- * 
+ *
  * @param[in] length　長さ
  */
 void Cylinder::SetLength(const float& length)
@@ -2816,7 +2816,7 @@ void Cylinder::SetLength(const float& length)
 
 /**
  * @brief 半径の設定
- * 
+ *
  * @param[in] radius　半径
  */
 void Cylinder::SetRadius(const float& radius)
@@ -2826,7 +2826,7 @@ void Cylinder::SetRadius(const float& radius)
 
 /**
  * @brief 座標の取得
- * 
+ *
  * @return 座標
  */
 DirectX::SimpleMath::Vector3 Cylinder::GetPosition() const
@@ -2836,7 +2836,7 @@ DirectX::SimpleMath::Vector3 Cylinder::GetPosition() const
 
 /**
  * @brief 軸の取得
- * 
+ *
  * @return 軸
  */
 DirectX::SimpleMath::Vector3 Cylinder::GetAxis() const
@@ -2846,7 +2846,7 @@ DirectX::SimpleMath::Vector3 Cylinder::GetAxis() const
 
 /**
  * @brief 長さの取得
- * 
+ *
  * @return 長さ
  */
 float Cylinder::GetLength() const
@@ -2856,7 +2856,7 @@ float Cylinder::GetLength() const
 
 /**
  * @brief 半径の取得
- * 
+ *
  * @return 半径
  */
 float Cylinder::GetRadius() const
@@ -2864,14 +2864,14 @@ float Cylinder::GetRadius() const
 	return m_radius;
 }
 
-void Cylinder::Draw(ID3D11DeviceContext1* context, const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj)
+void Cylinder::Draw(ID3D11DeviceContext1* context, const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& projection)
 {
 	using namespace SimpleMath;
 
-		std::unique_ptr<GeometricPrimitive> cylinder = GeometricPrimitive::CreateCylinder(context, m_length, m_radius * 2.0f);
+	std::unique_ptr<GeometricPrimitive> cylinder = GeometricPrimitive::CreateCylinder(context, m_length, m_radius * 2.0f);
 	// 筒の向きを表す軸ベクトル
 	// このベクトルが向いてほしい方向です
-	DirectX::SimpleMath::Vector3 axis = m_axis; 
+	DirectX::SimpleMath::Vector3 axis = m_axis;
 
 	// 入力ベクトルが正規化されていることを確認
 	axis.Normalize();
@@ -2902,7 +2902,8 @@ void Cylinder::Draw(ID3D11DeviceContext1* context, const DirectX::SimpleMath::Ma
 		if (dot > 0.999f) {
 			// 同じ方向を向いている場合、回転は不要
 			quaternion = DirectX::SimpleMath::Quaternion::Identity;
-		} else {
+		}
+		else {
 			// 正反対の方向を向いている場合、任意の軸周りに180度回転
 			quaternion = DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::Right, DirectX::XM_PI);
 		}
@@ -2913,9 +2914,9 @@ void Cylinder::Draw(ID3D11DeviceContext1* context, const DirectX::SimpleMath::Ma
 	world *= Matrix::CreateTranslation(SimpleMath::Vector3(0.0f, m_length / 2.0f, 0.0f));
 
 	world *= Matrix::CreateFromQuaternion(quaternion);
-	world *= Matrix::CreateTranslation(m_position  + (-axis * (m_length / 2.0f)  ));
+	world *= Matrix::CreateTranslation(m_position + (-axis * (m_length / 2.0f)));
 
-	cylinder->Draw(world, view, proj, Colors::Red);
+	cylinder->Draw(world, view, projection, Colors::Red);
 }
 
 
@@ -3039,7 +3040,7 @@ float Capsule::GetRadius() const
 	return m_radius;
 }
 
-void Capsule::Draw(ID3D11DeviceContext1* context, const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj)
+void Capsule::Draw(ID3D11DeviceContext1* context, const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& projection)
 {
 
 	using namespace SimpleMath;
@@ -3094,8 +3095,8 @@ void Capsule::Draw(ID3D11DeviceContext1* context, const DirectX::SimpleMath::Mat
 	world *= Matrix::CreateTranslation(m_position + (-axis * (m_length / 2.0f)));
 
 	// 円柱の描画
-	cylinder->Draw(world, view, proj, Colors::Red);
+	cylinder->Draw(world, view, projection, Colors::Red);
 	// 級の描画
-	sphere->Draw(Matrix::CreateTranslation(m_position + -m_axis * m_length / 2.0f), view, proj, Colors::Red);
-	sphere->Draw(Matrix::CreateTranslation(m_position + m_axis * m_length / 2.0f), view, proj, Colors::Red);
+	sphere->Draw(Matrix::CreateTranslation(m_position + -m_axis * m_length / 2.0f), view, projection, Colors::Red);
+	sphere->Draw(Matrix::CreateTranslation(m_position + m_axis * m_length / 2.0f), view, projection, Colors::Red);
 }

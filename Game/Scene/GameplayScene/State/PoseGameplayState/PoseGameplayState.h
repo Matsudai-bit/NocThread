@@ -15,6 +15,10 @@
 // ヘッダファイルの読み込み ===================================================
 #include <memory>
 #include <vector>
+
+#include "Library/DirectXFramework/RenderTexture.h"
+#include "Library/MyLib/DirectXMyToolKit/DepthStencil/DepthStencil.h"
+
 #include "Game/Common/StateMachine/StateBase/StateBase.h"
 #include "Game/Common/Line2D/Line2D.h"
 #include "Game/UI/Pose/PoseMenu/PoseMenu.h"
@@ -85,6 +89,8 @@ private:
 	std::unique_ptr<Sprite> m_operatingSprite;			///< 操作方法のスプライト
 	std::unique_ptr<Sprite>	m_manualSprite;				///< 操作説明スプライト
 
+	std::unique_ptr<Sprite> m_backInGameplayingSprite; ///< ゲームプレイ中の画像スプライト
+
 	std::unique_ptr<Canvas> m_canvas;					///< キャンバス　
 
 	std::vector< std::unique_ptr<Line2D>>	m_lines;	///< 2D線
@@ -92,6 +98,8 @@ private:
 	std::unique_ptr<PoseMenu>				m_poseMenu;	///< ポーズメニュー
 
 	std::unique_ptr<TutorialWindow>			m_tutorialWindow; ///< チュートリアルウィンドウ
+
+	std::unique_ptr<DX::RenderTexture>	m_pauseBackRT;	///< レンダーテクスチャ	(ポーズ画面の背景のSRVを取得するのに使用)
 
 	// 簡易フラグ
 	bool m_isDisplayingTutorialWindow;
@@ -118,6 +126,9 @@ public:
 
 	// 描画処理
 	void OnDraw() override;
+
+	// 終了処理
+	void OnExitState() override;
 
 
 

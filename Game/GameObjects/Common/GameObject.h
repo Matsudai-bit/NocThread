@@ -20,6 +20,10 @@
 #include "Game/GameObjects/Common/GameObjectEvent/GameObjectEvent.h"
 #include "Game/Common/EntityManager/IEntity.h"
 
+#include "Game/Common/TaskManager/TaskManager.h"
+#include "Game/GameObjects/Common/Transform/Transform.h"
+
+
 // クラスの前方宣言 ===================================================
 class ICollider;		// コライダー
 class CommonResources;	// 共通リソース
@@ -47,8 +51,10 @@ enum class GameObjectTag
 /**
  * @brief	ゲームオブジェクト
  */
-class GameObject :
-	public ICollision
+class GameObject 
+	: public ICollision
+	, public Task
+
 {
 // クラス定数の宣言 -------------------------------------------------
 public:
@@ -65,10 +71,7 @@ private:
 
 	std::unordered_map<std::type_index, void*>  m_childs;
 
-	DirectX::SimpleMath::Vector3	m_position;	///< 座標
-	DirectX::SimpleMath::Quaternion m_defaultRotation;	///< デフォルトの回転量
-	DirectX::SimpleMath::Quaternion m_rotation;	///< 回転
-	float							m_scale;	///< 拡大率
+	std::unique_ptr<Transform> m_transform;		///< トランスフォーム
 
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
@@ -83,13 +86,6 @@ public:
 
 // 操作
 public:
-
-	//// 更新処理
-	//void Update(float deltaTime) override;
-
-	//// 描画処理
-	//void Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& projection) override;
-
 
 	// 型を登録する
 	template<typename ChildType>
@@ -117,40 +113,20 @@ public:
 // 取得/設定
 public:
 
+
 	// 活動しているかどうか
 	virtual bool IsActive() const = 0;
 
 	// ゲームオブジェクトタグの取得
 	virtual GameObjectTag GetTag() const = 0;
 
-	// 座標の取得
-	DirectX::SimpleMath::Vector3 GetPosition() const;
-	// 座標の設定
-	void SetPosition(const DirectX::SimpleMath::Vector3& position);
-
-	// 回転の取得
-	DirectX::SimpleMath::Quaternion GetRotate() const;
-	// デフォルトの回転の取得
-	DirectX::SimpleMath::Quaternion GetDefaultRotate() const;
-	// 回転の設定
-	void SetRotate(const DirectX::SimpleMath::Quaternion& rotate);
-	void SetDefaultRotate(const DirectX::SimpleMath::Quaternion& rotate);
-
-	// 拡大率の取得
-	float GetScale() const;
-	// 拡大率の設定
-	void SetScale(const float& scale);
-
-
-	// 前方の取得
-	DirectX::SimpleMath::Vector3 GetForward() const;
-
+	// トランスフォームの取得
+	Transform* GetTransform() const { return m_transform.get(); }
 
 	// 共通リソースの取得
-	const CommonResources* GetCommonResources() const;
-
+	const CommonResources* GetCommonResources() const {	return m_pCommonResources;}
 	// 共通リソースの設定
-	void SetCommonResources(const CommonResources* pCommonResources);
+	void SetCommonResources(const CommonResources* pCommonResources) { m_pCommonResources = pCommonResources; }
 
 
 

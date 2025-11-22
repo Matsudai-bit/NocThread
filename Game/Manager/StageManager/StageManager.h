@@ -20,6 +20,7 @@
 #include "Library/ImaseLib/DebugDraw.h"         // デバック描画
 #include "Library/ImaseLib/GridFloor.h"         // デバック床
 
+#include "Game/Common/TaskManager/TaskManager.h"// タスク（基底クラス）
 #include "Game/Common/Screen.h"
 
 
@@ -62,6 +63,7 @@ class RopeObject;
 class ParticleObject;
 class XPBDSimulator;
 class GameEffectManager;
+class TaskManager;		// タスク管理
 
 
 // クラスの定義 ===============================================================
@@ -69,6 +71,7 @@ class GameEffectManager;
  * @brief ステージ管理
  */
 class StageManager 
+	: public Task
 {
 	// クラス定数の宣言 -------------------------------------------------
 public:
@@ -142,6 +145,8 @@ private:
 
 	std::vector <std::function<void()>> m_eventStack;
 
+	bool m_isStoppingUpdate; ///< 更新処理を止めるかどうか
+
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
 public:
@@ -156,10 +161,10 @@ public:
 	void Initialize() ;
 
 	// 更新処理
-	void Update(float deltaTime) ;
+	bool UpdateTask(float deltaTime) override;
 
 	// 描画処理
-	void Render(DirectX::SimpleMath::Matrix& proj, DirectX::SimpleMath::Matrix& view);
+	void DrawTask(const Camera& camera) override;
 
 	// 終了処理
 	void Finalize() ;
@@ -167,15 +172,24 @@ public:
 	// ウインドウサイズに依存するリソースを作成する
 	void CreateWindowSizeDependentResources() ;
 
-	void CreateStage(CollisionManager* pCollisionManager);
+	// ステージ作成
+	void CreateStage(CollisionManager* pCollisionManager, TaskManager* pTaskManager);
 
+	// タスクの追加
+	void AddTask(TaskManager* pTaskManager);
+
+	// 更新処理を止める
+	void StopUpdating();
+
+	// 更新処理を開始する
+	void StartUpdating();
 
 	// 挙動関連
-public:
+private:
 	// インゲームのゲームオブジェクトを更新する
 	void UpdateInGameObjects(float deltaTime);
 	// インゲームのゲームオブジェクトを描画する
-	void DrawInGameObjects(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& projection);
+	void DrawInGameObjects(const Camera& camera);
 
 	// 通知関連
 public:

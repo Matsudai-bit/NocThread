@@ -19,6 +19,8 @@
 #include "Game/Common/Collision/ICollision.h"
 #include "Game/GameObjects/Common/GameObject.h"
 
+#include "Game/Common/TaskManager/TaskManager.h"
+
 // クラスの定義 ===============================================================
 /**
   * @brief 当たり判定管理
@@ -31,6 +33,7 @@ class GameObject;
 
 
 class CollisionManager
+	: public Task
 {
 
 
@@ -91,7 +94,7 @@ public:
 	void Initialize();
 
 	// 更新処理
-	void Update();
+	bool UpdateTask(float deltaTime) override;
 
 	// 描画処理
 	void Draw();

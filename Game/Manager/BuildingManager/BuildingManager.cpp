@@ -104,17 +104,20 @@ void BuildingManager::Initialize()
 /**
  * @brief 更新処理
  *
- * @param[in] deltaTime 経過時間
+ * @param[in] deltaTime フレーム間の経過時間
  *
- * @return なし
+ * @returns true タスクを継続する
+ * @returns false タスクを削除する
  */
-void BuildingManager::Update(float deltaTime)
+bool BuildingManager::UpdateTask(float deltaTime)
 {
 	// 建物の更新処理
 	for (auto& building : m_buildings)
 	{
 		building->Update(deltaTime);
 	}
+
+	return true;
 }
 
 
@@ -122,15 +125,14 @@ void BuildingManager::Update(float deltaTime)
 /**
  * @brief 描画処理
  * 
- * @param[in] view			ビュー行列
- * @param[in] projection	射影行列
+ * @param[in] camera	カメラ
  */
-void BuildingManager::Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& projection)
+void BuildingManager::DrawTask(const Camera& camera)
 {
 	// 建物の描画処理
 	for (auto& building : m_buildings)
 	{
-		building->Draw(view, projection);
+		building->Draw(camera);
 	}
 }
 
@@ -233,7 +235,7 @@ void BuildingManager::CreateBuilding(
 
 	auto building = std::make_unique<Building>();
 
-	building->SetPosition(position);
+	building->GetTransform()->SetPosition(position);
 	building->SetExtends(scale);
 	building->Initialize(pCommonResources, pCollisionManager);
 
@@ -248,9 +250,9 @@ void BuildingManager::Save()
 	for (int i = 0; i < m_buildings.size(); i++)
 	{
 		// Vector3Data は GetPosition() などの型とは別なので、手動で値をコピー
-		saves[i].position.x = m_buildings[i]->GetPosition().x;
-		saves[i].position.y = m_buildings[i]->GetPosition().y;
-		saves[i].position.z = m_buildings[i]->GetPosition().z;
+		saves[i].position.x = m_buildings[i]->GetTransform()->GetPosition().x;
+		saves[i].position.y = m_buildings[i]->GetTransform()->GetPosition().y;
+		saves[i].position.z = m_buildings[i]->GetTransform()->GetPosition().z;
 
 		saves[i].scale.x = m_buildings[i]->GetExtends().x;
 		saves[i].scale.y = m_buildings[i]->GetExtends().y;

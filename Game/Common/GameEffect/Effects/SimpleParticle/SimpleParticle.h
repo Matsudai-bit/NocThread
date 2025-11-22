@@ -114,7 +114,7 @@ public:
 	// XVˆ—
 	void Update(float deltaTime) override;
 	// •`‰æˆ—
-	void Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj) override;
+	void Draw(const Camera& camera) override;
 
 	// Ä¶‚µ‚Ä‚é‚©‚Ç‚¤‚©
 	bool IsPlaying() const override;

@@ -22,6 +22,9 @@
 #include "Game/Common/ResourceManager/ResourceManager.h"
 
 #include "Game/Manager/StageManager/StageManager.h"
+#include "Game/Common/DeviceResources.h"
+#include "Game/Common/Camera/MainCamera/MainCamera.h"
+#include "Game/Common/GameEffect/GameEffectController.h"
 using namespace DirectX;
 
 // メンバ関数の定義 ===========================================================
@@ -36,8 +39,6 @@ NormalGameplayState::NormalGameplayState()
 
 }
 
-
-
 /**
  * @brief デストラクタ
  */
@@ -49,15 +50,19 @@ NormalGameplayState::~NormalGameplayState()
 void NormalGameplayState::OnStartState()
 {
 	auto screen = Screen::Get();
+	auto context = GetOwner()->GetCommonResources()->GetDeviceResources()->GetD3DDeviceContext();
 
 	// 入力の作成
 	m_systemInput = InputBindingFactory::CreateSystemInput();
 
-
 	m_manualSprite = std::make_unique<Sprite>();
 
+	// キャンバスの作成
+	m_canvas = std::make_unique<Canvas>(context, GetOwner()->GetCommonResources()->GetCommonStates());
+
 	// キャンバスへ登録
-	GetOwner()->GetCanvas()->AddSprite(m_manualSprite.get());
+	m_canvas->AddSprite(m_manualSprite.get());
+	m_canvas->SetOt(0);  // 一番手前にする
 
 	// スプライトのテクスチャ設定
 	m_manualSprite->Initialize(GetOwner()->GetCommonResources()->GetResourceManager()->CreateTexture("Manual/ui_manual._ingame_pc.dds"));
@@ -71,12 +76,22 @@ void NormalGameplayState::OnStartState()
 	
 	// ゲームパッドへの接続されているかどうかの初期化
 	m_isPrevConnectedGamepad = false;
+
+	// **** タスク管理へ登録 ****
+	GetOwner()->GetTaskManager()->AddTask(m_canvas.get());
+
+	// ステージ管理の更新を開始する
+	GetOwner()->GetStageManager()->StartUpdating();
+
 }
 
 void NormalGameplayState::OnExitState()
 {
-	// キャンバスへ登録
-	GetOwner()->GetCanvas()->RemoveSprite(m_manualSprite.get());
+	// キャンバスから削除
+	m_canvas->RemoveSprite(m_manualSprite.get());
+	// キャンバスタスクの削除
+	GetOwner()->GetTaskManager()->DeleteTask(m_canvas.get());
+
 
 }
 
@@ -88,25 +103,34 @@ void NormalGameplayState::OnUpdate(float deltaTime)
 	GetOwner()->GetCommonResources()->GetMouseTracker(), 
 	GetOwner()->GetCommonResources()->GetGamePadTracker());
 
-	// ゲームオブジェクトの更新処理
-	GetOwner()->UpdateInGameObjects(deltaTime);
+
+	// タスク管理の更新処理
+	GetOwner()->GetTaskManager()->Update(deltaTime);
 
 
 	if (m_systemInput->IsInput(InputActionType::SystemActionID::PAUSE, InputSystem<InputActionType::SystemActionID>::InputOption::PRESSED))
 	{
 		// ポーズ状態にする
 		GetStateMachine()->ChangeState<PoseGameplayState>();
+		GetOwner()->GetCommonResources()->SetCopyScreenRequest(true);
 	}
 
 	// ガイドUIの変更を試みる
 	TryChangeCurrentGuideUI();
+
 
 	
 }
 
 void NormalGameplayState::OnDraw()
 {
-	GetOwner()->DrawInGameObjects();
+	// 現在のカメラの取得
+	const Camera* pCurrentCamera = MainCamera::GetInstance()->GetCamera();
+	// エフェクトにカメラを設定する
+	GameEffectController::GetInstance()->SetCamera(pCurrentCamera);
+	// タスク管理の描画処理
+	GetOwner()->GetTaskManager()->Render(*pCurrentCamera);
+
 
 }
 

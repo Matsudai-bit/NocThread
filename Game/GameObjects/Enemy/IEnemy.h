@@ -16,8 +16,9 @@
 
 
 // クラスの前方宣言 ===================================================
-class CommonResources; // 共通リソース
-class CollisionManager;// 衝突管理
+class CommonResources;	// 共通リソース
+class CollisionManager;	// 衝突管理
+class Camera;			// カメラ
 
 // クラスの定義 ===============================================================
 /**
@@ -55,6 +56,6 @@ public:
  	virtual void Update(float deltaTime) = 0;
 
 	// 描画処理
-	virtual void Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj) = 0;
+	virtual void Draw(const Camera& camera) = 0;
 
 };

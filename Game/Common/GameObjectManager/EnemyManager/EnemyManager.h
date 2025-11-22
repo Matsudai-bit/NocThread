@@ -13,16 +13,18 @@
 
 
 // ヘッダファイルの読み込み ===================================================
-
+#include "Game/Common/TaskManager/TaskManager.h"
 
 // クラスの前方宣言 ===================================================
 class IEnemy; // 敵のインターフェース
+class Camera; // カメラ
 
 // クラスの定義 ===============================================================
 /**
  * @brief 敵管理クラス
  */
 class EnemyManager
+	: public Task
 {
 // クラス定数の宣言 -------------------------------------------------
 public:
@@ -50,10 +52,10 @@ public:
 	void Initialize();
 
 	// 更新処理
-	void Update(float deltaTime);
+	bool UpdateTask(float deltaTime) override;
 
 	// 描画処理
-	void Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj);
+	void DrawTask(const Camera& camera) override;
 
 	// 終了処理
 	void Finalize();

@@ -52,6 +52,7 @@
 #include "Library/ImaseLib/DebugFont.h"
 #include "Game//Common/GameObjectRegistry/GameObjectRegistry.h"
 #include "Game/Common/Event/Messenger/GameFlowMessenger/GameFlowMessenger.h"
+#include "Game/Common/TaskManager/TaskManager.h"
 #include <random>
 
 
@@ -72,6 +73,7 @@ using namespace DirectX;
  */
 StageManager::StageManager(const CommonResources* pCommonResources)
 	: m_pCommonResources{ pCommonResources }
+	, m_isStoppingUpdate{ false }
 {
 
 }
@@ -105,12 +107,14 @@ void StageManager::Initialize()
  *
  * @param[in] deltaTime フレーム間の経過時間
  *
- * @return なし
+ * @returns true タスクを継続する
+ * @returns false タスクを削除する
  */
-void StageManager::Update(float deltaTime)
+bool StageManager::UpdateTask(float deltaTime)
 {
-
-
+	if (m_isStoppingUpdate) { return true; }
+	UpdateInGameObjects(deltaTime);
+	return true;
 }
 
 
@@ -122,9 +126,9 @@ void StageManager::Update(float deltaTime)
  *
  * @return なし
  */
-void StageManager::Render(DirectX::SimpleMath::Matrix& proj, DirectX::SimpleMath::Matrix& view)
+void StageManager::DrawTask(const Camera& camera)
 {
-
+	DrawInGameObjects(camera);
 }
 
 
@@ -161,81 +165,17 @@ void StageManager::CreateWindowSizeDependentResources()
  */
 void StageManager::UpdateInGameObjects(float deltaTime)
 {
-	auto kb = Keyboard::Get().GetState();
-
-
-	// 出現管理の更新処理
-	m_spawnManager->Update(deltaTime);
-
-	m_playerCamera->Update(deltaTime);
-
-
-	m_playerManager->Update(deltaTime);
-
-	for (auto& stageObj : m_stageObject)
-	{
-		stageObj->Update(deltaTime);
-	}
-
-	// お宝の更新処理
-	m_treasure->Update(deltaTime);
-
-	// 敵の更新処理
-	m_enemyManager->Update(deltaTime);
-
-	// 脱出用ヘリコプターの更新処理
-	for (auto& helicopter : m_escapeHelicopter)
-	{
-		helicopter->Update(deltaTime);
-	}
-
-
-
-
 }
 
 /**
  * @brief インゲームのオブジェクトを描画する
  * */
-void StageManager::DrawInGameObjects(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& projection)
+void StageManager::DrawInGameObjects(const Camera& camera)
 {
 	if (m_pCommonResources == nullptr) return;
 
-	// 共通リソース
-	auto states = m_pCommonResources->GetCommonStates();
-
-	// グリッド床の描画
-	//m_gridFloor->Render(context, view, projection);
-
-	m_floor->Draw(view, projection);
-
-	// プレイヤーの描画処理
-	m_playerManager->Draw(view, projection);
-
-
-	for (auto& stageObj : m_stageObject)
-	{
-		stageObj->Draw(view, projection);
-	}
-
-	// 建物の描画処理
-	m_buildingManager->Draw(view, projection);
-
-	// 脱出用ヘリコプターの描画処理
-	for (auto& helicopter : m_escapeHelicopter)
-	{
-		helicopter->Draw(view, projection);
-	}
-
-
-	// 敵管理の描画処理
-	m_enemyManager->Draw(view, projection);
-
-	// お宝の描画処理
-	m_treasure->Draw(view, projection);
-
+	
 	// スカイボックスの描画処理
-
 	m_skySphere.UpdateEffects([](IEffect* effect)
 		{
 			auto lights = dynamic_cast<IEffectLights*>(effect);
@@ -249,17 +189,17 @@ void StageManager::DrawInGameObjects(const DirectX::SimpleMath::Matrix& view, co
 
 			auto basicEffect = dynamic_cast<BasicEffect*>(effect);
 			if (basicEffect)
+			{
 				basicEffect->SetEmissiveColor(Colors::White);
-
-
+			}
 		});
 
 
 
 	SimpleMath::Matrix world = SimpleMath::Matrix::CreateScale(SKYSPHERE_SCALE);
-	world *= SimpleMath::Matrix::CreateTranslation(m_playerManager->GetPlayer()->GetPosition());
+	world *= SimpleMath::Matrix::CreateTranslation(m_playerManager->GetPlayer()->GetTransform()->GetPosition());
 
-	m_skySphere.Draw(m_pCommonResources->GetDeviceResources()->GetD3DDeviceContext(), *m_pCommonResources->GetCommonStates(), world, view, projection);
+	m_skySphere.Draw(m_pCommonResources->GetDeviceResources()->GetD3DDeviceContext(), *m_pCommonResources->GetCommonStates(), world, camera.GetViewMatrix(), camera.GetProjectionMatrix());
 }
 
 
@@ -279,7 +219,7 @@ void StageManager::OnEndScene()
 /**
  * @brief ステージの生成
  * */
-void StageManager::CreateStage(CollisionManager* pCollisionManager)
+void StageManager::CreateStage(CollisionManager* pCollisionManager, TaskManager* pTaskManager)
 {
 	using namespace SimpleMath;
 	CreateWindowSizeDependentResources();
@@ -313,9 +253,6 @@ void StageManager::CreateStage(CollisionManager* pCollisionManager)
 	m_spawnManager = std::make_unique<SpawnManager>();
 	m_spawnManager->Initialize(m_enemyManager.get(), &m_escapeHelicopter, m_pCommonResources, pCollisionManager);
 
-	// ***** ステージ作成 *****
-	//CreateStage();
-
 	// **** 天球の作成 ****
 	m_skySphere = m_pCommonResources->GetResourceManager()->CreateModel("skyDome.sdkmesh");
 
@@ -336,15 +273,65 @@ void StageManager::CreateStage(CollisionManager* pCollisionManager)
 
 	// お宝の生成
 	m_treasure = std::make_unique<Treasure>();
-	m_treasure->SetPosition(treasurePosition);
+	m_treasure->GetTransform()->SetPosition(treasurePosition);
 	m_treasure->Initialize(m_pCommonResources, pCollisionManager);
 
 	m_buildingManager = std::make_unique<BuildingManager>();
 	m_buildingManager->Initialize();
 	m_buildingManager->RequestCreate(pCollisionManager, m_pCommonResources);
 	// m_buildingManager->Save();
-	// ****** ここまで ******************************************************
 
+	// タスクの追加
+	AddTask(pTaskManager);
 
+}
 
+/**
+ * @brief タスクの追加
+ * 
+ * @param[in] pTaskManager　タスク管理
+ */
+void StageManager::AddTask(TaskManager* pTaskManager)
+{
+	// 追加するタスク
+	std::vector<Task*> addTasks =
+	{
+		m_playerCamera	.get(),
+		m_spawnManager	.get(),
+		m_floor			.get(),
+		m_playerManager	.get(),
+		m_buildingManager.get(),
+		m_enemyManager	.get(),
+		m_treasure		.get()
+	};
+	for (auto& helicopter : m_escapeHelicopter)
+	{
+		addTasks.push_back(helicopter.get());
+	}
+
+	// 追加
+	for (auto& task : addTasks)
+	{
+		pTaskManager->AddTask(task);
+		// 親の設定
+		task->ChangeParent(this);
+	}
+}
+
+/**
+ * @brief 更新処理を止める
+ */
+void StageManager::StopUpdating()
+{
+	m_isStoppingUpdate = true;
+	DisableTask();
+}
+
+/**
+ * @brief 更新処理を開始する
+  */
+void StageManager::StartUpdating()
+{
+	m_isStoppingUpdate = false;
+	EnableTask();
 }

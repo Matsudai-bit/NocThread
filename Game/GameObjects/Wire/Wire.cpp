@@ -26,6 +26,8 @@
 
 #include "Game/GameObjects/Wire/IWireHolder/IWireHolder.h"
 
+#include "Game/Common/Camera/Camera.h"
+
 #include "Game/GameObjects/RopeObject/XPBDSimulator/Constraint/CollisionConstraint/CollisionConstraintFactory.h"
 
 
@@ -146,7 +148,7 @@ void Wire::Update(float deltaTime)
 
 
 		// 距離が指定された以上になった場合終了する
-		float lengthSqr = SimpleMath::Vector3::DistanceSquared(m_owner.pGameObject->GetPosition(), pos);
+		float lengthSqr = SimpleMath::Vector3::DistanceSquared(m_owner.pGameObject->GetTransform()->GetPosition(), pos);
 		if (lengthSqr >= m_length * m_length)
 		{
 			Reset();
@@ -156,8 +158,8 @@ void Wire::Update(float deltaTime)
 
 
 		particle->SetPosition(pos);
-		m_ropeObject->GetParticles()->front()->SetPosition(m_owner.pGameObject->GetPosition());
-		m_collider->Set(m_owner.pGameObject->GetPosition(), pos,true);
+		m_ropeObject->GetParticles()->front()->SetPosition(m_owner.pGameObject->GetTransform()->GetPosition());
+		m_collider->Set(m_owner.pGameObject->GetTransform()->GetPosition(), pos,true);
 
 
 	}
@@ -173,13 +175,13 @@ void Wire::Update(float deltaTime)
  *
  * @return なし
  */
-void Wire::Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj)
+void Wire::Draw(const Camera& camera)
 {
 	if (m_isActive == false) { return; }
 	auto states = GetCommonResources()->GetCommonStates();
 	auto context = GetCommonResources()->GetDeviceResources()->GetD3DDeviceContext();
 
-	m_ropeObject->Draw(view, proj);
+	m_ropeObject->Draw(camera);
 
 	SimpleMath::Matrix world;
 # ifdef DEBUG
@@ -195,7 +197,7 @@ void Wire::Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMa
 
 		world = SimpleMath::Matrix::CreateScale(0.05f);
 		world *= SimpleMath::Matrix::CreateTranslation(obj->GetPosition());
-		ballModel.Draw(context, *states, world, view, proj);
+		ballModel.Draw(context, *states, world, camera.GetViewMatrix(), camera.GetProjectionMatrix());
 	}
 
 # else
@@ -207,13 +209,13 @@ void Wire::Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMa
 		world = SimpleMath::Matrix::Identity;
 		world = SimpleMath::Matrix::CreateScale(0.5f);
 		world *= SimpleMath::Matrix::CreateTranslation(m_particleObjects[0]->GetPosition());
-		ballModel.Draw(context, *states, world, view, proj);
+		ballModel.Draw(context, *states, world, camera.GetViewMatrix(), camera.GetProjectionMatrix());
 	}
 
 # endif
 
 	if (m_particleObjects.size() > 0)
-		m_ropeObject->Draw(view, proj);
+		m_ropeObject->Draw(camera);
 
 }
 
@@ -478,7 +480,7 @@ void Wire::OnCollision(GameObject* pHitObject, ICollider* pHitCollider)
 
 
 			// **** ワイヤーの作成 *****
-			if (CreateRope(m_owner.pGameObject->GetPosition(), intersectionPos, m_simulationParam, 0.9f))
+			if (CreateRope(m_owner.pGameObject->GetTransform()->GetPosition(), intersectionPos, m_simulationParam, 0.9f))
 			{
 
 				m_owner.pHolderInterface->OnCollisionWire(pHitObject);

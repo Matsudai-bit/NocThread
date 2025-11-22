@@ -14,6 +14,8 @@
 #include "Game/Common/CommonResources/CommonResources.h"
 #include "Library/ImaseLib/DebugFont.h"
 
+#include "Game/Common/Camera/Camera.h"
+
 using namespace DirectX;
 
 
@@ -66,13 +68,13 @@ void Floor::Initialize(const DirectX::SimpleMath::Vector3& pos, const CommonReso
     float halfWidth = WIDTH / 2.0f;
 
     // 中心座標の設定
-    SetPosition(pos);
+    GetTransform()->SetPosition(pos);
 
     // 各座標の算出
-    m_parentVertexes[0].position = GetPosition() + DirectX::SimpleMath::Vector3( halfWidth, 0.0f, -halfWidth);
-    m_parentVertexes[1].position = GetPosition() + DirectX::SimpleMath::Vector3(-halfWidth, 0.0f, -halfWidth);
-    m_parentVertexes[2].position = GetPosition() + DirectX::SimpleMath::Vector3(-halfWidth, 0.0f,  halfWidth);
-    m_parentVertexes[3].position = GetPosition() + DirectX::SimpleMath::Vector3( halfWidth, 0.0f,  halfWidth);
+    m_parentVertexes[0].position = GetTransform()->GetPosition() + DirectX::SimpleMath::Vector3( halfWidth, 0.0f, -halfWidth);
+    m_parentVertexes[1].position = GetTransform()->GetPosition() + DirectX::SimpleMath::Vector3(-halfWidth, 0.0f, -halfWidth);
+    m_parentVertexes[2].position = GetTransform()->GetPosition() + DirectX::SimpleMath::Vector3(-halfWidth, 0.0f,  halfWidth);
+    m_parentVertexes[3].position = GetTransform()->GetPosition() + DirectX::SimpleMath::Vector3( halfWidth, 0.0f,  halfWidth);
 
     //m_parentVertexes[0].position = GetPosition() + DirectX::SimpleMath::Vector3(-halfWidth, 0.0f, -halfWidth);
     //m_parentVertexes[1].position = GetPosition() + DirectX::SimpleMath::Vector3( halfWidth, 0.0f, -halfWidth);
@@ -80,7 +82,7 @@ void Floor::Initialize(const DirectX::SimpleMath::Vector3& pos, const CommonReso
     //m_parentVertexes[3].position = GetPosition() + DirectX::SimpleMath::Vector3(halfWidth, 0.0f, halfWidth);
 
     // コライダーの生成
-    m_collider = std::make_unique<AABB>(GetPosition() - SimpleMath::Vector3(0.0f, 1.0f, 0.0f) * (WIDTH / 2.0f), SimpleMath::Vector3(WIDTH, WIDTH , WIDTH));
+    m_collider = std::make_unique<AABB>(GetTransform()->GetPosition() - SimpleMath::Vector3(0.0f, 1.0f, 0.0f) * (WIDTH / 2.0f), SimpleMath::Vector3(WIDTH, WIDTH , WIDTH));
 
     for (int i = 0; i < VERTEX_NUM; i++)
     {
@@ -91,7 +93,7 @@ void Floor::Initialize(const DirectX::SimpleMath::Vector3& pos, const CommonReso
     pCollisionManager->AddCollisionObjectData(this, m_collider.get());
     //pCollisionManager->AddCollisionObjectData(this, &m_collider[1]);
 
-    SetPosition(SimpleMath::Vector3::Zero);
+    GetTransform()->SetPosition(SimpleMath::Vector3::Zero);
 
     m_effect = std::make_unique<BasicEffect>(device);
     // ライト(ON)
@@ -114,18 +116,18 @@ void Floor::Initialize(const DirectX::SimpleMath::Vector3& pos, const CommonReso
 }
 
 
-
 /**
  * @brief 更新処理
  *
- * @param[in] deltaTime 経過時間
+ * @param[in] deltaTime フレーム間の経過時間
  *
- * @return なし
+ * @returns true タスクを継続する
+ * @returns false タスクを削除する
  */
-void Floor::Update(float deltaTime)
+bool Floor::UpdateTask(float deltaTime)
 {
     deltaTime;
-
+    return true;
 }
 
 
@@ -133,11 +135,11 @@ void Floor::Update(float deltaTime)
 /**
  * @brief 描画処理
  *
- * @param[in] なし
+ * @param[in] camera カメラ
  *
  * @return なし
  */
-void Floor::Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj)
+void Floor::DrawTask(const Camera& camera)
 {
 
     auto context = GetCommonResources()->GetDeviceResources()->GetD3DDeviceContext();
@@ -165,9 +167,9 @@ void Floor::Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleM
     SimpleMath::Matrix world = /*rotationZ * rotationX*/ SimpleMath::Matrix::Identity;
     m_effect->SetWorld(world);
     // ビュー行列
-    m_effect->SetView(view);
+    m_effect->SetView(camera.GetViewMatrix());
     // 射影行列
-    m_effect->SetProjection(proj);
+    m_effect->SetProjection(camera.GetProjectionMatrix());
 
     // テクスチャ
     m_effect->SetTexture(m_texture.Get());

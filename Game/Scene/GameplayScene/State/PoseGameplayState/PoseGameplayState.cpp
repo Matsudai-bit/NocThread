@@ -31,6 +31,8 @@
 #include "Game/Scene/GameplayScene/State/NormalGameplayState/NormalGameplayState.h"
 
 #include "Game/Manager/StageManager/StageManager.h"
+#include "Game/Common/GameEffect/GameEffectController.h"
+#include "Game/Common/Camera/MainCamera/MainCamera.h"
 
 using namespace DirectX;
 
@@ -64,12 +66,13 @@ void PoseGameplayState::OnStartState()
 {
 	using namespace SimpleMath;
 
-	auto resourceManager = GetOwner()->GetCommonResources()->GetResourceManager();
-	auto context = GetOwner()->GetCommonResources()->GetDeviceResources()->GetD3DDeviceContext();
+	auto resourceManager	= GetOwner()->GetCommonResources()->GetResourceManager();
+	auto context			= GetOwner()->GetCommonResources()->GetDeviceResources()->GetD3DDeviceContext();
+	auto device				= GetOwner()->GetCommonResources()->GetDeviceResources()->GetD3DDevice();
 	auto screen = Screen::Get();
 	// ***** キャンバスの作成 *********************************************
-	m_canvas = std::make_unique<Canvas>();
-	m_canvas->Initialize(context);
+	m_canvas = std::make_unique<Canvas>(context, GetOwner()->GetCommonResources()->GetCommonStates());
+	m_canvas->SetOt(0);  // 一番手前にする
 
 	// **** スプライトの作成 **********************************************
 	m_backgroundAlphaSprite = std::make_unique<Sprite>();
@@ -77,8 +80,11 @@ void PoseGameplayState::OnStartState()
 	m_operatingFontSprite = std::make_unique<Sprite>();
 	m_operatingSprite = std::make_unique<Sprite>();
 	m_manualSprite = std::make_unique<Sprite>();
+	m_backInGameplayingSprite = std::make_unique<Sprite>();
+
 
 	// キャンバスへ登録
+	m_canvas->AddSprite(m_backInGameplayingSprite.get());
 	m_canvas->AddSprite(m_backgroundAlphaSprite.get());
 	m_canvas->AddSprite(m_poseFontSprite.get());
 	m_canvas->AddSprite(m_operatingFontSprite.get());
@@ -144,6 +150,16 @@ void PoseGameplayState::OnStartState()
 	m_systemInput = InputBindingFactory::CreateSystemInput();
 
 	m_isPrevConnectedGamepad = false;
+
+
+	m_backInGameplayingSprite->Initialize(GetOwner()->GetCommonResources()->GetCopyScreenTexture()->GetShaderResourceView());
+	m_backInGameplayingSprite->SetPosition(Vector2(screen->GetCenterXF(), screen->GetCenterYF()));
+
+	// **** タスク管理へ登録 ****
+	GetOwner()->GetTaskManager()->AddTask(m_canvas.get());
+
+	// ステージ管理の更新を停止する
+	GetOwner()->GetStageManager()->StopUpdating();
 }
 
 /**
@@ -153,6 +169,9 @@ void PoseGameplayState::OnStartState()
 void PoseGameplayState::OnUpdate(float deltaTime)
 {
 	UNREFERENCED_PARAMETER(deltaTime);
+
+	// タスク管理の更新処理
+	GetOwner()->GetTaskManager()->Update(deltaTime);
 
 	// 入力の更新処理
 	m_systemInput->Update(
@@ -194,13 +213,12 @@ void PoseGameplayState::OnDraw()
 	auto states = GetOwner()->GetCommonResources()->GetCommonStates();
 	auto screen = Screen::Get();
 
-	GetOwner()->DrawInGameObjects();
-
-
-
-	// キャンバスの描画
-	m_canvas->Draw(states);
-
+	// 現在のカメラの取得
+	const Camera* pCurrentCamera = MainCamera::GetInstance()->GetCamera();
+	// エフェクトにカメラを設定する
+	GameEffectController::GetInstance()->SetCamera(pCurrentCamera);
+	// タスク管理の描画処理
+	GetOwner()->GetTaskManager()->Render(*pCurrentCamera);
 
 
 	if (m_isDisplayingTutorialWindow == false)
@@ -214,6 +232,12 @@ void PoseGameplayState::OnDraw()
 	}
 
 
+}
+
+void PoseGameplayState::OnExitState()
+{
+	// キャンバスの削除
+	GetOwner()->GetTaskManager()->DeleteTask(m_canvas.get());
 }
 
 /**
@@ -234,6 +258,7 @@ void PoseGameplayState::OnPushMenuItem(PoseMenu::MenuItem menuItem)
 	case PoseMenu::MenuItem::SETTING:
 		break;
 	case PoseMenu::MenuItem::RETURN_TITLE:
+		GetOwner()->OnEndScene();
 		GetOwner()->ChangeScene<TitleScene>();
 
 		break;

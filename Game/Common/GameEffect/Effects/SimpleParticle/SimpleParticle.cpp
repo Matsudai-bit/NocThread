@@ -127,7 +127,7 @@ void SimpleParticle::Update(float deltaTime)
 	m_timeCounter.UpperTime(deltaTime);
 
 	// 時間が来たら
-	if (m_timeCounter.GetdeltaTime() >= 0.1f)
+	if (m_timeCounter.GetElapsedTime() >= 0.1f)
 	{
 		// パーティクルの生成
 		CreateParticle();
@@ -160,7 +160,7 @@ void SimpleParticle::Update(float deltaTime)
  * @param[in] view　ビュー行列
  * @param[in] proj	射影行列
  */
-void SimpleParticle::Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj)
+void SimpleParticle::Draw(const Camera& camera)
 {
 	using namespace SimpleMath;
 
@@ -200,8 +200,8 @@ void SimpleParticle::Draw(const DirectX::SimpleMath::Matrix& view, const DirectX
 	// 定数バッファにデータを設定する
 	ConstantBuffer cb = {};
 	cb.matWorldTranspose = world.Transpose();
-	cb.matProj = proj.Transpose();
-	cb.matView = view.Transpose();
+	cb.matProj = camera.GetProjectionMatrix().Transpose();
+	cb.matView = camera.GetViewMatrix().Transpose();
 	cb.objectTarget = m_pCamera->GetEye();
 	cb.scale = 0.5f;
 

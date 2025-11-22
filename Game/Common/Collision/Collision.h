@@ -98,7 +98,7 @@ public:
 	// ”¼Œa‚Ìİ’è
 	void SetRadius(const float& radius);
 
-	void Draw(ID3D11DeviceContext1* context, const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj);
+	void Draw(ID3D11DeviceContext1* context, const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& projection);
 
 	// ƒRƒ‰ƒCƒ_[‚Ìí—Ş‚Ìæ“¾
 	ColliderType GetColliderType() const override;
@@ -213,7 +213,7 @@ public:
 	static DirectX::SimpleMath::Vector3 CalcClosestPoint(const DirectX::SimpleMath::Vector3& point, const Triangle& triangle) ;
 
 	// •`‰æ
-	void Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj);
+	void Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& projection);
 
 // Õ“Ë”»’è
 public:
@@ -314,7 +314,7 @@ public:
 	void Rotate(DirectX::SimpleMath::Vector3 rotate);
 
 	// •`‰æˆ—
-	void Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj);
+	void Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& projection);
 
 };
 
@@ -438,7 +438,7 @@ public:
 	// “à•”‚É“_‚ªˆÊ’u‚·‚é‚©‚Ç‚¤‚©
 	bool IsPointInside(const DirectX::SimpleMath::Vector3& point) const;
 
-	void Draw(ID3D11DeviceContext1* context, const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj);
+	void Draw(ID3D11DeviceContext1* context, const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& projection);
 };
 
 /**
@@ -500,7 +500,7 @@ public:
 	// ”¼Œa‚Ìæ“¾
 	float GetRadius() const;
 
-	void Draw(ID3D11DeviceContext1* context, const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj);
+	void Draw(ID3D11DeviceContext1* context, const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& projection);
 
 	
 };
@@ -566,7 +566,7 @@ public:
 	// ”¼Œa‚Ìæ“¾
 	float GetRadius() const;
 
-	void Draw(ID3D11DeviceContext1* context, const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj);
+	void Draw(ID3D11DeviceContext1* context, const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& projection);
 
 
 

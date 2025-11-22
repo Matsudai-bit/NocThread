@@ -15,6 +15,7 @@
 #include "Game/Common/ResourceManager/ResourceManager.h"
 
 #include "Game/Common/Event/Messenger/GameFlowMessenger/GameFlowMessenger.h"
+#include "Game/Common/Camera/Camera.h"
 
 using namespace DirectX;
 
@@ -50,7 +51,7 @@ EscapeHelicopter::~EscapeHelicopter()
  */
 void EscapeHelicopter::Initialize(const CommonResources* pCommonResources, CollisionManager* pCollisionManager)
 {
-	SetScale(0.8f);
+	GetTransform()->SetScale(0.8f);
 
 	// 共通リソースの設定
 	SetCommonResources(pCommonResources);
@@ -59,7 +60,7 @@ void EscapeHelicopter::Initialize(const CommonResources* pCommonResources, Colli
 	m_helicopterModel = pCommonResources->GetResourceManager()->CreateModel("Helicopter.sdkmesh");
 
 	// コライダの作成
-	m_collider = std::make_unique<AABB>(GetPosition(),SimpleMath::Vector3( SimpleMath::Vector3(18.0f, 10.0f, 10.0f) * GetScale() ));
+	m_collider = std::make_unique<AABB>(GetTransform()->GetPosition(),SimpleMath::Vector3( SimpleMath::Vector3(18.0f, 10.0f, 10.0f) * GetTransform()->GetScale() ));
 
 	// 衝突管理へ登録
 	pCollisionManager->AddCollisionObjectData(this, m_collider.get());
@@ -68,14 +69,17 @@ void EscapeHelicopter::Initialize(const CommonResources* pCommonResources, Colli
 /**
  * @brief 更新処理
  *
- * @param[in] deltaTime 経過時間
+ * @param[in] deltaTime フレーム間の経過時間
  *
- * @return なし
+ * @returns true タスクを継続する
+ * @returns false タスクを削除する
  */
-void EscapeHelicopter::Update(float deltaTime)
+bool EscapeHelicopter::UpdateTask(float deltaTime)
 {
 	UNREFERENCED_PARAMETER(deltaTime);
-	m_collider->SetCenter(GetPosition());
+	m_collider->SetCenter(GetTransform()->GetPosition());
+
+	return true;
 }
 
 
@@ -86,7 +90,7 @@ void EscapeHelicopter::Update(float deltaTime)
  * @param[in] view　ビュー行列
  * @param[in] proj	射影行列
  */
-void EscapeHelicopter::Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj)
+void EscapeHelicopter::DrawTask(const Camera& camera)
 {
 	using namespace SimpleMath;
 
@@ -94,24 +98,24 @@ void EscapeHelicopter::Draw(const DirectX::SimpleMath::Matrix& view, const Direc
 	// ワールド行列の作成
 	Matrix world = Matrix::Identity;
 
-	world *= Matrix::CreateScale(GetScale());
-	world *= Matrix::CreateFromQuaternion(GetRotate());
-	world *= Matrix::CreateTranslation(GetPosition());
+	world *= Matrix::CreateScale(GetTransform()->GetScale());
+	world *= Matrix::CreateFromQuaternion(GetTransform()->GetRotation());
+	world *= Matrix::CreateTranslation(GetTransform()->GetPosition());
 
 	// モデルの描画
 	m_helicopterModel.Draw(
 		GetCommonResources()->GetDeviceResources()->GetD3DDeviceContext(),
 		*GetCommonResources()->GetCommonStates(),
 		world,
-		view,
-		proj);
+		camera.GetViewMatrix(),
+		camera.GetProjectionMatrix());
 
 	// 目印
 	auto cylinder = DirectX::GeometricPrimitive::CreateCylinder(context, 1000.f, 0.5f);
 
 	world = SimpleMath::Matrix::Identity;
-	world *= Matrix::CreateTranslation(GetPosition());
-	cylinder->Draw(world, view, proj, Colors::Purple);
+	world *= Matrix::CreateTranslation(GetTransform()->GetPosition());
+	cylinder->Draw(world, camera.GetViewMatrix(), camera.GetProjectionMatrix(), Colors::Purple);
 
 
 	// コライダーの表示

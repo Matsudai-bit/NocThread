@@ -19,6 +19,8 @@
 #include "Game/Common/Event/Messenger/GameFlowMessenger/IGameFlowObserver.h"
 #include "Game/Common/ElapsedTimeCounter/ElapsedTimeCounter.h"
 
+#include "Game/Common/TaskManager/TaskManager.h"
+
 // クラスの前方宣言 ===================================================
 class EnemyManager; // 敵管理
 class Enemy;
@@ -32,6 +34,7 @@ class EscapeHelicopter; // 脱出用ヘリコプター
  */
 class SpawnManager
 	: public IGameFlowObserver
+	, public Task
 {
 // クラス定数の宣言 -------------------------------------------------
 public:
@@ -77,10 +80,7 @@ public:
 	void Initialize(EnemyManager* pEnemyManager, std::vector<std::unique_ptr<EscapeHelicopter>>* pEscapeHelicopters,const CommonResources* pCommonResources, CollisionManager* pCollisionManager);
 
 	// 更新処理
-	void Update(float deltaTime);
-
-	// 描画処理
-	void Draw();
+	bool UpdateTask(float deltaTime) override;
 
 	// 終了処理
 	void Finalize();

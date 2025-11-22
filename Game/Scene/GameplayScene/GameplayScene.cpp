@@ -13,58 +13,36 @@
 
 #include "GameplayScene.h"
 
-// 定数ヘッダーをインクルード
+// ライブラリ
+#include "Game/Common/TaskManager/TaskManager.h"
 
-#include "Game/Common/Camera/MainCamera/MainCamera.h"
-#include "Game/Scene/TitleScene/TitleScene.h"
-#include "Game/Scene/ResultScene/ResultScene.h"
+// DirectX系
 #include "Game/Common/DeviceResources.h"
+
+// ゲームデータ
+#include "Game/Common/ResultData/ResultData.h"
 #include "Game/Common/CommonResources/CommonResources.h"
+
+// 基盤システム
 #include "Game/Common/ResourceManager/ResourceManager.h"
 #include "Game/Common/Collision/CollisionManager/CollisionManager.h"
-#include "Game/Common/Collision/Collision.h"
 #include "Game/Common/SoundManager/SoundManager.h"
 #include "Game/Common/SoundManager/SoundPaths.h"
 #include "Game/Scene/Loading/LoadingScreen.h"
+#include "Game/Common/GameEffect/GameEffectController.h"
 
-#include "Game/Common/Shadow/CircularShadow/CircularShadow.h"
 
-// ゲームオブジェクト
-#include "Game/GameObjects/Floor/Floor.h"
-#include "Game/GameObjects/Wall/Wall.h"		// 壁
-#include "Game/GameObjects/Player/Player.h"
-#include "Game/GameObjects/StageObject/StageObject.h"
-#include "Game/GameObjects/Enemy/Enemy.h"
-#include "Game/GameObjects/Treasure/Treasure.h"
-#include "Game/GameObjects/Prop/Building/Building.h"
-#include "Game/GameObjects/Helicopter/EscapeHelicopter/EscapeHelicopter.h"
-#include "Game/Manager/BuildingManager/BuildingManager.h"
-
-// ゲームオブジェクト管理系
-#include "Game/Common/GameObjectManager/EnemyManager/EnemyManager.h"
-#include "Game/Common/SpawnManager/SpawnManager.h"
-#include "Game/Manager/PlayerManager/PlayerManager.h"
-
-#include "Game/Common/Camera/PlayerCamera/PlayerCamera.h"
-#include "Game/GameObjects/Player/PlayerController/PlayerController.h"
-
-#include "Game/Common/UserInterfaceTool/Canvas/Canvas.h"
-#include "Game/Common/UserInterfaceTool/Sprite/Sprite.h"
-
-#include "Library/ImaseLib/DebugFont.h"
+// 管理系
 #include "Game//Common/GameObjectRegistry/GameObjectRegistry.h"
 #include "Game/Common/Event/Messenger/GameFlowMessenger/GameFlowMessenger.h"
-#include <random>
-
 #include "Game/Manager/StageManager/StageManager.h"
 
 // 状態
 #include "Game/Scene/GameplayScene/State/NormalGameplayState/NormalGameplayState.h"
 #include "Game/Scene/GameplayScene/State/PoseGameplayState/PoseGameplayState.h"
 
-// ロープオブジェクト
-
-#include "Game/Common/ResultData/ResultData.h"
+// シーン
+#include "Game/Scene/ResultScene/ResultScene.h"
 
 using namespace DirectX;
 
@@ -94,60 +72,31 @@ GameplayScene::~GameplayScene()
 {
 }
 
-#include "Game/Common/GameEffect/GameEffectController.h"
-#include "Game/Common/GameEffect/Effects/SimpleParticle/SimpleParticle.h"
 
 /**
  * @brief 初期化処理
  *
- * @param[in] screenWidth		画面の横幅
- * @param[in] screenHeight		画面の縦幅
  * * @return なし
  */
 void GameplayScene::Initialize()
 {
-	using namespace SimpleMath;
+	// 画面サイズに関するモノの作成
 	CreateWindowSizeDependentResources();
 
-	// 処理に使用するものたちの取得
-	ID3D11DeviceContext* context = GetCommonResources()->GetDeviceResources()->GetD3DDeviceContext();
+	// ゲームプレイ開始時のセットアップ
+	SetUpForGameStart();
 
-	// **** ステートマシーンの作成 ****
-	m_stateMachine = std::make_unique <StateMachine<GameplayScene>>(this);
-	// **** 最初の状態 ****
-	m_stateMachine->ChangeState<NormalGameplayState>();
+	// 基盤の作成
+	CreatePlatform();
 
-	// **** ゲーム経過時間のリセット *****
-	m_gamePlayingTimeCounter.Reset();
+	// タスクの作成
+	CreateTask();
 
-	// リザルトデータの初期化処理
-	ResultData::GetInstance()->Reset();
-
-	// **** 衝突管理の生成 ****
-	m_collisionManager = std::make_unique<CollisionManager>();
-
-
-	// **** UI関連処理 後にクラス化して分離する ****
-	m_canvas = std::make_unique<Canvas>();
-	// キャンバスの初期化処理
-	m_canvas->Initialize(context);
-
-	// **** エフェクト管理の作成 ****
-	m_gameEffectManager = std::make_unique<GameEffectManager>();
-	// 現在使用するエフェクト管理の取得
-	GameEffectController::GetInstance()->SetGameEffectManager(m_gameEffectManager.get());
-
-	// **** ステージの作成 ****
+	// ステージ作成 
 	CreateStage();
 
-
-	// **** BGMを鳴らす ****
-	SoundManager::GetInstance()->RemoveAll();
-	SoundManager::GetInstance()->Play(SoundPaths::BGM_INGAME, true);
-
-
-	// ***** ゲーム開始通知 *****
-	GameFlowMessenger::GetInstance()->Notify(GameFlowEventID::GAME_START);
+	// ゲーム開始
+	StartGame();
 }
 
 
@@ -160,20 +109,13 @@ void GameplayScene::Initialize()
  */
 void GameplayScene::Update(float deltaTime)
 {
+	// ゲームプレイ時間の加算
+	m_gamePlayingTimeCounter.UpperTime(deltaTime);
 	// 状態の更新処理
 	m_stateMachine->Update(deltaTime);
-
-
-	// イベントスタックの解消(仮実装)
-	for (auto& event : m_eventStack)
-	{
-		event();
-	}
-	m_eventStack.clear();
-
+	// イベントの解消
+	ResolveEvents();
 }
-
-
 
 /**
  * @brief 描画処理
@@ -188,8 +130,6 @@ void GameplayScene::Render()
 	m_stateMachine->Draw();
 }
 
-
-
 /**
  * @brief 終了処理
  *
@@ -199,81 +139,26 @@ void GameplayScene::Render()
  */
 void GameplayScene::Finalize()
 {
-	m_stateMachine->ClearState();
-}
-
-/**
- * @brief ウインドウサイズに依存するリソースを作成する
- */
-void GameplayScene::CreateWindowSizeDependentResources()
-{
-	// ウィンドウサイズの取得
-	auto windowSize = GetCommonResources()->GetDeviceResources()->GetOutputSize();
-	float width = static_cast<float>(windowSize.right);
-	float height = static_cast<float>(windowSize.bottom);
-
-	// デバッグカメラの作成
-	m_debugCamera = std::make_unique<Imase::DebugCamera>(static_cast<int>(width), static_cast<int>(height));
-
-	// 射影行列の作成
-	m_projection = SimpleMath::Matrix::CreatePerspectiveFieldOfView(
-		XMConvertToRadians(CAMERA_FOV_DEGREES)
-		, static_cast<float>(width) / static_cast<float>(height)
-		, CAMERA_NEAR_CLIP, CAMERA_FAR_CLIP); // farを少し伸ばす
-}
-
-/**
- * @brief インゲームのオブジェクトを更新する
- * * @param[in] deltaTime 経過時間
- */
-void GameplayScene::UpdateInGameObjects(float deltaTime)
-{
-	auto kb = Keyboard::Get().GetState();
-
-	// ゲームプレイ時間の加算
-	m_gamePlayingTimeCounter.UpperTime(deltaTime);
-
-	// ゲームエフェクト管理の更新処理
-	m_gameEffectManager->Update(deltaTime);
-
-	// デバックカメラの更新
-	m_debugCamera->Update();
-
-	auto mouse = Mouse::Get().GetState();
-
-	// 衝突管理の更新処理
-	m_collisionManager->Update();
-
-	m_stageManager->UpdateInGameObjects(deltaTime);
-
-}
-
-/**
- * @brief インゲームのオブジェクトを描画する
- * */
-void GameplayScene::DrawInGameObjects()
-{
-	if (GetCommonResources() == nullptr) return;
-
-
-
-	// デバッグカメラからビュー行列を取得する
-	SimpleMath::Matrix view = MainCamera::GetInstance()->GetCamera()->GetView();
-	GameEffectController::GetInstance()->SetView(view);
-	GameEffectController::GetInstance()->SetProjection(m_projection);
-
-	// 共通リソース
-	auto states = GetCommonResources()->GetCommonStates();
-
-	m_stageManager->DrawInGameObjects(view, m_projection);
 	
-	// ゲームエフェクト管理の描画処理
-	m_gameEffectManager->Draw(view, m_projection);
-
-
-
-	m_canvas->Draw(states);
+	m_stateMachine->ClearState();
+	m_collisionManager->Finalize();
 }
+
+/**
+ * @brief イベントの解消
+ * 
+ */
+void GameplayScene::ResolveEvents()
+{
+	// イベントスタックの解消(仮実装)
+	for (auto& event : m_eventStack)
+	{
+		event();
+	}
+	m_eventStack.clear();
+}
+
+
 
 /**
  * @brief イベントメッセージを受け取る
@@ -288,14 +173,14 @@ void GameplayScene::OnGameFlowEvent(GameFlowEventID eventID)
 	case GameFlowEventID::PLAYER_DIE:
 		m_eventStack.emplace_back([&]() {
 			OnEndScene();
-			ResultData::GetInstance()->SetResultData(m_gamePlayingTimeCounter.GetdeltaTime(), false);
+			ResultData::GetInstance()->SetResultData(m_gamePlayingTimeCounter.GetElapsedTime(), false);
 			ChangeScene<ResultScene, LoadingScreen>();
 			});
 		break;
 	case GameFlowEventID::ESCAPE_SUCCESS:
 		m_eventStack.emplace_back([&]() {
 			OnEndScene();
-			ResultData::GetInstance()->SetResultData(m_gamePlayingTimeCounter.GetdeltaTime(), true);
+			ResultData::GetInstance()->SetResultData(m_gamePlayingTimeCounter.GetElapsedTime(), true);
 			ChangeScene<ResultScene, LoadingScreen>();
 			});
 		break;
@@ -304,24 +189,6 @@ void GameplayScene::OnGameFlowEvent(GameFlowEventID eventID)
 	}
 }
 
-/**
- * @brief キャンバス
- * * @return キャンバス
- */
-Canvas* GameplayScene::GetCanvas() const
-{
-	return m_canvas.get();
-}
-
-/**
- * @brief ステージ管理の取得
- * 
- * @return ステージ管理
- */
-StageManager* GameplayScene::GetStageManager() const
-{
-	return m_stageManager.get();
-}
 
 // シーンの終了
 void GameplayScene::OnEndScene()
@@ -335,15 +202,93 @@ void GameplayScene::OnEndScene()
 
 }
 
+
+// --------------------------------------------------------------------
+// 初期設定関連 
+// --------------------------------------------------------------------
+
+/**
+* @brief ウインドウサイズに依存するリソースを作成する
+*/
+void GameplayScene::CreateWindowSizeDependentResources()
+{
+	// ウィンドウサイズの取得
+	auto windowSize = GetCommonResources()->GetDeviceResources()->GetOutputSize();
+	float width = static_cast<float>(windowSize.right);
+	float height = static_cast<float>(windowSize.bottom);
+}
+
+/**
+ * @brief ゲーム開始時のセットアップ
+ * 
+ */
+void GameplayScene::SetUpForGameStart()
+{
+	// **** ゲーム経過時間のリセット *****
+	m_gamePlayingTimeCounter.Reset();
+
+	// リザルトデータの初期化処理
+	ResultData::GetInstance()->Reset();
+}
+
+/**
+ * @brief 基盤の作成
+ */
+void GameplayScene::CreatePlatform()
+{
+	// **** 衝突管理の生成 ****
+	m_collisionManager = std::make_unique<CollisionManager>();
+
+	// **** エフェクト管理の作成 ****
+	m_gameEffectManager = std::make_unique<GameEffectManager>();
+	// 現在使用するエフェクト管理の取得
+	GameEffectController::GetInstance()->SetGameEffectManager(m_gameEffectManager.get());
+
+	// **** ステートマシーンの作成 ****
+	m_stateMachine = std::make_unique <StateMachine<GameplayScene>>(this);
+	// **** タスク管理の作成 ****
+	m_taskManager = std::make_unique<TaskManager>();
+
+	// ステージ管理の作成
+	m_stageManager = std::make_unique<StageManager>(GetCommonResources());
+}
+
 /**
  * @brief ステージの生成
  * */
 void GameplayScene::CreateStage()
 {
-	// ステージ管理の作成
-	m_stageManager = std::make_unique<StageManager>(GetCommonResources());
 	
 	m_stageManager->Initialize();
-	m_stageManager->CreateStage(m_collisionManager.get());
+	m_stageManager->CreateStage(m_collisionManager.get(), m_taskManager.get());
 
+}
+
+/**
+ * @brief タスクの作成
+ * 
+ */
+void GameplayScene::CreateTask()
+{
+	
+	// **** タスクの登録 ****
+	m_taskManager->AddTask(m_stageManager.get());		// StageManager
+	m_taskManager->AddTask(m_collisionManager.get());	// CollisionManager
+	m_taskManager->AddTask(m_gameEffectManager.get());	// EffectManager
+}
+
+/**
+ * @brief ゲームを開始する
+ */
+void GameplayScene::StartGame()
+{
+	// **** 最初の状態 ****
+	m_stateMachine->ChangeState<NormalGameplayState>();
+	// **** BGMを鳴らす ****
+	SoundManager::GetInstance()->RemoveAll();
+	SoundManager::GetInstance()->Play(SoundPaths::BGM_INGAME, true);
+
+
+	// ***** ゲーム開始通知 *****
+	GameFlowMessenger::GetInstance()->Notify(GameFlowEventID::GAME_START);
 }

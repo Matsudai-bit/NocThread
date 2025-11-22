@@ -57,7 +57,7 @@ public:
 	void Update(float deltaTime) override= 0; 
 
 	// •`‰æˆ—
-	void Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj)override = 0;
+	void Draw(const Camera& camera)override = 0;
 
 	// I—¹ˆ—
 	void Finalize()override = 0;

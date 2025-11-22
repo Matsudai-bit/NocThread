@@ -18,6 +18,7 @@
 #include "Game/Common/DeviceResources.h"
 
 // クラスの前方宣言 ===================================================
+class Camera; // カメラ
 
 // クラスの定義 ===============================================================
 /**
@@ -77,7 +78,7 @@ public:
 	void Initialize(DX::DeviceResources* pDeviceResources,const float& castShadowPositionY);
 
 	// 描画処理
-	void Draw( const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& proj, DirectX::CommonStates* states, const DirectX::SimpleMath::Vector3& shadowOwnerPosition);
+	void Draw( const Camera& camera, DirectX::CommonStates* states, const DirectX::SimpleMath::Vector3& shadowOwnerPosition);
 
 
 

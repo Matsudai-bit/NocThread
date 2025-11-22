@@ -12,7 +12,7 @@
 
 #include "Game/Common/CommonResources/CommonResources.h"
 #include "Game/Common/DeviceResources.h"
-
+#include "Game/Common/Camera/Camera.h"
 using namespace DirectX;
 
 
@@ -93,7 +93,7 @@ void RopeObject::Update(float deltaTime)
  *
  * @return なし
  */
-void RopeObject::Draw(const SimpleMath::Matrix& view, const SimpleMath::Matrix& proj)
+void RopeObject::Draw(const Camera& camera)
 {
 	auto context = m_pCommonResources->GetDeviceResources()->GetD3DDeviceContext();
 
@@ -122,9 +122,9 @@ void RopeObject::Draw(const SimpleMath::Matrix& view, const SimpleMath::Matrix& 
 	SimpleMath::Matrix world = SimpleMath::Matrix::Identity;/* rotationZ* rotationX;*/
 	m_effect->SetWorld(world);
 	// ビュー行列
-	m_effect->SetView(view);
+	m_effect->SetView(camera.GetViewMatrix());
 	// 射影行列
-	m_effect->SetProjection(proj);
+	m_effect->SetProjection(camera.GetProjectionMatrix());
 
 	m_effect->SetColorAndAlpha(DirectX::Colors::Red);
 	// エフェクトを適応する
