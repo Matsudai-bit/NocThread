@@ -115,6 +115,7 @@ public:
 
 	// ウインドウサイズに依存するリソースを作成する
 	virtual void CreateWindowSizeDependentResources() override;
+	void OnEndScene();
 
 // 挙動関連
 public:
@@ -138,9 +139,6 @@ public:
 
 // 内部実装
 private:
-
-	void OnEndScene();
-
 
 	// --------------------------------------------------------------------
 	// 初期設定関連 

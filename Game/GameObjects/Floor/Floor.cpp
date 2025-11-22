@@ -68,13 +68,13 @@ void Floor::Initialize(const DirectX::SimpleMath::Vector3& pos, const CommonReso
     float halfWidth = WIDTH / 2.0f;
 
     // 中心座標の設定
-    SetPosition(pos);
+    GetTransform()->SetPosition(pos);
 
     // 各座標の算出
-    m_parentVertexes[0].position = GetPosition() + DirectX::SimpleMath::Vector3( halfWidth, 0.0f, -halfWidth);
-    m_parentVertexes[1].position = GetPosition() + DirectX::SimpleMath::Vector3(-halfWidth, 0.0f, -halfWidth);
-    m_parentVertexes[2].position = GetPosition() + DirectX::SimpleMath::Vector3(-halfWidth, 0.0f,  halfWidth);
-    m_parentVertexes[3].position = GetPosition() + DirectX::SimpleMath::Vector3( halfWidth, 0.0f,  halfWidth);
+    m_parentVertexes[0].position = GetTransform()->GetPosition() + DirectX::SimpleMath::Vector3( halfWidth, 0.0f, -halfWidth);
+    m_parentVertexes[1].position = GetTransform()->GetPosition() + DirectX::SimpleMath::Vector3(-halfWidth, 0.0f, -halfWidth);
+    m_parentVertexes[2].position = GetTransform()->GetPosition() + DirectX::SimpleMath::Vector3(-halfWidth, 0.0f,  halfWidth);
+    m_parentVertexes[3].position = GetTransform()->GetPosition() + DirectX::SimpleMath::Vector3( halfWidth, 0.0f,  halfWidth);
 
     //m_parentVertexes[0].position = GetPosition() + DirectX::SimpleMath::Vector3(-halfWidth, 0.0f, -halfWidth);
     //m_parentVertexes[1].position = GetPosition() + DirectX::SimpleMath::Vector3( halfWidth, 0.0f, -halfWidth);
@@ -82,7 +82,7 @@ void Floor::Initialize(const DirectX::SimpleMath::Vector3& pos, const CommonReso
     //m_parentVertexes[3].position = GetPosition() + DirectX::SimpleMath::Vector3(halfWidth, 0.0f, halfWidth);
 
     // コライダーの生成
-    m_collider = std::make_unique<AABB>(GetPosition() - SimpleMath::Vector3(0.0f, 1.0f, 0.0f) * (WIDTH / 2.0f), SimpleMath::Vector3(WIDTH, WIDTH , WIDTH));
+    m_collider = std::make_unique<AABB>(GetTransform()->GetPosition() - SimpleMath::Vector3(0.0f, 1.0f, 0.0f) * (WIDTH / 2.0f), SimpleMath::Vector3(WIDTH, WIDTH , WIDTH));
 
     for (int i = 0; i < VERTEX_NUM; i++)
     {
@@ -93,7 +93,7 @@ void Floor::Initialize(const DirectX::SimpleMath::Vector3& pos, const CommonReso
     pCollisionManager->AddCollisionObjectData(this, m_collider.get());
     //pCollisionManager->AddCollisionObjectData(this, &m_collider[1]);
 
-    SetPosition(SimpleMath::Vector3::Zero);
+    GetTransform()->SetPosition(SimpleMath::Vector3::Zero);
 
     m_effect = std::make_unique<BasicEffect>(device);
     // ライト(ON)

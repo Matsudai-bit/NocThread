@@ -26,6 +26,7 @@ using namespace DirectX;
  * @param[in] pKeyboardState	キーボードの状態
  * @param[in] pMouseState		マウスの状態
  * @param[in] pGamePadState		ゲームパッドの状態
+ * @param[in] pCopyRenderTexture画面をコピーしたテクスチャ
  */
 CommonResources::CommonResources(
 	DX::StepTimer*			pStepTimer,
@@ -35,7 +36,8 @@ CommonResources::CommonResources(
 	ResourceManager*		pResourceManager,
 	Keyboard::KeyboardStateTracker* pKeyboardState,
 	Mouse::ButtonStateTracker* pMouseState,
-	DirectX::GamePad::ButtonStateTracker* pGamePadState)
+	DirectX::GamePad::ButtonStateTracker* pGamePadState,
+	DX::RenderTexture*					  pCopyRenderTexture)
 	: m_pStepTimer		{pStepTimer}
 	, m_pDeviceResources{pDeviceResources}
 	, m_pCommonStates	{pCommonStates}
@@ -44,6 +46,8 @@ CommonResources::CommonResources(
 	, m_pKeyboardState	{ pKeyboardState }
 	, m_pMouseState		{ pMouseState }
 	, m_pGamePadState	{ pGamePadState }
+	, m_pCopyRenderTexture{ pCopyRenderTexture }
+	, m_copyScreenRequest{ false }
 
 {
 

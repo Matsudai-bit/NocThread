@@ -235,7 +235,7 @@ void BuildingManager::CreateBuilding(
 
 	auto building = std::make_unique<Building>();
 
-	building->SetPosition(position);
+	building->GetTransform()->SetPosition(position);
 	building->SetExtends(scale);
 	building->Initialize(pCommonResources, pCollisionManager);
 
@@ -250,9 +250,9 @@ void BuildingManager::Save()
 	for (int i = 0; i < m_buildings.size(); i++)
 	{
 		// Vector3Data は GetPosition() などの型とは別なので、手動で値をコピー
-		saves[i].position.x = m_buildings[i]->GetPosition().x;
-		saves[i].position.y = m_buildings[i]->GetPosition().y;
-		saves[i].position.z = m_buildings[i]->GetPosition().z;
+		saves[i].position.x = m_buildings[i]->GetTransform()->GetPosition().x;
+		saves[i].position.y = m_buildings[i]->GetTransform()->GetPosition().y;
+		saves[i].position.z = m_buildings[i]->GetTransform()->GetPosition().z;
 
 		saves[i].scale.x = m_buildings[i]->GetExtends().x;
 		saves[i].scale.y = m_buildings[i]->GetExtends().y;

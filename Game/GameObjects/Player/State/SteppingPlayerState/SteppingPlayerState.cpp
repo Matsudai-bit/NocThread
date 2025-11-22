@@ -57,9 +57,9 @@ void SteppingPlayerState::OnStartState()
 
 	m_currentLerpValue = 0.0f;
 
-	m_startPosition = GetOwner()->GetPosition();
+	m_startPosition = GetOwner()->GetTransform()->GetPosition();
 	GetOwner()->ResetVelocity();
-	m_targetPosition = GetOwner()->GetPosition() + m_impulseDirection * 9.0f;
+	m_targetPosition = GetOwner()->GetTransform()->GetPosition() + m_impulseDirection * 9.0f;
 }
 
 /**
@@ -79,13 +79,13 @@ void SteppingPlayerState::OnUpdate(float deltaTime)
 
 	//GetOwner()->SetPosition(currentPosition);
 
-	GetOwner()->SetVelocity((currentPosition - GetOwner()->GetPosition()) / deltaTime);
+	GetOwner()->SetVelocity((currentPosition - GetOwner()->GetTransform()->GetPosition()) / deltaTime);
 
 	GetOwner()->Move(deltaTime);
 
 	if (m_targetCounter.GetElapsedTime() >= 0.2f)
 	{
-		GetOwner()->SetPosition(m_targetPosition);
+		GetOwner()->GetTransform()->SetPosition(m_targetPosition);
 		GetOwner()->RequestChangeState(Player::State::IDLE);
 	}
 

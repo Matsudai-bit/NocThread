@@ -20,6 +20,7 @@ namespace DX
 {
 	class StepTimer;		// タイマー
 	class DeviceResources;	// デバイスリソース
+	class RenderTexture;
 }
 
 namespace Imase
@@ -58,6 +59,10 @@ private:
 	DirectX::Mouse::ButtonStateTracker*			m_pMouseState;		///< マウスの状態
 	DirectX::GamePad::ButtonStateTracker*		m_pGamePadState;	///< ゲームパッドの状態
 
+	// ---- 仮実装 ----
+	DX::RenderTexture* m_pCopyRenderTexture;			///< 画面をコピーしたテクスチャ
+	bool m_copyScreenRequest;
+	// -----------------
 
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
@@ -71,7 +76,8 @@ public:
 		ResourceManager*		pResourceManager,
 		DirectX::Keyboard::KeyboardStateTracker*pKeyboardState,
 		DirectX::Mouse::ButtonStateTracker*		pMouseState,
-		DirectX::GamePad::ButtonStateTracker*	pGamePadState);
+		DirectX::GamePad::ButtonStateTracker*	pGamePadState,
+		DX::RenderTexture*						pCopyRenderTexture);
 
 	// デストラクタ
 	~CommonResources();
@@ -103,5 +109,11 @@ public:
 
 	// ゲームパッドの取得
 	DirectX::GamePad::ButtonStateTracker* GetGamePadTracker() const;
+
+	// 画面をコピーしたテクスチャの取得
+	DX::RenderTexture* GetCopyScreenTexture() const { return m_pCopyRenderTexture; }
+
+	void SetCopyScreenRequest(bool request) { m_copyScreenRequest = request; }
+	bool IsCopyScreenRequest() const	{ return m_copyScreenRequest; }
 
 };

@@ -78,7 +78,7 @@ void Enemy::Initialize(const CommonResources* pCommonResources, CollisionManager
 
 	RegisterChildType<IWireEventObserver>(this);
 
-	m_collider = std::make_unique<Sphere>(GetPosition() + SimpleMath::Vector3(0.0f, 0.5f, 0.0f), 1.0f);
+	m_collider = std::make_unique<Sphere>(GetTransform()->GetPosition() + SimpleMath::Vector3(0.0f, 0.5f, 0.0f), 1.0f);
 
 	pCollisionManager->AddCollisionObjectData(this,m_collider.get());
 
@@ -143,11 +143,11 @@ void Enemy::Update(float deltaTime)
 
 	SetVelocity(velocity);
 
-	SimpleMath::Vector3 position = MovementHelper::CalcPositionForVelocity(deltaTime, GetPosition(), GetVelocity());
-	SetPosition(position );
-	m_collider->Transform(GetPosition() + SimpleMath::Vector3(0.0f, 0.5f, 0.0f));
+	SimpleMath::Vector3 position = MovementHelper::CalcPositionForVelocity(deltaTime, GetTransform()->GetPosition(), GetVelocity());
+	GetTransform()->SetPosition(position );
+	m_collider->Transform(GetTransform()->GetPosition() + SimpleMath::Vector3(0.0f, 0.5f, 0.0f));
 
-    SetRotate(MovementHelper::RotateForMoveDirection(deltaTime, GetRotate(), GetForward(), GetVelocity(), 0.1f));
+	GetTransform()->SetRotation(MovementHelper::RotateForMoveDirection(deltaTime, GetTransform()->GetRotation(), GetTransform()->GetForward(), GetVelocity(), 0.1f));
 }
 
 void Enemy::Draw(const Camera& camera)
@@ -159,8 +159,8 @@ void Enemy::Draw(const Camera& camera)
 	auto states		= GetCommonResources()->GetCommonStates();
 
 	Matrix world = Matrix::Identity;
-	world *= Matrix::CreateFromQuaternion(GetRotate());
-	world *= Matrix::CreateTranslation(GetPosition());
+	world *= Matrix::CreateFromQuaternion(GetTransform()->GetRotation());
+	world *= Matrix::CreateTranslation(GetTransform()->GetPosition());
 
 	m_model.Draw(context, *states, world, camera.GetViewMatrix(), camera.GetProjectionMatrix());
 
@@ -238,7 +238,7 @@ void Enemy::PostCollision()
 		SimpleMath::Vector3 velocity = GetVelocity();
 
 		// **** 押し出しとバウンド ****
-		SetPosition(PhysicsHelper::PushOut(overlap, GetPosition()));
+		GetTransform()->SetPosition(PhysicsHelper::PushOut(overlap, GetTransform()->GetPosition()));
 
 		SetVelocity(PhysicsHelper::ResolveBounce(overlap, 0.0f, velocity));
 
@@ -258,7 +258,7 @@ void Enemy::PostCollision()
  */
 void Enemy::OnWireGrab(const WireEventData& eventData)
 {
-	SetPosition(eventData.grabPos);
+	GetTransform()->SetPosition(eventData.grabPos);
 	ResetVelocity();
 
 	m_isHold = true;
@@ -271,7 +271,7 @@ void Enemy::OnWireGrab(const WireEventData& eventData)
  */
 void Enemy::OnWireHover(const WireEventData& eventData)
 {
-	SetPosition(eventData.grabPos);
+	GetTransform()->SetPosition(eventData.grabPos);
 	ResetVelocity();
 }
 

@@ -239,6 +239,7 @@
     <ClInclude Include="Game\GameObjects\Common\GameObject.h" />
     <ClInclude Include="Game\GameObjects\Common\GameObjectEvent\GameObjectEvent.h" />
     <ClInclude Include="Game\GameObjects\Common\MovableObject\MovableObject.h" />
+    <ClInclude Include="Game\GameObjects\Common\Transform\Transform.h" />
     <ClInclude Include="Game\GameObjects\Enemy\Behaviour\Draw\IEnemyDraw.h" />
     <ClInclude Include="Game\GameObjects\Enemy\Behaviour\Initialize\IEnemyInitializeBehaviour.h" />
     <ClInclude Include="Game\GameObjects\Enemy\Behaviour\Update\FlyingChaserEnemyBehaviour\FlyingChaserEnemyBehaviour.h" />
@@ -295,6 +296,7 @@
     <ClInclude Include="Game\UI\TutorialWindow\TutorialWindow.h" />
     <ClInclude Include="Library\DebugHelper.h" />
     <ClInclude Include="Library\DirectXFramework\Animation.h" />
+    <ClInclude Include="Library\DirectXFramework\RenderTexture.h" />
     <ClInclude Include="Library\ImaseLib\DebugCamera.h" />
     <ClInclude Include="Library\ImaseLib\DebugDraw.h" />
     <ClInclude Include="Library\ImaseLib\DebugFont.h" />
@@ -308,6 +310,7 @@
     <ClInclude Include="Library\ImGui\imstb_textedit.h" />
     <ClInclude Include="Library\ImGui\imstb_truetype.h" />
     <ClInclude Include="Library\MyLib\DirectXMathUtils\DirectXMathUtils.h" />
+    <ClInclude Include="Library\MyLib\DirectXMyToolKit\DepthStencil\DepthStencil.h" />
     <ClInclude Include="Library\MyLib\DirectXMyToolKit\DirectXMyToolKit.h" />
     <ClInclude Include="Library\MyLib\EasingKit\EasingKit.h" />
     <ClInclude Include="Library\MyLib\MathUtils\MathUtils.h" />
@@ -364,6 +367,7 @@
     <ClCompile Include="Game\Game.cpp" />
     <ClCompile Include="Game\GameObjects\Common\GameObject.cpp" />
     <ClCompile Include="Game\GameObjects\Common\MovableObject\MovableObject.cpp" />
+    <ClCompile Include="Game\GameObjects\Common\Transform\Transform.cpp" />
     <ClCompile Include="Game\GameObjects\Enemy\Behaviour\Update\FlyingChaserEnemyBehaviour\FlyingChaserEnemyBehaviour.cpp" />
     <ClCompile Include="Game\GameObjects\Enemy\Behaviour\Update\TrackingEnemyBehaviour\TrackingEnemyBehaviour.cpp" />
     <ClCompile Include="Game\GameObjects\Enemy\Enemy.cpp" />
@@ -414,6 +418,7 @@
     <ClCompile Include="Game\UI\Title\TitleMenu\TitleMenu.cpp" />
     <ClCompile Include="Game\UI\TutorialWindow\TutorialWindow.cpp" />
     <ClCompile Include="Library\DirectXFramework\Animation.cpp" />
+    <ClCompile Include="Library\DirectXFramework\RenderTexture.cpp" />
     <ClCompile Include="Library\ImaseLib\DebugCamera.cpp" />
     <ClCompile Include="Library\ImaseLib\DebugDraw.cpp" />
     <ClCompile Include="Library\ImaseLib\DebugFont.cpp" />
@@ -447,6 +452,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Library\MyLib\DirectXMathUtils\DirectXMathUtils.cpp" />
+    <ClCompile Include="Library\MyLib\DirectXMyToolKit\DepthStencil\DepthStencil.cpp" />
     <ClCompile Include="Library\MyLib\DirectXMyToolKit\DirectXMyToolKit.cpp" />
     <ClCompile Include="Library\MyLib\MathUtils\MathUtils.cpp" />
     <ClCompile Include="Library\MyLib\Ray\Ray.cpp" />

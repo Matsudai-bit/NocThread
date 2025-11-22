@@ -76,9 +76,9 @@ void TrackingEnemyBehaviour::Update(Enemy* pEnemy, float deltaTime, const Common
 			return;
 		}
 
-		Vector3 playerPosition = pPlayerObject->GetPosition();
+		Vector3 playerPosition = pPlayerObject->GetTransform()->GetPosition();
 
-		m_targetDirection = playerPosition - pEnemy->GetPosition();
+		m_targetDirection = playerPosition - pEnemy->GetTransform()->GetPosition();
 
 		// Y²•ûŒü‚Ìî•ñ‚ğÁ‚·
 		m_targetDirection.y = 0.0f;

@@ -139,7 +139,9 @@ void GameplayScene::Render()
  */
 void GameplayScene::Finalize()
 {
+	
 	m_stateMachine->ClearState();
+	m_collisionManager->Finalize();
 }
 
 /**
@@ -270,8 +272,8 @@ void GameplayScene::CreateTask()
 {
 	
 	// **** タスクの登録 ****
-	m_taskManager->AddTask(m_collisionManager.get());	// CollisionManager
 	m_taskManager->AddTask(m_stageManager.get());		// StageManager
+	m_taskManager->AddTask(m_collisionManager.get());	// CollisionManager
 	m_taskManager->AddTask(m_gameEffectManager.get());	// EffectManager
 }
 

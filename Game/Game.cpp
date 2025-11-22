@@ -41,6 +41,8 @@ Game::Game() noexcept(false)
     //   Add DX::DeviceResources::c_EnableHDR for HDR10 display.
     m_deviceResources->RegisterDeviceNotify(this);
     
+    // コピーレンダーテクスチャの作成
+    m_copyRenderTexture = std::make_unique<DX::RenderTexture>(m_deviceResources->GetBackBufferFormat());
 }
 
 Game::~Game()
@@ -103,7 +105,9 @@ void Game::Initialize(HWND window, int width, int height)
 
     m_deviceResources->CreateWindowSizeDependentResources();
     CreateWindowSizeDependentResources();
-
+    //  DirectX11用の初期化
+    ID3D11Device* device = m_deviceResources->GetD3DDevice();
+    ID3D11DeviceContext* context = m_deviceResources->GetD3DDeviceContext();
     // 追加 :　フルスクリーンの要求があるかどうか
     if (m_requestedFullscreen)
         SetFullscreenState(m_requestedFullscreen);
@@ -117,10 +121,6 @@ void Game::Initialize(HWND window, int width, int height)
 
     // サウンド管理の設定
     SoundManager::GetInstance()->SetResourceManager(m_resourceManager.get());
-
-
-
-
 
    // **** 生成 ****
    
@@ -141,7 +141,8 @@ void Game::Initialize(HWND window, int width, int height)
         m_resourceManager.get(),
         m_keyboardStateTracker.get(),
         m_mouseStateTracker.get(),
-        m_gamePadStateTracker.get()
+        m_gamePadStateTracker.get(),
+        m_copyRenderTexture.get()
     );
 
     // **** 初期化処理 ****
@@ -151,6 +152,8 @@ void Game::Initialize(HWND window, int width, int height)
 
     // 開始シーンの設定
     m_sceneManager->RequestSceneChange<TitleScene, LoadingScreen>();
+
+    context->ClearRenderTargetView(m_deviceResources->GetRenderTargetView(), Colors::Black);
 
     // ***** ImGuiの初期設定 *****
     //  バージョンの確認
@@ -164,9 +167,7 @@ void Game::Initialize(HWND window, int width, int height)
 
     //  Win32用の初期化
     ImGui_ImplWin32_Init(window);
-    //  DirectX11用の初期化
-    ID3D11Device* device = m_deviceResources->GetD3DDevice();
-    ID3D11DeviceContext* context = m_deviceResources->GetD3DDeviceContext();
+   
     ImGui_ImplDX11_Init(device, context);
 
     // TODO: Change the timer settings if you want something other than the default variable timestep mode.
@@ -255,6 +256,13 @@ void Game::Render()
     // シーン管理の描画処理
     m_sceneManager->Render();
 
+    if (m_commonResources->IsCopyScreenRequest())
+    {
+        auto renderTarget = m_deviceResources->GetRenderTarget();
+        context->CopyResource(m_copyRenderTexture->GetRenderTarget(), renderTarget);
+
+        m_commonResources->SetCopyScreenRequest(false);
+    }
 
     // FPSを取得する
     //uint32_t fps = m_timer.GetFramesPerSecond();
@@ -394,6 +402,9 @@ void Game::CreateDeviceDependentResources()
     m_audioEngine = std::make_unique<AudioEngine>();
     m_resourceManager = std::make_unique<ResourceManager>(device, m_audioEngine.get());
 
+    // デバイスの設定
+    m_copyRenderTexture->SetDevice(device);
+
 }
 
 // Allocate all memory resources that change on a window SizeChanged event.
@@ -409,6 +420,8 @@ void Game::CreateWindowSizeDependentResources()
         XMConvertToRadians(45.0f)
         , static_cast<float>(rect.right) / static_cast<float>(rect.bottom)
         , 0.1f, 100.0f);
+
+    m_copyRenderTexture->SetWindow(rect);
 }
 
 void Game::OnDeviceLost()

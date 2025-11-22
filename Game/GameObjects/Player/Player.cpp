@@ -110,11 +110,11 @@ void Player::Initialize(const CommonResources* pCommonResources, CollisionManage
 	auto context = GetCommonResources()->GetDeviceResources()->GetD3DDeviceContext();
 	auto device = GetCommonResources()->GetDeviceResources()->GetD3DDevice();
 
-	SetPosition(SimpleMath::Vector3(0.0f, INITIAL_POS_Y, 0.0f));
-	SetScale(DEFAULT_MODEL_SCALE);
+	GetTransform()->SetPosition(SimpleMath::Vector3(0.0f, INITIAL_POS_Y, 0.0f));
+	GetTransform()->SetScale(DEFAULT_MODEL_SCALE);
 
 	// コライダの作成
-	m_collider = std::make_unique<Sphere>(GetPosition(), GetScale() * DEFAULT_COLLIDER_RADIUS_FACTOR);
+	m_collider = std::make_unique<Sphere>(GetTransform()->GetPosition(), GetTransform()->GetScale().x * DEFAULT_COLLIDER_RADIUS_FACTOR);
 
 	pCollisionManager->AddCollisionObjectData(this, m_collider.get());
 
@@ -149,10 +149,10 @@ void Player::Initialize(const CommonResources* pCommonResources, CollisionManage
 
 
 	// デフォルト回転の初期化
-	SetDefaultRotate(Quaternion::CreateFromYawPitchRoll(XMConvertToRadians(DEFAULT_ROTATION_Y_DEGREE), 0, 0.0f));
+	GetTransform()->SetInitialRotation(Quaternion::CreateFromYawPitchRoll(XMConvertToRadians(DEFAULT_ROTATION_Y_DEGREE), 0, 0.0f));
 
 	// 回転
-	SetRotate(Quaternion::CreateFromYawPitchRoll(0.0f, 0.0f, 0.0f));
+	GetTransform()->SetRotation(Quaternion::CreateFromYawPitchRoll(0.0f, 0.0f, 0.0f));
 
 	// ステートマシーンの作成
 	m_stateMachine = std::make_unique<StateMachine<Player>>(this);
@@ -232,6 +232,8 @@ void Player::Update(float deltaTime)
  */
 void Player::Draw(const Camera& camera)
 {
+	const Transform* transform = GetTransform();
+
 	using namespace SimpleMath;
 	if (m_isActive == false) { return; }
 
@@ -246,18 +248,18 @@ void Player::Draw(const Camera& camera)
 	auto context = GetCommonResources()->GetDeviceResources()->GetD3DDeviceContext();
 
 
-	Matrix defaultRotation = Matrix::CreateFromQuaternion(GetDefaultRotate());
+	Matrix defaultRotation = Matrix::CreateFromQuaternion(transform->GetInitialRotation());
 
-	Matrix defaultTransform = Matrix::CreateTranslation(Vector3(0.0f, MODEL_DEFAULT_OFFSET_Y * GetScale(), 0.0f));
+	Matrix defaultTransform = Matrix::CreateTranslation(Vector3(0.0f, MODEL_DEFAULT_OFFSET_Y * transform->GetScale().y, 0.0f));
 
 	if (m_state == State::WIRE_ACTION)
 		defaultTransform *= Matrix::CreateTranslation(Vector3(WIRE_ACTION_OFFSET_X, Player::WIRE_ACTION_OFFSET_Y, 0.0f));
 
-	Matrix transform = Matrix::CreateTranslation(GetPosition());
-	Matrix rotation = Matrix::CreateFromQuaternion(GetRotate());
-	Matrix scale = Matrix::CreateScale(GetScale());
+	Matrix transformMat = Matrix::CreateTranslation(transform->GetPosition());
+	Matrix rotation = Matrix::CreateFromQuaternion(transform->GetRotation());
+	Matrix scale = Matrix::CreateScale(transform->GetScale());
 
-	Matrix world = defaultRotation * defaultTransform * scale * rotation * transform;
+	Matrix world = defaultRotation * defaultTransform * scale * rotation * transformMat;
 
 
 	auto drawBones = DirectX::ModelBone::MakeArray(m_model.bones.size());
@@ -290,16 +292,16 @@ void Player::Draw(const Camera& camera)
 	m_basicEffect->SetProjection(camera.GetProjectionMatrix());
 	m_basicEffect->Apply(context);
 
-	SimpleMath::Vector3 forward = GetForward() * 1.5f;
+	SimpleMath::Vector3 forward = transform->GetForward() * 1.5f;
 
 	/*m_primitiveBatch->Begin();
 	DX::DrawRay(m_primitiveBatch.get(), GetPosition(), forward, false, Colors::Red);
 	m_primitiveBatch->End();*/
 
 	// 目標方向の描画
-	SimpleMath::Vector3 targetDirection = m_targetPosition - GetPosition();
+	SimpleMath::Vector3 targetDirection = m_targetPosition - transform->GetPosition();
 	m_primitiveBatch->Begin();
-	DX::DrawRay(m_primitiveBatch.get(), GetPosition(), targetDirection, false, m_targetGuideColor);
+	DX::DrawRay(m_primitiveBatch.get(), transform->GetPosition(), targetDirection, false, m_targetGuideColor);
 	m_primitiveBatch->End();
 
 
@@ -508,12 +510,12 @@ void Player::OnGameFlowEvent(GameFlowEventID eventID)
 	{
 	case GameFlowEventID::GAME_START:
 		// 対象座標の取得
-		m_targetPosition = GameObjectRegistry::GetInstance()->GetGameObject(GameObjectTag::TREASURE)->GetPosition();
+		m_targetPosition = GameObjectRegistry::GetInstance()->GetGameObject(GameObjectTag::TREASURE)->GetTransform()->GetPosition();
 		m_targetGuideColor = Colors::LightGreen;
 		break;
 		case GameFlowEventID::SPAWN_HELICOPTER:
 		// 対象座標の更新
-		m_targetPosition = GameObjectRegistry::GetInstance()->GetGameObject(GameObjectTag::ESCAPE_HELICOPTER)->GetPosition();
+		m_targetPosition = GameObjectRegistry::GetInstance()->GetGameObject(GameObjectTag::ESCAPE_HELICOPTER)->GetTransform()->GetPosition();
 		m_targetGuideColor = Colors::Purple;
 		break;
 	case GameFlowEventID::PLAYER_DIE:
@@ -550,13 +552,13 @@ bool Player::RequestedMovement(DirectX::SimpleMath::Vector3 moveDirection)
 void Player::Move(const float& deltaTime)
 {
 
-	SimpleMath::Quaternion rotate = GetRotate();
+	SimpleMath::Quaternion rotate = GetTransform()->GetRotation();
 
 
 	// **** 座標の更新 ****
 	// 座標の算出
-	SimpleMath::Vector3 position = GetPosition() + GetVelocity() * deltaTime;
-	SetPosition(position);
+	SimpleMath::Vector3 position = GetTransform()->GetPosition() + GetVelocity() * deltaTime;
+	GetTransform()->SetPosition(position);
 
 	// コライダの更新処理
 	m_collider->Transform(position);
@@ -681,10 +683,10 @@ void Player::RotateForMoveDirection(const float& deltaTime)
 	UNREFERENCED_PARAMETER(deltaTime);
 
 
-	SetRotate(MovementHelper::RotateForMoveDirection(
+	GetTransform()->SetRotation(MovementHelper::RotateForMoveDirection(
 		deltaTime, 
-		GetRotate(),
-		GetForward(),
+		GetTransform()->GetRotation(),
+		GetTransform()->GetForward(),
 		GetVelocity(),
 		ROTATE_SPEED_FACTOR));
 }
@@ -743,7 +745,7 @@ DirectX::SimpleMath::Vector3 Player::CalcGrabbingPosition() const
 	float length = GRABBING_DISTANCE;
 
 
-	return GetPosition() + -GetForward() * length;
+	return GetTransform()->GetPosition() + -GetTransform()->GetForward() * length;
 }
 
 bool Player::CanShootWire() const
@@ -795,7 +797,7 @@ void Player::BehaviourWireAction(const float& deltaTime, const float& speed)
 
 	if (m_wire->IsActive())
 	{
-		SetPosition(m_wire->GetEndPosition());
+		GetTransform()->SetPosition(m_wire->GetEndPosition());
 	}
 }
 
@@ -821,11 +823,11 @@ void Player::ShootWire()
 	Vector3 maxPos = ray.origin + ray.direction * MAX_TARGETING_RAY_DISTANCE;
 
 	//Vector3 wireLaunchDirection = maxPos - GetPosition();
-	Vector3 wireLaunchDirection = m_wireTargetFinder->GetTargetPosition() - GetPosition();
+	Vector3 wireLaunchDirection = m_wireTargetFinder->GetTargetPosition() - GetTransform()->GetPosition();
 	wireLaunchDirection.Normalize();
 
 	//m_wire->ShootWire(GetPosition(), wireLaunchDirection * SHOOT_WIRE_INITIAL_SPEED);
-	m_wire->ShootWireToTarget(GetPosition(), m_wireTargetFinder->GetTargetPosition(), SHOOT_WIRE_INITIAL_SPEED);
+	m_wire->ShootWireToTarget(GetTransform()->GetPosition(), m_wireTargetFinder->GetTargetPosition(), SHOOT_WIRE_INITIAL_SPEED);
 
 }
 
@@ -906,9 +908,9 @@ bool Player::RequestStep()
 void Player::PushOut(DirectX::SimpleMath::Vector3 overlap)
 {
 	// 押し出す
-	SetPosition(GetPosition() + overlap * 0.99f);
+	GetTransform()->SetPosition(GetTransform()->GetPosition() + overlap * 0.99f);
 
-	m_collider->Transform(GetPosition());
+	m_collider->Transform(GetTransform()->GetPosition());
 }
 
 /**
@@ -930,10 +932,10 @@ MyLib::Ray Player::GetWireShootingRay() const
 
 	SimpleMath::Vector3 maxPos = ray.origin + ray.direction * MAX_TARGETING_RAY_DISTANCE;
 
-	SimpleMath::Vector3 wireLaunchDirection = maxPos - GetPosition();
+	SimpleMath::Vector3 wireLaunchDirection = maxPos - GetTransform()->GetPosition();
 	wireLaunchDirection.Normalize();
 
-	MyLib::Ray resultRay(GetPosition(), wireLaunchDirection);
+	MyLib::Ray resultRay(GetTransform()->GetPosition(), wireLaunchDirection);
 
 	return resultRay;
 }

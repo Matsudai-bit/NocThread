@@ -85,7 +85,7 @@ void ShootingWirePlayerState::OnUpdate(float deltaTime)
 	GetOwner()->Move(deltaTime);
 
 	// ƒƒCƒ„[‚ÌŒ´“_‚ÌÝ’è
-	GetOwner()->GetWire()->SetOriginPosition(GetOwner()->GetPosition());
+	GetOwner()->GetWire()->SetOriginPosition(GetOwner()->GetTransform()->GetPosition());
 
 }
 

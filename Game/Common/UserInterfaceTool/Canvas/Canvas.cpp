@@ -57,7 +57,7 @@ void Canvas::DrawTask(const Camera& camera)
  */
 void Canvas::DrawContents()
 {
-	m_spriteBatch->Begin(SpriteSortMode_Deferred, m_pCommonStates->NonPremultiplied());
+	m_spriteBatch->Begin(SpriteSortMode_Immediate, m_pCommonStates->NonPremultiplied());
 
 	// •`‰æˆ—
 	for (auto sprite : m_sprites)

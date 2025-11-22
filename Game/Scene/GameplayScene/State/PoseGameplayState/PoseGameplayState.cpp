@@ -66,8 +66,9 @@ void PoseGameplayState::OnStartState()
 {
 	using namespace SimpleMath;
 
-	auto resourceManager = GetOwner()->GetCommonResources()->GetResourceManager();
-	auto context = GetOwner()->GetCommonResources()->GetDeviceResources()->GetD3DDeviceContext();
+	auto resourceManager	= GetOwner()->GetCommonResources()->GetResourceManager();
+	auto context			= GetOwner()->GetCommonResources()->GetDeviceResources()->GetD3DDeviceContext();
+	auto device				= GetOwner()->GetCommonResources()->GetDeviceResources()->GetD3DDevice();
 	auto screen = Screen::Get();
 	// ***** キャンバスの作成 *********************************************
 	m_canvas = std::make_unique<Canvas>(context, GetOwner()->GetCommonResources()->GetCommonStates());
@@ -79,8 +80,11 @@ void PoseGameplayState::OnStartState()
 	m_operatingFontSprite = std::make_unique<Sprite>();
 	m_operatingSprite = std::make_unique<Sprite>();
 	m_manualSprite = std::make_unique<Sprite>();
+	m_backInGameplayingSprite = std::make_unique<Sprite>();
+
 
 	// キャンバスへ登録
+	m_canvas->AddSprite(m_backInGameplayingSprite.get());
 	m_canvas->AddSprite(m_backgroundAlphaSprite.get());
 	m_canvas->AddSprite(m_poseFontSprite.get());
 	m_canvas->AddSprite(m_operatingFontSprite.get());
@@ -148,6 +152,9 @@ void PoseGameplayState::OnStartState()
 	m_isPrevConnectedGamepad = false;
 
 
+	m_backInGameplayingSprite->Initialize(GetOwner()->GetCommonResources()->GetCopyScreenTexture()->GetShaderResourceView());
+	m_backInGameplayingSprite->SetPosition(Vector2(screen->GetCenterXF(), screen->GetCenterYF()));
+
 	// **** タスク管理へ登録 ****
 	GetOwner()->GetTaskManager()->AddTask(m_canvas.get());
 
@@ -162,6 +169,9 @@ void PoseGameplayState::OnStartState()
 void PoseGameplayState::OnUpdate(float deltaTime)
 {
 	UNREFERENCED_PARAMETER(deltaTime);
+
+	// タスク管理の更新処理
+	GetOwner()->GetTaskManager()->Update(deltaTime);
 
 	// 入力の更新処理
 	m_systemInput->Update(
@@ -192,10 +202,6 @@ void PoseGameplayState::OnUpdate(float deltaTime)
 
 	// ガイドUI変更を試みる
 	TryChangeCurrentGuideUI();
-
-
-	// タスク管理の更新処理
-	GetOwner()->GetTaskManager()->Update(deltaTime);
 }
 
 
@@ -252,6 +258,7 @@ void PoseGameplayState::OnPushMenuItem(PoseMenu::MenuItem menuItem)
 	case PoseMenu::MenuItem::SETTING:
 		break;
 	case PoseMenu::MenuItem::RETURN_TITLE:
+		GetOwner()->OnEndScene();
 		GetOwner()->ChangeScene<TitleScene>();
 
 		break;

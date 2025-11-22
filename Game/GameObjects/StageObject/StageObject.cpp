@@ -66,10 +66,10 @@ void StageObject::Initialize(CommonResources* pCommonResources, CollisionManager
 
 	RegisterChildType<IWireEventObserver>(this);
 
-	SetScale(0.4f);
+	GetTransform()->SetScale(0.4f);
 
 	// コライダの作成
-	m_collider = std::make_unique<Sphere>(GetPosition(), GetScale());
+	m_collider = std::make_unique<Sphere>(GetTransform()->GetPosition(), GetTransform()->GetScale().x);
 
 	pCollisionManager->AddCollisionObjectData(this, m_collider.get());
 
@@ -129,9 +129,9 @@ void StageObject::Draw(const Camera& camera)
 
 	auto context = GetCommonResources()->GetDeviceResources()->GetD3DDeviceContext();
 
-	Matrix transform = Matrix::CreateTranslation(GetPosition());
-	Matrix rotate = Matrix::CreateFromQuaternion(GetRotate());
-	Matrix scale = Matrix::CreateScale(GetScale());
+	Matrix transform = Matrix::CreateTranslation(GetTransform()->GetPosition());
+	Matrix rotate = Matrix::CreateFromQuaternion(GetTransform()->GetRotation());
+	Matrix scale = Matrix::CreateScale(GetTransform()->GetScale());
 
 	Matrix world = scale * rotate * transform;
 
@@ -203,13 +203,13 @@ void StageObject::ApplyGravity(const float& deltaTime)
 void StageObject::Move(const float& deltaTime)
 {
 
-	SimpleMath::Quaternion rotate = GetRotate();
+	SimpleMath::Quaternion rotate = GetTransform()->GetRotation();
 
 
 	// **** 座標の更新 ****
 	// 座標の算出
-	SimpleMath::Vector3 position = GetPosition() + GetVelocity() * deltaTime;
-	SetPosition(position);
+	SimpleMath::Vector3 position = GetTransform()->GetPosition() + GetVelocity() * deltaTime;
+	GetTransform()->SetPosition(position);
 
 	// コライダの更新処理
 	m_collider->Transform(position);
@@ -273,7 +273,7 @@ void StageObject::OnWireHover(const WireEventData& eventData)
 {
 	using namespace SimpleMath;
 
-	SetPosition(eventData.grabPos);
+	GetTransform()->SetPosition(eventData.grabPos);
 }
 
 /**
@@ -292,7 +292,7 @@ void StageObject::OnCollision(GameObject* pHitObject, ICollider* pHitCollider)
 
 			SimpleMath::Vector3 overlap = CalcOverlap(plane, *m_collider);
 
-			SimpleMath::Vector3 position = GetPosition() + overlap;
+			SimpleMath::Vector3 position = GetTransform()->GetPosition() + overlap;
 
 			if (overlap.y > 0.0f)
 			{
@@ -303,7 +303,7 @@ void StageObject::OnCollision(GameObject* pHitObject, ICollider* pHitCollider)
 				ApplyFriction();
 			}
 
-			SetPosition(position);
+			GetTransform()->SetPosition(position);
 			m_collider->Transform(position);
 		}
 	}

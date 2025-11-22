@@ -79,7 +79,7 @@ void WireGrabbingPlayerState::OnUpdate(float deltaTime)
 
 	// ワイヤーの始点位置を設定
 
-	GetOwner()->GetWire()->GetFrontPivot()->SetPosition(GetOwner()->GetPosition());
+	GetOwner()->GetWire()->GetFrontPivot()->SetPosition(GetOwner()->GetTransform()->GetPosition());
 
 	// 掴んでいることを通知
 	GetOwner()->GetWireSystem()->NotifyHover(eventData);

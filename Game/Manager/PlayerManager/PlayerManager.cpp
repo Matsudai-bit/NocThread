@@ -107,7 +107,7 @@ void PlayerManager::DrawTask(const Camera& camera)
 	m_player->Draw(camera);
 
 	// ƒvƒŒƒCƒ„[‚Ì‰e
-	m_playerShadow->Draw(camera, m_pCommonResources->GetCommonStates(), m_player->GetPosition());
+	m_playerShadow->Draw(camera, m_pCommonResources->GetCommonStates(), m_player->GetTransform()->GetPosition());
 
 }
 

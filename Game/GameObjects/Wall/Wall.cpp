@@ -69,7 +69,7 @@ void Wall::Initialize(
     m_height = height;
     
     // 中心座標の設定
-    SetPosition(pos);
+    GetTransform()->SetPosition(pos);
 
     // 壁を置く方向を設定
     PutPlaceDirection(placeDirection);
@@ -284,166 +284,168 @@ void Wall::PutPlaceDirection(const PlaceDirection& placeDirection)
 
     // 落ちないようにするために高さを高くする
 
+    SimpleMath::Vector3 position = GetTransform()->GetPosition();
+
     switch (placeDirection)
     {
     case PlaceDirection::UP:
         // 各座標の算出
 
         // 前面
-        m_parentVertexes[0].position = GetPosition() + SimpleMath::Vector3(+halfWidth, m_height, -(DISTANCE - halfDeph));
-        m_parentVertexes[1].position = GetPosition() + SimpleMath::Vector3(-halfWidth, m_height, -(DISTANCE - halfDeph));
-        m_parentVertexes[2].position = GetPosition() + SimpleMath::Vector3(-halfWidth, 0.0f, -(DISTANCE - halfDeph));
-        m_parentVertexes[3].position = GetPosition() + SimpleMath::Vector3(+halfWidth, 0.0f, -(DISTANCE - halfDeph));
+        m_parentVertexes[0].position = position + SimpleMath::Vector3(+halfWidth, m_height, -(DISTANCE - halfDeph));
+        m_parentVertexes[1].position = position + SimpleMath::Vector3(-halfWidth, m_height, -(DISTANCE - halfDeph));
+        m_parentVertexes[2].position = position + SimpleMath::Vector3(-halfWidth, 0.0f, -(DISTANCE - halfDeph));
+        m_parentVertexes[3].position = position + SimpleMath::Vector3(+halfWidth, 0.0f, -(DISTANCE - halfDeph));
 
         // 後面
-        m_parentVertexes[4].position = GetPosition() + SimpleMath::Vector3(-halfWidth, m_height, -(DISTANCE + halfDeph));
-        m_parentVertexes[5].position = GetPosition() + SimpleMath::Vector3(+halfWidth, m_height, -(DISTANCE + halfDeph));
-        m_parentVertexes[6].position = GetPosition() + SimpleMath::Vector3(+halfWidth, 0.0f, -(DISTANCE + halfDeph));
-        m_parentVertexes[7].position = GetPosition() + SimpleMath::Vector3(-halfWidth, 0.0f, -(DISTANCE + halfDeph));
+        m_parentVertexes[4].position = position + SimpleMath::Vector3(-halfWidth, m_height, -(DISTANCE + halfDeph));
+        m_parentVertexes[5].position = position + SimpleMath::Vector3(+halfWidth, m_height, -(DISTANCE + halfDeph));
+        m_parentVertexes[6].position = position + SimpleMath::Vector3(+halfWidth, 0.0f, -(DISTANCE + halfDeph));
+        m_parentVertexes[7].position = position + SimpleMath::Vector3(-halfWidth, 0.0f, -(DISTANCE + halfDeph));
 
         // 左面
-        m_parentVertexes[8].position = GetPosition() + SimpleMath::Vector3(-halfWidth, m_height, -(DISTANCE - halfDeph));
-        m_parentVertexes[9].position = GetPosition() + SimpleMath::Vector3(-halfWidth, m_height, -(DISTANCE + halfDeph));
-        m_parentVertexes[10].position = GetPosition() + SimpleMath::Vector3(-halfWidth, 0.0f, -(DISTANCE + halfDeph));
-        m_parentVertexes[11].position = GetPosition() + SimpleMath::Vector3(-halfWidth, 0.0f, -(DISTANCE - halfDeph));
+        m_parentVertexes[8].position = position + SimpleMath::Vector3(-halfWidth, m_height, -(DISTANCE - halfDeph));
+        m_parentVertexes[9].position = position + SimpleMath::Vector3(-halfWidth, m_height, -(DISTANCE + halfDeph));
+        m_parentVertexes[10].position = position + SimpleMath::Vector3(-halfWidth, 0.0f, -(DISTANCE + halfDeph));
+        m_parentVertexes[11].position = position + SimpleMath::Vector3(-halfWidth, 0.0f, -(DISTANCE - halfDeph));
 
         // 右面
-        m_parentVertexes[12].position = GetPosition() + SimpleMath::Vector3(halfWidth, m_height, -(DISTANCE + halfDeph));
-        m_parentVertexes[13].position = GetPosition() + SimpleMath::Vector3(halfWidth, m_height, -(DISTANCE - halfDeph));
-        m_parentVertexes[14].position = GetPosition() + SimpleMath::Vector3(halfWidth, 0.0f, -(DISTANCE - halfDeph));
-        m_parentVertexes[15].position = GetPosition() + SimpleMath::Vector3(halfWidth, 0.0f, -(DISTANCE + halfDeph));
+        m_parentVertexes[12].position = position + SimpleMath::Vector3(halfWidth, m_height, -(DISTANCE + halfDeph));
+        m_parentVertexes[13].position = position + SimpleMath::Vector3(halfWidth, m_height, -(DISTANCE - halfDeph));
+        m_parentVertexes[14].position = position + SimpleMath::Vector3(halfWidth, 0.0f, -(DISTANCE - halfDeph));
+        m_parentVertexes[15].position = position + SimpleMath::Vector3(halfWidth, 0.0f, -(DISTANCE + halfDeph));
 
         // 上面
-        m_parentVertexes[16].position = GetPosition() + SimpleMath::Vector3(-halfWidth, m_height, -(DISTANCE - halfDeph));
-        m_parentVertexes[17].position = GetPosition() + SimpleMath::Vector3(halfWidth, m_height, -(DISTANCE - halfDeph));
-        m_parentVertexes[18].position = GetPosition() + SimpleMath::Vector3(halfWidth, m_height, -(DISTANCE + halfDeph));
-        m_parentVertexes[19].position = GetPosition() + SimpleMath::Vector3(-halfWidth, m_height, -(DISTANCE + halfDeph));
+        m_parentVertexes[16].position = position + SimpleMath::Vector3(-halfWidth, m_height, -(DISTANCE - halfDeph));
+        m_parentVertexes[17].position = position + SimpleMath::Vector3(halfWidth, m_height, -(DISTANCE - halfDeph));
+        m_parentVertexes[18].position = position + SimpleMath::Vector3(halfWidth, m_height, -(DISTANCE + halfDeph));
+        m_parentVertexes[19].position = position + SimpleMath::Vector3(-halfWidth, m_height, -(DISTANCE + halfDeph));
 
         // **底面 (追加)**
-        m_parentVertexes[20].position = GetPosition() + SimpleMath::Vector3(-halfWidth, 0.0f, -(DISTANCE + halfDeph));
-        m_parentVertexes[21].position = GetPosition() + SimpleMath::Vector3(halfWidth, 0.0f, -(DISTANCE + halfDeph));
-        m_parentVertexes[22].position = GetPosition() + SimpleMath::Vector3(halfWidth, 0.0f, -(DISTANCE - halfDeph));
-        m_parentVertexes[23].position = GetPosition() + SimpleMath::Vector3(-halfWidth, 0.0f, -(DISTANCE - halfDeph));
+        m_parentVertexes[20].position = position + SimpleMath::Vector3(-halfWidth, 0.0f, -(DISTANCE + halfDeph));
+        m_parentVertexes[21].position = position + SimpleMath::Vector3(halfWidth, 0.0f, -(DISTANCE + halfDeph));
+        m_parentVertexes[22].position = position + SimpleMath::Vector3(halfWidth, 0.0f, -(DISTANCE - halfDeph));
+        m_parentVertexes[23].position = position + SimpleMath::Vector3(-halfWidth, 0.0f, -(DISTANCE - halfDeph));
 
         break;
     case PlaceDirection::RIGHT:
         // 各座標の算出
 
           // 前面
-        m_parentVertexes[0].position = GetPosition() + SimpleMath::Vector3((DISTANCE + halfDeph), m_height, halfWidth);
-        m_parentVertexes[1].position = GetPosition() + SimpleMath::Vector3((DISTANCE - halfDeph), m_height, halfWidth);
-        m_parentVertexes[2].position = GetPosition() + SimpleMath::Vector3((DISTANCE - halfDeph), 0.0f, halfWidth);
-        m_parentVertexes[3].position = GetPosition() + SimpleMath::Vector3((DISTANCE + halfDeph), 0.0f, halfWidth);
+        m_parentVertexes[0].position = position + SimpleMath::Vector3((DISTANCE + halfDeph), m_height, halfWidth);
+        m_parentVertexes[1].position = position + SimpleMath::Vector3((DISTANCE - halfDeph), m_height, halfWidth);
+        m_parentVertexes[2].position = position + SimpleMath::Vector3((DISTANCE - halfDeph), 0.0f, halfWidth);
+        m_parentVertexes[3].position = position + SimpleMath::Vector3((DISTANCE + halfDeph), 0.0f, halfWidth);
 
         // 後面
-        m_parentVertexes[4].position = GetPosition() + SimpleMath::Vector3((DISTANCE - halfDeph), m_height, -halfWidth);
-        m_parentVertexes[5].position = GetPosition() + SimpleMath::Vector3((DISTANCE + halfDeph), m_height, -halfWidth);
-        m_parentVertexes[6].position = GetPosition() + SimpleMath::Vector3((DISTANCE + halfDeph), 0.0f, -halfWidth);
-        m_parentVertexes[7].position = GetPosition() + SimpleMath::Vector3((DISTANCE - halfDeph), 0.0f, -halfWidth);
+        m_parentVertexes[4].position = position + SimpleMath::Vector3((DISTANCE - halfDeph), m_height, -halfWidth);
+        m_parentVertexes[5].position = position + SimpleMath::Vector3((DISTANCE + halfDeph), m_height, -halfWidth);
+        m_parentVertexes[6].position = position + SimpleMath::Vector3((DISTANCE + halfDeph), 0.0f, -halfWidth);
+        m_parentVertexes[7].position = position + SimpleMath::Vector3((DISTANCE - halfDeph), 0.0f, -halfWidth);
 
         //左面
-        m_parentVertexes[8].position = GetPosition() + SimpleMath::Vector3((DISTANCE - halfDeph), m_height, +halfWidth);
-        m_parentVertexes[9].position = GetPosition() + SimpleMath::Vector3((DISTANCE - halfDeph), m_height, -halfWidth);
-        m_parentVertexes[10].position = GetPosition() + SimpleMath::Vector3((DISTANCE - halfDeph), 0.0f, -halfWidth);
-        m_parentVertexes[11].position = GetPosition() + SimpleMath::Vector3((DISTANCE - halfDeph), 0.0f, +halfWidth);
+        m_parentVertexes[8].position = position + SimpleMath::Vector3((DISTANCE - halfDeph), m_height, +halfWidth);
+        m_parentVertexes[9].position = position + SimpleMath::Vector3((DISTANCE - halfDeph), m_height, -halfWidth);
+        m_parentVertexes[10].position = position + SimpleMath::Vector3((DISTANCE - halfDeph), 0.0f, -halfWidth);
+        m_parentVertexes[11].position = position + SimpleMath::Vector3((DISTANCE - halfDeph), 0.0f, +halfWidth);
 
         // 右面
-        m_parentVertexes[12].position = GetPosition() + SimpleMath::Vector3((DISTANCE + halfDeph), m_height, -halfWidth);
-        m_parentVertexes[13].position = GetPosition() + SimpleMath::Vector3((DISTANCE + halfDeph), m_height, +halfWidth);
-        m_parentVertexes[14].position = GetPosition() + SimpleMath::Vector3((DISTANCE + halfDeph), 0.0f, +halfWidth);
-        m_parentVertexes[15].position = GetPosition() + SimpleMath::Vector3((DISTANCE + halfDeph), 0.0f, -halfWidth);
+        m_parentVertexes[12].position = position + SimpleMath::Vector3((DISTANCE + halfDeph), m_height, -halfWidth);
+        m_parentVertexes[13].position = position + SimpleMath::Vector3((DISTANCE + halfDeph), m_height, +halfWidth);
+        m_parentVertexes[14].position = position + SimpleMath::Vector3((DISTANCE + halfDeph), 0.0f, +halfWidth);
+        m_parentVertexes[15].position = position + SimpleMath::Vector3((DISTANCE + halfDeph), 0.0f, -halfWidth);
 
         // 上面
-        m_parentVertexes[16].position = GetPosition() + SimpleMath::Vector3((DISTANCE - halfDeph), m_height, -halfWidth);
-        m_parentVertexes[17].position = GetPosition() + SimpleMath::Vector3((DISTANCE - halfDeph), m_height, halfWidth);
-        m_parentVertexes[18].position = GetPosition() + SimpleMath::Vector3((DISTANCE + halfDeph), m_height, halfWidth);
-        m_parentVertexes[19].position = GetPosition() + SimpleMath::Vector3((DISTANCE + halfDeph), m_height, -halfWidth);
+        m_parentVertexes[16].position = position + SimpleMath::Vector3((DISTANCE - halfDeph), m_height, -halfWidth);
+        m_parentVertexes[17].position = position + SimpleMath::Vector3((DISTANCE - halfDeph), m_height, halfWidth);
+        m_parentVertexes[18].position = position + SimpleMath::Vector3((DISTANCE + halfDeph), m_height, halfWidth);
+        m_parentVertexes[19].position = position + SimpleMath::Vector3((DISTANCE + halfDeph), m_height, -halfWidth);
 
         // **底面 (追加)**
-        m_parentVertexes[20].position = GetPosition() + SimpleMath::Vector3((DISTANCE + halfDeph), 0.0f, -halfWidth);
-        m_parentVertexes[21].position = GetPosition() + SimpleMath::Vector3((DISTANCE + halfDeph), 0.0f, halfWidth);
-        m_parentVertexes[22].position = GetPosition() + SimpleMath::Vector3((DISTANCE - halfDeph), 0.0f, halfWidth);
-        m_parentVertexes[23].position = GetPosition() + SimpleMath::Vector3((DISTANCE - halfDeph), 0.0f, -halfWidth);
+        m_parentVertexes[20].position = position + SimpleMath::Vector3((DISTANCE + halfDeph), 0.0f, -halfWidth);
+        m_parentVertexes[21].position = position + SimpleMath::Vector3((DISTANCE + halfDeph), 0.0f, halfWidth);
+        m_parentVertexes[22].position = position + SimpleMath::Vector3((DISTANCE - halfDeph), 0.0f, halfWidth);
+        m_parentVertexes[23].position = position + SimpleMath::Vector3((DISTANCE - halfDeph), 0.0f, -halfWidth);
 
         break;
     case PlaceDirection::DOWN:
         // 各座標の算出
 
         // 前面
-        m_parentVertexes[0].position = GetPosition() + SimpleMath::Vector3(+halfWidth, m_height, (DISTANCE + halfDeph));
-        m_parentVertexes[1].position = GetPosition() + SimpleMath::Vector3(-halfWidth, m_height, (DISTANCE + halfDeph));
-        m_parentVertexes[2].position = GetPosition() + SimpleMath::Vector3(-halfWidth, 0.0f, (DISTANCE + halfDeph));
-        m_parentVertexes[3].position = GetPosition() + SimpleMath::Vector3(+halfWidth, 0.0f, (DISTANCE + halfDeph));
+        m_parentVertexes[0].position = position + SimpleMath::Vector3(+halfWidth, m_height, (DISTANCE + halfDeph));
+        m_parentVertexes[1].position = position + SimpleMath::Vector3(-halfWidth, m_height, (DISTANCE + halfDeph));
+        m_parentVertexes[2].position = position + SimpleMath::Vector3(-halfWidth, 0.0f, (DISTANCE + halfDeph));
+        m_parentVertexes[3].position = position + SimpleMath::Vector3(+halfWidth, 0.0f, (DISTANCE + halfDeph));
 
         // 後面
-        m_parentVertexes[4].position = GetPosition() + SimpleMath::Vector3(-halfWidth, m_height, (DISTANCE - halfDeph));
-        m_parentVertexes[5].position = GetPosition() + SimpleMath::Vector3(+halfWidth, m_height, (DISTANCE - halfDeph));
-        m_parentVertexes[6].position = GetPosition() + SimpleMath::Vector3(+halfWidth, 0.0f, (DISTANCE - halfDeph));
-        m_parentVertexes[7].position = GetPosition() + SimpleMath::Vector3(-halfWidth, 0.0f, (DISTANCE - halfDeph));
+        m_parentVertexes[4].position = position + SimpleMath::Vector3(-halfWidth, m_height, (DISTANCE - halfDeph));
+        m_parentVertexes[5].position = position + SimpleMath::Vector3(+halfWidth, m_height, (DISTANCE - halfDeph));
+        m_parentVertexes[6].position = position + SimpleMath::Vector3(+halfWidth, 0.0f, (DISTANCE - halfDeph));
+        m_parentVertexes[7].position = position + SimpleMath::Vector3(-halfWidth, 0.0f, (DISTANCE - halfDeph));
 
         // 左面
-        m_parentVertexes[8].position = GetPosition() + SimpleMath::Vector3(-halfWidth, m_height, (DISTANCE + halfDeph));
-        m_parentVertexes[9].position = GetPosition() + SimpleMath::Vector3(-halfWidth, m_height, (DISTANCE - halfDeph));
-        m_parentVertexes[10].position = GetPosition() + SimpleMath::Vector3(-halfWidth, 0.0f, (DISTANCE - halfDeph));
-        m_parentVertexes[11].position = GetPosition() + SimpleMath::Vector3(-halfWidth, 0.0f, (DISTANCE + halfDeph));
+        m_parentVertexes[8].position = position + SimpleMath::Vector3(-halfWidth, m_height, (DISTANCE + halfDeph));
+        m_parentVertexes[9].position = position + SimpleMath::Vector3(-halfWidth, m_height, (DISTANCE - halfDeph));
+        m_parentVertexes[10].position = position + SimpleMath::Vector3(-halfWidth, 0.0f, (DISTANCE - halfDeph));
+        m_parentVertexes[11].position = position + SimpleMath::Vector3(-halfWidth, 0.0f, (DISTANCE + halfDeph));
 
         // 右面
-        m_parentVertexes[12].position = GetPosition() + SimpleMath::Vector3(halfWidth, m_height, (DISTANCE - halfDeph));
-        m_parentVertexes[13].position = GetPosition() + SimpleMath::Vector3(halfWidth, m_height, (DISTANCE + halfDeph));
-        m_parentVertexes[14].position = GetPosition() + SimpleMath::Vector3(halfWidth, 0.0f, (DISTANCE + halfDeph));
-        m_parentVertexes[15].position = GetPosition() + SimpleMath::Vector3(halfWidth, 0.0f, (DISTANCE - halfDeph));
+        m_parentVertexes[12].position = position + SimpleMath::Vector3(halfWidth, m_height, (DISTANCE - halfDeph));
+        m_parentVertexes[13].position = position + SimpleMath::Vector3(halfWidth, m_height, (DISTANCE + halfDeph));
+        m_parentVertexes[14].position = position + SimpleMath::Vector3(halfWidth, 0.0f, (DISTANCE + halfDeph));
+        m_parentVertexes[15].position = position + SimpleMath::Vector3(halfWidth, 0.0f, (DISTANCE - halfDeph));
 
         // 上面
-        m_parentVertexes[16].position = GetPosition() + SimpleMath::Vector3(-halfWidth, m_height, (DISTANCE + halfDeph));
-        m_parentVertexes[17].position = GetPosition() + SimpleMath::Vector3(halfWidth, m_height, (DISTANCE + halfDeph));
-        m_parentVertexes[18].position = GetPosition() + SimpleMath::Vector3(halfWidth, m_height, (DISTANCE - halfDeph));
-        m_parentVertexes[19].position = GetPosition() + SimpleMath::Vector3(-halfWidth, m_height, (DISTANCE - halfDeph));
+        m_parentVertexes[16].position = position + SimpleMath::Vector3(-halfWidth, m_height, (DISTANCE + halfDeph));
+        m_parentVertexes[17].position = position + SimpleMath::Vector3(halfWidth, m_height, (DISTANCE + halfDeph));
+        m_parentVertexes[18].position = position + SimpleMath::Vector3(halfWidth, m_height, (DISTANCE - halfDeph));
+        m_parentVertexes[19].position = position + SimpleMath::Vector3(-halfWidth, m_height, (DISTANCE - halfDeph));
 
         // **底面 (追加)**
-        m_parentVertexes[20].position = GetPosition() + SimpleMath::Vector3(-halfWidth, 0.0f, (DISTANCE - halfDeph));
-        m_parentVertexes[21].position = GetPosition() + SimpleMath::Vector3(halfWidth, 0.0f, (DISTANCE - halfDeph));
-        m_parentVertexes[22].position = GetPosition() + SimpleMath::Vector3(halfWidth, 0.0f, (DISTANCE + halfDeph));
-        m_parentVertexes[23].position = GetPosition() + SimpleMath::Vector3(-halfWidth, 0.0f, (DISTANCE + halfDeph));
+        m_parentVertexes[20].position = position + SimpleMath::Vector3(-halfWidth, 0.0f, (DISTANCE - halfDeph));
+        m_parentVertexes[21].position = position + SimpleMath::Vector3(halfWidth, 0.0f, (DISTANCE - halfDeph));
+        m_parentVertexes[22].position = position + SimpleMath::Vector3(halfWidth, 0.0f, (DISTANCE + halfDeph));
+        m_parentVertexes[23].position = position + SimpleMath::Vector3(-halfWidth, 0.0f, (DISTANCE + halfDeph));
 
         break;
     case PlaceDirection::LEFT:
 
         // 前面
-        m_parentVertexes[0].position = GetPosition() + SimpleMath::Vector3(-(DISTANCE - halfDeph), m_height, halfWidth);
-        m_parentVertexes[1].position = GetPosition() + SimpleMath::Vector3(-(DISTANCE + halfDeph), m_height, halfWidth);
-        m_parentVertexes[2].position = GetPosition() + SimpleMath::Vector3(-(DISTANCE + halfDeph), 0.0f, halfWidth);
-        m_parentVertexes[3].position = GetPosition() + SimpleMath::Vector3(-(DISTANCE - halfDeph), 0.0f, halfWidth);
+        m_parentVertexes[0].position = position + SimpleMath::Vector3(-(DISTANCE - halfDeph), m_height, halfWidth);
+        m_parentVertexes[1].position = position + SimpleMath::Vector3(-(DISTANCE + halfDeph), m_height, halfWidth);
+        m_parentVertexes[2].position = position + SimpleMath::Vector3(-(DISTANCE + halfDeph), 0.0f, halfWidth);
+        m_parentVertexes[3].position = position + SimpleMath::Vector3(-(DISTANCE - halfDeph), 0.0f, halfWidth);
 
         // 後面
-        m_parentVertexes[4].position = GetPosition() + SimpleMath::Vector3(-(DISTANCE + halfDeph), m_height, -halfWidth);
-        m_parentVertexes[5].position = GetPosition() + SimpleMath::Vector3(-(DISTANCE - halfDeph), m_height, -halfWidth);
-        m_parentVertexes[6].position = GetPosition() + SimpleMath::Vector3(-(DISTANCE - halfDeph), 0.0f, -halfWidth);
-        m_parentVertexes[7].position = GetPosition() + SimpleMath::Vector3(-(DISTANCE + halfDeph), 0.0f, -halfWidth);
+        m_parentVertexes[4].position = position + SimpleMath::Vector3(-(DISTANCE + halfDeph), m_height, -halfWidth);
+        m_parentVertexes[5].position = position + SimpleMath::Vector3(-(DISTANCE - halfDeph), m_height, -halfWidth);
+        m_parentVertexes[6].position = position + SimpleMath::Vector3(-(DISTANCE - halfDeph), 0.0f, -halfWidth);
+        m_parentVertexes[7].position = position + SimpleMath::Vector3(-(DISTANCE + halfDeph), 0.0f, -halfWidth);
 
 
         //左面
-        m_parentVertexes[8].position = GetPosition() + SimpleMath::Vector3(-(DISTANCE + halfDeph), m_height, +halfWidth);
-        m_parentVertexes[9].position = GetPosition() + SimpleMath::Vector3(-(DISTANCE + halfDeph), m_height, -halfWidth);
-        m_parentVertexes[10].position = GetPosition() + SimpleMath::Vector3(-(DISTANCE + halfDeph), 0.0f, -halfWidth);
-        m_parentVertexes[11].position = GetPosition() + SimpleMath::Vector3(-(DISTANCE + halfDeph), 0.0f, +halfWidth);
+        m_parentVertexes[8].position = position + SimpleMath::Vector3(-(DISTANCE + halfDeph), m_height, +halfWidth);
+        m_parentVertexes[9].position = position + SimpleMath::Vector3(-(DISTANCE + halfDeph), m_height, -halfWidth);
+        m_parentVertexes[10].position = position + SimpleMath::Vector3(-(DISTANCE + halfDeph), 0.0f, -halfWidth);
+        m_parentVertexes[11].position = position + SimpleMath::Vector3(-(DISTANCE + halfDeph), 0.0f, +halfWidth);
 
         // 右面
-        m_parentVertexes[12].position = GetPosition() + SimpleMath::Vector3(-(DISTANCE - halfDeph), m_height, -halfWidth);
-        m_parentVertexes[13].position = GetPosition() + SimpleMath::Vector3(-(DISTANCE - halfDeph), m_height, +halfWidth);
-        m_parentVertexes[14].position = GetPosition() + SimpleMath::Vector3(-(DISTANCE - halfDeph), 0.0f, +halfWidth);
-        m_parentVertexes[15].position = GetPosition() + SimpleMath::Vector3(-(DISTANCE - halfDeph), 0.0f, -halfWidth);
+        m_parentVertexes[12].position = position + SimpleMath::Vector3(-(DISTANCE - halfDeph), m_height, -halfWidth);
+        m_parentVertexes[13].position = position + SimpleMath::Vector3(-(DISTANCE - halfDeph), m_height, +halfWidth);
+        m_parentVertexes[14].position = position + SimpleMath::Vector3(-(DISTANCE - halfDeph), 0.0f, +halfWidth);
+        m_parentVertexes[15].position = position + SimpleMath::Vector3(-(DISTANCE - halfDeph), 0.0f, -halfWidth);
 
         // 上面
-        m_parentVertexes[16].position = GetPosition() + SimpleMath::Vector3(-(DISTANCE + halfDeph), m_height, -halfWidth);
-        m_parentVertexes[17].position = GetPosition() + SimpleMath::Vector3(-(DISTANCE + halfDeph), m_height, halfWidth);
-        m_parentVertexes[18].position = GetPosition() + SimpleMath::Vector3(-(DISTANCE - halfDeph), m_height, halfWidth);
-        m_parentVertexes[19].position = GetPosition() + SimpleMath::Vector3(-(DISTANCE - halfDeph), m_height, -halfWidth);
+        m_parentVertexes[16].position = position + SimpleMath::Vector3(-(DISTANCE + halfDeph), m_height, -halfWidth);
+        m_parentVertexes[17].position = position + SimpleMath::Vector3(-(DISTANCE + halfDeph), m_height, halfWidth);
+        m_parentVertexes[18].position = position + SimpleMath::Vector3(-(DISTANCE - halfDeph), m_height, halfWidth);
+        m_parentVertexes[19].position = position + SimpleMath::Vector3(-(DISTANCE - halfDeph), m_height, -halfWidth);
 
         // **底面 (追加)**
-        m_parentVertexes[20].position = GetPosition() + SimpleMath::Vector3(-(DISTANCE - halfDeph), 0.0f, -halfWidth);
-        m_parentVertexes[21].position = GetPosition() + SimpleMath::Vector3(-(DISTANCE - halfDeph), 0.0f, halfWidth);
-        m_parentVertexes[22].position = GetPosition() + SimpleMath::Vector3(-(DISTANCE + halfDeph), 0.0f, halfWidth);
-        m_parentVertexes[23].position = GetPosition() + SimpleMath::Vector3(-(DISTANCE + halfDeph), 0.0f, -halfWidth);
+        m_parentVertexes[20].position = position + SimpleMath::Vector3(-(DISTANCE - halfDeph), 0.0f, -halfWidth);
+        m_parentVertexes[21].position = position + SimpleMath::Vector3(-(DISTANCE - halfDeph), 0.0f, halfWidth);
+        m_parentVertexes[22].position = position + SimpleMath::Vector3(-(DISTANCE + halfDeph), 0.0f, halfWidth);
+        m_parentVertexes[23].position = position + SimpleMath::Vector3(-(DISTANCE + halfDeph), 0.0f, -halfWidth);
 
         break;
 

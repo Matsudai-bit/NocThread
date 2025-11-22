@@ -12,9 +12,8 @@
 // **** 追加インクルード ****
 
 // ライブラリ
-#include "Library/ImaseLib/DebugFont.h"         // デバックフォント
-
-
+#include "Library/ImaseLib/DebugFont.h"             // デバックフォント
+#include "Library/DirectXFramework/RenderTexture.h" // レンダーテクスチャ
 
 // システム
 #include "Game/Common/CommonResources/CommonResources.h"    // 共通リソース
@@ -46,6 +45,9 @@ private:
     std::unique_ptr<DirectX::Mouse::ButtonStateTracker>         m_mouseStateTracker;    ///< マウストラッカー
     std::unique_ptr<DirectX::Keyboard::KeyboardStateTracker>    m_keyboardStateTracker; ///< キーボードトラッカー
     std::unique_ptr<DirectX::GamePad::ButtonStateTracker>       m_gamePadStateTracker;  ///< ゲームパッドトラッカー
+
+    // その他
+    std::unique_ptr<DX::RenderTexture>  m_copyRenderTexture;
 
 public:
 

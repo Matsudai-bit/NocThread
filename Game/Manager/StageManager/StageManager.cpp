@@ -197,7 +197,7 @@ void StageManager::DrawInGameObjects(const Camera& camera)
 
 
 	SimpleMath::Matrix world = SimpleMath::Matrix::CreateScale(SKYSPHERE_SCALE);
-	world *= SimpleMath::Matrix::CreateTranslation(m_playerManager->GetPlayer()->GetPosition());
+	world *= SimpleMath::Matrix::CreateTranslation(m_playerManager->GetPlayer()->GetTransform()->GetPosition());
 
 	m_skySphere.Draw(m_pCommonResources->GetDeviceResources()->GetD3DDeviceContext(), *m_pCommonResources->GetCommonStates(), world, camera.GetViewMatrix(), camera.GetProjectionMatrix());
 }
@@ -273,7 +273,7 @@ void StageManager::CreateStage(CollisionManager* pCollisionManager, TaskManager*
 
 	// ‚¨•ó‚Ì¶¬
 	m_treasure = std::make_unique<Treasure>();
-	m_treasure->SetPosition(treasurePosition);
+	m_treasure->GetTransform()->SetPosition(treasurePosition);
 	m_treasure->Initialize(m_pCommonResources, pCollisionManager);
 
 	m_buildingManager = std::make_unique<BuildingManager>();

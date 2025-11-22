@@ -76,9 +76,9 @@ void FlyingChaserEnemyBehaviour::Update(Enemy* pEnemy, float deltaTime, const Co
 			return;
 		}
 
-		Vector3 playerPosition = pPlayerObject->GetPosition();
+		Vector3 playerPosition = pPlayerObject->GetTransform()->GetPosition();
 
-		m_targetDirection = playerPosition - pEnemy->GetPosition();
+		m_targetDirection = playerPosition - pEnemy->GetTransform()->GetPosition();
 
 		// Y²•ûŒü‚Ìî•ñ‚ğÁ‚·
 		m_targetDirection.Normalize();

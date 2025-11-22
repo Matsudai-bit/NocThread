@@ -148,7 +148,7 @@ void Wire::Update(float deltaTime)
 
 
 		// 距離が指定された以上になった場合終了する
-		float lengthSqr = SimpleMath::Vector3::DistanceSquared(m_owner.pGameObject->GetPosition(), pos);
+		float lengthSqr = SimpleMath::Vector3::DistanceSquared(m_owner.pGameObject->GetTransform()->GetPosition(), pos);
 		if (lengthSqr >= m_length * m_length)
 		{
 			Reset();
@@ -158,8 +158,8 @@ void Wire::Update(float deltaTime)
 
 
 		particle->SetPosition(pos);
-		m_ropeObject->GetParticles()->front()->SetPosition(m_owner.pGameObject->GetPosition());
-		m_collider->Set(m_owner.pGameObject->GetPosition(), pos,true);
+		m_ropeObject->GetParticles()->front()->SetPosition(m_owner.pGameObject->GetTransform()->GetPosition());
+		m_collider->Set(m_owner.pGameObject->GetTransform()->GetPosition(), pos,true);
 
 
 	}
@@ -480,7 +480,7 @@ void Wire::OnCollision(GameObject* pHitObject, ICollider* pHitCollider)
 
 
 			// **** ワイヤーの作成 *****
-			if (CreateRope(m_owner.pGameObject->GetPosition(), intersectionPos, m_simulationParam, 0.9f))
+			if (CreateRope(m_owner.pGameObject->GetTransform()->GetPosition(), intersectionPos, m_simulationParam, 0.9f))
 			{
 
 				m_owner.pHolderInterface->OnCollisionWire(pHitObject);

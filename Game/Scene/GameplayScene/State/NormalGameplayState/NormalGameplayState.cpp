@@ -112,6 +112,7 @@ void NormalGameplayState::OnUpdate(float deltaTime)
 	{
 		// ポーズ状態にする
 		GetStateMachine()->ChangeState<PoseGameplayState>();
+		GetOwner()->GetCommonResources()->SetCopyScreenRequest(true);
 	}
 
 	// ガイドUIの変更を試みる

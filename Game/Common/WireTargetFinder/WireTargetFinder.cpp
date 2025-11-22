@@ -116,7 +116,7 @@ void WireTargetFinder::Draw(const Camera& camera)
 	m_primitiveBatch->Begin();
 	for (auto direction : GetSearchDirections())
 	{
-		DX::DrawRay(m_primitiveBatch.get(), m_pPlayer->GetPosition(), direction * 30.0f, false, Colors::Yellow);
+		DX::DrawRay(m_primitiveBatch.get(), m_pPlayer->GetTransform()->GetPosition(), direction * 30.0f, false, Colors::Yellow);
 	}
 	
 	m_primitiveBatch->End();
@@ -360,7 +360,7 @@ bool WireTargetFinder::CalcWireTargetPosition(
 			if (GetIntersectionPointOnSurface(*aabb, hitCapsuleCollider, &targetPosition))
 			{
 				// 距離が MIN_GRAPPLE_DISTANCE_THRESHOLD 以下の場合除外
-				if (MIN_GRAPPLE_DISTANCE_THRESHOLD * MIN_GRAPPLE_DISTANCE_THRESHOLD < SimpleMath::Vector3::DistanceSquared(GetPosition(), targetPosition))
+				if (MIN_GRAPPLE_DISTANCE_THRESHOLD * MIN_GRAPPLE_DISTANCE_THRESHOLD < SimpleMath::Vector3::DistanceSquared(GetTransform()->GetPosition(), targetPosition))
 				{
 					*pTargetPosition = targetPosition;
 					return true;
@@ -388,7 +388,7 @@ DirectX::SimpleMath::Vector3 WireTargetFinder::GetFarTargetPosition(std::vector<
 	// 近い順にソートする
 	std::sort(targetPositions.begin(), targetPositions.end(), [&](const Vector3& lhs, const Vector3& rhs)
 		{
-			return Vector3::DistanceSquared(lhs, m_pPlayer->GetPosition()) < Vector3::DistanceSquared(rhs, m_pPlayer->GetPosition());
+			return Vector3::DistanceSquared(lhs, m_pPlayer->GetTransform()->GetPosition()) < Vector3::DistanceSquared(rhs, m_pPlayer->GetTransform()->GetPosition());
 		});
 
 
@@ -410,7 +410,7 @@ std::vector<DirectX::SimpleMath::Vector3> WireTargetFinder::GetTargetPositionCan
 
 	for (Vector3 direction : searchDirections)
 	{
-		Capsule capsule = CreateCapsuleCollider(m_pPlayer->GetPosition(), direction, m_wireLength * std::abs(direction.y * 1.3f), m_wireRadius);
+		Capsule capsule = CreateCapsuleCollider(m_pPlayer->GetTransform()->GetPosition(), direction, m_wireLength * std::abs(direction.y * 1.3f), m_wireRadius);
 
 		// 衝突情報
 		std::vector<const GameObject*> hitGameObjects{};

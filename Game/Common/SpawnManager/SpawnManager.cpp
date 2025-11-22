@@ -148,7 +148,7 @@ void SpawnManager::OnStealingTreasures()
 	using namespace SimpleMath;
 
 	//　****　敵の生成 ****
-	Vector3 treasurePos = GameObjectRegistry::GetInstance()->GetGameObject(GameObjectTag::TREASURE)->GetPosition();
+	Vector3 treasurePos = GameObjectRegistry::GetInstance()->GetGameObject(GameObjectTag::TREASURE)->GetTransform()->GetPosition();
 
 	std::unique_ptr<IEnemyFactory> factory = std::make_unique<EnemyFactory::FlyingChaserEnemy>();
 
@@ -168,7 +168,7 @@ void SpawnManager::OnStealingTreasures()
 		pos.z = treasurePos.z +std::sinf(XMConvertToRadians(degree)) * RADIUS;
 		pos.y = treasurePos.y;
 		
-		enemy->SetPosition(pos);
+		enemy->GetTransform()->SetPosition(pos);
 
 		m_pEnemyManager->AddEnemy(enemy.get());
 
@@ -207,7 +207,7 @@ void SpawnManager::OnStealingTreasures()
 	// 脱出用ヘリコプターの生成
 	m_pEscapeHelicopters->emplace_back(std::make_unique<EscapeHelicopter>());
 	m_pEscapeHelicopters->back()->Initialize(m_pCommonResources, m_pCollisionManager);
-	m_pEscapeHelicopters->back()->SetPosition(position);
+	m_pEscapeHelicopters->back()->GetTransform()->SetPosition(position);
 
 	// ヘリコプター出現を通知
 	GameFlowMessenger::GetInstance()->Notify(GameFlowEventID::SPAWN_HELICOPTER);
@@ -219,7 +219,7 @@ void SpawnManager::SpawnEnemy()
 	using namespace SimpleMath;
 
 	//　****　敵の生成 ****
-	Vector3 treasurePos = GameObjectRegistry::GetInstance()->GetGameObject(GameObjectTag::PLAYER)->GetPosition();
+	Vector3 treasurePos = GameObjectRegistry::GetInstance()->GetGameObject(GameObjectTag::PLAYER)->GetTransform()->GetPosition();
 	std::uniform_int_distribution<> dist(0, 180);
 	std::unique_ptr<IEnemyFactory> factory = std::make_unique<EnemyFactory::FlyingChaserEnemy>();
 
@@ -246,7 +246,7 @@ void SpawnManager::SpawnEnemy()
 		pos.z = treasurePos.z + std::sinf(XMConvertToRadians(degree)) * RADIUS;
 		pos.y = treasurePos.y;
 
-		enemy->SetPosition(pos);
+		enemy->GetTransform()->SetPosition(pos);
 
 		m_pEnemyManager->AddEnemy(enemy.get());
 

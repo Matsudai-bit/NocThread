@@ -51,7 +51,7 @@ EscapeHelicopter::~EscapeHelicopter()
  */
 void EscapeHelicopter::Initialize(const CommonResources* pCommonResources, CollisionManager* pCollisionManager)
 {
-	SetScale(0.8f);
+	GetTransform()->SetScale(0.8f);
 
 	// 共通リソースの設定
 	SetCommonResources(pCommonResources);
@@ -60,7 +60,7 @@ void EscapeHelicopter::Initialize(const CommonResources* pCommonResources, Colli
 	m_helicopterModel = pCommonResources->GetResourceManager()->CreateModel("Helicopter.sdkmesh");
 
 	// コライダの作成
-	m_collider = std::make_unique<AABB>(GetPosition(),SimpleMath::Vector3( SimpleMath::Vector3(18.0f, 10.0f, 10.0f) * GetScale() ));
+	m_collider = std::make_unique<AABB>(GetTransform()->GetPosition(),SimpleMath::Vector3( SimpleMath::Vector3(18.0f, 10.0f, 10.0f) * GetTransform()->GetScale() ));
 
 	// 衝突管理へ登録
 	pCollisionManager->AddCollisionObjectData(this, m_collider.get());
@@ -77,7 +77,7 @@ void EscapeHelicopter::Initialize(const CommonResources* pCommonResources, Colli
 bool EscapeHelicopter::UpdateTask(float deltaTime)
 {
 	UNREFERENCED_PARAMETER(deltaTime);
-	m_collider->SetCenter(GetPosition());
+	m_collider->SetCenter(GetTransform()->GetPosition());
 
 	return true;
 }
@@ -98,9 +98,9 @@ void EscapeHelicopter::DrawTask(const Camera& camera)
 	// ワールド行列の作成
 	Matrix world = Matrix::Identity;
 
-	world *= Matrix::CreateScale(GetScale());
-	world *= Matrix::CreateFromQuaternion(GetRotate());
-	world *= Matrix::CreateTranslation(GetPosition());
+	world *= Matrix::CreateScale(GetTransform()->GetScale());
+	world *= Matrix::CreateFromQuaternion(GetTransform()->GetRotation());
+	world *= Matrix::CreateTranslation(GetTransform()->GetPosition());
 
 	// モデルの描画
 	m_helicopterModel.Draw(
@@ -114,7 +114,7 @@ void EscapeHelicopter::DrawTask(const Camera& camera)
 	auto cylinder = DirectX::GeometricPrimitive::CreateCylinder(context, 1000.f, 0.5f);
 
 	world = SimpleMath::Matrix::Identity;
-	world *= Matrix::CreateTranslation(GetPosition());
+	world *= Matrix::CreateTranslation(GetTransform()->GetPosition());
 	cylinder->Draw(world, camera.GetViewMatrix(), camera.GetProjectionMatrix(), Colors::Purple);
 
 
