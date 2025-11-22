@@ -43,6 +43,7 @@ class CollisionManager;	// 衝突判定管理
 class GameEffectManager;// エフェクト管理
 class StageManager;		// ステージ管理
 class TaskManager;		// タスク管理
+class Minimap;			// ミニマップ
 
 
 // クラスの定義 ===============================================================
@@ -81,6 +82,8 @@ private:
 
 	// その他
 	std::unique_ptr<StageManager> m_stageManager;
+	
+	std::unique_ptr<Minimap>	m_miniMap; ///< ミニマップ
 
 	std::vector <std::function<void()>> m_eventStack;
 	ElapsedTimeCounter m_gamePlayingTimeCounter;		///< ゲームのプレイ時間カウンター

@@ -31,6 +31,9 @@
 #include "Game/Scene/Loading/LoadingScreen.h"
 #include "Game/Common/GameEffect/GameEffectController.h"
 
+// ミニマップ
+#include "Game/Common/MiniMap/MiniMap.h"
+
 
 // 管理系
 #include "Game//Common/GameObjectRegistry/GameObjectRegistry.h"
@@ -251,6 +254,9 @@ void GameplayScene::CreatePlatform()
 
 	// ステージ管理の作成
 	m_stageManager = std::make_unique<StageManager>(GetCommonResources());
+
+	// ミニマップの作成
+	m_miniMap = std::make_unique<Minimap>(GetCommonResources());
 }
 
 /**
@@ -275,6 +281,7 @@ void GameplayScene::CreateTask()
 	m_taskManager->AddTask(m_stageManager.get());		// StageManager
 	m_taskManager->AddTask(m_collisionManager.get());	// CollisionManager
 	m_taskManager->AddTask(m_gameEffectManager.get());	// EffectManager
+	m_taskManager->AddTask(m_miniMap.get());	// Minimap
 }
 
 /**
