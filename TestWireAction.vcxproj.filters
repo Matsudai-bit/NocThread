@@ -395,6 +395,15 @@
     <Filter Include="Game\GameObjects\Common\Transform">
       <UniqueIdentifier>{528291c6-64aa-4fdf-8aac-af24134e8f4c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resources\Shaders\SimpleShape2D">
+      <UniqueIdentifier>{b6eed5a7-3f9f-48aa-bc77-036b76841129}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\Shaders\SimpleShape2D\SimpleCircle">
+      <UniqueIdentifier>{e54e2c28-a9bc-4e09-aebe-d5cc13700cdd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\Shaders\SimpleShape2D\SimpleRectangle">
+      <UniqueIdentifier>{2edd200e-8352-4350-aba1-85137cf78756}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -794,6 +803,7 @@
     <ClInclude Include="Game\GameObjects\Common\Transform\Transform.h">
       <Filter>Game\GameObjects\Common\Transform</Filter>
     </ClInclude>
+    <ClInclude Include="Game\Common\Minimap\Minimap.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -1136,6 +1146,7 @@
     <ClCompile Include="Game\GameObjects\Common\Transform\Transform.cpp">
       <Filter>Game\GameObjects\Common\Transform</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Common\Minimap\Minimap.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />
@@ -1158,6 +1169,9 @@
     <None Include="Shaders\SimpleParticle\SimpleParticle.hlsli">
       <Filter>Resources\Shaders\SimpleParticle</Filter>
     </None>
+    <None Include="Shaders\SimpleShape2D\SimpleShape2D.hlsli">
+      <Filter>Resources\Shaders\SimpleShape2D</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shaders\CircleShadow_GS.hlsl">
@@ -1177,6 +1191,18 @@
     </FxCompile>
     <FxCompile Include="Shaders\SimpleParticle\SimpleParticle_VS.hlsl">
       <Filter>Resources\Shaders\SimpleParticle</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\SimpleShape2D\SimpleShape2D_GS.hlsl">
+      <Filter>Resources\Shaders\SimpleShape2D</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\SimpleShape2D\SimpleShape2D_VS.hlsl">
+      <Filter>Resources\Shaders\SimpleShape2D</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\SimpleShape2D\SimpleCircle\SimpleCircle_PS.hlsl">
+      <Filter>Resources\Shaders\SimpleShape2D\SimpleCircle</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\SimpleShape2D\SimpleRectangle\SimpleRectangle_PS.hlsl">
+      <Filter>Resources\Shaders\SimpleShape2D\SimpleRectangle</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

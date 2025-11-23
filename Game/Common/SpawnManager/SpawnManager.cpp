@@ -211,7 +211,9 @@ void SpawnManager::OnStealingTreasures()
 
 	// ヘリコプター出現を通知
 	GameFlowMessenger::GetInstance()->Notify(GameFlowEventID::SPAWN_HELICOPTER);
-	
+
+	// タスクの追加
+	GetTaskManager()->AddTask(m_pEscapeHelicopters->back().get());
 }
 
 void SpawnManager::SpawnEnemy()

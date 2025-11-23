@@ -1,4 +1,4 @@
-#include "SimpleCircle.hlsli"
+#include "SimpleShape2D.hlsli"
 
 GS_INPUT main(VS_INPUT input)
 {
@@ -16,5 +16,6 @@ GS_INPUT main(VS_INPUT input)
 	//	UVç¿ïWÇÕÇªÇÃÇ‹Ç‹ìnÇ∑
     output.Color = input.Color;
     output.Tex = input.Tex;
+    output.Position2D = input.Pos;
     return output;
 }

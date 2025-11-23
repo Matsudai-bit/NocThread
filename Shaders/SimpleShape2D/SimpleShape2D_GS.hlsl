@@ -1,5 +1,5 @@
 
-#include "SimpleCircle.hlsli"
+#include "SimpleShape2D.hlsli"
 static const int vnum = 4;
 
 static const float4 offset_array[vnum] =
@@ -24,7 +24,7 @@ void main(
 
         float4 res = offset_array[i];
 
-        element.Pos = input[0].Pos + offset_array[i];
+        element.Pos = float4(0.0f, 0.0f, 0.0f, 1.0f) + offset_array[i];
 
         //element.Pos = mul(element.Pos, matView);
         //element.Pos = mul(element.Pos, matProj);
@@ -33,6 +33,8 @@ void main(
         element.Tex.x = offset_array[i].x + 1.0f;
         element.Tex.y = -offset_array[i].y + 1.0f;
         element.Tex /= 2.0f;
+        
+        element.Position2D = input[0].Position2D;
 		
         output.Append(element);
     }

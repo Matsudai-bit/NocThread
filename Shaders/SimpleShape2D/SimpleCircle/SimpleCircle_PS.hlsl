@@ -1,4 +1,4 @@
-#include "SimpleCircle.hlsli"
+#include "../SimpleShape2D.hlsli"
 
 
 float4 main(PS_INPUT input) : SV_Target0
@@ -7,7 +7,7 @@ float4 main(PS_INPUT input) : SV_Target0
     float2 aspect = float2(windowSize.x / windowSize.y, 1.0f);
     
     // 中心UVの算出（描画UV座標）
-    float2 centerUV = (position / windowSize) * aspect;
+    float2 centerUV = (input.Position2D.xy / windowSize);// * aspect;
     
     // 距離の算出
     float2 dist = centerUV - input.Tex * aspect;

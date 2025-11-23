@@ -14,6 +14,8 @@
 
 // ヘッダファイルの読み込み ===================================================
 #include "Game/Common/TaskManager/TaskManager.h"
+#include "Library/DirectXFramework/RenderTexture.h"
+#include "Library/MyLib/DirectXMyToolKit/DepthStencil/DepthStencil.h"
 
 // クラスの前方宣言 ===================================================
 class CommonResources; // 共通リソース
@@ -43,7 +45,17 @@ public:
 	static const std::vector<D3D11_INPUT_ELEMENT_DESC> INPUT_LAYOUT;
 	static constexpr int VERTEX_NUM = 4;
 
+	static constexpr float SPACE_VALUE = 1.2f;  // マップ中心からの距離度合　1だとそのままの距離感
+	static constexpr float MARK_SIZE = 0.02f;  // マークのサイズ
 
+	// マップに表示される色
+	static constexpr DirectX::SimpleMath::Vector4 BUILDING_MARK_COLOR	{ 0.6f, 0.6f, 0.6f, 1.0f };	// 建物の色
+	static constexpr DirectX::SimpleMath::Vector4 PLAYER_MARK_COLOR		{ 1.0f, 1.0f, 0.0f, 1.0f };	// プレイヤーの色
+	static constexpr DirectX::SimpleMath::Vector4 TREASURE_MARK_COLOR	{ 0.0f, 1.0f, 0.5f, 1.0f };	// お宝の色
+	static constexpr DirectX::SimpleMath::Vector4 ENEMY_MARK_COLOR		{ 1.0f, 0.0f, 0.0f, 1.0f };	// 敵の色
+	static constexpr DirectX::SimpleMath::Vector4 HELICOPTER_MARK_COLOR	{ 1.0f, 0.0f, 1.0f, 1.0f };	// ヘリコプターの色
+
+	static constexpr DirectX::SimpleMath::Vector2 RENDERING_SIZE{ 800.0f, 800.0f };
 
 // データメンバの宣言 -----------------------------------------------
 private:
@@ -52,13 +64,19 @@ private:
 	std::unique_ptr<DirectX::BasicEffect> m_basicEffect;		///< ベーシックエフェクト
 	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_inputLayout;	///< インプットレイアウト
 
-	Microsoft::WRL::ComPtr<ID3D11PixelShader>		m_ps;
+	Microsoft::WRL::ComPtr<ID3D11PixelShader>		m_ps_Circle;
+	Microsoft::WRL::ComPtr<ID3D11PixelShader>		m_ps_Rectangle;
 	Microsoft::WRL::ComPtr<ID3D11VertexShader>		m_vs;
 	Microsoft::WRL::ComPtr<ID3D11GeometryShader>	m_gs;
 
 	const CommonResources* m_pCommonResources; ///< 共通リソース
 
 	Microsoft::WRL::ComPtr<ID3D11Buffer> m_constantBuffer;
+
+	std::unique_ptr<DX::RenderTexture> m_minimapRT; // ミニマップの描画テクスチャ
+	std::unique_ptr<MyLib::DepthStencil> m_minimapDS; // ミニマップのデプスステンシル
+
+	std::unique_ptr<DirectX::SpriteBatch> m_spriteBatch;
 
 
 // メンバ関数の宣言 -------------------------------------------------
@@ -93,5 +111,13 @@ public:
 // 内部実装
 private:
 
+	void DrawPlayer(DirectX::VertexPositionColorTexture vertexes[VERTEX_NUM], const DirectX::SimpleMath::Vector2& mapSize);
+	void DrawBuilding(DirectX::VertexPositionColorTexture vertexes[VERTEX_NUM], const DirectX::SimpleMath::Vector2& mapSize);
+	void DrawTreasure(DirectX::VertexPositionColorTexture vertexes[VERTEX_NUM], const DirectX::SimpleMath::Vector2& mapSize);
+	void DrawEnemy(DirectX::VertexPositionColorTexture vertexes[VERTEX_NUM], const DirectX::SimpleMath::Vector2& mapSize);
+	void DrawHelicopter(DirectX::VertexPositionColorTexture vertexes[VERTEX_NUM], const DirectX::SimpleMath::Vector2& mapSize);
 
+
+	// ミニマップ上の座標の算出
+	DirectX::SimpleMath::Vector2 CalcMinimapPosition(const DirectX::SimpleMath::Vector3& worldPosition, const DirectX::SimpleMath::Vector2& mapSize);
 };
