@@ -18,7 +18,7 @@
 #include "Game/Common/CommonResources/CommonResources.h"
 #include "Game/Common/ResourceManager/ResourceManager.h"
 #include "Game/Common/SimpleModel/SimpleModel.h"
-#include "Game/Common/DeviceResources.h"
+#include "Library/DirectXFramework/DeviceResources.h"
 #include "Game/Common/Collision/Collision.h"
 #include "Game/Common/Collision/CollisionManager/CollisionManager.h"
 #include "Game/Common/Camera/PlayerCamera/PlayerCamera.h"

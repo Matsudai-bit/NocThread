@@ -4,8 +4,8 @@
 
 #pragma once
 
-#include "Game/Common/DeviceResources.h"
-#include "Game/Common/StepTimer.h"
+#include "Library/DirectXFramework/DeviceResources.h"
+#include "Library/DirectXFramework/StepTimer.h"
 
 #include<memory>
 

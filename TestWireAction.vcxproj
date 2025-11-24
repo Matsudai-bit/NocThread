@@ -188,7 +188,6 @@
     <ClInclude Include="Game\Common\Collision\ICollider.h" />
     <ClInclude Include="Game\Common\Collision\ICollision.h" />
     <ClInclude Include="Game\Common\CommonResources\CommonResources.h" />
-    <ClInclude Include="Game\Common\DeviceResources.h" />
     <ClInclude Include="Game\Common\ElapsedTimeCounter\ElapsedTimeCounter.h" />
     <ClInclude Include="Game\Common\EntityManager\EntityManager.h" />
     <ClInclude Include="Game\Common\EntityManager\IEntity.h" />
@@ -227,7 +226,6 @@
     <ClInclude Include="Game\Common\SpawnManager\SpawnManager.h" />
     <ClInclude Include="Game\Common\StateMachine\StateBase\StateBase.h" />
     <ClInclude Include="Game\Common\StateMachine\StateMachine.h" />
-    <ClInclude Include="Game\Common\StepTimer.h" />
     <ClInclude Include="Game\Common\TaskManager\TaskManager.h" />
     <ClInclude Include="Game\Common\UserInterfaceTool\Canvas\Canvas.h" />
     <ClInclude Include="Game\Common\UserInterfaceTool\SpriteAnimator\SpriteAnimator.h" />
@@ -297,7 +295,9 @@
     <ClInclude Include="Game\UI\TutorialWindow\TutorialWindow.h" />
     <ClInclude Include="Library\DebugHelper.h" />
     <ClInclude Include="Library\DirectXFramework\Animation.h" />
+    <ClInclude Include="Library\DirectXFramework\DeviceResources.h" />
     <ClInclude Include="Library\DirectXFramework\RenderTexture.h" />
+    <ClInclude Include="Library\DirectXFramework\StepTimer.h" />
     <ClInclude Include="Library\ImaseLib\DebugCamera.h" />
     <ClInclude Include="Library\ImaseLib\DebugDraw.h" />
     <ClInclude Include="Library\ImaseLib\DebugFont.h" />
@@ -313,6 +313,7 @@
     <ClInclude Include="Library\MyLib\DirectXMathUtils\DirectXMathUtils.h" />
     <ClInclude Include="Library\MyLib\DirectXMyToolKit\DepthStencil\DepthStencil.h" />
     <ClInclude Include="Library\MyLib\DirectXMyToolKit\DirectXMyToolKit.h" />
+    <ClInclude Include="Library\MyLib\DirectXMyToolKit\OffscreenRendering\OffscreenRendering.h" />
     <ClInclude Include="Library\MyLib\EasingKit\EasingKit.h" />
     <ClInclude Include="Library\MyLib\MathUtils\MathUtils.h" />
     <ClInclude Include="Library\MyLib\Ray\Ray.h" />
@@ -326,7 +327,6 @@
     <ClCompile Include="Game\Common\Collision\Collision.cpp" />
     <ClCompile Include="Game\Common\Collision\CollisionManager\CollisionManager.cpp" />
     <ClCompile Include="Game\Common\CommonResources\CommonResources.cpp" />
-    <ClCompile Include="Game\Common\DeviceResources.cpp" />
     <ClCompile Include="Game\Common\ElapsedTimeCounter\ElapsedTimeCounter.cpp" />
     <ClCompile Include="Game\Common\EntityManager\EntityManager.cpp" />
     <ClCompile Include="Game\Common\EntityManager\IEntity.cpp" />
@@ -420,6 +420,7 @@
     <ClCompile Include="Game\UI\Title\TitleMenu\TitleMenu.cpp" />
     <ClCompile Include="Game\UI\TutorialWindow\TutorialWindow.cpp" />
     <ClCompile Include="Library\DirectXFramework\Animation.cpp" />
+    <ClCompile Include="Library\DirectXFramework\DeviceResources.cpp" />
     <ClCompile Include="Library\DirectXFramework\RenderTexture.cpp" />
     <ClCompile Include="Library\ImaseLib\DebugCamera.cpp" />
     <ClCompile Include="Library\ImaseLib\DebugDraw.cpp" />
@@ -456,6 +457,7 @@
     <ClCompile Include="Library\MyLib\DirectXMathUtils\DirectXMathUtils.cpp" />
     <ClCompile Include="Library\MyLib\DirectXMyToolKit\DepthStencil\DepthStencil.cpp" />
     <ClCompile Include="Library\MyLib\DirectXMyToolKit\DirectXMyToolKit.cpp" />
+    <ClCompile Include="Library\MyLib\DirectXMyToolKit\OffscreenRendering\OffscreenRendering.cpp" />
     <ClCompile Include="Library\MyLib\MathUtils\MathUtils.cpp" />
     <ClCompile Include="Library\MyLib\Ray\Ray.cpp" />
     <ClCompile Include="Main.cpp" />

@@ -10,7 +10,7 @@
 #include "pch.h"
 #include "Line2D.h"
 
-#include "Game/Common/DeviceResources.h"
+#include "Library/DirectXFramework/DeviceResources.h"
 
 
 #include "Library/DirectXFramework/ReadData.h"

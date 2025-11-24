@@ -14,7 +14,7 @@
 #include "Game/GameObjects/Enemy/Behaviour/Update/IEnemyUpdateBehaviour.h"
 #include "Game/Common/CommonResources/CommonResources.h"
 #include "Game/Common/ResourceManager/ResourceManager.h"
-#include "Game/Common/DeviceResources.h"
+#include "Library/DirectXFramework/DeviceResources.h"
 
 #include "Game/Common/Event/WireSystemObserver/WireEventData.h"
 #include "Game/Common/Collision/CollisionManager/CollisionManager.h"

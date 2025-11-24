@@ -14,7 +14,7 @@
 
 #include "Game/Common/CommonResources/CommonResources.h"
 #include "Library/ImaseLib/DebugFont.h"
-#include "Game/Common/DeviceResources.h"
+#include "Library/DirectXFramework/DeviceResources.h"
 
 #include "Game/Scene/GameplayScene/GameplayScene.h"
 
@@ -166,8 +166,6 @@ void LoadingScreen::Update(float deltaTime)
  */
 void LoadingScreen::Render()
 {
-	// ‹¤’ÊƒŠƒ\[ƒX
-	auto states = GetCommonResources()->GetCommonStates();
 
 	//GetCommonResources()->GetDebugFont()->AddString(0, 30, Colors::White, L"LoadingScreen");
 

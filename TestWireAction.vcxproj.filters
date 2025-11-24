@@ -404,18 +404,21 @@
     <Filter Include="Resources\Shaders\SimpleShape2D\SimpleRectangle">
       <UniqueIdentifier>{2edd200e-8352-4350-aba1-85137cf78756}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Library\MyLib\DirectX\DirectXMyToolKit\OffscreenRendering">
+      <UniqueIdentifier>{bd3d026e-0487-4dc3-b375-38f8a3fbbc58}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Library\DirectXFramework\DeviceResources">
+      <UniqueIdentifier>{e403de62-0d74-487e-ad0d-738008652b3c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Library\DirectXFramework\StepTimer">
+      <UniqueIdentifier>{108d6c97-4c25-4e69-9088-8e3d3fa28fc9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
     <ClInclude Include="StepTimer.h" />
     <ClInclude Include="Game\Game.h">
       <Filter>Game</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Common\DeviceResources.h">
-      <Filter>Game\Common</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Common\StepTimer.h">
-      <Filter>Game\Common</Filter>
     </ClInclude>
     <ClInclude Include="Library\ImaseLib\DebugCamera.h">
       <Filter>Library\ImaseLib</Filter>
@@ -804,15 +807,21 @@
       <Filter>Game\GameObjects\Common\Transform</Filter>
     </ClInclude>
     <ClInclude Include="Game\Common\Minimap\Minimap.h" />
+    <ClInclude Include="Library\MyLib\DirectXMyToolKit\OffscreenRendering\OffscreenRendering.h">
+      <Filter>Library\MyLib\DirectX\DirectXMyToolKit\OffscreenRendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\DirectXFramework\DeviceResources.h">
+      <Filter>Library\DirectXFramework\DeviceResources</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\DirectXFramework\StepTimer.h">
+      <Filter>Library\DirectXFramework\StepTimer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Game\Game.cpp">
       <Filter>Game</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Common\DeviceResources.cpp">
-      <Filter>Game\Common</Filter>
     </ClCompile>
     <ClCompile Include="Library\ImaseLib\DebugCamera.cpp">
       <Filter>Library\ImaseLib</Filter>
@@ -1147,6 +1156,12 @@
       <Filter>Game\GameObjects\Common\Transform</Filter>
     </ClCompile>
     <ClCompile Include="Game\Common\Minimap\Minimap.cpp" />
+    <ClCompile Include="Library\MyLib\DirectXMyToolKit\OffscreenRendering\OffscreenRendering.cpp">
+      <Filter>Library\MyLib\DirectX\DirectXMyToolKit\OffscreenRendering</Filter>
+    </ClCompile>
+    <ClCompile Include="Library\DirectXFramework\DeviceResources.cpp">
+      <Filter>Library\DirectXFramework\DeviceResources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />

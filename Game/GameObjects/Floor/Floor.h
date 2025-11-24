@@ -14,7 +14,7 @@
 
 // ヘッダファイルの読み込み ===================================================
 #include <memory>
-#include "Game/Common/DeviceResources.h"
+#include "Library/DirectXFramework/DeviceResources.h"
 #include "Game/GameObjects/Common/GameObject.h"
 #include "Game/Common/Collision/Collision.h"
 // クラスの前方宣言 ===================================================

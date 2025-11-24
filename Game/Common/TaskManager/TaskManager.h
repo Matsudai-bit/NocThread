@@ -85,7 +85,7 @@ public:
 	}
 
 	// ï`âÊä÷êî
-	virtual void DrawTask(const Camera& camera) {}
+	virtual void DrawTask(const Camera& camera) { UNREFERENCED_PARAMETER(camera); }
 
 public:
 

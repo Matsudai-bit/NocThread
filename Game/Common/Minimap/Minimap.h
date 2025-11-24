@@ -16,6 +16,7 @@
 #include "Game/Common/TaskManager/TaskManager.h"
 #include "Library/DirectXFramework/RenderTexture.h"
 #include "Library/MyLib/DirectXMyToolKit/DepthStencil/DepthStencil.h"
+#include "Library/MyLib/DirectXMyToolKit/OffscreenRendering/OffscreenRendering.h"
 
 // クラスの前方宣言 ===================================================
 class CommonResources; // 共通リソース
@@ -60,10 +61,12 @@ public:
 // データメンバの宣言 -----------------------------------------------
 private:
 
+	// 描画プリセット
 	std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionColorTexture>> m_primitiveBatch; ///< プリミティブバッチ
 	std::unique_ptr<DirectX::BasicEffect> m_basicEffect;		///< ベーシックエフェクト
 	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_inputLayout;	///< インプットレイアウト
 
+	// シェーダ関連
 	Microsoft::WRL::ComPtr<ID3D11PixelShader>		m_ps_Circle;
 	Microsoft::WRL::ComPtr<ID3D11PixelShader>		m_ps_Rectangle;
 	Microsoft::WRL::ComPtr<ID3D11VertexShader>		m_vs;
@@ -73,8 +76,9 @@ private:
 
 	Microsoft::WRL::ComPtr<ID3D11Buffer> m_constantBuffer;
 
-	std::unique_ptr<DX::RenderTexture> m_minimapRT; // ミニマップの描画テクスチャ
-	std::unique_ptr<MyLib::DepthStencil> m_minimapDS; // ミニマップのデプスステンシル
+	// オフスクリーンレンダリング
+	std::unique_ptr<MyLib::OffscreenRendering> m_offscreenRendering;
+
 
 	std::unique_ptr<DirectX::SpriteBatch> m_spriteBatch;
 
@@ -111,12 +115,14 @@ public:
 // 内部実装
 private:
 
+	// ミニマップテクスチャの作成
+	void CreateMinimapTexture();
+
 	void DrawPlayer(DirectX::VertexPositionColorTexture vertexes[VERTEX_NUM], const DirectX::SimpleMath::Vector2& mapSize);
 	void DrawBuilding(DirectX::VertexPositionColorTexture vertexes[VERTEX_NUM], const DirectX::SimpleMath::Vector2& mapSize);
 	void DrawTreasure(DirectX::VertexPositionColorTexture vertexes[VERTEX_NUM], const DirectX::SimpleMath::Vector2& mapSize);
 	void DrawEnemy(DirectX::VertexPositionColorTexture vertexes[VERTEX_NUM], const DirectX::SimpleMath::Vector2& mapSize);
 	void DrawHelicopter(DirectX::VertexPositionColorTexture vertexes[VERTEX_NUM], const DirectX::SimpleMath::Vector2& mapSize);
-
 
 	// ミニマップ上の座標の算出
 	DirectX::SimpleMath::Vector2 CalcMinimapPosition(const DirectX::SimpleMath::Vector3& worldPosition, const DirectX::SimpleMath::Vector2& mapSize);

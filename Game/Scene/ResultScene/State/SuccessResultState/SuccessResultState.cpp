@@ -17,7 +17,7 @@
 #include "Game/Common/UserInterfaceTool/Sprite/Sprite.h"
 #include "Game/Common/UserInterfaceTool/Canvas/Canvas.h"
 #include "Game/Common/CommonResources/CommonResources.h"
-#include "Game/Common/DeviceResources.h"
+#include "Library/DirectXFramework/DeviceResources.h"
 #include "Game/Common/ResourceManager/ResourceManager.h"
 
 

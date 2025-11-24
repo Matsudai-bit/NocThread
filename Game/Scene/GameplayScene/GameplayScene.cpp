@@ -15,9 +15,9 @@
 
 // ライブラリ
 #include "Game/Common/TaskManager/TaskManager.h"
-
 // DirectX系
-#include "Game/Common/DeviceResources.h"
+#include "Library/DirectXFramework/DeviceResources.h"
+
 
 // ゲームデータ
 #include "Game/Common/ResultData/ResultData.h"
@@ -215,10 +215,7 @@ void GameplayScene::OnEndScene()
 */
 void GameplayScene::CreateWindowSizeDependentResources()
 {
-	// ウィンドウサイズの取得
-	auto windowSize = GetCommonResources()->GetDeviceResources()->GetOutputSize();
-	float width = static_cast<float>(windowSize.right);
-	float height = static_cast<float>(windowSize.bottom);
+
 }
 
 /**

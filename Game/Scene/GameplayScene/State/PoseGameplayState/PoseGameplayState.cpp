@@ -18,7 +18,7 @@
 #include "Game/Common/CommonResources/CommonResources.h"
 #include "Game/Common/ResourceManager/ResourceManager.h"
 #include "Game/Common/Screen.h"
-#include "Game/Common/DeviceResources.h"
+#include "Library/DirectXFramework/DeviceResources.h"
 #include "Game/Common/Input/InputBindingFactory/InputBindingFactory.h"
 
 
@@ -68,7 +68,6 @@ void PoseGameplayState::OnStartState()
 
 	auto resourceManager	= GetOwner()->GetCommonResources()->GetResourceManager();
 	auto context			= GetOwner()->GetCommonResources()->GetDeviceResources()->GetD3DDeviceContext();
-	auto device				= GetOwner()->GetCommonResources()->GetDeviceResources()->GetD3DDevice();
 	auto screen = Screen::Get();
 	// ***** ƒLƒƒƒ“ƒoƒX‚Ìì¬ *********************************************
 	m_canvas = std::make_unique<Canvas>(context, GetOwner()->GetCommonResources()->GetCommonStates());

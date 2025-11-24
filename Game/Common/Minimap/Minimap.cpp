@@ -14,7 +14,7 @@
 
 // DirectXTK系
 #include "Game/Common/CommonResources/CommonResources.h"
-#include "Game/Common/DeviceResources.h"
+#include "Library/DirectXFramework/DeviceResources.h"
 
 // ライブラリ
 #include "Library/DirectXFramework/ReadData.h"
@@ -95,27 +95,29 @@ Minimap::Minimap(const CommonResources* pCommonResources)
 	DX::ThrowIfFailed(
 		device->CreateBuffer(&bufferDesc, nullptr, &m_constantBuffer)
 	);
+	 
+	//m_offscreenRendering = std::make_unique<MyLib::OffscreenRendering>
 
-	// ミニマップの描画テクスチャの作成
-	m_minimapRT = std::make_unique<DX::RenderTexture>(pCommonResources->GetDeviceResources()->GetBackBufferFormat());
-	m_minimapRT->SetDevice(device);
+	// スプライトバッチの作成
+	m_spriteBatch = std::make_unique<DirectX::SpriteBatch>(context);
 
 	SimpleMath::Vector2 mapSize = RENDERING_SIZE * Screen::Get()->GetScreenScale();
-
 	RECT rect{
-		0.0f,
-		0.0f,
-		mapSize.x,
-		mapSize.y
+		0,
+		0,
+		static_cast<LONG>(mapSize.x),
+		static_cast<LONG>(mapSize.y)
 
 	};
-	m_minimapRT->SetWindow(rect);
-		// ミニマップの描画テクスチャの作成
-	m_minimapDS = std::make_unique<MyLib::DepthStencil>(pCommonResources->GetDeviceResources()->GetDepthBufferFormat());
-	m_minimapDS->SetDevice(device);
-	m_minimapDS->SetWindow(rect);
 
-	m_spriteBatch = std::make_unique<DirectX::SpriteBatch>(context);
+	// オフスクリーンレンダリングの作成
+	m_offscreenRendering = std::make_unique<MyLib::OffscreenRendering>(
+		pCommonResources->GetDeviceResources(),
+		pCommonResources->GetDeviceResources()->GetBackBufferFormat(),
+		pCommonResources->GetDeviceResources()->GetDepthBufferFormat());
+	m_offscreenRendering->SetDevice(device);
+	m_offscreenRendering->SetWindow(rect);
+
 
 }
 
@@ -155,6 +157,11 @@ void Minimap::Initialize()
  */
 bool Minimap::UpdateTask(float deltaTime)
 {
+	UNREFERENCED_PARAMETER(deltaTime);
+
+	// ミニマップテクスチャの作成
+	CreateMinimapTexture();
+
 	return true;
 }
 
@@ -167,129 +174,27 @@ bool Minimap::UpdateTask(float deltaTime)
  */
 void Minimap::DrawTask(const Camera& camera)
 {
-
+	UNREFERENCED_PARAMETER(camera);
 
 	using namespace SimpleMath;
 	// 処理用変数
-	auto deviceResources	= m_pCommonResources->GetDeviceResources();
-	auto context			= m_pCommonResources->GetDeviceResources()->GetD3DDeviceContext();
 	auto states				= m_pCommonResources->GetCommonStates();
 
 	SimpleMath::Vector2 mapSize = RENDERING_SIZE * Screen::Get()->GetScreenScale();
 
-	RECT windowRect = deviceResources->GetOutputSize();
-
-	// ミニマップの作成
-	auto rtv = m_minimapRT->GetRenderTargetView();
-	auto srv = m_minimapRT->GetShaderResourceView();
-	auto dsv = m_minimapDS->GetDepthStencilView();
-
-	context->ClearRenderTargetView(rtv, Color(0.01f, 0.01f, 0.48f));
-	context->ClearDepthStencilView(dsv, D3D11_CLEAR_DEPTH, 1.0f, 0);
-	context->OMSetRenderTargets(1, &rtv, dsv);
-
-	// ビューポートの変更
-	D3D11_VIEWPORT vp = {};
-	vp.Width = mapSize.x;	//ビューポートの横幅
-	vp.Height = mapSize.y;	//ビューポートの横幅
-	vp.TopLeftX = 0.0f;			//ビューポートの左上のX座標(ピクセル数）
-	vp.TopLeftY = 0.0f;			//ビューポートの左上のY座標(ピクセル数）
-	vp.MinDepth = 0.0f;			//ビューポートの最小深度（0～1)
-	vp.MaxDepth = 1.0f;			//ビューポートの最大深度（0～1)
-	
-	context->RSSetViewports(1, &vp);
-
-	//	半透明描画指定
-	ID3D11BlendState* blendstate = states->NonPremultiplied();
-	//	透明判定処理
-	context->OMSetBlendState(blendstate, nullptr, 0xFFFFFFFF);
-	//	深度バッファに書き込み参照する
-	context->OMSetDepthStencilState(states->DepthDefault(), 0);
-	// カリング
-	context->RSSetState(states->CullCounterClockwise());
-	context->IASetInputLayout(m_inputLayout.Get());
-
-
-	// 頂点の設定
-	DirectX::VertexPositionColorTexture vertexes[VERTEX_NUM] =
-	{
-		{Vector3(0.0f, 0.0f, 0.0f), Vector4::One, Vector2(0.0f, 0.0f)},
-	};
-
-	// シェーダの設定
-	context->PSSetShader(m_ps_Circle.Get(), nullptr, 0);
-	context->GSSetShader(m_gs.Get(), nullptr, 0);
-	context->VSSetShader(m_vs.Get(), nullptr, 0);
-
-	// 定数バッファにデータを設定する
-	ConstantBuffer cb = {};
-	// 表示座標の設定
-	cb.position = Vector2(windowRect.right, windowRect.bottom);
-	cb.windowSize = mapSize;
-	//cb.windowSize = Vector2(windowRect.right / 2.0f, windowRect.bottom / 2.0f);
-	cb.scale = Vector2(MARK_SIZE, MARK_SIZE) * Screen::Get()->GetScreenScale();
-	cb.dummy = Vector2(windowRect.right, windowRect.bottom);
-
-	//	受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
-	context->UpdateSubresource(m_constantBuffer.Get(), 0, NULL, &cb, 0, 0);
-	ID3D11Buffer* cbuff[] = { m_constantBuffer.Get() };
-	
-	context->PSSetConstantBuffers(0, 1, cbuff);
-	context->GSSetConstantBuffers(0, 1, cbuff);
-	context->VSSetConstantBuffers(0, 1, cbuff);
-
-	context->PSSetShader(m_ps_Rectangle.Get(), nullptr, 0);
-
-	// 各描画処理
-	m_primitiveBatch->Begin();
-	// ビルの描画
-	DrawBuilding(vertexes, mapSize);
-	m_primitiveBatch->End();
-
-	context->PSSetShader(m_ps_Circle.Get(), nullptr, 0);
-
-	m_primitiveBatch->Begin();
-
-	// 敵の描画
-	DrawEnemy(vertexes, mapSize);
-	// お宝の描画
-	DrawTreasure(vertexes, mapSize);
-	// ヘリコプターの描画
-	DrawHelicopter(vertexes, mapSize);
-	// プレイヤーの描画
-	DrawPlayer(vertexes, mapSize);
-	m_primitiveBatch->End();
-
-		//	シェーダの登録を解除しておく
-	context->VSSetShader(nullptr, nullptr, 0);
-	context->GSSetShader(nullptr, nullptr, 0);
-	context->PSSetShader(nullptr, nullptr, 0);
-	
-	// -------------------------------------------------------------------------- //
-	// レンダーターゲットとビューポートを元に戻す
-	// -------------------------------------------------------------------------- //
-	auto renderTarget = deviceResources->GetRenderTargetView();
-	auto depthStencil = deviceResources->GetDepthStencilView();
-
-	//context->ClearRenderTargetView(renderTarget, Colors::CornflowerBlue);
-	////context->ClearDepthStencilView(depthStencil, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
-	context->OMSetRenderTargets(1, &renderTarget, depthStencil);
-	//-----------------------------------------------------
-	// ビューポートを元に戻す
-	//-----------------------------------------------------
-	auto const viewport = deviceResources->GetScreenViewport();
-	context->RSSetViewports(1, &viewport);
 
 	RECT rect{
-		0.0f,
-		0.0f,
-		mapSize.x,
-		mapSize.y
+		0,
+		0,
+		static_cast<LONG>(mapSize.x),
+		static_cast<LONG>(mapSize.y)
 
 	};
+
+	// ミニマップの描画
 	m_spriteBatch->Begin(SpriteSortMode_Immediate, states->NonPremultiplied());
 	m_spriteBatch->Draw(
-		srv,
+		m_offscreenRendering->GetShaderResourceView(),
 		SimpleMath::Vector2::Zero,
 		&rect,
 		Colors::White,
@@ -312,6 +217,112 @@ void Minimap::DrawTask(const Camera& camera)
 void Minimap::Finalize()
 {
 
+}
+
+
+/**
+ * @brief オフスクリーンレンダリングを使用してミニマップテクスチャの作成
+  */
+void Minimap::CreateMinimapTexture()
+{
+	using namespace SimpleMath;
+	// 処理用変数
+	auto deviceResources = m_pCommonResources->GetDeviceResources();
+	auto context = m_pCommonResources->GetDeviceResources()->GetD3DDeviceContext();
+	auto states = m_pCommonResources->GetCommonStates();
+
+
+	RECT windowRect = deviceResources->GetOutputSize();
+
+	SimpleMath::Vector2 mapSize = RENDERING_SIZE * Screen::Get()->GetScreenScale();
+
+
+	// オフスクリーンレンダリングの開始
+	m_offscreenRendering->Begin(Color(0.01f, 0.01f, 0.48f));
+	{
+
+		// **** ビューポートの変更 ****
+		D3D11_VIEWPORT vp = {};
+		vp.Width = mapSize.x;	//ビューポートの横幅
+		vp.Height = mapSize.y;	//ビューポートの横幅
+		vp.TopLeftX = 0.0f;			//ビューポートの左上のX座標(ピクセル数）
+		vp.TopLeftY = 0.0f;			//ビューポートの左上のY座標(ピクセル数）
+		vp.MinDepth = 0.0f;			//ビューポートの最小深度（0～1)
+		vp.MaxDepth = 1.0f;			//ビューポートの最大深度（0～1)
+		context->RSSetViewports(1, &vp);
+
+		//	半透明描画指定
+		ID3D11BlendState* blendstate = states->NonPremultiplied();
+		//	透明判定処理
+		context->OMSetBlendState(blendstate, nullptr, 0xFFFFFFFF);
+		//	深度バッファに書き込み参照する
+		context->OMSetDepthStencilState(states->DepthDefault(), 0);
+		// カリング
+		context->RSSetState(states->CullCounterClockwise());
+		context->IASetInputLayout(m_inputLayout.Get());
+
+
+		// 頂点の設定
+		DirectX::VertexPositionColorTexture vertexes[VERTEX_NUM] =
+		{
+			{Vector3(0.0f, 0.0f, 0.0f), Vector4::One, Vector2(0.0f, 0.0f)},
+		};
+
+		// シェーダの設定
+		context->PSSetShader(m_ps_Circle.Get(), nullptr, 0);
+		context->GSSetShader(m_gs.Get(), nullptr, 0);
+		context->VSSetShader(m_vs.Get(), nullptr, 0);
+
+		// 定数バッファにデータを設定する
+		ConstantBuffer cb = {};
+		// 表示座標の設定
+		cb.position = Vector2(static_cast<float>(windowRect.right), static_cast<float>(windowRect.bottom));
+		cb.windowSize = mapSize;
+		//cb.windowSize = Vector2(windowRect.right / 2.0f, windowRect.bottom / 2.0f);
+		cb.scale = Vector2(MARK_SIZE, MARK_SIZE) * Screen::Get()->GetScreenScale();
+		cb.dummy = Vector2(static_cast<float>(windowRect.right), static_cast<float>(windowRect.bottom));
+
+		//	受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
+		context->UpdateSubresource(m_constantBuffer.Get(), 0, NULL, &cb, 0, 0);
+		ID3D11Buffer* cbuff[] = { m_constantBuffer.Get() };
+
+		context->PSSetConstantBuffers(0, 1, cbuff);
+		context->GSSetConstantBuffers(0, 1, cbuff);
+		context->VSSetConstantBuffers(0, 1, cbuff);
+
+		context->PSSetShader(m_ps_Rectangle.Get(), nullptr, 0);
+
+		// 各描画処理
+		m_primitiveBatch->Begin();
+		// ビルの描画
+		DrawBuilding(vertexes, mapSize);
+		m_primitiveBatch->End();
+
+		context->PSSetShader(m_ps_Circle.Get(), nullptr, 0);
+
+		m_primitiveBatch->Begin();
+
+		// 敵の描画
+		DrawEnemy(vertexes, mapSize);
+		// お宝の描画
+		DrawTreasure(vertexes, mapSize);
+		// ヘリコプターの描画
+		DrawHelicopter(vertexes, mapSize);
+		// プレイヤーの描画
+		DrawPlayer(vertexes, mapSize);
+		m_primitiveBatch->End();
+
+		//	シェーダの登録を解除しておく
+		context->VSSetShader(nullptr, nullptr, 0);
+		context->GSSetShader(nullptr, nullptr, 0);
+		context->PSSetShader(nullptr, nullptr, 0);
+	}
+	// オフスクリーンレンダリングの終了
+	m_offscreenRendering->End();
+
+	// **** ビューポートを元に戻す ****
+	auto const viewport = deviceResources->GetScreenViewport();
+	context->RSSetViewports(1, &viewport);
 }
 
 void Minimap::DrawPlayer(DirectX::VertexPositionColorTexture vertexes[VERTEX_NUM], const DirectX::SimpleMath::Vector2& mapSize)
@@ -347,10 +358,6 @@ void Minimap::DrawPlayer(DirectX::VertexPositionColorTexture vertexes[VERTEX_NUM
 void Minimap::DrawBuilding(DirectX::VertexPositionColorTexture vertexes[VERTEX_NUM], const DirectX::SimpleMath::Vector2& mapSize)
 {
 	using namespace SimpleMath;
-
-	auto context = m_pCommonResources->GetDeviceResources()->GetD3DDeviceContext();
-
-
 
 	// 建物を取得する
 	const auto buildings = GameObjectRegistry::GetInstance()->GetGameObjects(GameObjectTag::BUILDING);
@@ -466,6 +473,7 @@ void Minimap::DrawHelicopter(DirectX::VertexPositionColorTexture vertexes[VERTEX
 
 	}
 }
+
 
 /**
  * @brief ミニマップ上の座標の算出
