@@ -111,7 +111,7 @@ void NormalGameplayState::OnUpdate(float deltaTime)
 	if (m_systemInput->IsInput(InputActionType::SystemActionID::PAUSE, InputSystem<InputActionType::SystemActionID>::InputOption::PRESSED))
 	{
 		// ƒ|[ƒYó‘Ô‚É‚·‚é
-		GetStateMachine()->ChangeState<PoseGameplayState>();
+		GetStateMachine()->ChangeState<PauseGameplayState>();
 		GetOwner()->GetCommonResources()->SetCopyScreenRequest(true);
 	}
 

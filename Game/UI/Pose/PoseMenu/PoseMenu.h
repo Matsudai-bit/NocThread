@@ -1,5 +1,5 @@
 /*****************************************************************//**
- * @file    PoseMenu.h
+ * @file    PauseMenu.h
  * @brief   ポーズメニューに関するヘッダーファイル
  *
  * @author  松下大暉
@@ -32,7 +32,7 @@ class Sprite;			// スプライト
 /**
  * @brief ポーズメニュー
  */
-class PoseMenu
+class PauseMenu
 {
 // クラス定数の宣言 -------------------------------------------------
 public:
@@ -86,7 +86,7 @@ public:
 private:
 
 	// フォントスプライト
-	std::vector< std::unique_ptr<Sprite>> m_poseFontSprites;
+	std::vector< std::unique_ptr<Sprite>> m_pauseFontSprites;
 
 	std::function<void(MenuItem)>  m_pushButtonFunc;
 
@@ -105,10 +105,10 @@ private:
 // コンストラクタ/デストラクタ
 public:
 	// コンストラクタ
-	PoseMenu();
+	PauseMenu();
 
 	// デストラクタ
-	~PoseMenu();
+	~PauseMenu();
 
 
 // 操作

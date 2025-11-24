@@ -1,5 +1,5 @@
 /*****************************************************************//**
- * @file    PoseGameplayState.h
+ * @file    PauseGameplayState.h
  * @brief   ゲームプレイシーンのポーズ状態に関するヘッダーファイル
  *
  * @author  松下大暉
@@ -29,14 +29,14 @@
 class GameplayScene; // ゲームプレイシーン
 class Sprite;		 // スプライト
 class Canvas;		 // キャンバス
-class PoseMenu;		// ポーズメニュー
+class PauseMenu;		// ポーズメニュー
 class TutorialWindow;	// チュートリアルウィンドウ
 
 // クラスの定義 ===============================================================
 /**
  * @brief ゲームプレイシーンのポーズ状態
  */
-class PoseGameplayState
+class PauseGameplayState
 	: public StateBase<GameplayScene>
 {
 // クラス定数の宣言 -------------------------------------------------
@@ -84,7 +84,7 @@ private:
 
 	// スプライト
 	std::unique_ptr<Sprite> m_backgroundAlphaSprite;	///< 背景透過用スプライト
-	std::unique_ptr<Sprite> m_poseFontSprite;			///< ポーズフォントのスプライト
+	std::unique_ptr<Sprite> m_pauseFontSprite;			///< ポーズフォントのスプライト
 	std::unique_ptr<Sprite> m_operatingFontSprite;		///< 操作方法フォントのスプライト
 	std::unique_ptr<Sprite> m_operatingSprite;			///< 操作方法のスプライト
 	std::unique_ptr<Sprite>	m_manualSprite;				///< 操作説明スプライト
@@ -95,7 +95,7 @@ private:
 
 	std::vector< std::unique_ptr<Line2D>>	m_lines;	///< 2D線
 
-	std::unique_ptr<PoseMenu>				m_poseMenu;	///< ポーズメニュー
+	std::unique_ptr<PauseMenu>				m_pauseMenu;	///< ポーズメニュー
 
 	std::unique_ptr<TutorialWindow>			m_tutorialWindow; ///< チュートリアルウィンドウ
 
@@ -110,10 +110,10 @@ private:
 // コンストラクタ/デストラクタ
 public:
 	// コンストラクタ
-	PoseGameplayState();
+	PauseGameplayState();
 
 	// デストラクタ
-	~PoseGameplayState();
+	~PauseGameplayState();
 
 
 // 操作
@@ -140,7 +140,7 @@ public:
 // 内部実装
 private:
 	// メニューアイテムを押した時に呼ばれる
-	void OnPushMenuItem(PoseMenu::MenuItem menuItem);
+	void OnPushMenuItem(PauseMenu::MenuItem menuItem);
 
 	// ゲームに戻る
 	void ContinueGame();

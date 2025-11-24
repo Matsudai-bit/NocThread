@@ -1,5 +1,5 @@
 /*****************************************************************//**
- * @file   PoseMenu.h
+ * @file   PauseMenu.h
  * @brief  ポーズメニューに関するソースファイル
  *
  * @author 松下大暉
@@ -29,7 +29,7 @@ using namespace DirectX;
  *
  * @param[in] なし
  */
-PoseMenu::PoseMenu()
+PauseMenu::PauseMenu()
 	: m_currentSelectItemForInt{}
 	, m_pCommonResources{ nullptr }
 {
@@ -41,7 +41,7 @@ PoseMenu::PoseMenu()
 /**
  * @brief デストラクタ
  */
-PoseMenu::~PoseMenu()
+PauseMenu::~PauseMenu()
 {
 
 }
@@ -55,47 +55,47 @@ PoseMenu::~PoseMenu()
  *
  * @return なし
  */
-void PoseMenu::Initialize(Canvas* pCanvas, const CommonResources* pCommonResources, std::function<void(MenuItem)> pushButtonFunc)
+void PauseMenu::Initialize(Canvas* pCanvas, const CommonResources* pCommonResources, std::function<void(MenuItem)> pushButtonFunc)
 {
 
 	auto screen = Screen::Get();
 
-	m_poseFontSprites.resize(static_cast<int>(MenuItem::NUM));
-	std::for_each(m_poseFontSprites.begin(), m_poseFontSprites.end(), [&](std::unique_ptr<Sprite>& sprite)
+	m_pauseFontSprites.resize(static_cast<int>(MenuItem::NUM));
+	std::for_each(m_pauseFontSprites.begin(), m_pauseFontSprites.end(), [&](std::unique_ptr<Sprite>& sprite)
 		{sprite = std::make_unique<Sprite>(); }
 	);
 
 	// フォント類
-	m_poseFontSprites[0]->Initialize(pCommonResources->GetResourceManager()->CreateTexture(TEXTURE_PATH_CONTINUE));
-	m_poseFontSprites[1]->Initialize(pCommonResources->GetResourceManager()->CreateTexture(TEXTURE_PATH_TUTORIAL));
-	m_poseFontSprites[2]->Initialize(pCommonResources->GetResourceManager()->CreateTexture(TEXTURE_PATH_SETTING));
-	m_poseFontSprites[3]->Initialize(pCommonResources->GetResourceManager()->CreateTexture(TEXTURE_PATH_RETURN_TITLE));
+	m_pauseFontSprites[0]->Initialize(pCommonResources->GetResourceManager()->CreateTexture(TEXTURE_PATH_CONTINUE));
+	m_pauseFontSprites[1]->Initialize(pCommonResources->GetResourceManager()->CreateTexture(TEXTURE_PATH_TUTORIAL));
+	m_pauseFontSprites[2]->Initialize(pCommonResources->GetResourceManager()->CreateTexture(TEXTURE_PATH_SETTING));
+	m_pauseFontSprites[3]->Initialize(pCommonResources->GetResourceManager()->CreateTexture(TEXTURE_PATH_RETURN_TITLE));
 
 	// キャンバスにスプライトの登録
-	std::for_each(m_poseFontSprites.begin(), m_poseFontSprites.end(), [&](std::unique_ptr<Sprite>& sprite) {pCanvas->AddSprite(sprite.get()); });
+	std::for_each(m_pauseFontSprites.begin(), m_pauseFontSprites.end(), [&](std::unique_ptr<Sprite>& sprite) {pCanvas->AddSprite(sprite.get()); });
 
 	// フォント類の各種設定
-	std::for_each(m_poseFontSprites.begin(), m_poseFontSprites.end(), [&](std::unique_ptr<Sprite>& sprite)
+	std::for_each(m_pauseFontSprites.begin(), m_pauseFontSprites.end(), [&](std::unique_ptr<Sprite>& sprite)
 		{sprite->SetScale(FONT_SPRITE_SCALE * screen->GetScreenScale()); });
 
 	// 画面のスケールと余白の計算
 	auto margin = SimpleMath::Vector2(MENU_MARGIN_X, MENU_MARGIN_Y) * screen->GetScreenScale();
 	// スプライト群全体の高さを計算
-	float totalHeight = (m_poseFontSprites[0]->GetSpriteHeight() * m_poseFontSprites.size()) + (margin.y * (m_poseFontSprites.size() - 1));
+	float totalHeight = (m_pauseFontSprites[0]->GetSpriteHeight() * m_pauseFontSprites.size()) + (margin.y * (m_pauseFontSprites.size() - 1));
 	// スプライト群の中心が画面中央に来るように、最初のスプライトのY座標の始点を計算
 	float displayOriginY = screen->GetCenterYF() - (totalHeight / 2.0f);
 
 	auto fixedMargin = SimpleMath::Vector2(FIXED_POS_X_OFFSET, FIXED_POS_Y_OFFSET) * screen->GetScreenScale();
 
 	// 座標の設定 (ループは簡潔に)
-	for (int i = 0; i < m_poseFontSprites.size(); i++)
+	for (int i = 0; i < m_pauseFontSprites.size(); i++)
 	{
 		// 各スプライトのY座標を計算
-		auto position = SimpleMath::Vector2(screen->GetLeftF() + fixedMargin.x + margin.x * i, displayOriginY + (m_poseFontSprites[i]->GetSpriteHeight() + margin.y) * i + fixedMargin.y);
-		m_poseFontSprites[i]->SetPosition(position);
+		auto position = SimpleMath::Vector2(screen->GetLeftF() + fixedMargin.x + margin.x * i, displayOriginY + (m_pauseFontSprites[i]->GetSpriteHeight() + margin.y) * i + fixedMargin.y);
+		m_pauseFontSprites[i]->SetPosition(position);
 	}
 
-	m_poseFontSprites.back()->SetPosition(SimpleMath::Vector2(screen->GetLeftF() + (fixedMargin.x) + RETURN_TITLE_OFFSET_X * screen->GetScreenScale(), (displayOriginY)+RETURN_TITLE_OFFSET_Y * screen->GetScreenScale()));
+	m_pauseFontSprites.back()->SetPosition(SimpleMath::Vector2(screen->GetLeftF() + (fixedMargin.x) + RETURN_TITLE_OFFSET_X * screen->GetScreenScale(), (displayOriginY)+RETURN_TITLE_OFFSET_Y * screen->GetScreenScale()));
 
 	// ボタンを押した際の処理を設定
 	m_pushButtonFunc = pushButtonFunc;
@@ -119,7 +119,7 @@ void PoseMenu::Initialize(Canvas* pCanvas, const CommonResources* pCommonResourc
  *
  * @return なし
  */
-void PoseMenu::Update(float deltaTime)
+void PauseMenu::Update(float deltaTime)
 {
 
 	// 入力の更新処理
@@ -131,7 +131,7 @@ void PoseMenu::Update(float deltaTime)
 	// 加算
 	m_ElapsedTimeCounter.UpperTime(deltaTime);
 
-	Sprite* currentSelectElementOfSprite = m_poseFontSprites[m_currentSelectItemForInt].get();
+	Sprite* currentSelectElementOfSprite = m_pauseFontSprites[m_currentSelectItemForInt].get();
 
 	float ratio = MyLib::EaseOutSine(m_ElapsedTimeCounter.GetElapsedTime() / EASING_TIME);
 	float width = static_cast<float>(currentSelectElementOfSprite->GetSpriteWidth()) + SELECTOR_WIDTH_OFFSET * Screen::Get()->GetScreenScale();
@@ -177,12 +177,12 @@ void PoseMenu::Update(float deltaTime)
  *
  * @return なし
  */
-void PoseMenu::Draw()
+void PauseMenu::Draw()
 {
 
 	auto screen = Screen::Get();
 
-	Sprite* currentSelectElementOfSprite = m_poseFontSprites[m_currentSelectItemForInt].get();
+	Sprite* currentSelectElementOfSprite = m_pauseFontSprites[m_currentSelectItemForInt].get();
 
 	SimpleMath::Vector2 cursorPosition = currentSelectElementOfSprite->GetPosition();
 
@@ -204,7 +204,7 @@ void PoseMenu::Draw()
  *
  * @return なし
  */
-void PoseMenu::Finalize()
+void PauseMenu::Finalize()
 {
 
 }
@@ -213,7 +213,7 @@ void PoseMenu::Finalize()
  * @brief 下にセレクターが動くことが出来るかどうか
  * * @return true 可能
  */
-bool PoseMenu::CanMoveDownSelector() const
+bool PauseMenu::CanMoveDownSelector() const
 {
 	return (m_uiInput->IsInput(InputActionType::UIActionID::DOWN_MOVE, InputSystem<InputActionType::UIActionID>::InputOption::PRESSED));
 }
@@ -222,7 +222,7 @@ bool PoseMenu::CanMoveDownSelector() const
  * @brief 上にセレクターが動くことが出来るかどうか
  * * @return true 可能
  */
-bool PoseMenu::CanMoveUpSelector() const
+bool PauseMenu::CanMoveUpSelector() const
 {
 	return (m_uiInput->IsInput(InputActionType::UIActionID::UP_MOVE, InputSystem<InputActionType::UIActionID>::InputOption::PRESSED));
 }
@@ -231,7 +231,7 @@ bool PoseMenu::CanMoveUpSelector() const
  * @brief 選択することが出来るかどうか
  * * @return true 可能
  */
-bool PoseMenu::CanPush() const
+bool PauseMenu::CanPush() const
 {
 	return (m_uiInput->IsInput(InputActionType::UIActionID::CONFIRM, InputSystem<InputActionType::UIActionID>::InputOption::PRESSED));
 }

@@ -1,5 +1,5 @@
 /*****************************************************************//**
- * @file   PoseGameplayState.h
+ * @file   PauseGameplayState.h
  * @brief  ゲームプレイシーンのポーズ状態に関するソースファイル
  *
  * @author 松下大暉
@@ -42,7 +42,7 @@ using namespace DirectX;
  *
  * @param[in] なし
  */
-PoseGameplayState::PoseGameplayState()
+PauseGameplayState::PauseGameplayState()
 	: m_isDisplayingTutorialWindow{ false }
 	, m_isPrevConnectedGamepad{ false }
 {
@@ -54,7 +54,7 @@ PoseGameplayState::PoseGameplayState()
 /**
  * @brief デストラクタ
  */
-PoseGameplayState::~PoseGameplayState()
+PauseGameplayState::~PauseGameplayState()
 {
 
 }
@@ -62,7 +62,7 @@ PoseGameplayState::~PoseGameplayState()
 /**
  * @brief 開始処理
  * */
-void PoseGameplayState::OnStartState()
+void PauseGameplayState::OnStartState()
 {
 	using namespace SimpleMath;
 
@@ -75,7 +75,7 @@ void PoseGameplayState::OnStartState()
 
 	// **** スプライトの作成 **********************************************
 	m_backgroundAlphaSprite = std::make_unique<Sprite>();
-	m_poseFontSprite = std::make_unique<Sprite>();
+	m_pauseFontSprite = std::make_unique<Sprite>();
 	m_operatingFontSprite = std::make_unique<Sprite>();
 	m_operatingSprite = std::make_unique<Sprite>();
 	m_manualSprite = std::make_unique<Sprite>();
@@ -85,7 +85,7 @@ void PoseGameplayState::OnStartState()
 	// キャンバスへ登録
 	m_canvas->AddSprite(m_backInGameplayingSprite.get());
 	m_canvas->AddSprite(m_backgroundAlphaSprite.get());
-	m_canvas->AddSprite(m_poseFontSprite.get());
+	m_canvas->AddSprite(m_pauseFontSprite.get());
 	m_canvas->AddSprite(m_operatingFontSprite.get());
 	m_canvas->AddSprite(m_operatingSprite.get());
 	m_canvas->AddSprite(m_manualSprite.get());
@@ -93,7 +93,7 @@ void PoseGameplayState::OnStartState()
 
 	// スプライトのテクスチャ設定
 	m_backgroundAlphaSprite	->Initialize(resourceManager->CreateTexture(TEXTURE_PATH_ALPHA));
-	m_poseFontSprite		->Initialize(resourceManager->CreateTexture(TEXTURE_PATH_FONT_POSE));
+	m_pauseFontSprite		->Initialize(resourceManager->CreateTexture(TEXTURE_PATH_FONT_POSE));
 	m_operatingFontSprite	->Initialize(resourceManager->CreateTexture(TEXTURE_PATH_FONT_OPERATING));
 	m_operatingSprite		->Initialize(resourceManager->CreateTexture(TEXTURE_PATH_OPERATING_PC));
 	m_manualSprite			->Initialize(resourceManager->CreateTexture(TEXTURE_PATH_MANUAL_PC));
@@ -101,14 +101,14 @@ void PoseGameplayState::OnStartState()
 
 	// スプライトの座標設定
 	m_backgroundAlphaSprite	->SetPosition(Vector2(screen->GetCenterXF(), screen->GetCenterYF()));
-	m_poseFontSprite		->SetPosition(Vector2(screen->GetLeftF() + FONT_POSE_POS_X_OFFSET * screen->GetScreenScale(),			screen->GetBottomF() - FONT_POSE_POS_Y_OFFSET * screen->GetScreenScale()));
+	m_pauseFontSprite		->SetPosition(Vector2(screen->GetLeftF() + FONT_POSE_POS_X_OFFSET * screen->GetScreenScale(),			screen->GetBottomF() - FONT_POSE_POS_Y_OFFSET * screen->GetScreenScale()));
 	m_operatingFontSprite	->SetPosition(Vector2(screen->GetRightF() - FONT_OPERATING_POS_X_OFFSET * screen->GetScreenScale(),		screen->GetTopF() + FONT_OPERATING_POS_Y_OFFSET * screen->GetScreenScale()));
 	m_operatingSprite		->SetPosition(Vector2(screen->GetRightF() - OPERATING_UI_POS_X_OFFSET * screen->GetScreenScale(),		screen->GetCenterYF() + OPERATING_UI_POS_Y_OFFSET * screen->GetScreenScale()));
 	m_manualSprite			->SetPosition(SimpleMath::Vector2(screen->GetLeftF() + MANUAL_UI_POS_X_OFFSET * screen->GetScreenScale(),screen->GetBottomF() - MANUAL_UI_POS_Y_OFFSET * screen->GetScreenScale()));
 
 	// スプライトの拡大率設定
 	m_backgroundAlphaSprite	->SetScale(ALPHA_SPRITE_SCALE * screen->GetScreenScale());
-	m_poseFontSprite		->SetScale(FONT_SPRITE_SCALE * screen->GetScreenScale());
+	m_pauseFontSprite		->SetScale(FONT_SPRITE_SCALE * screen->GetScreenScale());
 	m_operatingFontSprite	->SetScale(FONT_SPRITE_SCALE * screen->GetScreenScale());
 	m_operatingSprite		->SetScale(OPERATING_SPRITE_SCALE_PC * screen->GetScreenScale());
 	m_manualSprite			->SetScale(MANUAL_SPRITE_SCALE * screen->GetScreenScale());
@@ -137,8 +137,8 @@ void PoseGameplayState::OnStartState()
 	m_lines[1]->SetThickness(LINE_THICKNESS * screen->GetScreenScale());
 
 	// ポーズメニューの作成 **********************************************
-	m_poseMenu = std::make_unique<PoseMenu>();
-	m_poseMenu->Initialize(m_canvas.get(), GetOwner()->GetCommonResources(), [&](PoseMenu::MenuItem pushItem) {
+	m_pauseMenu = std::make_unique<PauseMenu>();
+	m_pauseMenu->Initialize(m_canvas.get(), GetOwner()->GetCommonResources(), [&](PauseMenu::MenuItem pushItem) {
 		OnPushMenuItem(pushItem); });
 
 	// チュートリアルウィンドウの作成 **********************************************
@@ -165,7 +165,7 @@ void PoseGameplayState::OnStartState()
  * @brief 更新処理
  * * @param[in] deltaTime
  */
-void PoseGameplayState::OnUpdate(float deltaTime)
+void PauseGameplayState::OnUpdate(float deltaTime)
 {
 	UNREFERENCED_PARAMETER(deltaTime);
 
@@ -182,7 +182,7 @@ void PoseGameplayState::OnUpdate(float deltaTime)
 	if (m_isDisplayingTutorialWindow == false)
 	{
 		// ポーズメニューの更新処理
-		m_poseMenu->Update(deltaTime);
+		m_pauseMenu->Update(deltaTime);
 		if (m_systemInput->IsInput(InputActionType::SystemActionID::PAUSE, InputSystem<InputActionType::SystemActionID>::InputOption::PRESSED))
 		{
 			// ゲームに戻る
@@ -207,7 +207,7 @@ void PoseGameplayState::OnUpdate(float deltaTime)
 /**
  * @brief 描画処理
  * */
-void PoseGameplayState::OnDraw()
+void PauseGameplayState::OnDraw()
 {
 	auto states = GetOwner()->GetCommonResources()->GetCommonStates();
 	auto screen = Screen::Get();
@@ -222,7 +222,7 @@ void PoseGameplayState::OnDraw()
 
 	if (m_isDisplayingTutorialWindow == false)
 	{
-		m_poseMenu->Draw();
+		m_pauseMenu->Draw();
 
 		for (auto& line : m_lines)
 		{
@@ -233,7 +233,7 @@ void PoseGameplayState::OnDraw()
 
 }
 
-void PoseGameplayState::OnExitState()
+void PauseGameplayState::OnExitState()
 {
 	// キャンバスの削除
 	GetOwner()->GetTaskManager()->DeleteTask(m_canvas.get());
@@ -243,20 +243,20 @@ void PoseGameplayState::OnExitState()
  * @brief メニューアイテムを押したときに呼ばれる
  * * @param[in] menuItem　押されたメニューアイテム
  */
-void PoseGameplayState::OnPushMenuItem(PoseMenu::MenuItem menuItem)
+void PauseGameplayState::OnPushMenuItem(PauseMenu::MenuItem menuItem)
 {
 	switch (menuItem)
 	{
-	case PoseMenu::MenuItem::CONTINUE:
+	case PauseMenu::MenuItem::CONTINUE:
 		ContinueGame();
 		break;
-	case PoseMenu::MenuItem::TUTORIAL:
+	case PauseMenu::MenuItem::TUTORIAL:
 		m_isDisplayingTutorialWindow = true;
 		m_canvas->AddSprite(m_tutorialWindow.get());
 		break;
-	case PoseMenu::MenuItem::SETTING:
+	case PauseMenu::MenuItem::SETTING:
 		break;
-	case PoseMenu::MenuItem::RETURN_TITLE:
+	case PauseMenu::MenuItem::RETURN_TITLE:
 		GetOwner()->OnEndScene();
 		GetOwner()->ChangeScene<TitleScene>();
 
@@ -269,7 +269,7 @@ void PoseGameplayState::OnPushMenuItem(PoseMenu::MenuItem menuItem)
 /**
  * @brief ゲームに戻る
  * */
-void PoseGameplayState::ContinueGame()
+void PauseGameplayState::ContinueGame()
 {
 	GetStateMachine()->ChangeState<NormalGameplayState>();
 }
@@ -277,7 +277,7 @@ void PoseGameplayState::ContinueGame()
 /**
  * @brief チュートリアルウィンドウを閉じる際の処理
  */
-void PoseGameplayState::OnCloseTutorialWindow()
+void PauseGameplayState::OnCloseTutorialWindow()
 {
 	m_isDisplayingTutorialWindow = false;
 	m_canvas->RemoveSprite(m_tutorialWindow.get());
@@ -292,7 +292,7 @@ void PoseGameplayState::OnCloseTutorialWindow()
  * @returns true 成功
  * @returns false 失敗
  */
-bool PoseGameplayState::TryChangeCurrentGuideUI()
+bool PauseGameplayState::TryChangeCurrentGuideUI()
 {
 
 	bool requestChange = false;
