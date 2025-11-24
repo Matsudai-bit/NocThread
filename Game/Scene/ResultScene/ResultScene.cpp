@@ -14,12 +14,12 @@
 #include "Game/Scene/TitleScene/TitleScene.h"
 
 // ƒ‰ƒCƒuƒ‰ƒŠŠÖ˜A
+#include "Library/ImaseLib/DebugFont.h"
+#include "Library/DirectXFramework/DeviceResources.h"
 #include "Game/Scene/Loading/LoadingScreen.h"
 
 #include "Game/Common/CommonResources/CommonResources.h"
 #include "Game/Common/ResourceManager/ResourceManager.h"
-#include "Library/ImaseLib/DebugFont.h"
-#include "Game/Common/DeviceResources.h"
 
 #include "Game/Scene/GameplayScene/GameplayScene.h"
 

@@ -11,7 +11,7 @@
 #include "RopeObject.h"
 
 #include "Game/Common/CommonResources/CommonResources.h"
-#include "Game/Common/DeviceResources.h"
+#include "Library/DirectXFramework/DeviceResources.h"
 #include "Game/Common/Camera/Camera.h"
 using namespace DirectX;
 

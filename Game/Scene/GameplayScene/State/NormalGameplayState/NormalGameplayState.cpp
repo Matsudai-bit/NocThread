@@ -22,7 +22,7 @@
 #include "Game/Common/ResourceManager/ResourceManager.h"
 
 #include "Game/Manager/StageManager/StageManager.h"
-#include "Game/Common/DeviceResources.h"
+#include "Library/DirectXFramework/DeviceResources.h"
 #include "Game/Common/Camera/MainCamera/MainCamera.h"
 #include "Game/Common/GameEffect/GameEffectController.h"
 using namespace DirectX;

@@ -15,7 +15,7 @@
 
 // ヘッダファイルの読み込み ===================================================
 #include "Game/Common/Collision/ICollider.h"
-#include "Game/Common/DeviceResources.h"
+#include "Library/DirectXFramework/DeviceResources.h"
 
 
 

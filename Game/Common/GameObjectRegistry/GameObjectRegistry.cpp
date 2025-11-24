@@ -69,7 +69,7 @@ std::vector<const GameObject*> GameObjectRegistry::GetGameObjects(GameObjectTag 
 {
 
 	std::vector<const GameObject*> result;
-	std::copy_if(m_gameObjects.begin(), m_gameObjects.end(), result.begin(),
+	std::copy_if(m_gameObjects.begin(), m_gameObjects.end(), std::back_inserter(result),
 		[tag](const GameObject* gameObject)
 		{
 			return gameObject->GetTag() == tag;

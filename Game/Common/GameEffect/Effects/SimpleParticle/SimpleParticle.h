@@ -18,7 +18,7 @@
 #include <random>
 
 #include "Game/Common/GameEffect/Base/GameEffectBase.h"
-#include "Game/Common/DeviceResources.h"
+#include "Library/DirectXFramework/DeviceResources.h"
 #include "Game/Common/ElapsedTimeCounter/ElapsedTimeCounter.h"
 
 // ƒNƒ‰ƒX‚Ì‘O•ûéŒ¾ ===================================================

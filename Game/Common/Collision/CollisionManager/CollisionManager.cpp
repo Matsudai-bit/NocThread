@@ -65,6 +65,9 @@ void CollisionManager::Initialize()
  */
 bool CollisionManager::UpdateTask(float deltaTime)
 {
+	UNREFERENCED_PARAMETER(deltaTime);
+
+
 	// Õ“Ë”»’è‚Ì—¬‚ê
 	// Õ“Ë”»’è->Õ“Ëˆ—->‰Ÿ‚µo‚µ
 	if (m_collisionData.empty() || m_collisionData.size() == 0) return true;

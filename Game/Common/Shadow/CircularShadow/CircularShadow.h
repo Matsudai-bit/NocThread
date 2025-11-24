@@ -15,7 +15,7 @@
 // ヘッダファイルの読み込み ===================================================
 #include <memory>
 
-#include "Game/Common/DeviceResources.h"
+#include "Library/DirectXFramework/DeviceResources.h"
 
 // クラスの前方宣言 ===================================================
 class Camera; // カメラ

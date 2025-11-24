@@ -48,6 +48,7 @@ Canvas::~Canvas()
  */
 void Canvas::DrawTask(const Camera& camera)
 {
+	UNREFERENCED_PARAMETER(camera);
 	DrawContents();
 }
 

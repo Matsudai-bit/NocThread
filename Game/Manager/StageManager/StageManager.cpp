@@ -16,7 +16,7 @@
 #include "Game/Common/Camera/MainCamera/MainCamera.h"
 #include "Game/Scene/TitleScene/TitleScene.h"
 #include "Game/Scene/ResultScene/ResultScene.h"
-#include "Game/Common/DeviceResources.h"
+#include "Library/DirectXFramework/DeviceResources.h"
 #include "Game/Common/CommonResources/CommonResources.h"
 #include "Game/Common/ResourceManager/ResourceManager.h"
 #include "Game/Common/Collision/CollisionManager/CollisionManager.h"
@@ -165,6 +165,7 @@ void StageManager::CreateWindowSizeDependentResources()
  */
 void StageManager::UpdateInGameObjects(float deltaTime)
 {
+	UNREFERENCED_PARAMETER(deltaTime);
 }
 
 /**

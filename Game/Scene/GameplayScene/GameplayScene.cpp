@@ -15,9 +15,9 @@
 
 // ライブラリ
 #include "Game/Common/TaskManager/TaskManager.h"
-
 // DirectX系
-#include "Game/Common/DeviceResources.h"
+#include "Library/DirectXFramework/DeviceResources.h"
+
 
 // ゲームデータ
 #include "Game/Common/ResultData/ResultData.h"
@@ -30,6 +30,9 @@
 #include "Game/Common/SoundManager/SoundPaths.h"
 #include "Game/Scene/Loading/LoadingScreen.h"
 #include "Game/Common/GameEffect/GameEffectController.h"
+
+// ミニマップ
+#include "Game/Common/MiniMap/MiniMap.h"
 
 
 // 管理系
@@ -212,10 +215,7 @@ void GameplayScene::OnEndScene()
 */
 void GameplayScene::CreateWindowSizeDependentResources()
 {
-	// ウィンドウサイズの取得
-	auto windowSize = GetCommonResources()->GetDeviceResources()->GetOutputSize();
-	float width = static_cast<float>(windowSize.right);
-	float height = static_cast<float>(windowSize.bottom);
+
 }
 
 /**
@@ -251,6 +251,9 @@ void GameplayScene::CreatePlatform()
 
 	// ステージ管理の作成
 	m_stageManager = std::make_unique<StageManager>(GetCommonResources());
+
+	// ミニマップの作成
+	m_miniMap = std::make_unique<Minimap>(GetCommonResources());
 }
 
 /**
@@ -275,6 +278,7 @@ void GameplayScene::CreateTask()
 	m_taskManager->AddTask(m_stageManager.get());		// StageManager
 	m_taskManager->AddTask(m_collisionManager.get());	// CollisionManager
 	m_taskManager->AddTask(m_gameEffectManager.get());	// EffectManager
+	m_taskManager->AddTask(m_miniMap.get());	// Minimap
 }
 
 /**

@@ -18,7 +18,7 @@
 #include "Game/Common/CommonResources/CommonResources.h"
 #include "Game/Common/ResourceManager/ResourceManager.h"
 #include "Library/ImaseLib/DebugFont.h"
-#include "Game/Common/DeviceResources.h"
+#include "Library/DirectXFramework/DeviceResources.h"
 #include "Library/MyLib/EasingKit/EasingKit.h"
 
 #include "Game/Scene/GameplayScene/GameplayScene.h"
@@ -195,11 +195,6 @@ void TitleScene::Update(float deltaTime)
  */
 void TitleScene::Render()
 {
-	// ‹¤’ÊƒŠƒ\[ƒX
-	auto states = GetCommonResources()->GetCommonStates();
-
-	//GetCommonResources()->GetDebugFont()->AddString(0, 30, Colors::White, L"TitleScene");
-
 	m_canvas->DrawContents();
 
 	if (m_isDisplayingTutorialWindow == false)
