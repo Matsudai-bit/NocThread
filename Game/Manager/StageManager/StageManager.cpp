@@ -11,8 +11,9 @@
 
 #include "StageManager.h"
 
-// 定数ヘッダーをインクルード
+#include <fstream>
 
+// 定数ヘッダーをインクルード
 #include "Game/Common/Camera/MainCamera/MainCamera.h"
 #include "Game/Scene/TitleScene/TitleScene.h"
 #include "Game/Scene/ResultScene/ResultScene.h"
@@ -217,6 +218,37 @@ void StageManager::OnEndScene()
 
 }
 
+
+void from_json(const nlohmann::json& j, StageManager::StageLayoutData& data)
+{
+	j.at("BuildingData").get_to(data.buildingJsonName);
+	j.at("PlayerData").get_to(data.playerJsonName);
+}
+void from_json(const nlohmann::json& j, StageManager::PlayerData& data)
+{
+	j.at("PlaceTileNumber").get_to(data.tileNumber);
+}
+
+void StageManager::CreatePlayer(PlayerData data, CollisionManager* pCollisionManager)
+{
+	using namespace nlohmann;
+	
+	//std::ifstream ifs(STAGE_DATA_FOLDER_PATH + "/" + );
+
+	json playerJson{};
+
+	const Building* tileBuilding = nullptr;
+	if (m_buildingManager->FindBuilding(data.tileNumber, tileBuilding))
+	{
+
+	}
+
+
+
+	m_playerManager = std::make_unique<PlayerManager>();
+	m_playerManager->Initialize(m_pCommonResources, pCollisionManager, m_playerCamera.get());
+}
+
 /**
  * @brief ステージの生成
  * */
@@ -225,9 +257,26 @@ void StageManager::CreateStage(CollisionManager* pCollisionManager, TaskManager*
 	using namespace SimpleMath;
 	CreateWindowSizeDependentResources();
 
+	nlohmann::json stageLayoutJson;
 
+	const std::string stageLayoutDataPath = STAGE_DATA_FOLDER_PATH + "/" + "stageLayoutData.json";
+	std::ifstream ifs(stageLayoutDataPath);
+
+	ifs >> stageLayoutJson;
+
+	auto stageLayoutData = stageLayoutJson.get<StageLayoutData>();
+
+	nlohmann::json playerDataJson;
+	const std::string playerDataPath = STAGE_DATA_FOLDER_PATH + "/" + stageLayoutData.playerJsonName;
+	std::ifstream ifs2(playerDataPath);
+	ifs2 >> playerDataJson;
+	if (!ifs2.is_open())
+	{
+		return;
+	}
+	auto playerData = playerDataJson.get<PlayerData>();
+	
 	// ----- 各種ゲームオブジェクトの作成 -------
-
 	// **** 床の生成 *****
 	m_floor = std::make_unique<Floor>();
 	// 床の初期化
@@ -240,11 +289,10 @@ void StageManager::CreateStage(CollisionManager* pCollisionManager, TaskManager*
 	MainCamera::GetInstance()->SetCamera(m_playerCamera.get());
 
 	// ***** プレイヤー管理の生成 *****
-	m_playerManager = std::make_unique<PlayerManager>();
-	m_playerManager->Initialize(m_pCommonResources, pCollisionManager, m_playerCamera.get());
+	CreatePlayer(playerData, pCollisionManager);
 	//// カメラにプレイヤーを設定する
 	m_playerCamera->SetPlayer(m_playerManager->GetPlayer());
-
+	
 
 	// ***** 敵管理の作成 *****
 	m_enemyManager = std::make_unique<EnemyManager>();

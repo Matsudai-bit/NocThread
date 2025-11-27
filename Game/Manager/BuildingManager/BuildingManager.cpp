@@ -29,6 +29,7 @@ struct BuildingSaveData // 名前をSaveDataから変更して衝突を避ける
 {
 	Vector3Data position;
 	Vector3Data scale;
+	int tileNumber;
 };
 
 // -------------------------------------------------------------------
@@ -53,7 +54,8 @@ void to_json(json& j, const BuildingSaveData& s)
 {
 	j = json{
 		{"Position", s.position},
-		{"Scale", s.scale}
+		{"Scale", s.scale},
+		{"TileNumber", s.tileNumber}
 	};
 }
 
@@ -61,6 +63,7 @@ void from_json(const json& j, BuildingSaveData& s)
 {
 	j.at("Position").get_to(s.position);
 	j.at("Scale").get_to(s.scale);
+	j.at("TileNumber").get_to(s.tileNumber);
 }
 // メンバ関数の定義 ===========================================================
 /**
@@ -173,6 +176,8 @@ bool BuildingManager::RequestCreate(CollisionManager* pCollisionManager, const C
 		// ファイルからJSONオブジェクトへ読み込み
 		ifs >> j;
 
+		
+
 		// JSONオブジェクトからC++のデータ構造へ変換 (StageData を前提とする)
 		// 以前のJSON構造に合わせて、BuildingSaveDataのvectorに直接変換する
 		std::vector<BuildingSaveData> buildingSaves;
@@ -201,6 +206,7 @@ bool BuildingManager::RequestCreate(CollisionManager* pCollisionManager, const C
 			CreateBuilding(
 				position,
 				scale,
+				saveData.tileNumber,
 				pCollisionManager,
 				pCommonResources
 			);
@@ -222,12 +228,14 @@ bool BuildingManager::RequestCreate(CollisionManager* pCollisionManager, const C
  * 
  * @param[in] position　		座標
  * @param[in] scale				拡大率
+ * @param[in] tileNumber		タイル番号
  * @param[in] pCollisionManager	衝突管理
  * @param[in] pCommonResources	共通リソース
  */
 void BuildingManager::CreateBuilding(
 	const DirectX::SimpleMath::Vector3& position,
 	const DirectX::SimpleMath::Vector3& scale,
+	const int& tileNumber,
 	CollisionManager* pCollisionManager,
 	const CommonResources* pCommonResources)
 {
@@ -240,6 +248,32 @@ void BuildingManager::CreateBuilding(
 	building->Initialize(pCommonResources, pCollisionManager);
 
 	m_buildings.emplace_back(std::move(building));
+}
+
+/**
+ * @brief 建物を探す
+ * 
+ * @param[in]	tileNumber　タイル番号
+ * @param[out]	outBuilding 取得建物
+ * 
+ * @returns true 見つけた
+ * @returns false見つからなかった
+ */
+bool BuildingManager::FindBuilding(const int& tileNumber, const Building* outBuilding) const
+{
+	// 検索する
+	auto it =  std::find_if(m_buildings.begin(), m_buildings.end(), [tileNumber](const std::unique_ptr<Building>& building)
+		{
+			return (tileNumber == building->GetTileNumber());
+		});
+
+	if (it == m_buildings.end())
+	{
+		return false;
+	}
+
+	outBuilding = it->get();
+	return true;
 }
 
 void BuildingManager::Save()

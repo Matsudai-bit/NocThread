@@ -35,7 +35,7 @@ public:
 
 // データメンバの宣言 -----------------------------------------------
 private:
-
+	int m_tileNumber; // タイル番号
 	
 
 // メンバ関数の宣言 -------------------------------------------------
@@ -75,6 +75,10 @@ public:
 
 	// ゲームオブジェクトタグの取得
 	virtual GameObjectTag GetTag() const = 0;
+
+	// タイル番号のセッター・ゲッター
+	void SetTileNumber(const int& tileNumber)	{ m_tileNumber = tileNumber; }
+	int GetTileNumber() const					{ return m_tileNumber; }
 
 // 内部実装
 private:

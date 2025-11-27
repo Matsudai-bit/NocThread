@@ -20,6 +20,7 @@
  * @param[in] ‚È‚µ
  */
 Prop::Prop()
+	: m_tileNumber{}
 {
 
 }

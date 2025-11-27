@@ -24,6 +24,7 @@
 class CollisionManager;
 class CommonResources;
 
+
 // ƒNƒ‰ƒX‚Ì’è‹` ===============================================================
 /**
  * @brief Œš•¨ŠÇ—
@@ -76,6 +77,7 @@ private:
 	void CreateBuilding(
 		const DirectX::SimpleMath::Vector3& position,
 		const DirectX::SimpleMath::Vector3& scale,
+		const int& tileNumber,
 		CollisionManager* pCollisionManager,
 		const CommonResources* pCommonResources);
 
@@ -85,6 +87,8 @@ private:
 // æ“¾/İ’è
 public:
 
+	// Œš•¨‚ğ’T‚·
+	bool FindBuilding(const int& tileNumber, const Building* outBuilding) const;
 
 // “à•”À‘•
 private:
