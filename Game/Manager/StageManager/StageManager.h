@@ -14,6 +14,7 @@
 
 
 // ヘッダファイルの読み込み ===================================================
+#include <nlohmann/json.hpp>
 
 // ライブラリ
 #include "Library/ImaseLib/DebugCamera.h"       // デバックカメラ
@@ -110,6 +111,8 @@ public:
 	// お宝候補地3
 	static constexpr DirectX::SimpleMath::Vector3 TREASURE_POS_CANDIDATE_3 = { 190.0f, 50.6f, -70.2f };
 
+	// ステージデータフォルダ
+	const std::string STAGE_DATA_FOLDER_PATH = "Resources/Data/MainStage";
 
 	// データメンバの宣言 -----------------------------------------------
 private:
@@ -146,6 +149,21 @@ private:
 	std::vector <std::function<void()>> m_eventStack;
 
 	bool m_isStoppingUpdate; ///< 更新処理を止めるかどうか
+
+
+public:
+	// 仮 ==========================================-
+	struct PlayerData
+	{
+		int tileNumber;
+	};
+	struct StageLayoutData
+	{
+		std::string buildingJsonName;
+		std::string playerJsonName;
+	};
+
+	// ここまで　=================================================-
 
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
@@ -204,6 +222,9 @@ public:
 private:
 
 	void OnEndScene();
+
+	// プレイヤーの作成
+	void CreatePlayer(PlayerData data, CollisionManager* pCollisionManager);
 
 
 };
