@@ -55,7 +55,7 @@ void to_json(json& j, const BuildingSaveData& s)
 	j = json{
 		{"Position", s.position},
 		{"Scale", s.scale},
-		{"TileNumber", s.tileNumber}
+		//{"TileNumber", s.tileNumber}
 	};
 }
 
@@ -63,7 +63,7 @@ void from_json(const json& j, BuildingSaveData& s)
 {
 	j.at("Position").get_to(s.position);
 	j.at("Scale").get_to(s.scale);
-	j.at("TileNumber").get_to(s.tileNumber);
+	//j.at("TileNumber").get_to(s.tileNumber);
 }
 // ƒƒ“ƒoŠÖ”‚Ì’è‹` ===========================================================
 /**

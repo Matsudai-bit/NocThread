@@ -46,8 +46,8 @@ public:
 	static const std::vector<D3D11_INPUT_ELEMENT_DESC> INPUT_LAYOUT;
 	static constexpr int VERTEX_NUM = 4;
 
-	static constexpr float SPACE_VALUE = 1.2f;  // マップ中心からの距離度合　1だとそのままの距離感
-	static constexpr float MARK_SIZE = 0.02f;  // マークのサイズ
+	static constexpr float SPACE_VALUE = 1.f;  // マップ中心からの距離度合　1だとそのままの距離感
+	static constexpr float MARK_SIZE = 0.025f;  // マークのサイズ
 
 	// マップに表示される色
 	static constexpr DirectX::SimpleMath::Vector4 BUILDING_MARK_COLOR	{ 0.6f, 0.6f, 0.6f, 1.0f };	// 建物の色
