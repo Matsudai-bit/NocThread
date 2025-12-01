@@ -116,8 +116,6 @@ void Building::Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::Simp
 
 	Matrix world = Matrix::Identity;
 
-	
-	
 	world *= Matrix::CreateScale(m_extends *GetScale());
 	world *= Matrix::CreateFromQuaternion(GetRotate());
 	world *= Matrix::CreateTranslation(GetPosition());

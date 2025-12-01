@@ -99,7 +99,7 @@ DirectX::Model ResourceManager::CreateModel(const std::string& fileName, const s
         EffectFactory fx(m_device);
         fx.SetDirectory(path);
         // ÉÇÉfÉãÇÃçÏê¨
-        DirectX::ModelLoaderFlags flags = DirectX::ModelLoader_Clockwise | DirectX::ModelLoader_IncludeBones;
+        DirectX::ModelLoaderFlags flags = DirectX::ModelLoader_Clockwise | DirectX::ModelLoader_IncludeBones ;
 
         std::unique_ptr<DirectX::Model> model = Model::CreateFromSDKMESH(m_device, name, fx, flags);
         ModelCache::value_type v(name, std::move(model));

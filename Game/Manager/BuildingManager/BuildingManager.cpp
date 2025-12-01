@@ -23,21 +23,6 @@
 using json = nlohmann::json;
 
 
- std::vector<D3D11_INPUT_ELEMENT_DESC> INPUT_LAYOUT = {
-	// slot0 共通
-		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT,    0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "COLOR",    0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT,       0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-
-		// slot1 インスタンス
-		{ "WORLD",    0, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_INSTANCE_DATA, 1 },
-		{ "WORLD",    1, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_INSTANCE_DATA, 1},
-		{ "WORLD",    2, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_INSTANCE_DATA, 1 },
-		{ "WORLD",    3, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_INSTANCE_DATA, 1 },
-
-			
-};
-
 // -------------------------------------------------------------------
 // 1. データ構造の定義 (BuildingManagerクラスの外へ移動)
 // -------------------------------------------------------------------
@@ -108,6 +93,22 @@ BuildingManager::~BuildingManager()
 }
 
 
+std::vector<D3D11_INPUT_ELEMENT_DESC> INPUT_LAYOUT = {
+	// slot0 共通
+		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT,  D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "NORMAL",   0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "TANGENT"	, 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "COLOR",    0, DXGI_FORMAT_R8G8B8A8_UNORM,  0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 }, // ★オフセットを修正
+		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT,    0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+
+		// slot1 インスタンス
+		{ "WORLD",    0, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 0, D3D11_INPUT_PER_INSTANCE_DATA, 1 },
+		{ "WORLD",    1, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 16, D3D11_INPUT_PER_INSTANCE_DATA, 1},
+		{ "WORLD",    2, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 32, D3D11_INPUT_PER_INSTANCE_DATA, 1 },
+		{ "WORLD",    3, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 48, D3D11_INPUT_PER_INSTANCE_DATA, 1 },
+
+
+};
 
 /**
  * @brief 初期化処理
@@ -128,7 +129,6 @@ void BuildingManager::Initialize(const CommonResources* pCommonResources)
 	GameEffectController::GetInstance()->PlayEffect(
 		std::make_unique<SimpleParticle>(
 			pCommonResources->GetDeviceResources(), DirectX::SimpleMath::Vector3::Zero, MainCamera::GetInstance()->GetCamera()), clip);
-
 	
 	// インスタンスバッファ生成
 	{
@@ -173,6 +173,8 @@ void BuildingManager::Initialize(const CommonResources* pCommonResources)
 		vs.data(), vs.size(),
 		m_inputLayout.ReleaseAndGetAddressOf());
 
+	
+
 }
 
 
@@ -209,12 +211,13 @@ void BuildingManager::Draw(const DirectX::SimpleMath::Matrix& view, const Direct
 	using namespace DirectX;
 	auto context = m_pCommonResources->GetDeviceResources()->GetD3DDeviceContext();
 
-	auto model = m_pCommonResources->GetResourceManager()->CreateModel("building_01.sdkmesh");
+	auto model = m_pCommonResources->GetResourceManager()->CreateModel("building.sdkmesh");
 
-	auto vertexBuffer = model.meshes.back()->meshParts.back()->vertexBuffer;
-	auto vertexStride = model.meshes.back()->meshParts.back()->vertexStride;
-	auto indexCount = model.meshes.back()->meshParts.back()->indexCount;
-	auto indexBuffer = model.meshes.back()->meshParts.back()->indexBuffer;
+	const auto& meshParts = model.meshes.front()->meshParts.front();
+	auto vertexBuffer	= meshParts->vertexBuffer;
+	auto vertexStride	= meshParts->vertexStride;
+	auto indexCount		= meshParts->indexCount;
+	auto indexBuffer	= meshParts->indexBuffer;
 	
 
 	D3D11_MAPPED_SUBRESOURCE msr;
@@ -222,31 +225,36 @@ void BuildingManager::Draw(const DirectX::SimpleMath::Matrix& view, const Direct
 	// インスタンスデータの作成
 	// バッファに入れていく
 	context->Map(m_instanceBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
+		// データ場所設定・カウントリセット
+		auto pInstanceData = (InstanceBuffer*)msr.pData;
+		int instanceCount = 0;
+	for (const auto& building : m_buildings)
+	{
+		SimpleMath::Matrix world = SimpleMath::Matrix::Identity;
 
-	// データ場所設定・カウントリセット
-	m_pInstanceData = (InstanceBuffer*)msr.pData;
-	//int instanceCount = 1;
+		world *= SimpleMath::Matrix::CreateScale(building->GetExtends() * building->GetScale());
+		world *= SimpleMath::Matrix::CreateFromQuaternion(building->GetRotate());
+		world *= SimpleMath::Matrix::CreateTranslation(building->GetPosition());
 
-	auto& instanceData = m_pInstanceData[0];
-
-	SimpleMath::Matrix world = SimpleMath::Matrix::CreateTranslation(SimpleMath::Vector3(5.0f, 0, 0));
-	instanceData.world = world.Transpose();
+		pInstanceData[instanceCount].world = world/*.Transpose()*/;
+		instanceCount++;
+	}
+		
 
 	context->Unmap(m_instanceBuffer.Get(), 0);
 
-	D3D11_MAPPED_SUBRESOURCE msr2;
-
 	// 定数バッファにデータを設定する
-	context->Map(m_constantBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &msr2);
+	context->Map(m_constantBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
+	{
+		auto constantData = (ConstantBuffer*)msr.pData;
 
-	auto constantData = (ConstantBuffer*)msr2.pData;
-
-	constantData->viewProjMatrix = ((view) * (projection)).Transpose();
-
+		constantData->viewProjMatrix = ((view) * (projection)).Transpose();
+	}
 	context->Unmap(m_constantBuffer.Get(), 0);
 
-	// 定数バッファをバインド
 
+
+	// 定数バッファをバインド
 	context->VSSetConstantBuffers(0, 1, m_constantBuffer.GetAddressOf());
 
 	// バッファを設定する
@@ -257,7 +265,7 @@ void BuildingManager::Draw(const DirectX::SimpleMath::Matrix& view, const Direct
 	context->IASetVertexBuffers(0, 2, pBuf, stride, offset);
 
 	// インデックスバッファの設定
-	context->IASetIndexBuffer(indexBuffer.Get(), DXGI_FORMAT_R32_UINT /* または R16_UINT */, 0);
+	context->IASetIndexBuffer(indexBuffer.Get(), meshParts->indexFormat, 0);
 
 	// 頂点シェーダの設定
 	context->VSSetShader(m_vs.Get(), nullptr, 0);
@@ -271,16 +279,17 @@ void BuildingManager::Draw(const DirectX::SimpleMath::Matrix& view, const Direct
 
 	//	カリングはなし
 	context->RSSetState(m_pCommonResources->GetCommonStates()->CullNone());
-	context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+	context->IASetPrimitiveTopology(meshParts->primitiveType);
 
 
-	context->DrawIndexedInstanced(indexCount, 1, 0, 0, 0);
+	context->DrawIndexedInstanced(indexCount, instanceCount, 0, 0, 0);
 
 	//	シェーダの登録を解除しておく
 	context->VSSetShader(nullptr, nullptr, 0);
-
+	//context->IASetIndexBuffer(nullptr, DXGI_FORMAT_R32_UINT, 0);
 	
-	//// 建物の描画処理
+	
+	////// 建物の描画処理
 	//for (auto& building : m_buildings)
 	//{
 	//	building->Draw(view, projection);

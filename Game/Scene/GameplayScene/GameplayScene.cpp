@@ -12,7 +12,6 @@
 #include "pch.h"
 
 #include "GameplayScene.h"
-
 #include "Game/Common/Camera/MainCamera/MainCamera.h"
 #include "Game/Scene/TitleScene/TitleScene.h"
 #include "Game/Scene/ResultScene/ResultScene.h"
