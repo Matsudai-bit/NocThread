@@ -150,7 +150,7 @@ void Game::Initialize(HWND window, int width, int height)
     m_sceneManager->SetCommonResources(m_commonResources.get());
 
     // 開始シーンの設定
-    m_sceneManager->RequestSceneChange<TitleScene, LoadingScreen>();
+    m_sceneManager->RequestSceneChange<GameplayScene, LoadingScreen>();
 
     // ***** ImGuiの初期設定 *****
     //  バージョンの確認

@@ -90,6 +90,11 @@ public:
 	// 描画処理
 	void Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& projection);
 
+	// インスタンス描画
+	void DrawInstance(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& projection);
+	// 通常描画
+	void DrawNormal(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& projection);
+
 	// 終了処理
 	void Finalize();
 
@@ -115,5 +120,7 @@ public:
 // 内部実装
 private:
 
+	bool		SetInstanceBuffer(ID3D11Buffer* pBuffer, ID3D11DeviceContext* context, D3D11_MAPPED_SUBRESOURCE msr, int* pInstanceCount);
+	static bool SetConstantBuffer(ID3D11Buffer* pBuffer, ID3D11DeviceContext* context, D3D11_MAPPED_SUBRESOURCE msr, const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& projection);
 
 };

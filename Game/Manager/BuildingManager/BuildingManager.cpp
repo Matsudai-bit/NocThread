@@ -98,7 +98,7 @@ std::vector<D3D11_INPUT_ELEMENT_DESC> INPUT_LAYOUT = {
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT,  D3D11_INPUT_PER_VERTEX_DATA, 0 },
 		{ "NORMAL",   0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 		{ "TANGENT"	, 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "COLOR",    0, DXGI_FORMAT_R8G8B8A8_UNORM,  0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 }, // ★オフセットを修正
+		{ "COLOR",    0, DXGI_FORMAT_R8G8B8A8_UNORM,  0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 }, 
 		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT,    0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 
 		// slot1 インスタンス
@@ -208,56 +208,42 @@ void BuildingManager::Update(float deltaTime)
  */
 void BuildingManager::Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& projection)
 {
+	// インスタング描画
+	DrawInstance(view, projection);
+	// 通常描画
+	//DrawNormal(view, projection);
+
+}
+
+/**
+ * @brief インスタンス描画
+ * 
+ * @param[in] view			ビュー行列
+ * @param[in] projection	射影行列
+ */
+void BuildingManager::DrawInstance(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& projection)
+{
 	using namespace DirectX;
 	auto context = m_pCommonResources->GetDeviceResources()->GetD3DDeviceContext();
 
+	// 描画モデルの取得
 	auto model = m_pCommonResources->GetResourceManager()->CreateModel("building.sdkmesh");
 
-	const auto& meshParts = model.meshes.front()->meshParts.front();
-	auto vertexBuffer	= meshParts->vertexBuffer;
-	auto vertexStride	= meshParts->vertexStride;
-	auto indexCount		= meshParts->indexCount;
-	auto indexBuffer	= meshParts->indexBuffer;
-	
 
-	D3D11_MAPPED_SUBRESOURCE msr;
+	D3D11_MAPPED_SUBRESOURCE msr{};
 
-	// インスタンスデータの作成
-	// バッファに入れていく
-	context->Map(m_instanceBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
-		// データ場所設定・カウントリセット
-		auto pInstanceData = (InstanceBuffer*)msr.pData;
-		int instanceCount = 0;
-	for (const auto& building : m_buildings)
-	{
-		SimpleMath::Matrix world = SimpleMath::Matrix::Identity;
-
-		world *= SimpleMath::Matrix::CreateScale(building->GetExtends() * building->GetScale());
-		world *= SimpleMath::Matrix::CreateFromQuaternion(building->GetRotate());
-		world *= SimpleMath::Matrix::CreateTranslation(building->GetPosition());
-
-		pInstanceData[instanceCount].world = world/*.Transpose()*/;
-		instanceCount++;
-	}
+	// 作成するインスタンスの数
+	int instanceCount = 0;
 		
+	// **** インスタンスバッファデータの設定 ****
+	SetInstanceBuffer(m_instanceBuffer.Get(), context, msr, &instanceCount);
 
-	context->Unmap(m_instanceBuffer.Get(), 0);
+	// 頂点バッファの設定に必要な情報を取得
+	const auto& meshParts = model.meshes.front()->meshParts.front();
+	auto vertexBuffer = meshParts->vertexBuffer;
+	auto vertexStride = meshParts->vertexStride;
+	auto indexCount = meshParts->indexCount;
 
-	// 定数バッファにデータを設定する
-	context->Map(m_constantBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
-	{
-		auto constantData = (ConstantBuffer*)msr.pData;
-
-		constantData->viewProjMatrix = ((view) * (projection)).Transpose();
-	}
-	context->Unmap(m_constantBuffer.Get(), 0);
-
-
-
-	// 定数バッファをバインド
-	context->VSSetConstantBuffers(0, 1, m_constantBuffer.GetAddressOf());
-
-	// バッファを設定する
 	// 頂点バッファを描画パイプラインに設定
 	ID3D11Buffer* pBuf[2] = { vertexBuffer.Get(), m_instanceBuffer.Get() };
 	UINT stride[2] = { vertexStride, sizeof(SimpleMath::Matrix) };
@@ -265,77 +251,124 @@ void BuildingManager::Draw(const DirectX::SimpleMath::Matrix& view, const Direct
 	context->IASetVertexBuffers(0, 2, pBuf, stride, offset);
 
 	// インデックスバッファの設定
+	auto indexBuffer = meshParts->indexBuffer;
 	context->IASetIndexBuffer(indexBuffer.Get(), meshParts->indexFormat, 0);
 
+	// **** 定数バッファの設定 ****
+	SetConstantBuffer(m_constantBuffer.Get(), context, msr, view, projection);
+	// 定数バッファを頂点シェーダにバインド
+	context->VSSetConstantBuffers(0, 1, m_constantBuffer.GetAddressOf());
+
+
+	// **** 各シェーダの設定 ****
 	// 頂点シェーダの設定
 	context->VSSetShader(m_vs.Get(), nullptr, 0);
-
 	// ピクセルシェーダの設定
 	context->PSSetShader(m_ps.Get(), nullptr, 0);
 
+	// インプットレイアウトの設定
 	context->IASetInputLayout(m_inputLayout.Get());
-
+	//　ステンシルの設定
 	context->OMSetDepthStencilState(m_pCommonResources->GetCommonStates()->DepthDefault(), 0);
-
 	//	カリングはなし
 	context->RSSetState(m_pCommonResources->GetCommonStates()->CullNone());
+	// トポロジーの設定
 	context->IASetPrimitiveTopology(meshParts->primitiveType);
 
-
+	// インスタンス描画
 	context->DrawIndexedInstanced(indexCount, instanceCount, 0, 0, 0);
 
 	//	シェーダの登録を解除しておく
 	context->VSSetShader(nullptr, nullptr, 0);
-	//context->IASetIndexBuffer(nullptr, DXGI_FORMAT_R32_UINT, 0);
-	
-	
-	////// 建物の描画処理
-	//for (auto& building : m_buildings)
-	//{
-	//	building->Draw(view, projection);
-	//}
+}
 
+/**
+ * @brief インスタンスバッファの設定
+ * 
+ * @param[out] pBuffer　バッファ
+ * @param[in] context	
+ * @param[in] msr
+ * @param[out] pInstanceCount インスタンス数
+ * @returns true	成功
+ * @returns false	失敗
+ */
+bool BuildingManager::SetInstanceBuffer(ID3D11Buffer* pBuffer, ID3D11DeviceContext* context, D3D11_MAPPED_SUBRESOURCE msr, int* pInstanceCount)
+{
+	using namespace DirectX;
 
-	//auto model = m_pCommonResources->GetResourceManager()->CreateModel("Helicopter.sdkmesh");
+	if (pBuffer == nullptr ||
+		context == nullptr)
+	{
+		return false;
+	}
 
-	//auto vertexBuffer = model.meshes.back()->meshParts.back()->vertexBuffer;
-	//auto vertexStride = model.meshes.back()->meshParts.back()->vertexStride;
-	//auto indexCount = model.meshes.back()->meshParts.back()->indexCount;
-	//auto indexBuffer = model.meshes.back()->meshParts.back()->indexBuffer;
+	int instanceCount = 0;
 
+	// バッファに入れていく
+	context->Map(pBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
+	{
+		// データ場所設定・カウントリセット
+		auto pInstanceData = (InstanceBuffer*)msr.pData;
+		for (const auto& building : m_buildings)
+		{
+			SimpleMath::Matrix world = SimpleMath::Matrix::Identity;
 
-	//// 定数バッファ更新
-	//D3D11_MAPPED_SUBRESOURCE msr2;
-	//context->Map(m_constantBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &msr2);
-	//auto constantData = (ConstantBuffer*)msr2.pData;
-	//constantData->viewProjMatrix = (view * projection).Transpose();
-	//context->Unmap(m_constantBuffer.Get(), 0);
+			world *= SimpleMath::Matrix::CreateScale(building->GetExtends() * building->GetScale());
+			world *= SimpleMath::Matrix::CreateFromQuaternion(building->GetRotate());
+			world *= SimpleMath::Matrix::CreateTranslation(building->GetPosition());
 
-	//context->VSSetConstantBuffers(0, 1, m_constantBuffer.GetAddressOf());
+			pInstanceData[instanceCount].world = world/*.Transpose()*/;
+			instanceCount++;
+		}
+	}
+	context->Unmap(pBuffer, 0);
 
-	//// InputLayout / Shader
-	//context->IASetInputLayout(m_inputLayout.Get());
-	//context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	//context->VSSetShader(m_vs.Get(), nullptr, 0);
-	//context->PSSetShader(m_ps.Get(), nullptr, 0);
+	if (pInstanceCount)
+	{
+		*pInstanceCount = instanceCount;
+	}
+	return true;
+}
+/**
+ * @brief 定数バッファの設定
+ *
+ * @param[out] pBuffer　バッファ
+ * @param[in] context
+ * @param[in] msr
+ * @param[in] view
+ * @param[in] projection
+ * 
+ * @returns true	成功
+ * @returns false	失敗
+ */
+bool BuildingManager::SetConstantBuffer(ID3D11Buffer* pBuffer, ID3D11DeviceContext* context, D3D11_MAPPED_SUBRESOURCE msr, const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& projection)
+{
 
-	//context->RSSetState(m_pCommonResources->GetCommonStates()->CullNone());
-	//context->OMSetDepthStencilState(m_pCommonResources->GetCommonStates()->DepthDefault(), 0);
+	if (pBuffer == nullptr ||
+		context == nullptr)
+	{
+		return false;
+	}
 
+	// 定数バッファに画面描画に必要な行列を設定する
+	context->Map(pBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
+	{
+		auto constantData = (ConstantBuffer*)msr.pData;
 
-	//// 頂点・インスタンスバッファ設定
-	//ID3D11Buffer* vertexBuffers[2] = { vertexBuffer.Get(), m_instanceBuffer.Get() };
-	//UINT strides[2] = { vertexStride, sizeof(InstanceBuffer) };
-	//UINT offsets[2] = { 0, 0 };
-	//context->IASetVertexBuffers(0, 2, vertexBuffers, strides, offsets);
+		constantData->viewProjMatrix = ((view) * (projection)).Transpose();
+	}
+	context->Unmap(pBuffer, 0);
 
-	//// インデックスバッファ
-	//context->IASetIndexBuffer(indexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
+	return true;
+}
 
-	//// 描画
-	//int instanceCount = 1;
-	//context->DrawIndexedInstanced(indexCount, instanceCount, 0, 0, 0);
-
+void BuildingManager::DrawNormal(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& projection)
+{
+	//// 建物の描画処理
+	for (auto& building : m_buildings)
+	{
+		building->Draw(view, projection);
+	}
 }
 
 
@@ -443,6 +476,7 @@ void BuildingManager::CreateBuilding(
 
 	m_buildings.emplace_back(std::move(building));
 }
+
 
 void BuildingManager::Save()
 {
