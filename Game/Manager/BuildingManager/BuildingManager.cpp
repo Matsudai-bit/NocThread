@@ -259,7 +259,7 @@ void BuildingManager::CreateBuilding(
  * @returns true Œ©‚Â‚¯‚½
  * @returns falseŒ©‚Â‚©‚ç‚È‚©‚Á‚½
  */
-bool BuildingManager::FindBuilding(const int& tileNumber, const Building* outBuilding) const
+bool BuildingManager::FindBuilding(const int& tileNumber, const Building*& outBuilding) const
 {
 	// ŒŸõ‚·‚é
 	auto it =  std::find_if(m_buildings.begin(), m_buildings.end(), [tileNumber](const std::unique_ptr<Building>& building)
@@ -267,12 +267,12 @@ bool BuildingManager::FindBuilding(const int& tileNumber, const Building* outBui
 			return (tileNumber == building->GetTileNumber());
 		});
 
+	outBuilding = it->get();
 	if (it == m_buildings.end())
 	{
 		return false;
 	}
 
-	outBuilding = it->get();
 	return true;
 }
 

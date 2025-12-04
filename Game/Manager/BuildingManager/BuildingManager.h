@@ -88,7 +88,7 @@ private:
 public:
 
 	// Œš•¨‚ð’T‚·
-	bool FindBuilding(const int& tileNumber, const Building* outBuilding) const;
+	bool FindBuilding(const int& tileNumber, const Building*& outBuilding) const;
 
 // “à•”ŽÀ‘•
 private:

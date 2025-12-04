@@ -232,21 +232,21 @@ void from_json(const nlohmann::json& j, StageManager::PlayerData& data)
 void StageManager::CreatePlayer(PlayerData data, CollisionManager* pCollisionManager)
 {
 	using namespace nlohmann;
-	
-	//std::ifstream ifs(STAGE_DATA_FOLDER_PATH + "/" + );
 
 	json playerJson{};
 
-	//const Building* tileBuilding = nullptr;
-	//if (m_buildingManager->FindBuilding(data.tileNumber, tileBuilding))
-	//{
+	const Building* tileBuilding = nullptr;
+	if (m_buildingManager->FindBuilding(data.tileNumber, tileBuilding) )
+	{
+		m_playerManager = std::make_unique<PlayerManager>();
+		m_playerManager->Initialize(m_pCommonResources, pCollisionManager, m_playerCamera.get());
 
-	//}
+		m_playerManager->GetPlayer()->GetTransform()->SetPosition(tileBuilding->GetTransform()->GetPosition());
+	}
 
 
 
-	m_playerManager = std::make_unique<PlayerManager>();
-	m_playerManager->Initialize(m_pCommonResources, pCollisionManager, m_playerCamera.get());
+
 }
 
 /**
@@ -259,7 +259,7 @@ void StageManager::CreateStage(CollisionManager* pCollisionManager, TaskManager*
 
 	nlohmann::json stageLayoutJson;
 
-	/*const std::string stageLayoutDataPath = STAGE_DATA_FOLDER_PATH + "/" + "stageLayoutData.json";
+	const std::string stageLayoutDataPath = STAGE_DATA_FOLDER_PATH + "/" + "stageLayoutData.json";
 	std::ifstream ifs(stageLayoutDataPath);
 
 	ifs >> stageLayoutJson;
@@ -273,10 +273,13 @@ void StageManager::CreateStage(CollisionManager* pCollisionManager, TaskManager*
 	if (!ifs2.is_open())
 	{
 		return;
-	}*/
-	//auto playerData = playerDataJson.get<PlayerData>();
+	}
+	auto playerData = playerDataJson.get<PlayerData>();
 	
 	// ----- 各種ゲームオブジェクトの作成 -------
+	m_buildingManager = std::make_unique<BuildingManager>();
+	m_buildingManager->Initialize();
+	m_buildingManager->RequestCreate(pCollisionManager, m_pCommonResources);
 	// **** 床の生成 *****
 	m_floor = std::make_unique<Floor>();
 	// 床の初期化
@@ -285,15 +288,16 @@ void StageManager::CreateStage(CollisionManager* pCollisionManager, TaskManager*
 	// **** プレイヤーカメラの初期化処理 ****
 	m_playerCamera->Initialize(m_pCommonResources, pCollisionManager);
 
-	// メインカメラの設定 
-	MainCamera::GetInstance()->SetCamera(m_playerCamera.get());
-
 	// ***** プレイヤー管理の生成 *****
-	//CreatePlayer(playerData, pCollisionManager);
-	 m_playerManager = std::make_unique<PlayerManager>();
-	m_playerManager->Initialize(m_pCommonResources, pCollisionManager, m_playerCamera.get());
-	//// カメラにプレイヤーを設定する
+	CreatePlayer(playerData, pCollisionManager);
+	// m_playerManager = std::make_unique<PlayerManager>();
+	//m_playerManager->Initialize(m_pCommonResources, pCollisionManager, m_playerCamera.get());
+	////// カメラにプレイヤーを設定する
+	//m_playerCamera->SetPlayer(m_playerManager->GetPlayer());
+
+		// メインカメラの設定 
 	m_playerCamera->SetPlayer(m_playerManager->GetPlayer());
+	MainCamera::GetInstance()->SetCamera(m_playerCamera.get());
 	
 
 	// ***** 敵管理の作成 *****
@@ -327,9 +331,6 @@ void StageManager::CreateStage(CollisionManager* pCollisionManager, TaskManager*
 	m_treasure->GetTransform()->SetPosition(treasurePosition);
 	m_treasure->Initialize(m_pCommonResources, pCollisionManager);
 
-	m_buildingManager = std::make_unique<BuildingManager>();
-	m_buildingManager->Initialize();
-	m_buildingManager->RequestCreate(pCollisionManager, m_pCommonResources);
 	// m_buildingManager->Save();
 
 	// タスクの追加
