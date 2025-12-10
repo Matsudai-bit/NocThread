@@ -311,25 +311,25 @@ void StageManager::CreateStage(CollisionManager* pCollisionManager, TaskManager*
 	// **** 天球の作成 ****
 	m_skySphere = m_pCommonResources->GetResourceManager()->CreateModel("skyDome.sdkmesh");
 
-	// ハードウェア乱数源からシードを生成
-	static std::random_device seed_gen;
+	//// ハードウェア乱数源からシードを生成
+	//static std::random_device seed_gen;
 
-	// シードを使って乱数エンジンを初期化
-	std::mt19937 engine(seed_gen());
+	//// シードを使って乱数エンジンを初期化
+	//std::mt19937 engine(seed_gen());
 
-	std::vector<Vector3> randomPosition =
-	{
-		TREASURE_POS_CANDIDATE_1,
-		TREASURE_POS_CANDIDATE_2,
-		TREASURE_POS_CANDIDATE_3,
-	};
-	std::shuffle(randomPosition.begin(), randomPosition.end(), engine);
-	auto& treasurePosition = randomPosition.front();
+	//std::vector<Vector3> randomPosition =
+	//{
+	//	TREASURE_POS_CANDIDATE_1,
+	//	TREASURE_POS_CANDIDATE_2,
+	//	TREASURE_POS_CANDIDATE_3,
+	//};
+	//std::shuffle(randomPosition.begin(), randomPosition.end(), engine);
+	//auto& treasurePosition = randomPosition.front();
 
-	// お宝の生成
-	m_treasure = std::make_unique<Treasure>();
-	m_treasure->GetTransform()->SetPosition(treasurePosition);
-	m_treasure->Initialize(m_pCommonResources, pCollisionManager);
+	//// お宝の生成
+	//m_treasure = std::make_unique<Treasure>();
+	//m_treasure->GetTransform()->SetPosition(treasurePosition);
+	//m_treasure->Initialize(m_pCommonResources, pCollisionManager);
 
 	// m_buildingManager->Save();
 
