@@ -60,7 +60,7 @@ void to_json(json& j, const BuildingSaveData& s)
 	j = json{
 		{"Position", s.position},
 		{"Scale", s.scale},
-		//{"TileNumber", s.tileNumber}
+		{"TileNumber", s.tileNumber}
 	};
 }
 
@@ -68,7 +68,7 @@ void from_json(const json& j, BuildingSaveData& s)
 {
 	j.at("Position").get_to(s.position);
 	j.at("Scale").get_to(s.scale);
-	//j.at("TileNumber").get_to(s.tileNumber);
+	j.at("TileNumber").get_to(s.tileNumber);
 }
 // メンバ関数の定義 ===========================================================
 /**
@@ -220,7 +220,6 @@ bool BuildingManager::RequestCreate(CollisionManager* pCollisionManager, const C
 			return false;
 		}
 
-
 		// データ構造をループし、CreateBuildingで生成
 		for (const auto& saveData : buildingSaves)
 		{
@@ -272,6 +271,7 @@ void BuildingManager::CreateBuilding(
 	building->GetTransform()->SetPosition(position);
 	building->SetExtends(scale);
 	building->Initialize(pCommonResources, pCollisionManager);
+	building->SetTileNumber(tileNumber);
 
 	m_buildings.emplace_back(std::move(building));
 }
@@ -293,12 +293,12 @@ bool BuildingManager::FindBuilding(const int& tileNumber, const Building*& outBu
 			return (tileNumber == building->GetTileNumber());
 		});
 
-	outBuilding = it->get();
 	if (it == m_buildings.end())
 	{
 		return false;
 	}
 
+	outBuilding = it->get();
 	return true;
 }
 

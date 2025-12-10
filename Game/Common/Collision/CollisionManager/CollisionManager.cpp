@@ -545,11 +545,6 @@ bool CollisionManager::DetectCollision(const ICollider* pColliderA, const IColli
 	{	// AABBにキャスト
 		const AABB* pAABB = dynamic_cast<const AABB*>(pColliderA);
 
-		if (pColliderB == nullptr)
-		{
-			int a = 10;
-		}
-
 		// 片方のコライダーのAABBなら
 		if (pColliderB->GetColliderType() == ColliderType::AABB)
 		{

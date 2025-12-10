@@ -33,8 +33,9 @@ class GameObject;
 /**
  * @brief 衝突情報
  */
-struct CollisionInfo
+class CollisionInfo
 {
+public:
 	ICollider*	pOtherCollider;	// 相手のコライダー
 	GameObject* pOtherObject;	// 相手のオブジェクト
 	ICollider*	pMyCollider;		// 自分の衝突コライダー

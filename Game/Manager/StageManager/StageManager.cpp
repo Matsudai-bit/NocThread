@@ -241,7 +241,9 @@ void StageManager::CreatePlayer(PlayerData data, CollisionManager* pCollisionMan
 		m_playerManager = std::make_unique<PlayerManager>();
 		m_playerManager->Initialize(m_pCommonResources, pCollisionManager, m_playerCamera.get());
 
-		m_playerManager->GetPlayer()->GetTransform()->SetPosition(tileBuilding->GetTransform()->GetPosition());
+		m_playerManager->GetPlayer()->GetTransform()->SetPosition(tileBuilding->GetTransform()->GetPosition() + SimpleMath::Vector3(0.0f, 80.0f, 0.0f));
+
+
 	}
 
 
