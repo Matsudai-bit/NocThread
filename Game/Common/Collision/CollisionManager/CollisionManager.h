@@ -30,6 +30,16 @@
   // 前置宣言
 class GameObject;
 
+/**
+ * @brief 衝突情報
+ */
+struct CollisionInfo
+{
+	ICollider*	otherCollider;	// 相手のコライダー
+	GameObject* otherObject;	// 相手のオブジェクト
+	ICollider*	myCollider;		// 自分の衝突コライダー
+};
+
 
 
 class CollisionManager

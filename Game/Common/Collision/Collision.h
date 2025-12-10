@@ -128,6 +128,7 @@ public:
 	Plane(DirectX::SimpleMath::Vector3 normal, const DirectX::SimpleMath::Vector3& point);
 
 	Plane(DirectX::SimpleMath::Vector3 pointA, DirectX::SimpleMath::Vector3 pointB, DirectX::SimpleMath::Vector3 pointC);
+	Plane(const DirectX::SimpleMath::Vector4& vec);
 
 	// デストラクタ
 	~Plane() = default;
@@ -152,6 +153,7 @@ public:
 	// 平面の設定
 	void Set(DirectX::SimpleMath::Vector3 normal, const DirectX::SimpleMath::Vector3& point);
 	void Set(DirectX::SimpleMath::Vector3 pointA, DirectX::SimpleMath::Vector3 pointB, DirectX::SimpleMath::Vector3 pointC);
+	void Set(const DirectX::SimpleMath::Vector4& vec);
 
 
 	// コライダーの種類の取得

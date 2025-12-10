@@ -82,6 +82,8 @@ private:
 
 	const Camera* m_pCamera;
 
+	std::vector<std::unique_ptr<Capsule>> m_capsules; ///< カプセル群
+
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
 public:

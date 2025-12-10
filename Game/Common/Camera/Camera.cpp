@@ -29,6 +29,9 @@ Camera::Camera()
 		XMConvertToRadians(CAMERA_FOV_DEGREES)
 		, Screen::Get()->GetWidthF() / Screen::Get()->GetHeightF()
 		, CAMERA_NEAR_CLIP, CAMERA_FAR_CLIP); // farを少し伸ばす
+
+	// フラスタムの作成
+	BoundingFrustum::CreateFromMatrix(m_initialFrustum, m_projection, true);
 }
 
 
@@ -118,6 +121,29 @@ void Camera::CalcViewMatrix()
 {
 	m_view = SimpleMath::Matrix::CreateLookAt(m_eye, m_target, m_up);
 }
+
+/**
+ * @brief フラスタムの算出
+ * 
+ * @return カメラのフラスタム平面
+ */
+const BoundingFrustum& Camera::CalcFrustum() const
+{
+    using namespace SimpleMath;
+
+	auto viewInv = SimpleMath::Matrix::CreateLookAt(m_eye, m_target, m_up).Invert();
+
+	m_initialFrustum.Transform(m_currentFrustum, viewInv);
+
+	//XMVECTOR planes[6]{};
+	//m_currentFrustum.GetPlanes((&planes[0]), &planes[1], &planes[2], &planes[3], &planes[4], &planes[5]);
+
+	//m_currentFrustum.TopSlope *= -1.0f;
+	//m_currentFrustum.BottomSlope *= -1.0f;
+
+    return m_currentFrustum;
+}
+
 
 
 

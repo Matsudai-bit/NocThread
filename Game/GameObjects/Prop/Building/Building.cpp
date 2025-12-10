@@ -85,8 +85,9 @@ void Building::Initialize(const CommonResources* pCommonResources, CollisionMana
 
 
 	}
-
 	
+	// カリングよう球コライダの作成
+	m_cullingSphere = std::make_unique<Sphere>(m_collider.front()->GetCenter(), std::max(m_collider.front()->GetExtend().x / 2.0f, std::max(m_collider.front()->GetExtend().y / 2.0f, m_collider.front()->GetExtend().z / 2.0f)));
 
 }
 
@@ -127,7 +128,7 @@ void Building::Draw(const Camera& camera)
 
 	//for (auto& collider : m_collider)
 	//{
-	//	collider->Draw(context, view, proj);
+	//	collider->Draw(context, camera.GetViewMatrix(), camera.GetProjectionMatrix());
 	//}
 }
 

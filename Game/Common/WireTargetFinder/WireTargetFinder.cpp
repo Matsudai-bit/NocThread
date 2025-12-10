@@ -145,8 +145,7 @@ void WireTargetFinder::Finalize()
 
 void WireTargetFinder::PostCollision()
 {
-	// 検索要求
-	RequestSearchingTargetPosition();
+	m_grappleTargetPositionCache.clear();
 }
 
 /**
@@ -160,6 +159,16 @@ void WireTargetFinder::OnCollision(GameObject* pHitObject, ICollider* pHitCollid
 	
 	UNREFERENCED_PARAMETER(pHitObject);
 	UNREFERENCED_PARAMETER(pHitCollider);
+
+	SimpleMath::Vector3 targetPosition;
+
+	auto capsule = std::find_if(m_capsules.begin(), m_capsules.end(), [&](std::unique_ptr<Capsule>& capsule) {};
+
+	// 目標座標の算出
+	if (CalcWireTargetPosition(&targetPosition, *capsule, pHitObject, pHitCollider))
+	{
+		m_grappleTargetPositionCache.emplace_back(targetPosition);
+	}
 }
 
 /**
@@ -408,34 +417,63 @@ std::vector<DirectX::SimpleMath::Vector3> WireTargetFinder::GetTargetPositionCan
 	// 目標座標の候補
 	std::vector<Vector3> targetPositions;
 
-	for (Vector3 direction : searchDirections)
+	bool registry = false;
+	// サイズが違う場合コライダを登録し直す
+	if (m_capsules.size() != searchDirections.size())
 	{
-		Capsule capsule = CreateCapsuleCollider(m_pPlayer->GetTransform()->GetPosition(), direction, m_wireLength * std::abs(direction.y * 1.3f), m_wireRadius);
+		registry = true;
 
-		// 衝突情報
-		std::vector<const GameObject*> hitGameObjects{};
-		std::vector<const ICollider*> hitColliders{};
-
-		// 衝突判定
-		if (m_pCollisionManager->RetrieveCollisionData(&capsule, &hitGameObjects, &hitColliders))
+		for (auto& capsule : m_capsules)
 		{
-
-			for (size_t i = 0; i < hitGameObjects.size(); i++)
-			{
-				// 処理用変数
-				auto pHitObject		= hitGameObjects[i];
-				auto pHitCollider	= hitColliders[i];
-
-				SimpleMath::Vector3 targetPosition;
-
-				// 目標座標の算出
-				if (CalcWireTargetPosition(&targetPosition, capsule, pHitObject, pHitCollider))
-				{
-					targetPositions.emplace_back(targetPosition);
-				}
-			}
+			m_pCollisionManager->RemoveCollisionObjectData(this, capsule.get());
 		}
+	}
+	
+	// サイズを設定
+	m_capsules.resize(searchDirections.size());
 
+
+
+
+	for (size_t i = 0; i < searchDirections.size(); i++)
+	{
+		Capsule capsule = CreateCapsuleCollider(m_pPlayer->GetTransform()->GetPosition(), searchDirections[i], m_wireLength * std::abs(searchDirections[i].y * 1.3f), m_wireRadius);
+
+		(m_capsules[i]) = std::make_unique<Capsule>(capsule);
+		
+		
+
+		//// 衝突情報
+		//std::vector<const GameObject*> hitGameObjects{};
+		//std::vector<const ICollider*> hitColliders{};
+
+		//// 衝突判定
+		//if (m_pCollisionManager->RetrieveCollisionData(&capsule, &hitGameObjects, &hitColliders))
+		//{
+
+		//	for (size_t i = 0; i < hitGameObjects.size(); i++)
+		//	{
+		//		// 処理用変数
+		//		auto pHitObject		= hitGameObjects[i];
+		//		auto pHitCollider	= hitColliders[i];
+
+		//		SimpleMath::Vector3 targetPosition;
+
+		//		// 目標座標の算出
+		//		if (CalcWireTargetPosition(&targetPosition, capsule, pHitObject, pHitCollider))
+		//		{
+		//			targetPositions.emplace_back(targetPosition);
+		//		}
+		//	}
+		//}
+
+	}
+	if (registry)
+	{
+		for (auto& capsule : m_capsules)
+		{
+			m_pCollisionManager->AddCollisionObjectData(this, capsule.get());
+		}
 	}
 	return targetPositions;
 }

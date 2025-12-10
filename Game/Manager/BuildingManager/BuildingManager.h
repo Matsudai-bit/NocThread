@@ -44,11 +44,13 @@ private:
 
 	nlohmann::json m_stageJson;
 
+	const CommonResources* m_pCommonResources;
+
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
 public:
 	// コンストラクタ
-	BuildingManager();
+	BuildingManager(const CommonResources* pCommonResources);
 
 	// デストラクタ
 	~BuildingManager();

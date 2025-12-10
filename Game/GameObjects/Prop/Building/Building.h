@@ -43,6 +43,8 @@ private:
 
 	DirectX::SimpleMath::Vector3 m_extends;
 
+	std::unique_ptr<Sphere> m_cullingSphere;	///< フラスタムカリングで使用する
+
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
 public:
@@ -86,6 +88,9 @@ public:
 	{
 		m_extends = extends;
 	}
+
+	Sphere* GetCullingCollider()const { return m_cullingSphere.get(); }
+
 
 // 内部実装
 private:

@@ -240,6 +240,11 @@ Plane::Plane(DirectX::SimpleMath::Vector3 pointA, DirectX::SimpleMath::Vector3 p
 	Set(pointA, pointB, pointC);
 }
 
+Plane::Plane(const DirectX::SimpleMath::Vector4& vec)
+{
+	Set(vec);
+}
+
 /**
  * @brief ãÖÇ∆ÇÃè’ìÀîªíË
  * 
@@ -316,6 +321,11 @@ void Plane::Set(DirectX::SimpleMath::Vector3 pointA, DirectX::SimpleMath::Vector
 
 
 	Set(plane.Normal(), pointA);
+}
+
+void Plane::Set(const DirectX::SimpleMath::Vector4& vec)
+{
+	m_vec4 = vec;
 }
 
 /**

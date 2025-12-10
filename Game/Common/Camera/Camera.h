@@ -31,6 +31,22 @@ public:
 	static constexpr float CAMERA_FOV_DEGREES = 45.0f;	///< 射影行列の視野角 (度)
 	static constexpr float CAMERA_NEAR_CLIP = 0.1f;		///< 射影行列のニアクリップ距離
 	static constexpr float CAMERA_FAR_CLIP = 450.0f;	///< 射影行列のファークリップ距離
+
+	/**
+	 * @brief フラスタムを構成する6つの平面を保持する構造体
+	 */
+	struct FrustumPlanes
+	{
+		// 平面の順番はカリング実装の慣習に従って定義することが多い
+		// nearとfarの予約語が元々あるため先頭大文字
+		DirectX::SimpleMath::Vector4 Near;
+		DirectX::SimpleMath::Vector4 Far;
+		DirectX::SimpleMath::Vector4 Left;
+		DirectX::SimpleMath::Vector4 Right;
+		DirectX::SimpleMath::Vector4 Top;
+		DirectX::SimpleMath::Vector4 Bottom;
+	};
+
 // データメンバの宣言 -----------------------------------------------
 private:
 
@@ -39,6 +55,10 @@ private:
 	DirectX::SimpleMath::Vector3 m_up;			///< カメラの上方向
 	DirectX::SimpleMath::Matrix	 m_projection;	///< 射影行列
 	DirectX::SimpleMath::Matrix	 m_view;		///< ビュー行列
+
+	DirectX::BoundingFrustum m_initialFrustum; ///< フラスタムの初期状態
+	mutable DirectX::BoundingFrustum m_currentFrustum;
+
 
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
@@ -73,6 +93,8 @@ public:
 
 	// ビュー行列の算出
 	void CalcViewMatrix();
+
+	const DirectX::BoundingFrustum& CalcFrustum() const;
 
 
 // 内部実装

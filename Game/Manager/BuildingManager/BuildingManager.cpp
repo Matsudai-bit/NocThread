@@ -8,11 +8,16 @@
 
 // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
-#include <fstream>
 #include "BuildingManager.h"
+#include "Game/Common/CommonResources/CommonResources.h"
+#include "Library/ImaseLib/DebugDraw.h"
+
+#include <fstream>
 #include <iostream>
+#include "Game/Common/Camera/Camera.h"
 
 using json = nlohmann::json;
+using namespace DirectX;
 
 // -------------------------------------------------------------------
 // 1. データ構造の定義 (BuildingManagerクラスの外へ移動)
@@ -71,7 +76,8 @@ void from_json(const json& j, BuildingSaveData& s)
  *
  * @param[in] なし
  */
-BuildingManager::BuildingManager()
+BuildingManager::BuildingManager(const CommonResources* pCommonResources)
+	: m_pCommonResources{ pCommonResources }
 {
 
 }
@@ -132,11 +138,57 @@ bool BuildingManager::UpdateTask(float deltaTime)
  */
 void BuildingManager::DrawTask(const Camera& camera)
 {
+	using namespace SimpleMath;
+
+	const auto cameraFrustum = camera.CalcFrustum();
+	/*auto context = m_pCommonResources->GetDeviceResources()->GetD3DDeviceContext();
+	auto batch = std::make_unique<PrimitiveBatch<VertexPositionColor>>(context);
+	auto effect = std::make_unique<BasicEffect>(m_pCommonResources->GetDeviceResources()->GetD3DDevice());
+
+	effect->SetVertexColorEnabled(true);
+	effect->SetTextureEnabled(false);
+	effect->SetLightEnabled(0, false);
+	effect->SetLightEnabled(1, false);
+	effect->SetLightEnabled(2, false);*/
+
+	Microsoft::WRL::ComPtr<ID3D11InputLayout> inputLayout;
+
+	//CreateInputLayoutFromEffect<VertexPositionColor>(m_pCommonResources->GetDeviceResources()->GetD3DDevice(), effect.get(), inputLayout.ReleaseAndGetAddressOf());
+	//batch->Begin();
+
+	//context->IASetInputLayout(inputLayout.Get());
+	//effect->SetView(camera.GetViewMatrix());
+	//effect->SetProjection(camera.GetProjectionMatrix());
+	//effect->SetWorld(SimpleMath::Matrix::Identity);
+	//effect->Apply(context);
+
+
 	// 建物の描画処理
 	for (auto& building : m_buildings)
 	{
-		building->Draw(camera);
+
+		// 最初に描画を有効と仮定し、平面の外側に完全に出たら描画を無効にする
+		auto cullingSphere = DirectX::BoundingSphere(
+			building->GetCullingCollider()->GetPosition(),
+			building->GetCullingCollider()->GetRadius());
+		
+
+		ContainmentType result = cameraFrustum.Contains(cullingSphere);
+		//DX::Draw(batch.get(), cullingSphere, Colors::Red);
+		// DISJOINT (完全に外側) でない場合、描画が必要
+		if (result != DISJOINT)
+		{
+			building->Draw(camera);
+		}
+
+
 	}
+
+	//DX::Draw(batch.get(), cameraFrustum, Colors::Red);
+
+
+	
+	//batch->End();
 }
 
 

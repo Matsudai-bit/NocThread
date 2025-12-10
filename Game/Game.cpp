@@ -265,13 +265,13 @@ void Game::Render()
     }
 
     // FPSを取得する
-    //uint32_t fps = m_timer.GetFramesPerSecond();
+    uint32_t fps = m_timer.GetFramesPerSecond();
 
     // FPSの表示
-    //m_debugFont->AddString(0, 0, Colors::White, L"FPS=%d", fps);
+    m_debugFont->AddString(0, 0, Colors::White, L"FPS=%d", fps);
 
-    //// デバッグフォントの描画
-    //m_debugFont->Render(m_states.get());
+    // デバッグフォントの描画
+    m_debugFont->Render(m_states.get());
 
        // ****  ImGuiの描画処理 ****
     ImGui::Render();

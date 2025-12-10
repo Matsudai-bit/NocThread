@@ -277,7 +277,7 @@ void StageManager::CreateStage(CollisionManager* pCollisionManager, TaskManager*
 	auto playerData = playerDataJson.get<PlayerData>();
 	
 	// ----- 各種ゲームオブジェクトの作成 -------
-	m_buildingManager = std::make_unique<BuildingManager>();
+	m_buildingManager = std::make_unique<BuildingManager>(m_pCommonResources);
 	m_buildingManager->Initialize();
 	m_buildingManager->RequestCreate(pCollisionManager, m_pCommonResources);
 	// **** 床の生成 *****
