@@ -20,6 +20,7 @@
 
 // クラスの前方宣言 ===================================================
 class CollisionManager; // 衝突管理
+class CollisionInfo;	// 衝突情報
 
 // クラスの定義 ===============================================================
 /**
@@ -73,7 +74,7 @@ public:
 public:
 
 	// 衝突処理
-	void OnCollision(GameObject* pHitObject, ICollider* pHitCollider) override ;
+	void OnCollision(const CollisionInfo& info) override ;
 
 
 // 取得/設定

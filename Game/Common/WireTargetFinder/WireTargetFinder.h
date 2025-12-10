@@ -53,7 +53,7 @@ private:
 public:
 
 	// 上下左右に広がるグリッドを想定したサンプリング
-	static constexpr int	SEARCH_DIRECTION_NUM = 5; 
+	static constexpr int	SEARCH_DIRECTION_NUM = 3; 
 	static constexpr float	SEARCH_ANGLE_STEP_YAW = 8.0f;
 	static constexpr float	SEARCH_ANGLE_OFFSET_YAW = 48.0f;
 	static constexpr float	SEARCH_ANGLE_STEP_PITCH = 10.0f;
@@ -82,7 +82,7 @@ private:
 
 	const Camera* m_pCamera;
 
-	std::vector<std::unique_ptr<Capsule>> m_capsules; ///< カプセル群
+	std::vector<Capsule> m_capsules; ///< カプセル群
 
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
@@ -112,9 +112,9 @@ public:
 	// 終了処理
 	void Finalize();
 
-	void PostCollision() override;
+	void PreCollision() override;
 	// 衝突処理
-	void OnCollision(GameObject* pHitObject, ICollider* pHitCollider) override ;
+	void OnCollision(const CollisionInfo& info) override ;
 
 
 

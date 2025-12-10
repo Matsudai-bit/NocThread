@@ -257,7 +257,7 @@ public:
 // 通知関連
 public:
 	// 衝突処理
-	void OnCollision(GameObject* pHitObject, ICollider* pHitCollider) override;
+	void OnCollision(const CollisionInfo& info) override;
 
 	// 所持するワイヤーが衝突した時に呼ばれる
 	void OnCollisionWire(GameObject* pHitObject) override;	// 移動の要求

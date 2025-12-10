@@ -169,15 +169,14 @@ void PlayerCamera::SetPlayer(const Player* pPlayer)
 /**
  * @brief 衝突処理
  *
- * @param[in] pHitObject	衝突したオブジェクト
- * @param[in] pHitCollider	衝突したコライダ^
+ * @param[in] info 衝突情報
  */
-void PlayerCamera::OnCollision(GameObject* pHitObject, ICollider* pHitCollider)
+void PlayerCamera::OnCollision(const CollisionInfo& info)
 {
 
-	if (pHitObject->GetTag() == GameObjectTag::BUILDING)
+	if (info.pOtherObject->GetTag() == GameObjectTag::BUILDING)
 	{
-		OnCollisionWithBuilding(pHitObject, pHitCollider);
+		OnCollisionWithBuilding(info.pOtherObject, info.pOtherCollider);
 	}
 }
 

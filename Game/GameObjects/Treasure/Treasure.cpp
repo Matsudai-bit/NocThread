@@ -173,15 +173,13 @@ void Treasure::Finalize()
 /**
  * @brief 衝突処理
  * 
- * @param[in] pHitObject	衝突オブジェクト
- * @param[in] pHitCollider	衝突コライダー
+ * @param[in] info 衝突情報
  */
-void Treasure::OnCollision(GameObject* pHitObject, ICollider* pHitCollider)
+void Treasure::OnCollision(const CollisionInfo& info)
 {
-	UNREFERENCED_PARAMETER(pHitObject);
-	UNREFERENCED_PARAMETER(pHitCollider);
 
-	switch (pHitObject->GetTag())
+
+	switch (info.pOtherObject->GetTag())
 	{
 	case GameObjectTag::PLAYER:
 		m_isActive = false;

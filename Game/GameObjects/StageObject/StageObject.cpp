@@ -279,14 +279,13 @@ void StageObject::OnWireHover(const WireEventData& eventData)
 /**
  * @brief 衝突処理
  *
- * @param[in] pHitObject	衝突オブジェクト
- * @param[in] pHitCollider	衝突コライダー
+ * @param[in] info 衝突情報
  */
-void StageObject::OnCollision(GameObject* pHitObject, ICollider* pHitCollider)
+void StageObject::OnCollision(const CollisionInfo& info)
 {
-	if (pHitObject->GetTag() == GameObjectTag::FLOOR || pHitObject->GetTag() == GameObjectTag::WALL)
+	if (info.pOtherObject->GetTag() == GameObjectTag::FLOOR || info.pOtherObject->GetTag() == GameObjectTag::WALL)
 	{
-		if (const Box2D* box = dynamic_cast<const Box2D*>(pHitCollider))
+		if (const Box2D* box = dynamic_cast<const Box2D*>(info.pOtherCollider))
 		{
 			Plane plane = box->GetPlane();
 
@@ -308,10 +307,10 @@ void StageObject::OnCollision(GameObject* pHitObject, ICollider* pHitCollider)
 		}
 	}
 
-	if (pHitObject->GetTag() == GameObjectTag::STAGE_OBJECT)
+	if (info.pOtherObject->GetTag() == GameObjectTag::STAGE_OBJECT)
 	{
 	
-			pHitObject->FireEvent(GameObjectEventType::THROW_HIT, std::make_unique<ThrowHitEventData>(this, m_collider.get()));
+			info.pOtherObject->FireEvent(GameObjectEventType::THROW_HIT, std::make_unique<ThrowHitEventData>(this, m_collider.get()));
 		
 	}
 }

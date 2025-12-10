@@ -425,28 +425,19 @@ bool Wire::CreateRope(const DirectX::SimpleMath::Vector3& origin, const DirectX:
 /**
  * @brief 衝突処理
  * 
- * @param[in] pHitObject
- * @param[in] pHitCollider
+ * @param[in] info 衝突情報
  */
-void Wire::OnCollision(GameObject* pHitObject, ICollider* pHitCollider)
+void Wire::OnCollision(const CollisionInfo& info)
 {
 
-	//// **** ワイヤーが掴んだオブジェクトによる状態の変更 ****
-	//if (it_minDistance->hitObj->GetTag() == GameObjectTag::WALL)
-	//{
-	//	m_stateMachine->ChangeState<WireActionPlayerState>();
-	//	// **** ワイヤーの作成 *****
-	//	CreateRope(GetPosition(), intersectionPos, param, 0.3f);
-	//}
-	//
 	if (m_isExtention)
 	{
 		SimpleMath::Vector3 intersectionPos;
 
 		//矩形の場合
-		if (pHitCollider->GetColliderType() == ColliderType::BOX2D)
+		if (info.pOtherCollider->GetColliderType() == ColliderType::BOX2D)
 		{
-			if (const Box2D* pBox = dynamic_cast<const Box2D*>(pHitCollider))
+			if (const Box2D* pBox = dynamic_cast<const Box2D*>(info.pOtherCollider))
 			{
 				if (GetIntersectionPoint(&intersectionPos, *pBox, *m_collider) == false) return;
 
@@ -454,17 +445,17 @@ void Wire::OnCollision(GameObject* pHitObject, ICollider* pHitCollider)
 
 		}
 		// 球の場合
-		else if (pHitCollider->GetColliderType() == ColliderType::Sphere)
+		else if (info.pOtherCollider->GetColliderType() == ColliderType::Sphere)
 		{
-			if (const Sphere* pSphere = dynamic_cast<const Sphere*>(pHitCollider))
+			if (const Sphere* pSphere = dynamic_cast<const Sphere*>(info.pOtherCollider))
 			{
 				if (GetIntersectionPoint(&intersectionPos, *pSphere, *m_collider) == false) return;
 
 			}
 		}
-		else if (pHitCollider->GetColliderType() == ColliderType::AABB)
+		else if (info.pOtherCollider->GetColliderType() == ColliderType::AABB)
 		{
-			if (const AABB* pAABB = dynamic_cast<const AABB*>(pHitCollider))
+			if (const AABB* pAABB = dynamic_cast<const AABB*>(info.pOtherCollider))
 			{
 				if (GetIntersectionPoint(&intersectionPos, *pAABB, *m_collider) == false) return;
 
@@ -473,9 +464,9 @@ void Wire::OnCollision(GameObject* pHitObject, ICollider* pHitCollider)
 
 	
 
-		if (pHitObject->GetTag() == GameObjectTag::WALL ||
-			pHitObject->GetTag() == GameObjectTag::BUILDING ||
-			pHitObject->GetTag() == GameObjectTag::ESCAPE_HELICOPTER)
+		if (info.pOtherObject->GetTag() == GameObjectTag::WALL ||
+			info.pOtherObject->GetTag() == GameObjectTag::BUILDING ||
+			info.pOtherObject->GetTag() == GameObjectTag::ESCAPE_HELICOPTER)
 		{
 
 
@@ -483,19 +474,19 @@ void Wire::OnCollision(GameObject* pHitObject, ICollider* pHitCollider)
 			if (CreateRope(m_owner.pGameObject->GetTransform()->GetPosition(), intersectionPos, m_simulationParam, 0.9f))
 			{
 
-				m_owner.pHolderInterface->OnCollisionWire(pHitObject);
+				m_owner.pHolderInterface->OnCollisionWire(info.pOtherObject);
 				m_isExtention = false;
 			}
 		}
 
 
 
-		else if (auto observer = pHitObject->CastTo<IWireEventObserver>())
+		else if (auto observer = info.pOtherObject->CastTo<IWireEventObserver>())
 		{
 			if (m_wireSystemSubject)
 			m_wireSystemSubject->AddObserver(observer);
 			
-			m_owner.pHolderInterface->OnWireGrabbed(pHitObject);
+			m_owner.pHolderInterface->OnWireGrabbed(info.pOtherObject);
 
 			// **** ワイヤーの作成 *****
 			//CreateRope(m_owner.pGameObject->GetPosition(), intersectionPos, m_simulationParam, 0.3f);

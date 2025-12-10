@@ -151,13 +151,12 @@ void Building::Finalize()
 /**
  * @brief è’ìÀä«óù
  * 
- * @param[in] pHitObject
- * @param[in] pHitCollider
+ * @param[in] info è’ìÀèÓïÒ
  */
-void Building::OnCollision(GameObject* pHitObject, ICollider* pHitCollider)
+void Building::OnCollision(const CollisionInfo& info)
 {
-	UNREFERENCED_PARAMETER(pHitObject);
-	UNREFERENCED_PARAMETER(pHitCollider);
+	UNREFERENCED_PARAMETER(info);
+
 }
 
 

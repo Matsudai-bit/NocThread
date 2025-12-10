@@ -27,6 +27,7 @@
 // クラスの前方宣言 ===================================================
 class ICollider;		// コライダー
 class CommonResources;	// 共通リソース
+class CollisionInfo;	// 衝突情報
 
 /**
  * @brief ゲームオブジェクトのタグ
@@ -106,9 +107,13 @@ public:
 
 	
 	// 衝突処理
-	void OnCollision(GameObject* pHitObject, ICollider* pHitCollider) override = 0;
+	void OnCollision(const CollisionInfo& info) override = 0;
 
+	// 衝突判定をする直前に行う処理
+	void PreCollision() override {} ;
 
+	// 衝突判定をした直後に行う処理
+	void PostCollision() override {};
 
 // 取得/設定
 public:

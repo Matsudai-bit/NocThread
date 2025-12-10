@@ -136,7 +136,7 @@ public:
 	bool CreateRope(const DirectX::SimpleMath::Vector3& origin, const DirectX::SimpleMath::Vector3& targetPoint, const XPBDSimulator::Parameter& param, float particleDistance);
 
 	// Õ“Ëˆ—
-	void OnCollision(GameObject* pHitObject, ICollider* pHitCollider) override;
+	void OnCollision(const CollisionInfo& info) override;
 
 
 

@@ -240,13 +240,11 @@ void Floor::PreCollision()
 /**
  * @brief 衝突処理
  * 
- * @param[in] pHitObject    衝突オブジェクト
- * @param[in] pHitCollider  衝突コライダー
+ * @param[in] info 衝突情報
  */
-void Floor::OnCollision(GameObject* pHitObject, ICollider* pHitCollider) 
+void Floor::OnCollision(const CollisionInfo& info)
 {
-    pHitObject;
-    pHitCollider;
+    UNREFERENCED_PARAMETER(info);
 
   
 }

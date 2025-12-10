@@ -120,7 +120,7 @@ public:
 	void SetPlayer(const Player* pPlayer);
 
 	// 衝突処理
-	void OnCollision(GameObject* pHitObject, ICollider* pHitCollider) override;
+	void OnCollision(const CollisionInfo& info) override;
 
 	void PostCollision() override;
 	void PreCollision() override;

@@ -334,26 +334,25 @@ void Player::Finalize()
 /**
  * @brief 衝突処理
  * 
- * @param[in] pHitObject	衝突オブジェクト
- * @param[in] pHitCollider	衝突コライダー
+ * @param[in] info 衝突情報
  */
-void Player::OnCollision(GameObject* pHitObject, ICollider* pHitCollider)
+void Player::OnCollision(const CollisionInfo& info)
 {
-	if (pHitObject->GetTag() == GameObjectTag::FLOOR)
+	if (info.pOtherObject->GetTag() == GameObjectTag::FLOOR)
 	{
-		OnCollisionWithBuilding(pHitObject, pHitCollider);
+		OnCollisionWithBuilding(info.pOtherObject, info.pOtherCollider);
 	}
 	
 	// 壁と衝突した場合
-	else if (pHitObject->GetTag() == GameObjectTag::WALL)
+	else if (info.pOtherObject->GetTag() == GameObjectTag::WALL)
 	{
 
 		// 壁との衝突処理
-		OnCollisionWithWall(pHitObject, pHitCollider);
+		OnCollisionWithWall(info.pOtherObject, info.pOtherCollider);
 	}
-	else if (pHitObject->GetTag() == GameObjectTag::BUILDING)
+	else if (info.pOtherObject->GetTag() == GameObjectTag::BUILDING)
 	{
-		OnCollisionWithBuilding(pHitObject, pHitCollider);
+		OnCollisionWithBuilding(info.pOtherObject, info.pOtherCollider);
 	}
 
 }

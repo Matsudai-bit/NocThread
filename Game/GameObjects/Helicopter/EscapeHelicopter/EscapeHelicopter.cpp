@@ -140,15 +140,14 @@ void EscapeHelicopter::Finalize()
 /**
  * @brief 衝突時に呼ばれる
  * 
- * @param[in] pHitObject   衝突オブジェクト
- * @param[in] pHitCollider	衝突コライダー
+ * @param[in] info 衝突情報
  */
-void EscapeHelicopter::OnCollision(GameObject* pHitObject, ICollider* pHitCollider)
+void EscapeHelicopter::OnCollision(const CollisionInfo& info)
 {
-	UNREFERENCED_PARAMETER(pHitObject);
-	UNREFERENCED_PARAMETER(pHitCollider);
+	UNREFERENCED_PARAMETER(info);
 
-	if (pHitObject->GetTag() == GameObjectTag::PLAYER)
+
+	if (info.pOtherObject->GetTag() == GameObjectTag::PLAYER)
 	{
 		GameFlowMessenger::GetInstance()->Notify(GameFlowEventID::ESCAPE_SUCCESS);
 	}

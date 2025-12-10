@@ -141,26 +141,8 @@ void BuildingManager::DrawTask(const Camera& camera)
 	using namespace SimpleMath;
 
 	const auto cameraFrustum = camera.CalcFrustum();
-	/*auto context = m_pCommonResources->GetDeviceResources()->GetD3DDeviceContext();
-	auto batch = std::make_unique<PrimitiveBatch<VertexPositionColor>>(context);
-	auto effect = std::make_unique<BasicEffect>(m_pCommonResources->GetDeviceResources()->GetD3DDevice());
-
-	effect->SetVertexColorEnabled(true);
-	effect->SetTextureEnabled(false);
-	effect->SetLightEnabled(0, false);
-	effect->SetLightEnabled(1, false);
-	effect->SetLightEnabled(2, false);*/
 
 	Microsoft::WRL::ComPtr<ID3D11InputLayout> inputLayout;
-
-	//CreateInputLayoutFromEffect<VertexPositionColor>(m_pCommonResources->GetDeviceResources()->GetD3DDevice(), effect.get(), inputLayout.ReleaseAndGetAddressOf());
-	//batch->Begin();
-
-	//context->IASetInputLayout(inputLayout.Get());
-	//effect->SetView(camera.GetViewMatrix());
-	//effect->SetProjection(camera.GetProjectionMatrix());
-	//effect->SetWorld(SimpleMath::Matrix::Identity);
-	//effect->Apply(context);
 
 
 	// 建物の描画処理
@@ -171,10 +153,8 @@ void BuildingManager::DrawTask(const Camera& camera)
 		auto cullingSphere = DirectX::BoundingSphere(
 			building->GetCullingCollider()->GetPosition(),
 			building->GetCullingCollider()->GetRadius());
-		
-
+	
 		ContainmentType result = cameraFrustum.Contains(cullingSphere);
-		//DX::Draw(batch.get(), cullingSphere, Colors::Red);
 		// DISJOINT (完全に外側) でない場合、描画が必要
 		if (result != DISJOINT)
 		{
@@ -183,12 +163,6 @@ void BuildingManager::DrawTask(const Camera& camera)
 
 
 	}
-
-	//DX::Draw(batch.get(), cameraFrustum, Colors::Red);
-
-
-	
-	//batch->End();
 }
 
 

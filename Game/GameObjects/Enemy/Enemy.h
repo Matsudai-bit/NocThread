@@ -26,6 +26,7 @@
 // クラスの前方宣言 ===================================================
 class CommonResources; // 共通リソース
 class CollisionManager;// 衝突管理
+class CollisionInfo;  // 衝突情報
 class Player;		  // プレイヤー
 
 class IEnemyInitializeBehaviour;// 初期化処理インターフェース
@@ -117,7 +118,7 @@ public:
 public:
 
 	// 衝突時に呼ばれる
-	void OnCollision(GameObject* pHitObject, ICollider* pHitCollider) override;
+	void OnCollision(const CollisionInfo& info) override;
 
 	void PreCollision() override;
 

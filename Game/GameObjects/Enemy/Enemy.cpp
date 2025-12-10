@@ -15,6 +15,7 @@
 #include "Game/Common/CommonResources/CommonResources.h"
 #include "Game/Common/ResourceManager/ResourceManager.h"
 #include "Library/DirectXFramework/DeviceResources.h"
+#include "Game/Common/Collision/CollisionManager/CollisionManager.h"
 
 #include "Game/Common/Event/WireSystemObserver/WireEventData.h"
 #include "Game/Common/Collision/CollisionManager/CollisionManager.h"
@@ -199,26 +200,27 @@ void Enemy::AddUpdateBehaviour(std::unique_ptr<IEnemyUpdateBehaviour> updateBeha
 }
 
 /**
- * @brief 衝突時に呼ばれる
- * 
- * @param[in] pHitObject	衝突オブジェクト
- * @param[in] pHitCollider	衝突したコライダ
+ * @brief 衝突管理
+ *
+ * @param[in] info 衝突情報
  */
-void Enemy::OnCollision(GameObject* pHitObject, ICollider* pHitCollider)
+void Enemy::OnCollision(const CollisionInfo& info)
 {
-	if (m_isThrow && pHitObject->GetTag() == GameObjectTag::ENEMY)
+ 
+
+	if (m_isThrow && info.pOtherObject->GetTag() == GameObjectTag::ENEMY)
 	{
-		pHitObject->FireEvent(GameObjectEventType::THROW_HIT, std::make_unique<ThrowHitEventData>(this, m_collider.get()));
+		info.pOtherObject->FireEvent(GameObjectEventType::THROW_HIT, std::make_unique<ThrowHitEventData>(this, m_collider.get()));
 	}
 
-	if (!m_isThrow && !m_isHold && pHitObject->GetTag() == GameObjectTag::PLAYER)
+	if (!m_isThrow && !m_isHold && info.pOtherObject->GetTag() == GameObjectTag::PLAYER)
 	{
-		pHitObject->FireEvent(GameObjectEventType::CAUGHT, std::make_unique<CaughtEventData>(this));
+		info.pOtherObject->FireEvent(GameObjectEventType::CAUGHT, std::make_unique<CaughtEventData>(this));
 	}
 
-	if (pHitObject->GetTag() == GameObjectTag::BUILDING || pHitObject->GetTag() == GameObjectTag::FLOOR)
+	if (info.pOtherObject->GetTag() == GameObjectTag::BUILDING || info.pOtherObject->GetTag() == GameObjectTag::FLOOR)
 	{
-		OnCollisionWithBuilding(pHitObject, pHitCollider);
+		OnCollisionWithBuilding(info.pOtherObject, info.pOtherCollider);
 	}
 
 }

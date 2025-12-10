@@ -21,6 +21,7 @@
 class Wall;				// 壁
 class CollisionManager;	// 衝突判定管理
 class CommonResources;	// 共通リソース
+class CollisionInfo;	// 衝突情報
 
 // クラスの定義 ===============================================================
 /**
@@ -106,7 +107,7 @@ public:
 
 	void PreCollision() override;
 	// 衝突処理
-	void OnCollision(GameObject* pHitObject, ICollider* pHitCollider) override;
+	void OnCollision(const CollisionInfo& info) override;
 
 
 	// 取得/設定

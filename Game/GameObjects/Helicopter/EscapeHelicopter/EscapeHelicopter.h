@@ -79,7 +79,7 @@ public:
 public:
 
 	// Õ“Ë‚ÉŒÄ‚Î‚ê‚é
-	void OnCollision(GameObject* pHitObject, ICollider* pHitCollider) override;
+	void OnCollision(const CollisionInfo& info ) override;
 
 // “à•”À‘•
 private:

@@ -107,6 +107,10 @@ bool CollisionManager::UpdateTask(float deltaTime)
 			// ===== 冗長(修正予定） ======
 			if (gameObjectA->GetTag() == GameObjectTag::BUILDING &&
 				gameObjectB->GetTag() == GameObjectTag::BUILDING) continue;
+			if (gameObjectA->GetTag() == GameObjectTag::WIRE_GRAPPING_AREA && gameObjectB->GetTag() == GameObjectTag::WIRE_GRAPPING_AREA)
+			{
+				continue;
+			}
 			// ===========================
 
 			//活動していなければ飛ばす
@@ -140,8 +144,8 @@ bool CollisionManager::UpdateTask(float deltaTime)
 		ICollider* pColliderB = detectedCollisions[i].pCollisionDataB->pCollider;
 
 		// 衝突処理
-		pGameObjectA->OnCollision(pGameObjectB, pColliderB);
-		pGameObjectB->OnCollision(pGameObjectA, pColliderA);
+		pGameObjectA->OnCollision(CollisionInfo(pColliderB, pGameObjectB, pColliderA));
+		pGameObjectB->OnCollision(CollisionInfo(pColliderA, pGameObjectA, pColliderB));
 	}
 
 	// 押し出し *まだ非対応
@@ -540,6 +544,11 @@ bool CollisionManager::DetectCollision(const ICollider* pColliderA, const IColli
 	if (pColliderA->GetColliderType() == ColliderType::AABB)
 	{	// AABBにキャスト
 		const AABB* pAABB = dynamic_cast<const AABB*>(pColliderA);
+
+		if (pColliderB == nullptr)
+		{
+			int a = 10;
+		}
 
 		// 片方のコライダーのAABBなら
 		if (pColliderB->GetColliderType() == ColliderType::AABB)

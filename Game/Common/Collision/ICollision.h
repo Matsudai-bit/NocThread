@@ -18,7 +18,7 @@
 // クラスの前方宣言 ===================================================
 class GameObject;	// ゲームオブジェクト
 class ICollider;	// コライダー
-
+class CollisionInfo;// 衝突情報
 // クラスの定義 ===============================================================
 /**
  * @brief 衝突判定
@@ -38,12 +38,12 @@ public:
 public:
 
 	// 衝突処理
-	virtual  void OnCollision(GameObject* pHitObject, ICollider* pHitCollider)  = 0;
+	virtual  void OnCollision(const CollisionInfo& info)  = 0;
 
 	// 衝突判定をする直前に行う処理
-	virtual void PreCollision() {};
+	virtual void PreCollision() = 0;
 
 	// 衝突判定をした直後に行う処理
-	virtual void PostCollision() {};
+	virtual void PostCollision() = 0;
 
 };

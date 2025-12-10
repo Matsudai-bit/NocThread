@@ -35,9 +35,15 @@ class GameObject;
  */
 struct CollisionInfo
 {
-	ICollider*	otherCollider;	// 相手のコライダー
-	GameObject* otherObject;	// 相手のオブジェクト
-	ICollider*	myCollider;		// 自分の衝突コライダー
+	ICollider*	pOtherCollider;	// 相手のコライダー
+	GameObject* pOtherObject;	// 相手のオブジェクト
+	ICollider*	pMyCollider;		// 自分の衝突コライダー
+
+	CollisionInfo(ICollider* pOtherCollider, GameObject* pOtherObject, ICollider* pMyCollider)
+		: pOtherCollider{ pOtherCollider }
+		, pOtherObject	{ pOtherObject }
+		, pMyCollider	{ pMyCollider }
+	{}
 };
 
 

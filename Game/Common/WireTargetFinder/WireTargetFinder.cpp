@@ -143,7 +143,7 @@ void WireTargetFinder::Finalize()
 
 }
 
-void WireTargetFinder::PostCollision()
+void WireTargetFinder::PreCollision()
 {
 	m_grappleTargetPositionCache.clear();
 }
@@ -151,21 +151,18 @@ void WireTargetFinder::PostCollision()
 /**
  * @brief 衝突処理
  *
- * @param[in] pHitObject	衝突したオブジェクト
- * @param[in] pHitCollider	衝突したコライダー
+ * @param[in] info 衝突情報
  */
-void WireTargetFinder::OnCollision(GameObject* pHitObject, ICollider* pHitCollider)
+void WireTargetFinder::OnCollision(const CollisionInfo& info)
 {
-	
-	UNREFERENCED_PARAMETER(pHitObject);
-	UNREFERENCED_PARAMETER(pHitCollider);
+
 
 	SimpleMath::Vector3 targetPosition;
 
-	auto capsule = std::find_if(m_capsules.begin(), m_capsules.end(), [&](std::unique_ptr<Capsule>& capsule) {};
+	auto capsule = dynamic_cast<const Capsule*>(info.pMyCollider);
 
 	// 目標座標の算出
-	if (CalcWireTargetPosition(&targetPosition, *capsule, pHitObject, pHitCollider))
+	if (CalcWireTargetPosition(&targetPosition, *capsule, info.pOtherObject, info.pOtherCollider))
 	{
 		m_grappleTargetPositionCache.emplace_back(targetPosition);
 	}
@@ -425,7 +422,7 @@ std::vector<DirectX::SimpleMath::Vector3> WireTargetFinder::GetTargetPositionCan
 
 		for (auto& capsule : m_capsules)
 		{
-			m_pCollisionManager->RemoveCollisionObjectData(this, capsule.get());
+			m_pCollisionManager->RemoveCollisionObjectData(this, &capsule);
 		}
 	}
 	
@@ -439,7 +436,7 @@ std::vector<DirectX::SimpleMath::Vector3> WireTargetFinder::GetTargetPositionCan
 	{
 		Capsule capsule = CreateCapsuleCollider(m_pPlayer->GetTransform()->GetPosition(), searchDirections[i], m_wireLength * std::abs(searchDirections[i].y * 1.3f), m_wireRadius);
 
-		(m_capsules[i]) = std::make_unique<Capsule>(capsule);
+		(m_capsules[i]) = capsule;
 		
 		
 
@@ -472,7 +469,7 @@ std::vector<DirectX::SimpleMath::Vector3> WireTargetFinder::GetTargetPositionCan
 	{
 		for (auto& capsule : m_capsules)
 		{
-			m_pCollisionManager->AddCollisionObjectData(this, capsule.get());
+			m_pCollisionManager->AddCollisionObjectData(this, &capsule);
 		}
 	}
 	return targetPositions;
