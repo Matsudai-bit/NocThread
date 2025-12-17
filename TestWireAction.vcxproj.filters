@@ -413,24 +413,24 @@
     <Filter Include="Library\DirectXFramework\StepTimer">
       <UniqueIdentifier>{108d6c97-4c25-4e69-9088-8e3d3fa28fc9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Library\DirectXFramework\DebugDraw">
+      <UniqueIdentifier>{e524dfcb-6961-463f-a1ef-4c3eb18e6960}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Library\MyLib\DirectX\DirectXMyToolKit\DebugFont">
+      <UniqueIdentifier>{a28a22bc-b1ee-4456-b82a-f1a1cb1ea3e0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Library\MyLib\DirectX\DirectXMyToolKit\DebugCamera">
+      <UniqueIdentifier>{bdcf6751-da38-4bfa-a3ef-9e614a7afbcf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Library\MyLib\DirectX\DirectXMyToolKit\GridFloor">
+      <UniqueIdentifier>{6d6801eb-e803-4e3d-b95d-30cacfbc59ca}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
     <ClInclude Include="StepTimer.h" />
     <ClInclude Include="Game\Game.h">
       <Filter>Game</Filter>
-    </ClInclude>
-    <ClInclude Include="Library\ImaseLib\DebugCamera.h">
-      <Filter>Library\ImaseLib</Filter>
-    </ClInclude>
-    <ClInclude Include="Library\ImaseLib\DebugDraw.h">
-      <Filter>Library\ImaseLib</Filter>
-    </ClInclude>
-    <ClInclude Include="Library\ImaseLib\DebugFont.h">
-      <Filter>Library\ImaseLib</Filter>
-    </ClInclude>
-    <ClInclude Include="Library\ImaseLib\GridFloor.h">
-      <Filter>Library\ImaseLib</Filter>
     </ClInclude>
     <ClInclude Include="Game\Common\Collision\Collision.h">
       <Filter>Game\Common\Collision</Filter>
@@ -816,24 +816,24 @@
     <ClInclude Include="Library\DirectXFramework\StepTimer.h">
       <Filter>Library\DirectXFramework\StepTimer</Filter>
     </ClInclude>
+    <ClInclude Include="Library\DirectXFramework\DebugDraw.h">
+      <Filter>Library\DirectXFramework\DebugDraw</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\MyLib\DirectXMyToolKit\DebugCamera\DebugCamera.h">
+      <Filter>Library\MyLib\DirectX\DirectXMyToolKit\DebugCamera</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\MyLib\DirectXMyToolKit\DebugFont\DebugFont.h">
+      <Filter>Library\MyLib\DirectX\DirectXMyToolKit\DebugFont</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\MyLib\DirectXMyToolKit\GridFloor\GridFloor.h">
+      <Filter>Library\MyLib\DirectX\DirectXMyToolKit\GridFloor</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Game\Game.cpp">
       <Filter>Game</Filter>
-    </ClCompile>
-    <ClCompile Include="Library\ImaseLib\DebugCamera.cpp">
-      <Filter>Library\ImaseLib</Filter>
-    </ClCompile>
-    <ClCompile Include="Library\ImaseLib\DebugDraw.cpp">
-      <Filter>Library\ImaseLib</Filter>
-    </ClCompile>
-    <ClCompile Include="Library\ImaseLib\DebugFont.cpp">
-      <Filter>Library\ImaseLib</Filter>
-    </ClCompile>
-    <ClCompile Include="Library\ImaseLib\GridFloor.cpp">
-      <Filter>Library\ImaseLib</Filter>
     </ClCompile>
     <ClCompile Include="Game\Common\Collision\Collision.cpp">
       <Filter>Game\Common\Collision</Filter>
@@ -1161,6 +1161,18 @@
     </ClCompile>
     <ClCompile Include="Library\DirectXFramework\DeviceResources.cpp">
       <Filter>Library\DirectXFramework\DeviceResources</Filter>
+    </ClCompile>
+    <ClCompile Include="Library\DirectXFramework\DebugDraw.cpp">
+      <Filter>Library\DirectXFramework\DebugDraw</Filter>
+    </ClCompile>
+    <ClCompile Include="Library\MyLib\DirectXMyToolKit\DebugCamera\DebugCamera.cpp">
+      <Filter>Library\MyLib\DirectX\DirectXMyToolKit\DebugCamera</Filter>
+    </ClCompile>
+    <ClCompile Include="Library\MyLib\DirectXMyToolKit\DebugFont\DebugFont.cpp">
+      <Filter>Library\MyLib\DirectX\DirectXMyToolKit\DebugFont</Filter>
+    </ClCompile>
+    <ClCompile Include="Library\MyLib\DirectXMyToolKit\GridFloor\GridFloor.cpp">
+      <Filter>Library\MyLib\DirectX\DirectXMyToolKit\GridFloor</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

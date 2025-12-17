@@ -21,7 +21,7 @@
 #include "Library/MyLib/MathUtils/MathUtils.h"
 
 #include "Game/Common/CommonResources/CommonResources.h"
-#include "Library/ImaseLib/DebugFont.h"
+#include "Library/MyLib/DirectXMyToolKit/DebugFont/DebugFont.h"
 
 using namespace DirectX;
 

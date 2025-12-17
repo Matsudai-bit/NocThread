@@ -46,8 +46,8 @@
 #include "Game/Common/GameObjectRegistry/GameObjectRegistry.h"
 
 // 外部ライブラリ・ツール
-#include "Library/ImaseLib/DebugDraw.h"
-#include "Library/ImaseLib/DebugFont.h"
+#include "Library/DirectXFramework/DebugDraw.h"
+#include "Library/MyLib/DirectXMyToolKit/DebugFont/DebugFont.h"
 #include "Library/MyLib/DirectXMyToolKit/DirectXMyToolKit.h"
 #include "Library/MyLib/Ray/Ray.h"
 
@@ -299,10 +299,10 @@ void Player::Draw(const Camera& camera)
 	m_primitiveBatch->End();*/
 
 	// 目標方向の描画
-	SimpleMath::Vector3 targetDirection = m_targetPosition - transform->GetPosition();
-	m_primitiveBatch->Begin();
-	DX::DrawRay(m_primitiveBatch.get(), transform->GetPosition(), targetDirection, false, m_targetGuideColor);
-	m_primitiveBatch->End();
+	//SimpleMath::Vector3 targetDirection = m_targetPosition - transform->GetPosition();
+	//m_primitiveBatch->Begin();
+	//DX::DrawRay(m_primitiveBatch.get(), transform->GetPosition(), targetDirection, false, m_targetGuideColor);
+	//m_primitiveBatch->End();
 
 
 	//GetCommonResources()->GetDebugFont()->AddString(100, 90, Colors::White, L"position : %f, %f, %f ", GetPosition().x, GetPosition().y, GetPosition().z);
@@ -508,15 +508,28 @@ void Player::OnGameFlowEvent(GameFlowEventID eventID)
 	switch (eventID)
 	{
 	case GameFlowEventID::GAME_START:
+	{
+		// 宝の取得
+		auto treasure = GameObjectRegistry::GetInstance()->GetGameObject(GameObjectTag::TREASURE);
+		if (treasure == nullptr) { break; }
+
 		// 対象座標の取得
-		m_targetPosition = GameObjectRegistry::GetInstance()->GetGameObject(GameObjectTag::TREASURE)->GetTransform()->GetPosition();
+		m_targetPosition = treasure->GetTransform()->GetPosition();
 		m_targetGuideColor = Colors::LightGreen;
 		break;
-		case GameFlowEventID::SPAWN_HELICOPTER:
+	}
+	case GameFlowEventID::SPAWN_HELICOPTER:
+	{
+		// ヘリコプターの取得
+		auto helicopter = GameObjectRegistry::GetInstance()->GetGameObject(GameObjectTag::ESCAPE_HELICOPTER);
+		if (helicopter == nullptr) { break; }
+
 		// 対象座標の更新
-		m_targetPosition = GameObjectRegistry::GetInstance()->GetGameObject(GameObjectTag::ESCAPE_HELICOPTER)->GetTransform()->GetPosition();
+		m_targetPosition = helicopter->GetTransform()->GetPosition();
 		m_targetGuideColor = Colors::Purple;
+
 		break;
+	}
 	case GameFlowEventID::PLAYER_DIE:
 		break;
 	case GameFlowEventID::ESCAPE_SUCCESS:

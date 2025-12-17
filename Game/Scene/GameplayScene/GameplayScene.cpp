@@ -278,7 +278,7 @@ void GameplayScene::CreateTask()
 	m_taskManager->AddTask(m_stageManager.get());		// StageManager
 	m_taskManager->AddTask(m_collisionManager.get());	// CollisionManager
 	m_taskManager->AddTask(m_gameEffectManager.get());	// EffectManager
-	m_taskManager->AddTask(m_miniMap.get());	// Minimap
+	m_taskManager->AddTask(m_miniMap.get());			// Minimap
 }
 
 /**
@@ -294,5 +294,5 @@ void GameplayScene::StartGame()
 
 
 	// ***** ゲーム開始通知 *****
-	GameFlowMessenger::GetInstance()->Notify(GameFlowEventID::GAME_START);
+	GameFlowMessenger::GetInstance()->Notify(GameFlowEventID::STOLE_TREASURE);
 }

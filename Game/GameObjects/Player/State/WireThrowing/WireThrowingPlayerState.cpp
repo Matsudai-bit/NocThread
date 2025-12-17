@@ -22,7 +22,7 @@
 #include "Game/Common/Camera/Camera.h"
 #include "Library/MyLib/Ray/Ray.h"
 
-#include "Library/ImaseLib/DebugFont.h"
+#include "Library/MyLib/DirectXMyToolKit/DebugFont/DebugFont.h"
 
 #include "Game/Common/Screen.h"
 

@@ -17,9 +17,9 @@
 #include <nlohmann/json.hpp>
 
 // ライブラリ
-#include "Library/ImaseLib/DebugCamera.h"       // デバックカメラ
-#include "Library/ImaseLib/DebugDraw.h"         // デバック描画
-#include "Library/ImaseLib/GridFloor.h"         // デバック床
+#include "Library/MyLib/DirectXMyToolKit/DebugCamera/DebugCamera.h"       // デバックカメラ
+#include "Library/DirectXFramework/DebugDraw.h"         // デバック描画
+#include "Library/MyLib/DirectXMyToolKit/GridFloor/GridFloor.h"         // デバック床
 
 #include "Game/Common/TaskManager/TaskManager.h"// タスク（基底クラス）
 #include "Game/Common/Screen.h"
@@ -123,7 +123,7 @@ private:
 
 
 	// グリッドの床
-	std::unique_ptr<Imase::GridFloor> m_gridFloor;
+	std::unique_ptr<MyLib::GridFloor> m_gridFloor;
 
 	std::unique_ptr<PlayerCamera>		m_playerCamera;
 

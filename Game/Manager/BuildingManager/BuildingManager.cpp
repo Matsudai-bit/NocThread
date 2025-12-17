@@ -10,7 +10,8 @@
 #include "pch.h"
 #include "BuildingManager.h"
 #include "Game/Common/CommonResources/CommonResources.h"
-#include "Library/ImaseLib/DebugDraw.h"
+#include "Library/DirectXFramework/DebugDraw.h"
+#include "Library/MyLib/DirectXMyToolKit/DebugFont/DebugFont.h"
 
 #include <fstream>
 #include <iostream>
@@ -129,7 +130,7 @@ bool BuildingManager::UpdateTask(float deltaTime)
 	return true;
 }
 
-
+#include <chrono>
 
 /**
  * @brief 描画処理
@@ -142,9 +143,18 @@ void BuildingManager::DrawTask(const Camera& camera)
 
 	const auto cameraFrustum = camera.CalcFrustum();
 
+	// 1. 開始時刻の記録
+	auto start = std::chrono::high_resolution_clock::now();
+
+	
+
+
 	Microsoft::WRL::ComPtr<ID3D11InputLayout> inputLayout;
 
-
+	//for (auto& building : m_buildings)
+	//{
+	//	building->Draw(camera);
+	//}
 	// 建物の描画処理
 	for (auto& building : m_buildings)
 	{
@@ -163,6 +173,15 @@ void BuildingManager::DrawTask(const Camera& camera)
 
 
 	}
+
+	// 3. 終了時刻の記録
+	auto end = std::chrono::high_resolution_clock::now();
+
+	// 4. 処理時間の計算と表示
+	// duration_cast で希望の単位に変換（ここではマイクロ秒 ?s）
+	auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+
+	//m_pCommonResources->GetDebugFont()->AddString(100, 100, Colors::Red, L"duration(?s) = %d", duration.count());
 }
 
 

@@ -17,7 +17,7 @@
 
 #include "Game/Common/Camera/PlayerCamera/PlayerCamera.h"
 
-#include "Library/ImaseLib/DebugFont.h"
+#include "Library/MyLib/DirectXMyToolKit/DebugFont/DebugFont.h"
 #include "Library/MyLib/DirectXMyToolKit/DirectXMyToolKit.h"
 
 

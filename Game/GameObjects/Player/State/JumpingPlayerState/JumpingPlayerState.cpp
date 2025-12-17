@@ -14,9 +14,7 @@
 #include "Game/GameObjects/Player/State/IdlePlayerState/IdlePlayerState.h"
 #include "Game/GameObjects/Player/State/WireActionPlayerState/WireActionPlayerState.h"
 #include "Game/Common/CommonResources/CommonResources.h"
-#include "Library/ImaseLib/DebugFont.h"
-
-#include "Game/GameObjects/Player/State/IdlePlayerState/IdlePlayerState.h"
+#include "Library/MyLib/DirectXMyToolKit/DebugFont/DebugFont.h"
 
 using namespace DirectX;
 

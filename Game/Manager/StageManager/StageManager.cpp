@@ -50,7 +50,7 @@
 #include "Game/Common/UserInterfaceTool/Canvas/Canvas.h"
 #include "Game/Common/UserInterfaceTool/Sprite/Sprite.h"
 
-#include "Library/ImaseLib/DebugFont.h"
+#include "Library/MyLib/DirectXMyToolKit/DebugFont/DebugFont.h"
 #include "Game//Common/GameObjectRegistry/GameObjectRegistry.h"
 #include "Game/Common/Event/Messenger/GameFlowMessenger/GameFlowMessenger.h"
 #include "Game/Common/TaskManager/TaskManager.h"
@@ -360,12 +360,14 @@ void StageManager::AddTask(TaskManager* pTaskManager)
 	};
 	for (auto& helicopter : m_escapeHelicopter)
 	{
+		
 		addTasks.push_back(helicopter.get());
 	}
 
 	// ’Ç‰Á
 	for (auto& task : addTasks)
 	{
+		if (task == nullptr) { continue; }
 		pTaskManager->AddTask(task);
 		// e‚ÌÝ’è
 		task->ChangeParent(this);

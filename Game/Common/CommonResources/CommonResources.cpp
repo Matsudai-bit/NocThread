@@ -32,7 +32,7 @@ CommonResources::CommonResources(
 	DX::StepTimer*			pStepTimer,
 	DX::DeviceResources*	pDeviceResources,
 	CommonStates*	pCommonStates,
-	Imase::DebugFont*		pDebugFont,
+	MyLib::DebugFont*		pDebugFont,
 	ResourceManager*		pResourceManager,
 	Keyboard::KeyboardStateTracker* pKeyboardState,
 	Mouse::ButtonStateTracker* pMouseState,
@@ -98,7 +98,7 @@ CommonStates* CommonResources::GetCommonStates() const
  * 
  * @return デバックフォント
  */
-Imase::DebugFont* CommonResources::GetDebugFont() const
+MyLib::DebugFont* CommonResources::GetDebugFont() const
 {
 	return m_pDebugFont;
 }

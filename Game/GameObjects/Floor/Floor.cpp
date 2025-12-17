@@ -12,7 +12,7 @@
 #include "Game/Common/Collision/CollisionManager/CollisionManager.h"
 #include "Floor.h"
 #include "Game/Common/CommonResources/CommonResources.h"
-#include "Library/ImaseLib/DebugFont.h"
+#include "Library/MyLib/DirectXMyToolKit/DebugFont/DebugFont.h"
 
 #include "Game/Common/Camera/Camera.h"
 

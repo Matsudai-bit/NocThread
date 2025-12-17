@@ -19,9 +19,9 @@
 #include "Game/Manager/SceneManager/SceneManager.h"
 
 // ライブラリ
-#include "Library/ImaseLib/DebugCamera.h"       // デバックカメラ
-#include "Library/ImaseLib/DebugDraw.h"         // デバック描画
-#include "Library/ImaseLib/GridFloor.h"         // デバック床
+#include "Library/MyLib/DirectXMyToolKit/DebugCamera/DebugCamera.h"       // デバックカメラ
+#include "Library/DirectXFramework/DebugDraw.h"         // デバック描画
+#include "Library/MyLib/DirectXMyToolKit/GridFloor/GridFloor.h"         // デバック床
 
 #include "Game/Common/Screen.h"
 

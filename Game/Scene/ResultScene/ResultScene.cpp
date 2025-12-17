@@ -14,7 +14,7 @@
 #include "Game/Scene/TitleScene/TitleScene.h"
 
 // ƒ‰ƒCƒuƒ‰ƒŠŠÖ˜A
-#include "Library/ImaseLib/DebugFont.h"
+#include "Library/MyLib/DirectXMyToolKit/DebugFont/DebugFont.h"
 #include "Library/DirectXFramework/DeviceResources.h"
 #include "Game/Scene/Loading/LoadingScreen.h"
 

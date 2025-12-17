@@ -23,7 +23,7 @@ namespace DX
 	class RenderTexture;
 }
 
-namespace Imase
+namespace MyLib
 {
 	class DebugFont;	// デバックフォント
 }
@@ -51,7 +51,7 @@ private:
 	DX::DeviceResources*	m_pDeviceResources;	///< デバイスリソース
 	DirectX::CommonStates*	m_pCommonStates;	///< 共通状態
 
-	Imase::DebugFont*		m_pDebugFont;		///< デバックフォント
+	MyLib::DebugFont*		m_pDebugFont;		///< デバックフォント
 
 	ResourceManager*		m_pResourceManager;	///< リソース管理
 
@@ -72,7 +72,7 @@ public:
 		DX::StepTimer*			pStepTimer, 
 		DX::DeviceResources*	pDeviceResources, 
 		DirectX::CommonStates*	pCommonStates,
-		Imase::DebugFont*		pDebugFont,
+		MyLib::DebugFont*		pDebugFont,
 		ResourceManager*		pResourceManager,
 		DirectX::Keyboard::KeyboardStateTracker*pKeyboardState,
 		DirectX::Mouse::ButtonStateTracker*		pMouseState,
@@ -96,7 +96,7 @@ public:
 	DirectX::CommonStates* GetCommonStates()	const;
 
 	// デバックフォントの取得
-	Imase::DebugFont* GetDebugFont()			const;
+	MyLib::DebugFont* GetDebugFont()			const;
 
 	// リソース管理
 	ResourceManager* GetResourceManager()		const;

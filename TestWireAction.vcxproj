@@ -295,13 +295,10 @@
     <ClInclude Include="Game\UI\TutorialWindow\TutorialWindow.h" />
     <ClInclude Include="Library\DebugHelper.h" />
     <ClInclude Include="Library\DirectXFramework\Animation.h" />
+    <ClInclude Include="Library\DirectXFramework\DebugDraw.h" />
     <ClInclude Include="Library\DirectXFramework\DeviceResources.h" />
     <ClInclude Include="Library\DirectXFramework\RenderTexture.h" />
     <ClInclude Include="Library\DirectXFramework\StepTimer.h" />
-    <ClInclude Include="Library\ImaseLib\DebugCamera.h" />
-    <ClInclude Include="Library\ImaseLib\DebugDraw.h" />
-    <ClInclude Include="Library\ImaseLib\DebugFont.h" />
-    <ClInclude Include="Library\ImaseLib\GridFloor.h" />
     <ClInclude Include="Library\ImGui\imconfig.h" />
     <ClInclude Include="Library\ImGui\imgui.h" />
     <ClInclude Include="Library\ImGui\imgui_impl_dx11.h" />
@@ -311,8 +308,11 @@
     <ClInclude Include="Library\ImGui\imstb_textedit.h" />
     <ClInclude Include="Library\ImGui\imstb_truetype.h" />
     <ClInclude Include="Library\MyLib\DirectXMathUtils\DirectXMathUtils.h" />
+    <ClInclude Include="Library\MyLib\DirectXMyToolKit\DebugCamera\DebugCamera.h" />
+    <ClInclude Include="Library\MyLib\DirectXMyToolKit\DebugFont\DebugFont.h" />
     <ClInclude Include="Library\MyLib\DirectXMyToolKit\DepthStencil\DepthStencil.h" />
     <ClInclude Include="Library\MyLib\DirectXMyToolKit\DirectXMyToolKit.h" />
+    <ClInclude Include="Library\MyLib\DirectXMyToolKit\GridFloor\GridFloor.h" />
     <ClInclude Include="Library\MyLib\DirectXMyToolKit\OffscreenRendering\OffscreenRendering.h" />
     <ClInclude Include="Library\MyLib\EasingKit\EasingKit.h" />
     <ClInclude Include="Library\MyLib\MathUtils\MathUtils.h" />
@@ -420,12 +420,9 @@
     <ClCompile Include="Game\UI\Title\TitleMenu\TitleMenu.cpp" />
     <ClCompile Include="Game\UI\TutorialWindow\TutorialWindow.cpp" />
     <ClCompile Include="Library\DirectXFramework\Animation.cpp" />
+    <ClCompile Include="Library\DirectXFramework\DebugDraw.cpp" />
     <ClCompile Include="Library\DirectXFramework\DeviceResources.cpp" />
     <ClCompile Include="Library\DirectXFramework\RenderTexture.cpp" />
-    <ClCompile Include="Library\ImaseLib\DebugCamera.cpp" />
-    <ClCompile Include="Library\ImaseLib\DebugDraw.cpp" />
-    <ClCompile Include="Library\ImaseLib\DebugFont.cpp" />
-    <ClCompile Include="Library\ImaseLib\GridFloor.cpp" />
     <ClCompile Include="Library\ImGui\imgui.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
@@ -455,8 +452,11 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Library\MyLib\DirectXMathUtils\DirectXMathUtils.cpp" />
+    <ClCompile Include="Library\MyLib\DirectXMyToolKit\DebugCamera\DebugCamera.cpp" />
+    <ClCompile Include="Library\MyLib\DirectXMyToolKit\DebugFont\DebugFont.cpp" />
     <ClCompile Include="Library\MyLib\DirectXMyToolKit\DepthStencil\DepthStencil.cpp" />
     <ClCompile Include="Library\MyLib\DirectXMyToolKit\DirectXMyToolKit.cpp" />
+    <ClCompile Include="Library\MyLib\DirectXMyToolKit\GridFloor\GridFloor.cpp" />
     <ClCompile Include="Library\MyLib\DirectXMyToolKit\OffscreenRendering\OffscreenRendering.cpp" />
     <ClCompile Include="Library\MyLib\MathUtils\MathUtils.cpp" />
     <ClCompile Include="Library\MyLib\Ray\Ray.cpp" />

@@ -147,13 +147,17 @@ void SpawnManager::OnStealingTreasures()
 	m_stoleTreasure = true;
 	using namespace SimpleMath;
 
+	// プレイヤーの取得
+	auto pPlayer = GameObjectRegistry::GetInstance()->GetGameObject(GameObjectTag::PLAYER);
+	if (pPlayer == nullptr) { return; }
+
 	//　****　敵の生成 ****
-	Vector3 treasurePos = GameObjectRegistry::GetInstance()->GetGameObject(GameObjectTag::TREASURE)->GetTransform()->GetPosition();
+	Vector3 center = pPlayer->GetTransform()->GetPosition();
 
 	std::unique_ptr<IEnemyFactory> factory = std::make_unique<EnemyFactory::FlyingChaserEnemy>();
 
 	const int NUM = 10;
-	const float RADIUS = 9.0f;
+	const float RADIUS = 20.0f;
 
 	for (int i = 0; i < NUM; i++)
 	{
@@ -164,9 +168,9 @@ void SpawnManager::OnStealingTreasures()
 		enemy->Initialize(m_pCommonResources, m_pCollisionManager);
 		Vector3 pos;
 
-		pos.x = treasurePos.x + std::cosf(XMConvertToRadians(degree)) * RADIUS;
-		pos.z = treasurePos.z +std::sinf(XMConvertToRadians(degree)) * RADIUS;
-		pos.y = treasurePos.y;
+		pos.x = center.x + std::cosf(XMConvertToRadians(degree)) * RADIUS;
+		pos.z = center.z +std::sinf(XMConvertToRadians(degree)) * RADIUS;
+		pos.y = center.y;
 		
 		enemy->GetTransform()->SetPosition(pos);
 
@@ -184,7 +188,7 @@ void SpawnManager::OnStealingTreasures()
 	std::vector<Vector3> helicopterPositions =
 	{
 		Vector3(-90.0f, 80.6f, 70.2f),
-		Vector3(130.0f, 80.6f, 120.2f),
+		Vector3(130.0f, 110.6f, 120.2f),
 		Vector3(-100.0f, 60.6f, -130.2f),
 		Vector3(160.0f, 60.6f, -100.2f),
 	};
@@ -193,8 +197,8 @@ void SpawnManager::OnStealingTreasures()
 		[&](const Vector3& a, const Vector3& b)
 		{
 			// 基準点からの距離を比較
-			float distanceA = DirectX::SimpleMath::Vector3::DistanceSquared(a, treasurePos);
-			float distanceB = DirectX::SimpleMath::Vector3::DistanceSquared(b, treasurePos);
+			float distanceA = DirectX::SimpleMath::Vector3::DistanceSquared(a, center);
+			float distanceB = DirectX::SimpleMath::Vector3::DistanceSquared(b, center);
 			return distanceA > distanceB; // 遠い順なので > を使用
 		});
 
