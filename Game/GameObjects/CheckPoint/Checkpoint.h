@@ -31,16 +31,18 @@ class Checkpoint
 // クラス定数の宣言 -------------------------------------------------
 public:
 
-
+	static constexpr float DEFAULT_ROTATION_Y_DEGREE = 180.0f;
 
 // データメンバの宣言 -----------------------------------------------
 private:
 
 	bool m_isEnabled; ///< 有効化されているかどうか
 
-	std::unique_ptr<DirectX::GeometricPrimitive> m_model;
+	std::unique_ptr<DirectX::Model> m_model[3];
 
 	std::unique_ptr<AABB> m_collider;
+
+	float m_time;
 
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
