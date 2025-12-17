@@ -37,16 +37,17 @@ private:
 
 	std::vector<std::unique_ptr<AABB>> m_collider;
 
-	DirectX::SimpleMath::Vector3 m_positionOffset; // 底面がゲームオブジェクト座標になるように調整する
+	DirectX::SimpleMath::Vector3 m_positionOffset; ///< 底面がゲームオブジェクト座標になるように調整する
 
-	DirectX::SimpleMath::Vector3 m_colliderExtendOffset; // 底面がゲームオブジェクト座標になるように調整する
+	DirectX::SimpleMath::Vector3 m_colliderExtendOffset; ///< 底面がゲームオブジェクト座標になるように調整する
 
-	DirectX::SimpleMath::Vector3 m_extends;
+	DirectX::SimpleMath::Vector3 m_extraScale;	///< 拡張スケール
+	DirectX::SimpleMath::Vector3 m_extent;		///<  大きさ
 
 	std::unique_ptr<Sphere> m_cullingSphere;	///< フラスタムカリングで使用する
 
-// メンバ関数の宣言 -------------------------------------------------
-// コンストラクタ/デストラクタ
+	// メンバ関数の宣言 -------------------------------------------------
+	// コンストラクタ/デストラクタ
 public:
 	// コンストラクタ
 	Building();
@@ -57,20 +58,20 @@ public:
 	// 操作
 public:
 	// 初期化処理
-	void Initialize(const CommonResources* pCommonResources, CollisionManager* pCollisionManager) override ;
+	void Initialize(const CommonResources* pCommonResources, CollisionManager* pCollisionManager) override;
 
 	// 更新処理
-	void Update(float deltaTime) override ;
+	void Update(float deltaTime) override;
 
 	// 描画処理
-	void Draw(const Camera& camera) override ;
-	  
+	void Draw(const Camera& camera) override;
+
 	// 終了処理
-	void Finalize()override ;
+	void Finalize()override;
 
 
 	// 衝突処理
-	void OnCollision(const CollisionInfo& info) override ;
+	void OnCollision(const CollisionInfo& info) override;
 
 
 
@@ -82,12 +83,11 @@ public:
 
 	// ゲームオブジェクトタグの取得
 	GameObjectTag GetTag() const override { return GameObjectTag::BUILDING; }
-	DirectX::SimpleMath::Vector3 GetExtends() const { return m_extends; }
 
-	void SetExtends(const DirectX::SimpleMath::Vector3& extends) 
-	{
-		m_extends = extends;
-	}
+	DirectX::SimpleMath::Vector3 GetExtraScale() const {return m_extraScale;}
+	void SetExtraScale(const DirectX::SimpleMath::Vector3& extraScale){m_extraScale = extraScale;}
+
+	DirectX::SimpleMath::Vector3 GetExtent() const { return m_extent; }
 
 	Sphere* GetCullingCollider()const { return m_cullingSphere.get(); }
 

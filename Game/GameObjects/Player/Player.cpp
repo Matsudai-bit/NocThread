@@ -72,7 +72,7 @@ Player::Player()
 {
 	m_cursorPos = DirectX::SimpleMath::Vector2(Screen::Get()->GetCenterXF(), Screen::Get()->GetCenterYF() -  CURSOR_Y_OFFSET_SCALE * Screen::Get()->GetScreenScale());
 	// ƒƒbƒZ[ƒW‚Ö‚Ì“o˜^
-	GameFlowMessenger::GetInstance()->RegistrObserver(this);
+	GameFlowMessenger::GetInstance()->RegistryObserver(this);
 }
 
 

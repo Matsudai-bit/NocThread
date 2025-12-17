@@ -374,9 +374,6 @@
     <Filter Include="Game\Common\EntityManager">
       <UniqueIdentifier>{ec7f0dc5-f908-4e5e-990a-af05d5c2c7b0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Game\GameObjects\Player\PlayerManager">
-      <UniqueIdentifier>{e9529cf0-0b6d-473b-aa18-73b512d7b270}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Game\GameObjects\Player\State\ShootingWire">
       <UniqueIdentifier>{ad123bb5-e8eb-4e96-ae11-9f3244d7e934}</UniqueIdentifier>
     </Filter>
@@ -424,6 +421,21 @@
     </Filter>
     <Filter Include="Library\MyLib\DirectX\DirectXMyToolKit\GridFloor">
       <UniqueIdentifier>{6d6801eb-e803-4e3d-b95d-30cacfbc59ca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\GameObjects\Checkpoint">
+      <UniqueIdentifier>{8ae1e161-6d74-4f3b-a42e-d2cbbf33833b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Common\GameObjectManager\PlayerManager">
+      <UniqueIdentifier>{e9529cf0-0b6d-473b-aa18-73b512d7b270}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Common\GameObjectManager\CheckpointManager">
+      <UniqueIdentifier>{9d53c497-ad9e-4ead-ad33-eddbaae131a4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Common\GameProgressData">
+      <UniqueIdentifier>{d4180116-d967-4e68-af8e-8b0e33d5ef8b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Common\GameDirector">
+      <UniqueIdentifier>{bb3178ef-78d9-4c1e-b37f-f5e1b405c2ad}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -783,7 +795,7 @@
     </ClInclude>
     <ClInclude Include="Game\Manager\BuildingManager\BuildingManager.h" />
     <ClInclude Include="Game\Manager\PlayerManager\PlayerManager.h">
-      <Filter>Game\GameObjects\Player\PlayerManager</Filter>
+      <Filter>Game\Common\GameObjectManager\PlayerManager</Filter>
     </ClInclude>
     <ClInclude Include="Game\GameObjects\Player\State\ShootingWireState\ShootingWirePlayerState.h">
       <Filter>Game\GameObjects\Player\State\ShootingWire</Filter>
@@ -827,6 +839,18 @@
     </ClInclude>
     <ClInclude Include="Library\MyLib\DirectXMyToolKit\GridFloor\GridFloor.h">
       <Filter>Library\MyLib\DirectX\DirectXMyToolKit\GridFloor</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameObjects\CheckPoint\Checkpoint.h">
+      <Filter>Game\GameObjects\Checkpoint</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Manager\CheckpointManager\CheckpointManager.h">
+      <Filter>Game\Common\GameObjectManager\CheckpointManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Common\GameProgressData\GameProgressData.h">
+      <Filter>Game\Common\GameProgressData</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Common\GameDirector\GameDirector.h">
+      <Filter>Game\Common\GameDirector</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1132,7 +1156,7 @@
     </ClCompile>
     <ClCompile Include="Game\Manager\BuildingManager\BuildingManager.cpp" />
     <ClCompile Include="Game\Manager\PlayerManager\PlayerManager.cpp">
-      <Filter>Game\GameObjects\Player\PlayerManager</Filter>
+      <Filter>Game\Common\GameObjectManager\PlayerManager</Filter>
     </ClCompile>
     <ClCompile Include="Game\GameObjects\Player\State\ShootingWireState\ShootingWirePlayerState.cpp">
       <Filter>Game\GameObjects\Player\State\ShootingWire</Filter>
@@ -1173,6 +1197,18 @@
     </ClCompile>
     <ClCompile Include="Library\MyLib\DirectXMyToolKit\GridFloor\GridFloor.cpp">
       <Filter>Library\MyLib\DirectX\DirectXMyToolKit\GridFloor</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\GameObjects\CheckPoint\Checkpoint.cpp">
+      <Filter>Game\GameObjects\Checkpoint</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Manager\CheckpointManager\CheckpointManager.cpp">
+      <Filter>Game\Common\GameObjectManager\CheckpointManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Common\GameProgressData\GameProgressData.cpp">
+      <Filter>Game\Common\GameProgressData</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Common\GameDirector\GameDirector.cpp">
+      <Filter>Game\Common\GameDirector</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

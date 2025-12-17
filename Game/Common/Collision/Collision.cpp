@@ -2893,33 +2893,35 @@ void Cylinder::Draw(ID3D11DeviceContext1* context, const DirectX::SimpleMath::Ma
 	// defaultUpベクトルをaxisへと回転させるための軸を求める
 	DirectX::SimpleMath::Vector3 rotationAxis = defaultUp.Cross(axis);
 
-	// 2. 回転角を計算（内積とacos）
-	// defaultUpとaxisがなす角度を求める
-	float dot = defaultUp.Dot(axis);
-	// 浮動小数点誤差を考慮して値をクランプする
-	dot = std::min(1.0f, std::max(-1.0f, dot));
-	float angle = std::acosf(dot);
-
-	// 3. クォータニオンを生成
-	// 回転軸と回転角を使ってクォータニオンを作成
-	DirectX::SimpleMath::Quaternion quaternion = DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(rotationAxis, angle);
-
-	// ----------------------------------------------------
-	// 特殊ケース：2つのベクトルがほぼ平行な場合
-	// 外積がゼロになり、回転軸を計算できないため、個別に処理する
-	// ----------------------------------------------------
-	if (rotationAxis.LengthSquared() < 1e-6f) {
-		if (dot > 0.999f) {
-			// 同じ方向を向いている場合、回転は不要
-			quaternion = DirectX::SimpleMath::Quaternion::Identity;
+		// 2. 回転角を計算（内積とacos）
+		// defaultUpとaxisがなす角度を求める
+		float dot = defaultUp.Dot(axis);
+		// 浮動小数点誤差を考慮して値をクランプする
+			dot = std::min(1.0f, std::max(-1.0f, dot));
+			float angle = std::acosf(dot);
+		// 3. クォータニオンを生成
+		Quaternion quaternion = Quaternion::Identity;
+		if (!MyLib::ApproxEqual(rotationAxis.LengthSquared(), 0.0f))
+		{
+			// 回転軸と回転角を使ってクォータニオンを作成
+			quaternion = Quaternion::CreateFromAxisAngle(rotationAxis, angle);
 		}
-		else {
-			// 正反対の方向を向いている場合、任意の軸周りに180度回転
-			quaternion = DirectX::SimpleMath::Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::Right, DirectX::XM_PI);
+		// ----------------------------------------------------
+		// 特殊ケース：2つのベクトルがほぼ平行な場合
+		// 外積がゼロになり、回転軸を計算できないため、個別に処理する
+		// ----------------------------------------------------
+		if (rotationAxis.LengthSquared() < 1e-6f) {
+			if (dot > 0.999f) {
+				// 同じ方向を向いている場合、回転は不要
+				quaternion = Quaternion::Identity;
+			}
+			else {
+				// 正反対の方向を向いている場合、任意の軸周りに180度回転
+				quaternion = Quaternion::CreateFromAxisAngle(DirectX::SimpleMath::Vector3::Right, DirectX::XM_PI);
+			}
 		}
-	}
 
-
+	
 	Matrix world = Matrix::Identity;
 	world *= Matrix::CreateTranslation(SimpleMath::Vector3(0.0f, m_length / 2.0f, 0.0f));
 

@@ -202,6 +202,7 @@
     <ClInclude Include="Game\Common\ExitController\ExitController.h" />
     <ClInclude Include="Game\Common\Factory\EnemyFactory\EnemyFactory.h" />
     <ClInclude Include="Game\Common\Factory\EnemyFactory\IEnemyFactory\IEnemyFactory.h" />
+    <ClInclude Include="Game\Common\GameDirector\GameDirector.h" />
     <ClInclude Include="Game\Common\GameEffect\Base\GameEffectBase.h" />
     <ClInclude Include="Game\Common\GameEffect\Base\IGameEffect.h" />
     <ClInclude Include="Game\Common\GameEffect\Effects\SimpleParticle\SimpleParticle.h" />
@@ -209,6 +210,7 @@
     <ClInclude Include="Game\Common\GameEffect\GameEffectManager.h" />
     <ClInclude Include="Game\Common\GameObjectManager\EnemyManager\EnemyManager.h" />
     <ClInclude Include="Game\Common\GameObjectRegistry\GameObjectRegistry.h" />
+    <ClInclude Include="Game\Common\GameProgressData\GameProgressData.h" />
     <ClInclude Include="Game\Common\Helper\MovementHelper\MovementHelper.h" />
     <ClInclude Include="Game\Common\Helper\PhysicsHelper\PhysicsHelper.h" />
     <ClInclude Include="Game\Common\Input\InputActionType\InputActionType.h" />
@@ -235,6 +237,7 @@
     <ClInclude Include="Game\Common\UserInterfaceTool\TimeUI\TimeUI.h" />
     <ClInclude Include="Game\Common\WireTargetFinder\WireTargetFinder.h" />
     <ClInclude Include="Game\Game.h" />
+    <ClInclude Include="Game\GameObjects\CheckPoint\Checkpoint.h" />
     <ClInclude Include="Game\GameObjects\Common\GameObject.h" />
     <ClInclude Include="Game\GameObjects\Common\GameObjectEvent\GameObjectEvent.h" />
     <ClInclude Include="Game\GameObjects\Common\MovableObject\MovableObject.h" />
@@ -279,6 +282,7 @@
     <ClInclude Include="Game\GameObjects\Wire\IWireHolder\IWireHolder.h" />
     <ClInclude Include="Game\GameObjects\Wire\Wire.h" />
     <ClInclude Include="Game\Manager\BuildingManager\BuildingManager.h" />
+    <ClInclude Include="Game\Manager\CheckpointManager\CheckpointManager.h" />
     <ClInclude Include="Game\Manager\PlayerManager\PlayerManager.h" />
     <ClInclude Include="Game\Manager\SceneManager\SceneManager.h" />
     <ClInclude Include="Game\Manager\StageManager\StageManager.h" />
@@ -336,6 +340,7 @@
     <ClCompile Include="Game\Common\Event\WireSystemObserver\WireSystemSubject.cpp" />
     <ClCompile Include="Game\Common\ExitController\ExitController.cpp" />
     <ClCompile Include="Game\Common\Factory\EnemyFactory\EnemyFactory.cpp" />
+    <ClCompile Include="Game\Common\GameDirector\GameDirector.cpp" />
     <ClCompile Include="Game\Common\GameEffect\Base\GameEffectBase.cpp" />
     <ClCompile Include="Game\Common\GameEffect\Base\IGameEffect.cpp" />
     <ClCompile Include="Game\Common\GameEffect\Effects\SimpleParticle\SimpleParticle.cpp" />
@@ -343,6 +348,7 @@
     <ClCompile Include="Game\Common\GameEffect\GameEffectManager.cpp" />
     <ClCompile Include="Game\Common\GameObjectManager\EnemyManager\EnemyManager.cpp" />
     <ClCompile Include="Game\Common\GameObjectRegistry\GameObjectRegistry.cpp" />
+    <ClCompile Include="Game\Common\GameProgressData\GameProgressData.cpp" />
     <ClCompile Include="Game\Common\Helper\MovementHelper\MovementHelper.cpp" />
     <ClCompile Include="Game\Common\Helper\PhysicsHelper\PhysicsHelper.cpp" />
     <ClCompile Include="Game\Common\Input\InputActionType\InputActionType.cpp" />
@@ -367,6 +373,7 @@
     <ClCompile Include="Game\Common\UserInterfaceTool\TimeUI\TimeUI.cpp" />
     <ClCompile Include="Game\Common\WireTargetFinder\WireTargetFinder.cpp" />
     <ClCompile Include="Game\Game.cpp" />
+    <ClCompile Include="Game\GameObjects\CheckPoint\Checkpoint.cpp" />
     <ClCompile Include="Game\GameObjects\Common\GameObject.cpp" />
     <ClCompile Include="Game\GameObjects\Common\MovableObject\MovableObject.cpp" />
     <ClCompile Include="Game\GameObjects\Common\Transform\Transform.cpp" />
@@ -406,6 +413,7 @@
     <ClCompile Include="Game\GameObjects\Wall\Wall.cpp" />
     <ClCompile Include="Game\GameObjects\Wire\Wire.cpp" />
     <ClCompile Include="Game\Manager\BuildingManager\BuildingManager.cpp" />
+    <ClCompile Include="Game\Manager\CheckpointManager\CheckpointManager.cpp" />
     <ClCompile Include="Game\Manager\PlayerManager\PlayerManager.cpp" />
     <ClCompile Include="Game\Manager\StageManager\StageManager.cpp" />
     <ClCompile Include="Game\Scene\GameplayScene\GameplayScene.cpp" />

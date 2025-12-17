@@ -288,7 +288,7 @@ void BuildingManager::CreateBuilding(
 	auto building = std::make_unique<Building>();
 
 	building->GetTransform()->SetPosition(position);
-	building->SetExtends(scale);
+	building->SetExtraScale(scale);
 	building->Initialize(pCommonResources, pCollisionManager);
 	building->SetTileNumber(tileNumber);
 
@@ -333,9 +333,9 @@ void BuildingManager::Save()
 		saves[i].position.y = m_buildings[i]->GetTransform()->GetPosition().y;
 		saves[i].position.z = m_buildings[i]->GetTransform()->GetPosition().z;
 
-		saves[i].scale.x = m_buildings[i]->GetExtends().x;
-		saves[i].scale.y = m_buildings[i]->GetExtends().y;
-		saves[i].scale.z = m_buildings[i]->GetExtends().z;
+		saves[i].scale.x = m_buildings[i]->GetExtraScale().x;
+		saves[i].scale.y = m_buildings[i]->GetExtraScale().y;
+		saves[i].scale.z = m_buildings[i]->GetExtraScale().z;
 	}
 
 	// ššš to_json ‚ª©“®‚ÅŒÄ‚Ño‚³‚êAJSON”z—ñ j ‚ª¶¬‚³‚ê‚é ššš

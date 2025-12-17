@@ -27,7 +27,7 @@ using namespace DirectX;
  */
 Building::Building()
 {
-	m_extends = SimpleMath::Vector3(1.0f, 1.0f, 1.0f);
+	m_extraScale = SimpleMath::Vector3(1.0f, 1.0f, 1.0f);
 
 }
 
@@ -46,7 +46,7 @@ Building::~Building()
 
 /**
  * @brief 初期化処理
- * 
+ *
  * @param[in] pCommonResources
  * @param[in] pCollisionManager
  */
@@ -56,7 +56,7 @@ void Building::Initialize(const CommonResources* pCommonResources, CollisionMana
 	SetCommonResources(pCommonResources);
 
 	GetTransform()->SetScale(0.2f);
-	
+
 	m_colliderExtendOffset.y = -1.0f;
 	m_model = GetCommonResources()->GetResourceManager()->CreateModel("building_01.sdkmesh");
 
@@ -67,14 +67,17 @@ void Building::Initialize(const CommonResources* pCommonResources, CollisionMana
 
 
 		SimpleMath::Vector3 extents = boundingBox.Extents;
-		extents *= m_extends  *  /** 2.0f*/  GetTransform()->GetScale()  * 2.0f;
+		extents *= m_extraScale *  /** 2.0f*/  GetTransform()->GetScale() * 2.0f;
 
-		extents.y = boundingBox.Extents.y * m_extends.y * GetTransform()->GetScale().x * 1.95f;
+		extents.y = boundingBox.Extents.y * m_extraScale.y * GetTransform()->GetScale().x * 1.95f;
 
-		
+		if (m_extent.y < extents.y)
+		{
+			m_extent = extents;
+		}
 
 		//m_positionOffset.y = extents.y / 2.0f;
-		
+
 		std::unique_ptr<AABB> collider = std::make_unique<AABB>(GetTransform()->GetPosition() + SimpleMath::Vector3(0.0f, (extents.y / 2.0f) - 0.5f, 0.0f), extents + m_colliderExtendOffset);
 
 		// 衝突管理に登録
@@ -85,7 +88,7 @@ void Building::Initialize(const CommonResources* pCommonResources, CollisionMana
 
 
 	}
-	
+
 	// カリングよう球コライダの作成
 	m_cullingSphere = std::make_unique<Sphere>(m_collider.front()->GetCenter(), std::max(m_collider.front()->GetExtend().x / 2.0f, std::max(m_collider.front()->GetExtend().y / 2.0f, m_collider.front()->GetExtend().z / 2.0f)));
 
@@ -105,7 +108,7 @@ void Building::Update(float deltaTime)
 
 /**
  * @brief 描画処理
- * 
+ *
  * @param[in] view
  * @param[in] proj
  */
@@ -118,9 +121,9 @@ void Building::Draw(const Camera& camera)
 
 	Matrix world = Matrix::Identity;
 
-	
-	
-	world *= Matrix::CreateScale(m_extends * GetTransform()->GetScale());
+
+
+	world *= Matrix::CreateScale(m_extraScale * GetTransform()->GetScale());
 	world *= Matrix::CreateFromQuaternion(GetTransform()->GetRotation());
 	world *= Matrix::CreateTranslation(GetTransform()->GetPosition());
 

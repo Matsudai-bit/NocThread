@@ -1,74 +1,71 @@
 /*****************************************************************//**
- * @file    GameFlowMessenger.h
- * @brief   ゲーム進行のイベントのメッセージ送出クラスに関するヘッダーファイル
+ * @file    GameProgressDataManager.h
+ * @brief   ゲーム中の進捗データ管理クラスに関するヘッダーファイル
  *
  * @author  松下大暉
- * @date    2025/08/24
+ * @date    2025/12/17
  *********************************************************************/
 
 // 多重インクルードの防止 =====================================================
 #pragma once
 
 
-
-
 // ヘッダファイルの読み込み ===================================================
 #include <memory>
-#include <vector>
-
-#include "Game/Common/Event/Messenger/GameFlowMessenger/GameFlowEventID.h"
 
 // クラスの前方宣言 ===================================================
-class IGameFlowObserver;
 
+/**
+ * @brief ゲーム中の進捗データ
+ */
+struct GameProgressData
+{
+	int passedCheckpointNum;///< 通過したチェックポイント数
+
+	float gameTime;			///< ゲーム時間
+};
 
 // クラスの定義 ===============================================================
 /**
- * @brief ゲーム進行のイベントのメッセージ送出クラス (シングルトン)
+ * @brief ゲーム中の進捗データ管理
  */
-class GameFlowMessenger final
+class GameProgressDataManager
 {
 // クラス定数の宣言 -------------------------------------------------
 public:
 
-
+	std::unique_ptr<GameProgressData> m_gameProgressData; ///< ゲーム進捗データ
 
 // データメンバの宣言 -----------------------------------------------
 private:
-	
-	// インスタンス
-	static std::unique_ptr<GameFlowMessenger> s_instance;
 
-	std::vector<IGameFlowObserver*> m_observers; ///< 監視者
 
 
 // メンバ関数の宣言 -------------------------------------------------
-private:
+// コンストラクタ/デストラクタ
+public:
 	// コンストラクタ
-	GameFlowMessenger() = default;
-public :
+	GameProgressDataManager();
+
 	// デストラクタ
-	~GameFlowMessenger() ;
+	~GameProgressDataManager();
 
 
 // 操作
 public:
 
-	// 監視者の登録
-	void RegistryObserver(IGameFlowObserver* observer);
+	// 通過したチェックポイント数を増やす
+	void IncrementPassedCheckpoints();
 
-	// 通知
-	void Notify(GameFlowEventID eventID);
+	// データをリセットする
+	void ResetData();
 
-	// 全て削除
-	void RemoveAllObserver();
+	// 進捗データの取得
+	GameProgressData GetProgressData() const;
+
 
 // 取得/設定
 public:
-
-	// インスタンスの取得
-	static  GameFlowMessenger* GetInstance();
-
 
 
 // 内部実装

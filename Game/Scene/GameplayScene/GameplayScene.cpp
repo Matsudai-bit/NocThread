@@ -24,6 +24,7 @@
 #include "Game/Common/CommonResources/CommonResources.h"
 
 // 基盤システム
+#include "Game/Common/GameDirector/GameDirector.h"
 #include "Game/Common/ResourceManager/ResourceManager.h"
 #include "Game/Common/Collision/CollisionManager/CollisionManager.h"
 #include "Game/Common/SoundManager/SoundManager.h"
@@ -63,7 +64,7 @@ GameplayScene::GameplayScene()
 	GameObjectRegistry::GetInstance()->Clear();
 
 	GameFlowMessenger::GetInstance()->RemoveAllObserver();
-	GameFlowMessenger::GetInstance()->RegistrObserver(this);
+	GameFlowMessenger::GetInstance()->RegistryObserver(this);
 }
 
 
@@ -236,6 +237,10 @@ void GameplayScene::SetUpForGameStart()
  */
 void GameplayScene::CreatePlatform()
 {
+	// **** ゲーム進行の監督の作成 ****
+	m_gameDirector = std::make_unique<GameDirector>();
+	m_gameDirector->Initialize();
+
 	// **** 衝突管理の生成 ****
 	m_collisionManager = std::make_unique<CollisionManager>();
 
@@ -261,10 +266,8 @@ void GameplayScene::CreatePlatform()
  * */
 void GameplayScene::CreateStage()
 {
-	
 	m_stageManager->Initialize();
 	m_stageManager->CreateStage(m_collisionManager.get(), m_taskManager.get());
-
 }
 
 /**
@@ -275,6 +278,7 @@ void GameplayScene::CreateTask()
 {
 	
 	// **** タスクの登録 ****
+	m_taskManager->AddTask(m_gameDirector.get());		// GameDirector
 	m_taskManager->AddTask(m_stageManager.get());		// StageManager
 	m_taskManager->AddTask(m_collisionManager.get());	// CollisionManager
 	m_taskManager->AddTask(m_gameEffectManager.get());	// EffectManager

@@ -25,7 +25,6 @@
 
 #include "Game/Common/Screen.h"
 
-
 // システム
 #include "Game/Common/CommonResources/CommonResources.h"                // 共通リソース
 #include "Game/Common/EventSystem/EventData/EventData.h"
@@ -44,6 +43,7 @@ class GameEffectManager;// エフェクト管理
 class StageManager;		// ステージ管理
 class TaskManager;		// タスク管理
 class Minimap;			// ミニマップ
+class GameDirector;		// ゲーム進行の監督
 
 
 // クラスの定義 ===============================================================
@@ -75,6 +75,7 @@ private:
 	std::unique_ptr<StateMachine<GameplayScene>> m_stateMachine; ///< ステートマシーン
 
     // システム
+	std::unique_ptr<GameDirector>		m_gameDirector;		///< ゲーム進行の監督
     std::unique_ptr<CollisionManager>   m_collisionManager; ///< 衝突管理
 	std::unique_ptr<GameEffectManager>	m_gameEffectManager;///< ゲームエフェクト管理
 	std::unique_ptr<TaskManager>		m_taskManager;		///< タスク管理

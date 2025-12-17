@@ -68,7 +68,7 @@ void SpawnManager::Initialize(
 	m_pCollisionManager = pCollisionManager;
 
 	// オブザーバーに登録
-	GameFlowMessenger::GetInstance()->RegistrObserver(this);
+	GameFlowMessenger::GetInstance()->RegistryObserver(this);
 
 	// イベントスタックの初期化処理
 }

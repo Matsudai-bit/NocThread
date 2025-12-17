@@ -43,6 +43,7 @@
 #include "Game/Common/GameObjectManager/EnemyManager/EnemyManager.h"
 #include "Game/Common/SpawnManager/SpawnManager.h"
 #include "Game/Manager/PlayerManager/PlayerManager.h"
+#include "Game/Manager/CheckpointManager/CheckpointManager.h"
 
 #include "Game/Common/Camera/PlayerCamera/PlayerCamera.h"
 #include "Game/GameObjects/Player/PlayerController/PlayerController.h"
@@ -242,12 +243,25 @@ void StageManager::CreatePlayer(PlayerData data, CollisionManager* pCollisionMan
 		m_playerManager->Initialize(m_pCommonResources, pCollisionManager, m_playerCamera.get());
 
 		m_playerManager->GetPlayer()->GetTransform()->SetPosition(tileBuilding->GetTransform()->GetPosition() + SimpleMath::Vector3(0.0f, 80.0f, 0.0f));
-
-
 	}
 
 
 
+
+}
+
+void StageManager::CreateCheckpoint(CollisionManager* pCollisionManager)
+{
+	// **** チェックポイント管理 の作成 ****
+	m_checkpointManager = std::make_unique<CheckpointManager>();
+
+
+	const Building* tileBuilding = nullptr;
+	if (m_buildingManager->FindBuilding(11, tileBuilding))
+	{
+		m_checkpointManager->CreateCheckpoint(tileBuilding->GetTransform()->GetPosition() + SimpleMath::Vector3(0.0f, tileBuilding->GetExtent().y, 0.0f), pCollisionManager, m_pCommonResources);
+
+	}
 
 }
 
@@ -282,7 +296,8 @@ void StageManager::CreateStage(CollisionManager* pCollisionManager, TaskManager*
 	m_buildingManager = std::make_unique<BuildingManager>(m_pCommonResources);
 	m_buildingManager->Initialize();
 	m_buildingManager->RequestCreate(pCollisionManager, m_pCommonResources);
-	// **** 床の生成 *****
+
+		// **** 床の生成 *****
 	m_floor = std::make_unique<Floor>();
 	// 床の初期化
 	m_floor->Initialize(SimpleMath::Vector3(0.0f, 0.0f, 0.0f), m_pCommonResources, pCollisionManager);
@@ -313,7 +328,10 @@ void StageManager::CreateStage(CollisionManager* pCollisionManager, TaskManager*
 	// **** 天球の作成 ****
 	m_skySphere = m_pCommonResources->GetResourceManager()->CreateModel("skyDome.sdkmesh");
 
-	//// ハードウェア乱数源からシードを生成
+	// チェックポイントの作成
+	CreateCheckpoint(pCollisionManager);
+	
+	//// ハードウェアz乱数源からシードを生成
 	//static std::random_device seed_gen;
 
 	//// シードを使って乱数エンジンを初期化
@@ -356,7 +374,8 @@ void StageManager::AddTask(TaskManager* pTaskManager)
 		m_playerManager	.get(),
 		m_buildingManager.get(),
 		m_enemyManager	.get(),
-		m_treasure		.get()
+		m_treasure		.get(),
+		m_checkpointManager.get()
 	};
 	for (auto& helicopter : m_escapeHelicopter)
 	{

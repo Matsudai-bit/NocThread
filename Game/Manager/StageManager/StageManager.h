@@ -59,6 +59,7 @@ class IEnemyFactory;
 class CircularShadow;	// 丸影
 class BuildingManager;  // 建物管理
 class PlayerManager;	// プレイヤー管理
+class CheckpointManager;// チェックポイント管理
 
 class RopeObject;
 class ParticleObject;
@@ -130,10 +131,11 @@ private:
 	// スプライト関連
 
 	// ゲームオブジェクト管理系
-	std::unique_ptr<SpawnManager>	m_spawnManager;		///< 生成管理
-	std::unique_ptr<EnemyManager>	m_enemyManager;		///< 敵管理
-	std::unique_ptr<BuildingManager>m_buildingManager;	///< 建物管理
-	std::unique_ptr<PlayerManager>	m_playerManager;	///< プレイヤー管理
+	std::unique_ptr<SpawnManager>		m_spawnManager;		///< 生成管理
+	std::unique_ptr<EnemyManager>		m_enemyManager;		///< 敵管理
+	std::unique_ptr<BuildingManager>	m_buildingManager;	///< 建物管理
+	std::unique_ptr<PlayerManager>		m_playerManager;	///< プレイヤー管理
+	std::unique_ptr<CheckpointManager>	m_checkpointManager;///< チェックポイント管理
 
 
 	// ゲームオブジェクト
@@ -225,6 +227,7 @@ private:
 
 	// プレイヤーの作成
 	void CreatePlayer(PlayerData data, CollisionManager* pCollisionManager);
+	void CreateCheckpoint(CollisionManager* pCollisionManager);
 
 
 };
