@@ -437,6 +437,12 @@
     <Filter Include="Game\Common\GameDirector">
       <UniqueIdentifier>{bb3178ef-78d9-4c1e-b37f-f5e1b405c2ad}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Library\MyLib\DirectX\DirectXMyToolKit\ModelPart">
+      <UniqueIdentifier>{d3679e01-201b-4271-ba86-575ed2764fcb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\GameObjects\Checkpoint\CheckpointObject">
+      <UniqueIdentifier>{e2a5767a-b105-4aa5-8930-7eeb3837206e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -852,6 +858,12 @@
     <ClInclude Include="Game\Common\GameDirector\GameDirector.h">
       <Filter>Game\Common\GameDirector</Filter>
     </ClInclude>
+    <ClInclude Include="Library\MyLib\DirectXMyToolKit\ModelPart\ModelPart.h">
+      <Filter>Library\MyLib\DirectX\DirectXMyToolKit\ModelPart</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameObjects\CheckPoint\CheckpointObject\CheckpointObject.h">
+      <Filter>Game\GameObjects\Checkpoint\CheckpointObject</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -1209,6 +1221,9 @@
     </ClCompile>
     <ClCompile Include="Game\Common\GameDirector\GameDirector.cpp">
       <Filter>Game\Common\GameDirector</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\GameObjects\CheckPoint\CheckpointObject\CheckpointObject.cpp">
+      <Filter>Game\GameObjects\Checkpoint\CheckpointObject</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

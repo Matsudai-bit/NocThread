@@ -22,6 +22,8 @@
 // イベント関連
 #include "Game/Common/Event/Messenger/GameFlowMessenger/GameFlowMessenger.h"
 
+#include "Game/GameObjects/CheckPoint/CheckpointObject/CheckpointObject.h"
+
 using namespace DirectX;
 
 // メンバ関数の定義 ===========================================================
@@ -32,12 +34,14 @@ using namespace DirectX;
  */
 Checkpoint::Checkpoint()
 	: m_isEnabled{ false }
-	, m_time{}
 {
 	// コライダーの作成
 	//m_collider = std::make_unique<Cylinder>(SimpleMath::Vector3::UnitY, 1.0f, GetTransform()->GetPosition(), 3.0f);
 	//m_collider = std::make_unique<Sphere>(GetTransform()->GetPosition(), 1.0f);
 	m_collider = std::make_unique<AABB>(GetTransform()->GetPosition(), SimpleMath::Vector3(9.0f, 3.0f, 9.0f));
+
+	m_checkpointObject = std::make_unique<CheckpointObjectController>();
+
 }
 
 
@@ -67,16 +71,13 @@ void Checkpoint::Initialize(const CommonResources* pCommonResources, CollisionMa
 
 	// チェックポイントを有効化する
 	m_isEnabled = true;
-	// モデルの作成
-	m_model[2] = std::make_unique<Model>(GetCommonResources()->GetResourceManager()->CreateModel("movingLight_head.sdkmesh"));
-	m_model[1] = std::make_unique<Model>(GetCommonResources()->GetResourceManager()->CreateModel("movingLight_arm.sdkmesh"));
-	m_model[0] = std::make_unique<Model>(GetCommonResources()->GetResourceManager()->CreateModel("movingLight_body.sdkmesh"));
 
-	// スケールの作成
-	GetTransform()->SetScale(2.0f);
 
-	// デフォルト回転の初期化
-	GetTransform()->SetInitialRotation(SimpleMath::Quaternion::CreateFromYawPitchRoll(XMConvertToRadians(DEFAULT_ROTATION_Y_DEGREE), 0, 0.0f));
+	// スケールの設定
+	m_checkpointObject->SetScale(2.0f);
+
+
+	m_checkpointObject->Initialize(GetCommonResources()->GetResourceManager());
 
 }
 
@@ -91,10 +92,10 @@ void Checkpoint::Initialize(const CommonResources* pCommonResources, CollisionMa
 void Checkpoint::Update(float deltaTime)
 {
 	UNREFERENCED_PARAMETER(deltaTime);
-
+	m_checkpointObject->SetPosition(GetTransform()->GetPosition());
 	m_collider->SetCenter(GetTransform()->GetPosition());
 
-	m_time += deltaTime * 50.0f;
+	m_checkpointObject->Update(deltaTime);
 }
 
 
@@ -111,29 +112,19 @@ void Checkpoint::Draw(const Camera& camera)
 	using namespace SimpleMath;
 
 	auto context = GetCommonResources()->GetDeviceResources()->GetD3DDeviceContext();
+	
 
-	Matrix defaultRotateMat = Matrix::CreateFromQuaternion(GetTransform()->GetInitialRotation());
-
-	Matrix transMat		= Matrix::CreateTranslation(GetTransform()->GetPosition());
-	Matrix rotateMat	= Matrix::CreateFromQuaternion(GetTransform()->GetRotation());
-	Matrix scaleMat		= Matrix::CreateScale(GetTransform()->GetScale());
-
-	Matrix world = defaultRotateMat * scaleMat * rotateMat * transMat;
-
-	m_model[0]->Draw(context, *GetCommonResources()->GetCommonStates(), world, camera.GetViewMatrix(), camera.GetProjectionMatrix());
-
-	world = Matrix::CreateRotationY(XMConvertToRadians(m_time)) * Matrix::CreateTranslation(Vector3(0.0f, 0.35f, 0.0f)) * world;
-
-	m_model[1]->Draw(context, *GetCommonResources()->GetCommonStates(), world, camera.GetViewMatrix(), camera.GetProjectionMatrix());
-
-	world = Matrix::CreateRotationX(XMConvertToRadians(90.0f * std::sin(XMConvertToRadians(m_time)))) * Matrix::CreateTranslation(Vector3(0.0f, 1.25f, 0.0f)) * world;
-
-	m_model[2]->Draw(context, *GetCommonResources()->GetCommonStates(), world, camera.GetViewMatrix(), camera.GetProjectionMatrix());
-
+	m_checkpointObject->Draw(context, GetCommonResources()->GetCommonStates(), camera);
 
 	// 目印
-	auto cylinder = DirectX::GeometricPrimitive::CreateCylinder(context, 1000.f, 0.5f);
+	auto cylinder = DirectX::GeometricPrimitive::CreateCylinder(context, 1000.f, 0.4f);
 
+
+	Matrix transMat = Matrix::CreateTranslation(GetTransform()->GetPosition());
+	Matrix rotateMat = Matrix::CreateFromQuaternion(GetTransform()->GetRotation());
+	Matrix scaleMat = Matrix::CreateScale(GetTransform()->GetScale());
+
+	Matrix world = scaleMat * rotateMat * transMat;
 	world = SimpleMath::Matrix::Identity;
 	world *= Matrix::CreateTranslation(GetTransform()->GetPosition());
 	cylinder->Draw(world, camera.GetViewMatrix(), camera.GetProjectionMatrix(), Colors::GreenYellow);
@@ -163,11 +154,11 @@ void Checkpoint::Finalize()
  */
 void Checkpoint::OnCollision(const CollisionInfo& info)
 {
-	//if (info.pOtherObject->GetTag() == GameObjectTag::PLAYER && m_isEnabled)
-	//{
-	//	m_isEnabled = false;
-	//	// プレイヤーがチェックポイントを通過したことを通知する
-	//	GameFlowMessenger::GetInstance()->Notify(GameFlowEventID::CHECKPOINT_PASSED);
+	if (info.pOtherObject->GetTag() == GameObjectTag::PLAYER && m_isEnabled)
+	{
+		m_isEnabled = false;
+		// プレイヤーがチェックポイントを通過したことを通知する
+		GameFlowMessenger::GetInstance()->Notify(GameFlowEventID::CHECKPOINT_PASSED);
 
-	//}
+	}
 }

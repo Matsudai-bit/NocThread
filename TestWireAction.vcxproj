@@ -238,6 +238,7 @@
     <ClInclude Include="Game\Common\WireTargetFinder\WireTargetFinder.h" />
     <ClInclude Include="Game\Game.h" />
     <ClInclude Include="Game\GameObjects\CheckPoint\Checkpoint.h" />
+    <ClInclude Include="Game\GameObjects\CheckPoint\CheckpointObject\CheckpointObject.h" />
     <ClInclude Include="Game\GameObjects\Common\GameObject.h" />
     <ClInclude Include="Game\GameObjects\Common\GameObjectEvent\GameObjectEvent.h" />
     <ClInclude Include="Game\GameObjects\Common\MovableObject\MovableObject.h" />
@@ -317,6 +318,7 @@
     <ClInclude Include="Library\MyLib\DirectXMyToolKit\DepthStencil\DepthStencil.h" />
     <ClInclude Include="Library\MyLib\DirectXMyToolKit\DirectXMyToolKit.h" />
     <ClInclude Include="Library\MyLib\DirectXMyToolKit\GridFloor\GridFloor.h" />
+    <ClInclude Include="Library\MyLib\DirectXMyToolKit\ModelPart\ModelPart.h" />
     <ClInclude Include="Library\MyLib\DirectXMyToolKit\OffscreenRendering\OffscreenRendering.h" />
     <ClInclude Include="Library\MyLib\EasingKit\EasingKit.h" />
     <ClInclude Include="Library\MyLib\MathUtils\MathUtils.h" />
@@ -374,6 +376,7 @@
     <ClCompile Include="Game\Common\WireTargetFinder\WireTargetFinder.cpp" />
     <ClCompile Include="Game\Game.cpp" />
     <ClCompile Include="Game\GameObjects\CheckPoint\Checkpoint.cpp" />
+    <ClCompile Include="Game\GameObjects\CheckPoint\CheckpointObject\CheckpointObject.cpp" />
     <ClCompile Include="Game\GameObjects\Common\GameObject.cpp" />
     <ClCompile Include="Game\GameObjects\Common\MovableObject\MovableObject.cpp" />
     <ClCompile Include="Game\GameObjects\Common\Transform\Transform.cpp" />

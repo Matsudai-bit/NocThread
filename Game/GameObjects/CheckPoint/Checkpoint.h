@@ -14,12 +14,15 @@
 
 // ヘッダファイルの読み込み ===================================================
 #include <memory>
+#include <unordered_map>
 #include "Game/GameObjects/Common/GameObject.h"
 #include "Game/Common/Collision/Collision.h"
-
+#include "Library/MyLib/DirectXMyToolKit/ModelPart/ModelPart.h"
 // クラスの前方宣言 ===================================================
 class CommonResources; // 共通リソース
 class CollisionManager;// 衝突管理
+class CheckpointObjectController; // チェックポイントオブジェクトの操作クラス
+
 
 // クラスの定義 ===============================================================
 /**
@@ -31,18 +34,15 @@ class Checkpoint
 // クラス定数の宣言 -------------------------------------------------
 public:
 
-	static constexpr float DEFAULT_ROTATION_Y_DEGREE = 180.0f;
+
 
 // データメンバの宣言 -----------------------------------------------
 private:
 
 	bool m_isEnabled; ///< 有効化されているかどうか
-
-	std::unique_ptr<DirectX::Model> m_model[3];
-
 	std::unique_ptr<AABB> m_collider;
 
-	float m_time;
+	std::unique_ptr< CheckpointObjectController> m_checkpointObject;	///< チェックポイントオブジェクト
 
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ

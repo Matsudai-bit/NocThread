@@ -298,5 +298,5 @@ void GameplayScene::StartGame()
 
 
 	// ***** ゲーム開始通知 *****
-	GameFlowMessenger::GetInstance()->Notify(GameFlowEventID::STOLE_TREASURE);
+	GameFlowMessenger::GetInstance()->Notify(GameFlowEventID::GAME_START);
 }

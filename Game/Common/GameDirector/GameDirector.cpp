@@ -98,6 +98,10 @@ void GameDirector::ResolveGameFlowEvent()
 			break;
 		case GameFlowEventID::CHECKPOINT_PASSED:
 			m_gameProgressDataManager->IncrementPassedCheckpoints();
+			if (m_gameProgressDataManager->GetProgressData().passedCheckpointNum > 0)
+			{
+				GameFlowMessenger::GetInstance()->Notify(GameFlowEventID::STOLE_TREASURE);
+			}
 			break;
 		case GameFlowEventID::SPAWN_HELICOPTER:
 			break;
