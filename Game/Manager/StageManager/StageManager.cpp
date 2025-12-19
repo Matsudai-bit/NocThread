@@ -323,7 +323,7 @@ void StageManager::CreateStage(CollisionManager* pCollisionManager, TaskManager*
 
 	// ***** oŒ»ŠÇ—‚Ìì¬ *****
 	m_spawnManager = std::make_unique<SpawnManager>();
-	m_spawnManager->Initialize(m_enemyManager.get(), &m_escapeHelicopter, m_pCommonResources, pCollisionManager);
+	m_spawnManager->Initialize(m_playerManager.get(), m_buildingManager.get(), m_enemyManager.get(), &m_escapeHelicopter, m_pCommonResources, pCollisionManager);
 
 	// **** “V‹…‚Ìì¬ ****
 	m_skySphere = m_pCommonResources->GetResourceManager()->CreateModel("skyDome.sdkmesh");

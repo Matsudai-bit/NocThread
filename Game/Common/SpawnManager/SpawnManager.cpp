@@ -8,6 +8,8 @@
 
 // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
+#include <random>
+#include <fstream>
 #include "SpawnManager.h"
 
 #include "Game/Common/Event/Messenger/GameFlowMessenger/GameFlowMessenger.h"
@@ -18,8 +20,10 @@
 #include "Game/Common/Factory/EnemyFactory/EnemyFactory.h"
 #include "Game/Common/GameObjectRegistry/GameObjectRegistry.h"
 #include "Game/GameObjects/Helicopter/EscapeHelicopter/EscapeHelicopter.h"
-#include <random>
 
+#include "Game/Manager/BuildingManager/BuildingManager.h"
+#include "Game/Manager/PlayerManager/PlayerManager.h"
+#include "Game/GameObjects/Player/Player.h"
 using namespace DirectX;
 
 // メンバ関数の定義 ===========================================================
@@ -30,6 +34,8 @@ using namespace DirectX;
  */
 SpawnManager::SpawnManager()
 	: m_pEnemyManager		{ nullptr }
+	, m_pPlayerManager		{ nullptr }
+	, m_pBuildingManager	{ nullptr }
 	, m_pCommonResources	{ nullptr }
 	, m_pCollisionManager	{ nullptr }
 	, m_stoleTreasure		{ false }
@@ -58,11 +64,17 @@ SpawnManager::~SpawnManager()
  * @return なし
  */
 void SpawnManager::Initialize(
+	PlayerManager* pPlayerManager,
+	BuildingManager* pBuildingManager,
 	EnemyManager* pEnemyManager,
-	std::vector<std::unique_ptr<EscapeHelicopter>>* pEscapeHelicopters,const CommonResources* pCommonResources, CollisionManager* pCollisionManager)
+	std::vector<std::unique_ptr<EscapeHelicopter>>* pEscapeHelicopters,
+	const CommonResources* pCommonResources,
+	CollisionManager* pCollisionManager)
 {
-	m_pEnemyManager = pEnemyManager;
-	m_pEscapeHelicopters = pEscapeHelicopters;
+	m_pPlayerManager	= pPlayerManager;
+	m_pBuildingManager	= pBuildingManager;
+	m_pEnemyManager		= pEnemyManager;
+	m_pEscapeHelicopters= pEscapeHelicopters;
 
 	m_pCommonResources = pCommonResources;
 	m_pCollisionManager = pCollisionManager;
@@ -116,6 +128,66 @@ bool SpawnManager::UpdateTask(float deltaTime)
  */
 void SpawnManager::Finalize()
 {
+
+}
+
+void from_json(const nlohmann::json& j, SpawnManager::StageLayoutData& data)
+{
+	j.at("BuildingData").get_to(data.buildingJsonName);
+	j.at("PlayerData").get_to(data.playerJsonName);
+}
+void from_json(const nlohmann::json& j, SpawnManager::PlayerData& data)
+{
+	j.at("PlaceTileNumber").get_to(data.tileNumber);
+}
+/**
+ * @brief ゲームの初期配置をする
+ * 
+ */
+void SpawnManager::SetupInitialLayout()
+{
+
+	nlohmann::json stageLayoutJson;
+
+	const std::string stageLayoutDataPath = STAGE_DATA_FOLDER_PATH + "/" + "stageLayoutData.json";
+	std::ifstream ifs(stageLayoutDataPath);
+
+	ifs >> stageLayoutJson;
+
+	auto stageLayoutData = stageLayoutJson.get<StageLayoutData>();
+
+	nlohmann::json playerDataJson;
+	const std::string playerDataPath = STAGE_DATA_FOLDER_PATH + "/" + stageLayoutData.playerJsonName;
+	std::ifstream ifs2(playerDataPath);
+	ifs2 >> playerDataJson;
+	if (!ifs2.is_open())
+	{
+		return;
+	}
+	auto playerData = playerDataJson.get<PlayerData>();
+
+
+	m_pBuildingManager->RequestCreate(m_pCollisionManager, m_pCommonResources);
+
+}
+
+
+void SpawnManager::CreatePlayer(PlayerData data, CollisionManager* pCollisionManager)
+{
+	using namespace nlohmann;
+
+	json playerJson{};
+
+	const Building* tileBuilding = nullptr;
+	if (m_pBuildingManager->FindBuilding(data.tileNumber, tileBuilding))
+	{
+
+
+		m_pPlayerManager->GetPlayer()->GetTransform()->SetPosition(tileBuilding->GetTransform()->GetPosition() + SimpleMath::Vector3(0.0f, 80.0f, 0.0f));
+	}
+
+
+
 
 }
 
