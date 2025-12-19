@@ -864,6 +864,9 @@
     <ClInclude Include="Game\GameObjects\CheckPoint\CheckpointObject\CheckpointObject.h">
       <Filter>Game\GameObjects\Checkpoint\CheckpointObject</Filter>
     </ClInclude>
+    <ClInclude Include="Game\Common\Factory\FactoryBase.h">
+      <Filter>Game\Common\Factory</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />

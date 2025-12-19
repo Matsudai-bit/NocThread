@@ -202,6 +202,7 @@
     <ClInclude Include="Game\Common\ExitController\ExitController.h" />
     <ClInclude Include="Game\Common\Factory\EnemyFactory\EnemyFactory.h" />
     <ClInclude Include="Game\Common\Factory\EnemyFactory\IEnemyFactory\IEnemyFactory.h" />
+    <ClInclude Include="Game\Common\Factory\FactoryBase.h" />
     <ClInclude Include="Game\Common\GameDirector\GameDirector.h" />
     <ClInclude Include="Game\Common\GameEffect\Base\GameEffectBase.h" />
     <ClInclude Include="Game\Common\GameEffect\Base\IGameEffect.h" />

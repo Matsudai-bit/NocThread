@@ -154,7 +154,7 @@ void SpawnManager::OnStealingTreasures()
 	//　****　敵の生成 ****
 	Vector3 center = pPlayer->GetTransform()->GetPosition();
 
-	std::unique_ptr<IEnemyFactory> factory = std::make_unique<EnemyFactory::FlyingChaserEnemy>();
+	auto factory = std::make_unique<EnemyFactory::FlyingChaserEnemy>();
 
 	const int NUM = 10;
 	const float RADIUS = 20.0f;
@@ -227,7 +227,7 @@ void SpawnManager::SpawnEnemy()
 	//　****　敵の生成 ****
 	Vector3 treasurePos = GameObjectRegistry::GetInstance()->GetGameObject(GameObjectTag::PLAYER)->GetTransform()->GetPosition();
 	std::uniform_int_distribution<> dist(0, 180);
-	std::unique_ptr<IEnemyFactory> factory = std::make_unique<EnemyFactory::FlyingChaserEnemy>();
+	auto factory = std::make_unique<EnemyFactory::FlyingChaserEnemy>();
 
 	// ハードウェア乱数源からシードを生成
 	static std::random_device seed_gen;
