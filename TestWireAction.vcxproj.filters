@@ -443,6 +443,9 @@
     <Filter Include="Game\GameObjects\Checkpoint\CheckpointObject">
       <UniqueIdentifier>{e2a5767a-b105-4aa5-8930-7eeb3837206e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\Common\Factory\BuildingFactory">
+      <UniqueIdentifier>{978c068c-8857-4fcf-b52b-ecc1e38f3487}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -867,6 +870,9 @@
     <ClInclude Include="Game\Common\Factory\FactoryBase.h">
       <Filter>Game\Common\Factory</Filter>
     </ClInclude>
+    <ClInclude Include="Game\Common\Factory\BuildingFactory\BuildingFactory.h">
+      <Filter>Game\Common\Factory\BuildingFactory</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -1227,6 +1233,9 @@
     </ClCompile>
     <ClCompile Include="Game\GameObjects\CheckPoint\CheckpointObject\CheckpointObject.cpp">
       <Filter>Game\GameObjects\Checkpoint\CheckpointObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Common\Factory\BuildingFactory\BuildingFactory.cpp">
+      <Filter>Game\Common\Factory\BuildingFactory</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

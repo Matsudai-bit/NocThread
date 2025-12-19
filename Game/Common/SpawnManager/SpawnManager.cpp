@@ -131,11 +131,9 @@ void from_json(const nlohmann::json& j, SpawnManager::PlayerData& data)
 }
 /**
  * @brief ゲームの初期配置をする
- * 
  */
 void SpawnManager::SetupInitialLayout()
 {
-
 	nlohmann::json stageLayoutJson;
 
 	const std::string stageLayoutDataPath = STAGE_DATA_FOLDER_PATH + "/" + "stageLayoutData.json";
@@ -176,7 +174,14 @@ void SpawnManager::CreatePlayer(PlayerData data, CollisionManager* pCollisionMan
 	}
 
 }
-
+/**
+ * @brief ゲームオブジェクト管理の設定
+ * 
+ * @param[in] pPlayerManager	プレイヤー管理
+ * @param[in] pBuildingManager	建物管理
+ * @param[in] pEnemyManager		敵管理
+ * @param[in] pEscapeHelicoptersヘリコプター
+ */
 void SpawnManager::SetManagers(
 	PlayerManager* pPlayerManager,
 	BuildingManager* pBuildingManager,
@@ -234,7 +239,7 @@ void SpawnManager::OnStealingTreasures()
 	{
 		float degree = (360.0f / NUM) * i;
 
-		auto enemy = factory->Create();
+		auto enemy = factory->Create(DefaultSpawnDesc());
 		
 		enemy->Initialize(m_pCommonResources, m_pCollisionManager);
 		Vector3 pos;
@@ -314,7 +319,7 @@ void SpawnManager::SpawnEnemy()
 	{
 		float degree = (360.0f / NUM) * i + startDegree;
 
-		auto enemy = factory->Create();
+		auto enemy = factory->Create(DefaultSpawnDesc());
 
 		enemy->Initialize(m_pCommonResources, m_pCollisionManager);
 		Vector3 pos;

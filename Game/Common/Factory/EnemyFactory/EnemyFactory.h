@@ -15,6 +15,7 @@
 // ヘッダファイルの読み込み ===================================================
 #include "Game/Common/Factory/EnemyFactory/IEnemyFactory/IEnemyFactory.h"
 #include "Game/Common/Factory/FactoryBase.h"
+#include "Game/GameObjects/Enemy/Enemy.h"
 
 
 // クラスの前方宣言 ===================================================
@@ -39,7 +40,7 @@ namespace EnemyFactory
 	public:
 
 		// 生成したオブジェクトを組み立てる
-		void Assemble(Enemy* instance) override;
+		void Assemble(Enemy* instance, const DefaultSpawnDesc& desc) override;
 	};
 
 	/**
@@ -57,7 +58,7 @@ namespace EnemyFactory
 
 	public:
 		// 生成したオブジェクトを組み立てる
-		void Assemble(Enemy* instance) override;
+		void Assemble(Enemy* instance, const DefaultSpawnDesc& desc) override;
 
 	};
 

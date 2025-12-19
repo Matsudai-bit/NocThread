@@ -19,13 +19,13 @@
  * 
  * @param[in] instance　生成されたオブジェクト
  */
-void EnemyFactory::TrackingEnemy::Assemble(Enemy* instance)
+void EnemyFactory::TrackingEnemy::Assemble(Enemy* instance, const DefaultSpawnDesc& desc)
 {
 	instance->AddUpdateBehaviour(std::make_unique<FlyingChaserEnemyBehaviour>());
 
 }
 
-void EnemyFactory::FlyingChaserEnemy::Assemble(Enemy* instance)
+void EnemyFactory::FlyingChaserEnemy::Assemble(Enemy* instance, const DefaultSpawnDesc& desc)
 {
 	instance->AddUpdateBehaviour(std::make_unique<FlyingChaserEnemyBehaviour>());
 
