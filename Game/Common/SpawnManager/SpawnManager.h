@@ -96,10 +96,6 @@ public:
 public:
 	// 初期化処理
 	void Initialize(
-		PlayerManager* pPlayerManager, 
-		BuildingManager* pBuildingManager,
-		EnemyManager* pEnemyManager,
-		std::vector<std::unique_ptr<EscapeHelicopter>>* pEscapeHelicopters,
 		const CommonResources* pCommonResources, 
 		CollisionManager* pCollisionManager);
 
@@ -115,7 +111,11 @@ public:
 	void CreatePlayer(PlayerData data, CollisionManager* pCollisionManager);
 
 	// ゲームオブジェクト管理の設定
-	//void SetGameObjectManagers();
+	void SetManagers(
+		PlayerManager* pPlayerManager,
+		BuildingManager* pBuildingManager,
+		EnemyManager* pEnemyManager,
+		std::vector<std::unique_ptr<EscapeHelicopter>>* pEscapeHelicopters);
 
 // イベント関連
 public:

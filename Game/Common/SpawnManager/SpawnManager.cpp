@@ -63,19 +63,8 @@ SpawnManager::~SpawnManager()
  *
  * @return ‚È‚µ
  */
-void SpawnManager::Initialize(
-	PlayerManager* pPlayerManager,
-	BuildingManager* pBuildingManager,
-	EnemyManager* pEnemyManager,
-	std::vector<std::unique_ptr<EscapeHelicopter>>* pEscapeHelicopters,
-	const CommonResources* pCommonResources,
-	CollisionManager* pCollisionManager)
+void SpawnManager::Initialize(const CommonResources* pCommonResources,CollisionManager* pCollisionManager)
 {
-	m_pPlayerManager	= pPlayerManager;
-	m_pBuildingManager	= pBuildingManager;
-	m_pEnemyManager		= pEnemyManager;
-	m_pEscapeHelicopters= pEscapeHelicopters;
-
 	m_pCommonResources = pCommonResources;
 	m_pCollisionManager = pCollisionManager;
 
@@ -168,7 +157,7 @@ void SpawnManager::SetupInitialLayout()
 
 
 	m_pBuildingManager->RequestCreate(m_pCollisionManager, m_pCommonResources);
-
+	CreatePlayer(playerData, m_pCollisionManager);
 }
 
 
@@ -186,8 +175,18 @@ void SpawnManager::CreatePlayer(PlayerData data, CollisionManager* pCollisionMan
 		m_pPlayerManager->GetPlayer()->GetTransform()->SetPosition(tileBuilding->GetTransform()->GetPosition() + SimpleMath::Vector3(0.0f, 80.0f, 0.0f));
 	}
 
+}
 
-
+void SpawnManager::SetManagers(
+	PlayerManager* pPlayerManager,
+	BuildingManager* pBuildingManager,
+	EnemyManager* pEnemyManager,
+	std::vector<std::unique_ptr<EscapeHelicopter>>* pEscapeHelicopters)
+{
+	m_pPlayerManager = pPlayerManager;
+	m_pBuildingManager = pBuildingManager;
+	m_pEnemyManager = pEnemyManager;
+	m_pEscapeHelicopters = pEscapeHelicopters;
 
 }
 
