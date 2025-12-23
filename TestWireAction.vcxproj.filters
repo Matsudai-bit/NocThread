@@ -446,6 +446,12 @@
     <Filter Include="Game\Common\Factory\BuildingFactory">
       <UniqueIdentifier>{978c068c-8857-4fcf-b52b-ecc1e38f3487}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\Common\Factory\PlayerFactory">
+      <UniqueIdentifier>{6232b302-e8f5-44fb-9875-31a26e0ae6e0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Library\MyLib\NlohmannJsonUtils">
+      <UniqueIdentifier>{2e8cf36b-3e0a-46ff-8c3e-a1a3fe40ccfe}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -873,6 +879,12 @@
     <ClInclude Include="Game\Common\Factory\BuildingFactory\BuildingFactory.h">
       <Filter>Game\Common\Factory\BuildingFactory</Filter>
     </ClInclude>
+    <ClInclude Include="Game\Common\Factory\PlayerFactory\PlayerFactory.h">
+      <Filter>Game\Common\Factory\PlayerFactory</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\MyLib\NlohmannJsonUtils\NlohmannJsonUtils.h">
+      <Filter>Library\MyLib\NlohmannJsonUtils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -1236,6 +1248,12 @@
     </ClCompile>
     <ClCompile Include="Game\Common\Factory\BuildingFactory\BuildingFactory.cpp">
       <Filter>Game\Common\Factory\BuildingFactory</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Common\Factory\PlayerFactory\PlayerFactory.cpp">
+      <Filter>Game\Common\Factory\PlayerFactory</Filter>
+    </ClCompile>
+    <ClCompile Include="Library\MyLib\NlohmannJsonUtils\NlohmannJsonUtils.cpp">
+      <Filter>Library\MyLib\NlohmannJsonUtils</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -204,6 +204,7 @@
     <ClInclude Include="Game\Common\Factory\EnemyFactory\EnemyFactory.h" />
     <ClInclude Include="Game\Common\Factory\EnemyFactory\IEnemyFactory\IEnemyFactory.h" />
     <ClInclude Include="Game\Common\Factory\FactoryBase.h" />
+    <ClInclude Include="Game\Common\Factory\PlayerFactory\PlayerFactory.h" />
     <ClInclude Include="Game\Common\GameDirector\GameDirector.h" />
     <ClInclude Include="Game\Common\GameEffect\Base\GameEffectBase.h" />
     <ClInclude Include="Game\Common\GameEffect\Base\IGameEffect.h" />
@@ -324,6 +325,7 @@
     <ClInclude Include="Library\MyLib\DirectXMyToolKit\OffscreenRendering\OffscreenRendering.h" />
     <ClInclude Include="Library\MyLib\EasingKit\EasingKit.h" />
     <ClInclude Include="Library\MyLib\MathUtils\MathUtils.h" />
+    <ClInclude Include="Library\MyLib\NlohmannJsonUtils\NlohmannJsonUtils.h" />
     <ClInclude Include="Library\MyLib\Ray\Ray.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="StepTimer.h" />
@@ -345,6 +347,7 @@
     <ClCompile Include="Game\Common\ExitController\ExitController.cpp" />
     <ClCompile Include="Game\Common\Factory\BuildingFactory\BuildingFactory.cpp" />
     <ClCompile Include="Game\Common\Factory\EnemyFactory\EnemyFactory.cpp" />
+    <ClCompile Include="Game\Common\Factory\PlayerFactory\PlayerFactory.cpp" />
     <ClCompile Include="Game\Common\GameDirector\GameDirector.cpp" />
     <ClCompile Include="Game\Common\GameEffect\Base\GameEffectBase.cpp" />
     <ClCompile Include="Game\Common\GameEffect\Base\IGameEffect.cpp" />
@@ -473,6 +476,7 @@
     <ClCompile Include="Library\MyLib\DirectXMyToolKit\GridFloor\GridFloor.cpp" />
     <ClCompile Include="Library\MyLib\DirectXMyToolKit\OffscreenRendering\OffscreenRendering.cpp" />
     <ClCompile Include="Library\MyLib\MathUtils\MathUtils.cpp" />
+    <ClCompile Include="Library\MyLib\NlohmannJsonUtils\NlohmannJsonUtils.cpp" />
     <ClCompile Include="Library\MyLib\Ray\Ray.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="pch.cpp">

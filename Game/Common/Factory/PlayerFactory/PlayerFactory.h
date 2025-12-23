@@ -1,5 +1,5 @@
 /*****************************************************************//**
- * @file    EnemyFactory.h
+ * @file    PlayerFactory.h
  * @brief   敵の生成に関するヘッダーファイル
  *
  * @author  松下大暉
@@ -18,48 +18,35 @@
 
 
 // クラスの前方宣言 ===================================================
-class Enemy;
 class Player;
 
-namespace EnemyFactory
+namespace PlayerFactory
 {
+	struct PlayerDesk
+	{
+
+	};
+
 	/**
 	 * @brief 追跡敵
 	 */
-	class TrackingEnemy
-		: public FactoryBase<Enemy>
+	class StagePlayer
+		: public FactoryBase<Player, PlayerDesk>
 	{
 	public:
 		// コンストラクタ
-		TrackingEnemy() = default;
+		StagePlayer() = default;
 
 		// デストラクタ
-		~TrackingEnemy() = default;
+		~StagePlayer() = default;
 
 	public:
 
 		// 生成したオブジェクトを組み立てる
-		void Assemble(Enemy* instance, const DefaultSpawnDesc& desc) override;
+		void Assemble(Player* instance, const PlayerDesk& desc) override;
 	};
 
-	/**
-	 * @brief 空中追跡敵
-	 */
-	class FlyingChaserEnemy
-		: public FactoryBase<Enemy>
-	{
-	public:
-		// コンストラクタ
-		FlyingChaserEnemy() = default;
-
-		// デストラクタ
-		~FlyingChaserEnemy() = default;
-
-	public:
-		// 生成したオブジェクトを組み立てる
-		void Assemble(Enemy* instance, const DefaultSpawnDesc& desc) override;
-
-	};
+	
 
 
 }

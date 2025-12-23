@@ -12,6 +12,7 @@
 #include <fstream>
 #include "SpawnManager.h"
 
+#include "Library/MyLib/NlohmannJsonUtils/NlohmannJsonUtils.h"
 #include "Game/Common/Event/Messenger/GameFlowMessenger/GameFlowMessenger.h"
 
 #include "Game/GameObjects/Enemy/Enemy.h"
@@ -134,14 +135,18 @@ void from_json(const nlohmann::json& j, SpawnManager::PlayerData& data)
  */
 void SpawnManager::SetupInitialLayout()
 {
-	nlohmann::json stageLayoutJson;
 
 	const std::string stageLayoutDataPath = STAGE_DATA_FOLDER_PATH + "/" + "stageLayoutData.json";
-	std::ifstream ifs(stageLayoutDataPath);
 
+	std::ifstream ifs(stageLayoutDataPath);
+	nlohmann::json stageLayoutJson;
 	ifs >> stageLayoutJson;
 
-	auto stageLayoutData = stageLayoutJson.get<StageLayoutData>();
+	StageLayoutData stageLayoutData;
+	if (!MyLib::NlohmannUtils::TryLoadAndConvertJson<StageLayoutData>(stageLayoutDataPath, &stageLayoutData)) { return; }
+
+	
+
 
 	nlohmann::json playerDataJson;
 	const std::string playerDataPath = STAGE_DATA_FOLDER_PATH + "/" + stageLayoutData.playerJsonName;
