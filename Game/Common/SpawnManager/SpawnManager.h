@@ -30,6 +30,7 @@ class Enemy;
 class CommonResources; // 共通リソース
 class CollisionManager;// 衝突管理
 class EscapeHelicopter; // 脱出用ヘリコプター
+class PlayerCamera;
 
 // クラスの定義 ===============================================================
 /**
@@ -52,6 +53,7 @@ private:
 	EnemyManager*		m_pEnemyManager;	///< 敵管理
 	PlayerManager*		m_pPlayerManager;	///< プレイヤー管理
 	BuildingManager*	m_pBuildingManager;	///< 建物管理
+	PlayerCamera*		m_pPlayerCamera;	///< プレイヤーカメラ
 	std::vector<std::unique_ptr<EscapeHelicopter>>* m_pEscapeHelicopters; ///< 脱出用ヘリコプター群
 
 	// オブジェクトプール (仮で持つ)
@@ -115,7 +117,8 @@ public:
 		PlayerManager* pPlayerManager,
 		BuildingManager* pBuildingManager,
 		EnemyManager* pEnemyManager,
-		std::vector<std::unique_ptr<EscapeHelicopter>>* pEscapeHelicopters);
+		std::vector<std::unique_ptr<EscapeHelicopter>>* pEscapeHelicopters,
+		PlayerCamera* pPlayerCamera);
 
 // イベント関連
 public:

@@ -24,9 +24,8 @@ using namespace DirectX;
  *
  * @param[in] なし
  */
-PlayerController::PlayerController( Player* pPlayer, const Camera* pCamera)
+PlayerController::PlayerController()
 {
-	Initialize(pPlayer, pCamera);
 }
 
 
@@ -48,9 +47,8 @@ PlayerController::~PlayerController()
  *
  * @return なし
  */
-void PlayerController::Initialize(Player* pPlayer,const Camera* pCamera)
+void PlayerController::Initialize(const Camera* pCamera)
 {
-	m_pPlayer = pPlayer;
 	m_pCamera = pCamera;
 
 	m_playerInput = InputBindingFactory::CreatePlayerInput();
@@ -66,7 +64,12 @@ void PlayerController::Initialize(Player* pPlayer,const Camera* pCamera)
  *
  * @return なし
  */
-void PlayerController::Update(float deltaTime, const Keyboard::KeyboardStateTracker* pKeyboardStateTracker, const Mouse::ButtonStateTracker* pMouseStateTracker, const DirectX::GamePad::ButtonStateTracker* pGamePadStateTracker)
+void PlayerController::Update(
+	float deltaTime,
+	Player* pPlayer,
+	const Keyboard::KeyboardStateTracker* pKeyboardStateTracker,
+	const Mouse::ButtonStateTracker* pMouseStateTracker, 
+	const DirectX::GamePad::ButtonStateTracker* pGamePadStateTracker)
 {
 	UNREFERENCED_PARAMETER(deltaTime);
 
@@ -112,20 +115,20 @@ void PlayerController::Update(float deltaTime, const Keyboard::KeyboardStateTrac
 		worldMovementDir.Normalize();
 
 		// 移動方向の設定
-		m_pPlayer->RequestedMovement(worldMovementDir);
+		pPlayer->RequestedMovement(worldMovementDir);
 	}
 	bool isJumpSuccess = false;
 	// ジャンプ
 	if (m_playerInput->IsInput(InputActionType::PlyayerActionID::JUMPING, InputSystem<InputActionType::PlyayerActionID>::InputOption::PRESSED))
 	{
-		isJumpSuccess = m_pPlayer->RequestJump();
+		isJumpSuccess = pPlayer->RequestJump();
 	}
 
 	// ステップ
 	if (m_playerInput->IsInput(InputActionType::PlyayerActionID::STEPPING, InputSystem<InputActionType::PlyayerActionID>::InputOption::PRESSED)
 		&& !isJumpSuccess)
 	{
-		m_pPlayer->RequestStep();
+		pPlayer->RequestStep();
 	}
 }
 

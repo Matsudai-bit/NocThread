@@ -77,7 +77,6 @@ void SteppingPlayerState::OnUpdate(float deltaTime)
 
 	Vector3 currentPosition = Vector3::Lerp(m_startPosition, m_targetPosition, m_currentLerpValue);
 
-	//GetOwner()->SetPosition(currentPosition);
 
 	GetOwner()->SetVelocity((currentPosition - GetOwner()->GetTransform()->GetPosition()) / deltaTime);
 
@@ -88,8 +87,6 @@ void SteppingPlayerState::OnUpdate(float deltaTime)
 		GetOwner()->GetTransform()->SetPosition(m_targetPosition);
 		GetOwner()->RequestChangeState(Player::State::IDLE);
 	}
-
-	//GetOwner()->GetCommonResources()->GetDebugFont()->AddString(10, 90, Colors::White, L"Walk");
 
 }
 

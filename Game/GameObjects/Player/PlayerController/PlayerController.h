@@ -34,8 +34,6 @@ public:
 
 // データメンバの宣言 -----------------------------------------------
 private:
-
-	Player* m_pPlayer; // 操作対象
 	const Camera* m_pCamera; // カメラ
 
 	std::unique_ptr<InputSystem<InputActionType::PlyayerActionID>> m_playerInput;
@@ -45,7 +43,7 @@ private:
 // コンストラクタ/デストラクタ
 public:
 	// コンストラクタ
-	PlayerController(Player* pPlayer, const Camera* pCamera);
+	PlayerController();
 
 	// デストラクタ
 	~PlayerController();
@@ -54,10 +52,14 @@ public:
 // 操作
 public:
 	// 初期化処理
-	void Initialize(Player* pPlayer, const Camera* pCamera);
+	void Initialize(const Camera* pCamera);
 
 	// 更新処理
-	void Update(float deltaTime, const DirectX::Keyboard::KeyboardStateTracker* pKeyboardStateTracker, const DirectX::Mouse::ButtonStateTracker* pMouseStateTracker, const DirectX::GamePad::ButtonStateTracker* pGamePadStateTracker);
+	void Update(
+		float deltaTime,
+		Player* pPlayer,
+		const DirectX::Keyboard::KeyboardStateTracker* pKeyboardStateTracker,
+		const DirectX::Mouse::ButtonStateTracker* pMouseStateTracker, const DirectX::GamePad::ButtonStateTracker* pGamePadStateTracker);
 
 	// 描画処理
 	void Draw();

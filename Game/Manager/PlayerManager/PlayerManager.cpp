@@ -56,17 +56,13 @@ void PlayerManager::Initialize(const CommonResources* pCommonResources, Collisio
 	// プレイヤーインプットの作成
 	m_playerInput = InputBindingFactory::CreatePlayerInput();
 
-	// プレイヤーの作成
-	m_player = std::make_unique<Player>();
-	m_player->Initialize(pCommonResources, pCollisionManager, pPlayerCamera, m_playerInput.get());
-
 	// プレイヤーの影の作成
 	m_playerShadow = std::make_unique<CircularShadow>();
 	m_playerShadow->Initialize(m_pCommonResources->GetDeviceResources(), 0.01f);
 
 	// プレイヤーコントローラの作成
-	m_playerController = std::make_unique<PlayerController>(m_player.get(), pPlayerCamera);
-	m_playerController->Initialize(m_player.get(), pPlayerCamera);
+	m_playerController = std::make_unique<PlayerController>();
+	m_playerController->Initialize(pPlayerCamera);
 }
 
 
@@ -81,13 +77,15 @@ void PlayerManager::Initialize(const CommonResources* pCommonResources, Collisio
  */
 bool PlayerManager::UpdateTask(float deltaTime)
 {
+	if (m_player.get() == nullptr) { return true; }
+
 	// プレイヤーの入力
 	m_playerInput->Update(m_pCommonResources->GetKeyboardTracker(), m_pCommonResources->GetMouseTracker(), m_pCommonResources->GetGamePadTracker());
 
 	// プレイヤーの更新処理
 	m_player->Update(deltaTime);
 
-	m_playerController->Update(deltaTime, m_pCommonResources->GetKeyboardTracker(), m_pCommonResources->GetMouseTracker(), m_pCommonResources->GetGamePadTracker());
+	m_playerController->Update(deltaTime,m_player.get(), m_pCommonResources->GetKeyboardTracker(), m_pCommonResources->GetMouseTracker(), m_pCommonResources->GetGamePadTracker());
 
 	return true;
 }
@@ -123,6 +121,16 @@ void PlayerManager::DrawTask(const Camera& camera)
 void PlayerManager::Finalize()
 {
 
+}
+
+/**
+ * @brief プレイヤーの設定
+ * 
+ * @param[in] player
+ */
+void PlayerManager::SetPlayer(std::unique_ptr<Player> player)
+{
+	m_player = std::move(player);
 }
 
 /**

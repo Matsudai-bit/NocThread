@@ -265,7 +265,7 @@ void StageManager::CreateStage(CollisionManager* pCollisionManager)
 	if (m_pSpawnManager == nullptr) {return;}
 
 	// ***** 最初のステージレイアウトの作成 *****
-	m_pSpawnManager->SetManagers(m_playerManager.get(), m_buildingManager.get(), m_enemyManager.get(), &m_escapeHelicopter);
+	m_pSpawnManager->SetManagers(m_playerManager.get(), m_buildingManager.get(), m_enemyManager.get(), &m_escapeHelicopter, m_playerCamera.get());
 
 	// ステージの作成
 	m_pSpawnManager->SetupInitialLayout();

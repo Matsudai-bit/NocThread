@@ -11,7 +11,10 @@
 #include "PlayerFactory.h"
 
 #include "Game/GameObjects/Player/Player.h"
+#include "Game/GameObjects/Prop/Building/Building.h"
+#include "Game/Manager/BuildingManager/BuildingManager.h"
 
+using namespace DirectX;
 
 /**
  * @brief オブジェクトを組み立てる
@@ -20,5 +23,11 @@
  */
 void PlayerFactory::StagePlayer::Assemble(Player* instance, const PlayerDesk& desc)
 {
+	instance->Initialize(&desc.commonResources, desc.pCollisionManager, desc.pPlayerCamera, desc.pPlayerInput);
 
+	const Building* tileBuilding = nullptr;
+	if (desc.buildingManager.FindBuilding(desc.tileNumber, tileBuilding))
+	{
+		instance->GetTransform()->SetPosition(tileBuilding->GetTransform()->GetPosition() + SimpleMath::Vector3(0.0f, 80.0f, 0.0f));
+	}
 }

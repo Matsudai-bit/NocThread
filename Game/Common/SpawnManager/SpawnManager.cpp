@@ -12,7 +12,7 @@
 #include <fstream>
 #include "SpawnManager.h"
 
-#include "Library/MyLib/NlohmannJsonUtils/NlohmannJsonUtils.h"
+#include "Library/MyLib/NlohmannUtils/NlohmannUtils.h"
 #include "Game/Common/Event/Messenger/GameFlowMessenger/GameFlowMessenger.h"
 
 #include "Game/GameObjects/Enemy/Enemy.h"
@@ -25,6 +25,10 @@
 #include "Game/Manager/BuildingManager/BuildingManager.h"
 #include "Game/Manager/PlayerManager/PlayerManager.h"
 #include "Game/GameObjects/Player/Player.h"
+
+// ファクトリー関連
+#include "Game/Common/Factory/PlayerFactory/PlayerFactory.h"
+
 using namespace DirectX;
 
 // メンバ関数の定義 ===========================================================
@@ -39,6 +43,7 @@ SpawnManager::SpawnManager()
 	, m_pBuildingManager	{ nullptr }
 	, m_pCommonResources	{ nullptr }
 	, m_pCollisionManager	{ nullptr }
+	, m_pPlayerCamera		{ nullptr }
 	, m_stoleTreasure		{ false }
 	, m_pEscapeHelicopters	{}
 {
@@ -136,31 +141,26 @@ void from_json(const nlohmann::json& j, SpawnManager::PlayerData& data)
 void SpawnManager::SetupInitialLayout()
 {
 
+	// ステージのレイアウトデータまでのパス
 	const std::string stageLayoutDataPath = STAGE_DATA_FOLDER_PATH + "/" + "stageLayoutData.json";
 
-	std::ifstream ifs(stageLayoutDataPath);
-	nlohmann::json stageLayoutJson;
-	ifs >> stageLayoutJson;
-
+	// ステージデータのjsonを読み込んでStageLayoutData型に変換する
 	StageLayoutData stageLayoutData;
 	if (!MyLib::NlohmannUtils::TryLoadAndConvertJson<StageLayoutData>(stageLayoutDataPath, &stageLayoutData)) { return; }
 
-	
-
-
-	nlohmann::json playerDataJson;
+	// プレイヤーデータまでのパス
 	const std::string playerDataPath = STAGE_DATA_FOLDER_PATH + "/" + stageLayoutData.playerJsonName;
-	std::ifstream ifs2(playerDataPath);
-	ifs2 >> playerDataJson;
-	if (!ifs2.is_open())
-	{
-		return;
-	}
-	auto playerData = playerDataJson.get<PlayerData>();
-
+	PlayerData playerData;
+	// プレイヤーデータデータのjsonを読み込んでPlayerData型に変換する
+	if (!MyLib::NlohmannUtils::TryLoadAndConvertJson<PlayerData>(playerDataPath, &playerData)) { return; }
 
 	m_pBuildingManager->RequestCreate(m_pCollisionManager, m_pCommonResources);
-	CreatePlayer(playerData, m_pCollisionManager);
+
+	
+	PlayerFactory::StagePlayer playerFx;
+	auto player = playerFx.Create(PlayerFactory::PlayerDesk{*m_pCommonResources, m_pCollisionManager, *m_pBuildingManager, playerData.tileNumber, m_pPlayerManager->GetPlayerInput(), m_pPlayerCamera});
+	m_pPlayerManager->SetPlayer(std::move(player));
+	
 }
 
 
@@ -174,7 +174,6 @@ void SpawnManager::CreatePlayer(PlayerData data, CollisionManager* pCollisionMan
 	if (m_pBuildingManager->FindBuilding(data.tileNumber, tileBuilding))
 	{
 
-
 		m_pPlayerManager->GetPlayer()->GetTransform()->SetPosition(tileBuilding->GetTransform()->GetPosition() + SimpleMath::Vector3(0.0f, 80.0f, 0.0f));
 	}
 
@@ -186,18 +185,20 @@ void SpawnManager::CreatePlayer(PlayerData data, CollisionManager* pCollisionMan
  * @param[in] pBuildingManager	建物管理
  * @param[in] pEnemyManager		敵管理
  * @param[in] pEscapeHelicoptersヘリコプター
+ * @param[in] pPlayerCamera		プレイヤーカメラ
  */
 void SpawnManager::SetManagers(
 	PlayerManager* pPlayerManager,
 	BuildingManager* pBuildingManager,
 	EnemyManager* pEnemyManager,
-	std::vector<std::unique_ptr<EscapeHelicopter>>* pEscapeHelicopters)
+	std::vector<std::unique_ptr<EscapeHelicopter>>* pEscapeHelicopters,
+	PlayerCamera* pPlayerCamera)
 {
 	m_pPlayerManager = pPlayerManager;
 	m_pBuildingManager = pBuildingManager;
 	m_pEnemyManager = pEnemyManager;
 	m_pEscapeHelicopters = pEscapeHelicopters;
-
+	m_pPlayerCamera = pPlayerCamera;
 }
 
 /**
