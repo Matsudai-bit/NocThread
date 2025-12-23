@@ -18,6 +18,7 @@
 // DirectX系
 #include "Library/DirectXFramework/DeviceResources.h"
 
+#include "Game/Common/Camera/PlayerCamera/PlayerCamera.h"
 
 // ゲームデータ
 #include "Game/Common/ResultData/ResultData.h"
@@ -44,7 +45,6 @@
 // 状態
 #include "Game/Scene/GameplayScene/State/NormalGameplayState/NormalGameplayState.h"
 #include "Game/Scene/GameplayScene/State/PoseGameplayState/PoseGameplayState.h"
-
 // シーン
 #include "Game/Scene/ResultScene/ResultScene.h"
 
@@ -303,6 +303,7 @@ void GameplayScene::CreateTask()
 	m_taskManager->AddTask(m_gameDirector.get());		// GameDirector
 	m_taskManager->AddTask(m_stageManager.get());		// StageManager
 	m_taskManager->AddTask(m_spawnManager.get());		// SpawnManager
+	m_taskManager->AddTask(m_stageManager->GetPlayerCamera());		// SpawnManager
 	m_taskManager->AddTask(m_collisionManager.get());	// CollisionManager
 	m_taskManager->AddTask(m_gameEffectManager.get());	// EffectManager
 	m_taskManager->AddTask(m_miniMap.get());			// Minimap

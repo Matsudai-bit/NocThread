@@ -45,7 +45,7 @@ public:
 
 	// マウス入力・感度 
 	static constexpr float MOUSE_INPUT_THRESHOLD = 0.001f;                     // マウス入力変化を検出する閾値
-	static constexpr float ROTATION_SENSITIVITY = 200.0f;                      // マウス移動量から回転ラジアンへの変換係数（感度）
+	static constexpr float ROTATION_SENSITIVITY = 280.0f;                      // マウス移動量から回転ラジアンへの変換係数（感度）
 
 	// カメラの追従設定 
 	static constexpr float FOLLOW_DISTANCE = 12.5f;                            // プレイヤー後方からの理想的な追従距離

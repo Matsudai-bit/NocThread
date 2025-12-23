@@ -208,6 +208,7 @@ public:
 	// æ“¾/İ’è
 public:
 
+	PlayerCamera* GetPlayerCamera() const { return m_playerCamera.get(); }
 
 	// “à•”À‘•
 private:

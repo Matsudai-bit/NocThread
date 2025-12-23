@@ -317,7 +317,6 @@ void StageManager::AddTask(TaskManager* pTaskManager)
 	// ’Ç‰Á‚·‚éƒ^ƒXƒN
 	std::vector<Task*> addTasks =
 	{
-		m_playerCamera	.get(),
 		m_floor			.get(),
 		m_playerManager	.get(),
 		m_buildingManager.get(),
