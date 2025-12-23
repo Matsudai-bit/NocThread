@@ -17,9 +17,9 @@
 #include <nlohmann/json.hpp>
 
 // ライブラリ
-#include "Library/ImaseLib/DebugCamera.h"       // デバックカメラ
-#include "Library/ImaseLib/DebugDraw.h"         // デバック描画
-#include "Library/ImaseLib/GridFloor.h"         // デバック床
+#include "Library/MyLib/DirectXMyToolKit/DebugCamera/DebugCamera.h"       // デバックカメラ
+#include "Library/DirectXFramework/DebugDraw.h"         // デバック描画
+#include "Library/MyLib/DirectXMyToolKit/GridFloor/GridFloor.h"         // デバック床
 
 #include "Game/Common/TaskManager/TaskManager.h"// タスク（基底クラス）
 #include "Game/Common/Screen.h"
@@ -59,19 +59,21 @@ class IEnemyFactory;
 class CircularShadow;	// 丸影
 class BuildingManager;  // 建物管理
 class PlayerManager;	// プレイヤー管理
+class CheckpointManager;// チェックポイント管理
 
 class RopeObject;
 class ParticleObject;
 class XPBDSimulator;
 class GameEffectManager;
 class TaskManager;		// タスク管理
+class SpawnManager;		// 出現管理
 
 
 // クラスの定義 ===============================================================
 /**
  * @brief ステージ管理
  */
-class StageManager 
+class StageManager
 	: public Task
 {
 	// クラス定数の宣言 -------------------------------------------------
@@ -95,7 +97,7 @@ public:
 	static constexpr float CAMERA_FAR_CLIP = 450.0f;	///< 射影行列のファークリップ距離
 
 	// --- UI関連 (スコープ) ---
-	static constexpr const char*	SCOPE_TEXTURE_PATH = "scope.dds"; ///< スコープスプライトのテクスチャファイルパス
+	static constexpr const char* SCOPE_TEXTURE_PATH = "scope.dds"; ///< スコープスプライトのテクスチャファイルパス
 	static constexpr float			SCOPE_Y_OFFSET = 140.0f;		///< スコープスプライトのY軸調整オフセット
 	static constexpr float			SCOPE_SCALE = 0.09f;		///< スコープスプライトのスケール
 
@@ -123,45 +125,34 @@ private:
 
 
 	// グリッドの床
-	std::unique_ptr<Imase::GridFloor> m_gridFloor;
+	std::unique_ptr<MyLib::GridFloor> m_gridFloor;
 
 	std::unique_ptr<PlayerCamera>		m_playerCamera;
 
 	// スプライト関連
 
 	// ゲームオブジェクト管理系
-	std::unique_ptr<SpawnManager>	m_spawnManager;		///< 生成管理
-	std::unique_ptr<EnemyManager>	m_enemyManager;		///< 敵管理
-	std::unique_ptr<BuildingManager>m_buildingManager;	///< 建物管理
-	std::unique_ptr<PlayerManager>	m_playerManager;	///< プレイヤー管理
+	std::unique_ptr<EnemyManager>		m_enemyManager;		///< 敵管理
+	std::unique_ptr<BuildingManager>	m_buildingManager;	///< 建物管理
+	std::unique_ptr<PlayerManager>		m_playerManager;	///< プレイヤー管理
+	std::unique_ptr<CheckpointManager>	m_checkpointManager;///< チェックポイント管理
 
 
 	// ゲームオブジェクト
 	std::unique_ptr<Floor>						m_floor;		///< 床
 	std::vector<std::unique_ptr<StageObject>>	m_stageObject;	///< ステージオブジェクト
 	std::unique_ptr<Treasure>					m_treasure;		///< お宝
-	std::vector<std::unique_ptr<Building>>		m_buildings;	////< 建物
 	std::vector< std::unique_ptr<EscapeHelicopter>>				m_escapeHelicopter;///< 脱出用ヘリコプター
 
 	// その他
-	DirectX::Model m_skySphere;	///< 天球
+	DirectX::Model m_skySphere;		///< 天球
+	SpawnManager* m_pSpawnManager;	///< 出現管理の参照
 
 	std::vector <std::function<void()>> m_eventStack;
 
 	bool m_isStoppingUpdate; ///< 更新処理を止めるかどうか
 
 
-public:
-	// 仮 ==========================================-
-	struct PlayerData
-	{
-		int tileNumber;
-	};
-	struct StageLayoutData
-	{
-		std::string buildingJsonName;
-		std::string playerJsonName;
-	};
 
 	// ここまで　=================================================-
 
@@ -176,7 +167,7 @@ public:
 
 
 	// 初期化処理
-	void Initialize() ;
+	void Initialize(SpawnManager* pSpawnManager, CollisionManager* pCollisionManager, TaskManager* pTaskManager);
 
 	// 更新処理
 	bool UpdateTask(float deltaTime) override;
@@ -185,13 +176,13 @@ public:
 	void DrawTask(const Camera& camera) override;
 
 	// 終了処理
-	void Finalize() ;
+	void Finalize();
 
 	// ウインドウサイズに依存するリソースを作成する
-	void CreateWindowSizeDependentResources() ;
+	void CreateWindowSizeDependentResources();
 
 	// ステージ作成
-	void CreateStage(CollisionManager* pCollisionManager, TaskManager* pTaskManager);
+	void CreateStage(CollisionManager* pCollisionManager);
 
 	// タスクの追加
 	void AddTask(TaskManager* pTaskManager);
@@ -224,7 +215,7 @@ private:
 	void OnEndScene();
 
 	// プレイヤーの作成
-	void CreatePlayer(PlayerData data, CollisionManager* pCollisionManager);
+	void CreateCheckpoint(CollisionManager* pCollisionManager);
 
 
 };

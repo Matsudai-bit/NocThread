@@ -77,8 +77,11 @@ public:
 // æ“¾/İ’è
 public:
 
+	void SetPlayer(std::unique_ptr<Player> player);
 	// ƒvƒŒƒCƒ„[‚Ìæ“¾
 	const Player* GetPlayer() const;
+
+	InputSystem<InputActionType::PlyayerActionID>* GetPlayerInput() const { return m_playerInput.get(); }
 
 // “à•”À‘•
 private:

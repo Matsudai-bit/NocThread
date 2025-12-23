@@ -30,6 +30,9 @@ GameObject::GameObject()
 
 	// トランスフォームの作成
 	m_transform = std::make_unique<Transform>();
+	
+	// 初期値を1.0fとする
+	m_transform->SetScale(1.0f);
 }
 
 

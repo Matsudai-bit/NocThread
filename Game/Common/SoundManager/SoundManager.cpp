@@ -81,6 +81,8 @@ int SoundManager::Play(int id, bool isLoop)
 
 	m_sounds[id]->Play(isLoop);
 
+	m_sounds[id]->SetVolume(0.3f);
+
 	return id;
 }
 

@@ -24,16 +24,17 @@
 #include "Game/Common/CommonResources/CommonResources.h"
 
 // 基盤システム
+#include "Game/Common/GameDirector/GameDirector.h"
 #include "Game/Common/ResourceManager/ResourceManager.h"
 #include "Game/Common/Collision/CollisionManager/CollisionManager.h"
 #include "Game/Common/SoundManager/SoundManager.h"
 #include "Game/Common/SoundManager/SoundPaths.h"
 #include "Game/Scene/Loading/LoadingScreen.h"
 #include "Game/Common/GameEffect/GameEffectController.h"
+#include "Game/Common/SpawnManager/SpawnManager.h"
 
 // ミニマップ
 #include "Game/Common/MiniMap/MiniMap.h"
-
 
 // 管理系
 #include "Game//Common/GameObjectRegistry/GameObjectRegistry.h"
@@ -63,7 +64,7 @@ GameplayScene::GameplayScene()
 	GameObjectRegistry::GetInstance()->Clear();
 
 	GameFlowMessenger::GetInstance()->RemoveAllObserver();
-	GameFlowMessenger::GetInstance()->RegistrObserver(this);
+	GameFlowMessenger::GetInstance()->RegistryObserver(this);
 }
 
 
@@ -236,24 +237,51 @@ void GameplayScene::SetUpForGameStart()
  */
 void GameplayScene::CreatePlatform()
 {
+	// **** ゲーム進行の監督の作成 ****
+	m_gameDirector = std::make_unique<GameDirector>();
+
 	// **** 衝突管理の生成 ****
 	m_collisionManager = std::make_unique<CollisionManager>();
 
 	// **** エフェクト管理の作成 ****
 	m_gameEffectManager = std::make_unique<GameEffectManager>();
-	// 現在使用するエフェクト管理の取得
-	GameEffectController::GetInstance()->SetGameEffectManager(m_gameEffectManager.get());
 
 	// **** ステートマシーンの作成 ****
 	m_stateMachine = std::make_unique <StateMachine<GameplayScene>>(this);
 	// **** タスク管理の作成 ****
 	m_taskManager = std::make_unique<TaskManager>();
 
+	// **** オブジェクト出現管理の作成 ****
+	m_spawnManager = std::make_unique<SpawnManager>();
+
 	// ステージ管理の作成
 	m_stageManager = std::make_unique<StageManager>(GetCommonResources());
 
 	// ミニマップの作成
 	m_miniMap = std::make_unique<Minimap>(GetCommonResources());
+
+	// 基盤のセットアップ
+	SetupPlatform();
+}
+
+/**
+ * @brief 基盤のセットアップ
+ * 
+ */
+void GameplayScene::SetupPlatform()
+{
+	// ステージの初期化処理
+	m_stageManager->Initialize(m_spawnManager.get(), m_collisionManager.get(), m_taskManager.get());
+
+
+	// ゲームディレクターの初期化処理
+	m_gameDirector->Initialize();
+
+	// 現在使用するエフェクト管理の取得
+	GameEffectController::GetInstance()->SetGameEffectManager(m_gameEffectManager.get());
+	// 出現管理の初期化処理
+	m_spawnManager->Initialize(GetCommonResources(), m_collisionManager.get());
+
 }
 
 /**
@@ -261,10 +289,7 @@ void GameplayScene::CreatePlatform()
  * */
 void GameplayScene::CreateStage()
 {
-	
-	m_stageManager->Initialize();
-	m_stageManager->CreateStage(m_collisionManager.get(), m_taskManager.get());
-
+	m_stageManager->CreateStage( m_collisionManager.get());
 }
 
 /**
@@ -275,10 +300,12 @@ void GameplayScene::CreateTask()
 {
 	
 	// **** タスクの登録 ****
+	m_taskManager->AddTask(m_gameDirector.get());		// GameDirector
 	m_taskManager->AddTask(m_stageManager.get());		// StageManager
+	m_taskManager->AddTask(m_spawnManager.get());		// SpawnManager
 	m_taskManager->AddTask(m_collisionManager.get());	// CollisionManager
 	m_taskManager->AddTask(m_gameEffectManager.get());	// EffectManager
-	m_taskManager->AddTask(m_miniMap.get());	// Minimap
+	m_taskManager->AddTask(m_miniMap.get());			// Minimap
 }
 
 /**

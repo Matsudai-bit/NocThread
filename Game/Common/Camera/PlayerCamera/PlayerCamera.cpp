@@ -21,7 +21,7 @@
 #include "Library/MyLib/MathUtils/MathUtils.h"
 
 #include "Game/Common/CommonResources/CommonResources.h"
-#include "Library/ImaseLib/DebugFont.h"
+#include "Library/MyLib/DirectXMyToolKit/DebugFont/DebugFont.h"
 
 using namespace DirectX;
 
@@ -76,6 +76,7 @@ void PlayerCamera::Initialize(const CommonResources* pCommonResources, Collision
 	pCollisionManager->AddCollisionObjectData(this, m_sphereCollider.get());
 
 	m_nextCameraTargetPosition = SimpleMath::Vector3::Zero;
+
 }
 
 /**

@@ -8,8 +8,11 @@
 
 // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
+#include <random>
+#include <fstream>
 #include "SpawnManager.h"
 
+#include "Library/MyLib/NlohmannUtils/NlohmannUtils.h"
 #include "Game/Common/Event/Messenger/GameFlowMessenger/GameFlowMessenger.h"
 
 #include "Game/GameObjects/Enemy/Enemy.h"
@@ -18,7 +21,13 @@
 #include "Game/Common/Factory/EnemyFactory/EnemyFactory.h"
 #include "Game/Common/GameObjectRegistry/GameObjectRegistry.h"
 #include "Game/GameObjects/Helicopter/EscapeHelicopter/EscapeHelicopter.h"
-#include <random>
+
+#include "Game/Manager/BuildingManager/BuildingManager.h"
+#include "Game/Manager/PlayerManager/PlayerManager.h"
+#include "Game/GameObjects/Player/Player.h"
+
+// ファクトリー関連
+#include "Game/Common/Factory/PlayerFactory/PlayerFactory.h"
 
 using namespace DirectX;
 
@@ -30,8 +39,11 @@ using namespace DirectX;
  */
 SpawnManager::SpawnManager()
 	: m_pEnemyManager		{ nullptr }
+	, m_pPlayerManager		{ nullptr }
+	, m_pBuildingManager	{ nullptr }
 	, m_pCommonResources	{ nullptr }
 	, m_pCollisionManager	{ nullptr }
+	, m_pPlayerCamera		{ nullptr }
 	, m_stoleTreasure		{ false }
 	, m_pEscapeHelicopters	{}
 {
@@ -57,18 +69,13 @@ SpawnManager::~SpawnManager()
  *
  * @return なし
  */
-void SpawnManager::Initialize(
-	EnemyManager* pEnemyManager,
-	std::vector<std::unique_ptr<EscapeHelicopter>>* pEscapeHelicopters,const CommonResources* pCommonResources, CollisionManager* pCollisionManager)
+void SpawnManager::Initialize(const CommonResources* pCommonResources,CollisionManager* pCollisionManager)
 {
-	m_pEnemyManager = pEnemyManager;
-	m_pEscapeHelicopters = pEscapeHelicopters;
-
 	m_pCommonResources = pCommonResources;
 	m_pCollisionManager = pCollisionManager;
 
 	// オブザーバーに登録
-	GameFlowMessenger::GetInstance()->RegistrObserver(this);
+	GameFlowMessenger::GetInstance()->RegistryObserver(this);
 
 	// イベントスタックの初期化処理
 }
@@ -119,6 +126,81 @@ void SpawnManager::Finalize()
 
 }
 
+void from_json(const nlohmann::json& j, SpawnManager::StageLayoutData& data)
+{
+	j.at("BuildingData").get_to(data.buildingJsonName);
+	j.at("PlayerData").get_to(data.playerJsonName);
+}
+void from_json(const nlohmann::json& j, SpawnManager::PlayerData& data)
+{
+	j.at("PlaceTileNumber").get_to(data.tileNumber);
+}
+/**
+ * @brief ゲームの初期配置をする
+ */
+void SpawnManager::SetupInitialLayout()
+{
+
+	// ステージのレイアウトデータまでのパス
+	const std::string stageLayoutDataPath = STAGE_DATA_FOLDER_PATH + "/" + "stageLayoutData.json";
+
+	// ステージデータのjsonを読み込んでStageLayoutData型に変換する
+	StageLayoutData stageLayoutData;
+	if (!MyLib::NlohmannUtils::TryLoadAndConvertJson<StageLayoutData>(stageLayoutDataPath, &stageLayoutData)) { return; }
+
+	// プレイヤーデータまでのパス
+	const std::string playerDataPath = STAGE_DATA_FOLDER_PATH + "/" + stageLayoutData.playerJsonName;
+	PlayerData playerData;
+	// プレイヤーデータデータのjsonを読み込んでPlayerData型に変換する
+	if (!MyLib::NlohmannUtils::TryLoadAndConvertJson<PlayerData>(playerDataPath, &playerData)) { return; }
+
+	m_pBuildingManager->RequestCreate(m_pCollisionManager, m_pCommonResources);
+
+	
+	PlayerFactory::StagePlayer playerFx;
+	auto player = playerFx.Create(PlayerFactory::PlayerDesk{*m_pCommonResources, m_pCollisionManager, *m_pBuildingManager, playerData.tileNumber, m_pPlayerManager->GetPlayerInput(), m_pPlayerCamera});
+	m_pPlayerManager->SetPlayer(std::move(player));
+	
+}
+
+
+void SpawnManager::CreatePlayer(PlayerData data, CollisionManager* pCollisionManager)
+{
+	using namespace nlohmann;
+
+	json playerJson{};
+
+	const Building* tileBuilding = nullptr;
+	if (m_pBuildingManager->FindBuilding(data.tileNumber, tileBuilding))
+	{
+
+		m_pPlayerManager->GetPlayer()->GetTransform()->SetPosition(tileBuilding->GetTransform()->GetPosition() + SimpleMath::Vector3(0.0f, 80.0f, 0.0f));
+	}
+
+}
+/**
+ * @brief ゲームオブジェクト管理の設定
+ * 
+ * @param[in] pPlayerManager	プレイヤー管理
+ * @param[in] pBuildingManager	建物管理
+ * @param[in] pEnemyManager		敵管理
+ * @param[in] pEscapeHelicoptersヘリコプター
+ * @param[in] pPlayerCamera		プレイヤーカメラ
+ */
+void SpawnManager::SetManagers(
+	PlayerManager* pPlayerManager,
+	BuildingManager* pBuildingManager,
+	EnemyManager* pEnemyManager,
+	std::vector<std::unique_ptr<EscapeHelicopter>>* pEscapeHelicopters,
+	PlayerCamera* pPlayerCamera)
+{
+	m_pPlayerManager = pPlayerManager;
+	m_pBuildingManager = pBuildingManager;
+	m_pEnemyManager = pEnemyManager;
+	m_pEscapeHelicopters = pEscapeHelicopters;
+	m_pPlayerCamera = pPlayerCamera;
+}
+
 /**
  * @brief イベントメッセージを受け取る
  * 
@@ -147,26 +229,30 @@ void SpawnManager::OnStealingTreasures()
 	m_stoleTreasure = true;
 	using namespace SimpleMath;
 
-	//　****　敵の生成 ****
-	Vector3 treasurePos = GameObjectRegistry::GetInstance()->GetGameObject(GameObjectTag::TREASURE)->GetTransform()->GetPosition();
+	// プレイヤーの取得
+	auto pPlayer = GameObjectRegistry::GetInstance()->GetGameObject(GameObjectTag::PLAYER);
+	if (pPlayer == nullptr) { return; }
 
-	std::unique_ptr<IEnemyFactory> factory = std::make_unique<EnemyFactory::FlyingChaserEnemy>();
+	//　****　敵の生成 ****
+	Vector3 center = pPlayer->GetTransform()->GetPosition();
+
+	auto factory = std::make_unique<EnemyFactory::FlyingChaserEnemy>();
 
 	const int NUM = 10;
-	const float RADIUS = 9.0f;
+	const float RADIUS = 20.0f;
 
 	for (int i = 0; i < NUM; i++)
 	{
 		float degree = (360.0f / NUM) * i;
 
-		auto enemy = factory->Create();
+		auto enemy = factory->Create(DefaultSpawnDesc());
 		
 		enemy->Initialize(m_pCommonResources, m_pCollisionManager);
 		Vector3 pos;
 
-		pos.x = treasurePos.x + std::cosf(XMConvertToRadians(degree)) * RADIUS;
-		pos.z = treasurePos.z +std::sinf(XMConvertToRadians(degree)) * RADIUS;
-		pos.y = treasurePos.y;
+		pos.x = center.x + std::cosf(XMConvertToRadians(degree)) * RADIUS;
+		pos.z = center.z +std::sinf(XMConvertToRadians(degree)) * RADIUS;
+		pos.y = center.y;
 		
 		enemy->GetTransform()->SetPosition(pos);
 
@@ -184,7 +270,7 @@ void SpawnManager::OnStealingTreasures()
 	std::vector<Vector3> helicopterPositions =
 	{
 		Vector3(-90.0f, 80.6f, 70.2f),
-		Vector3(130.0f, 80.6f, 120.2f),
+		Vector3(130.0f, 110.6f, 120.2f),
 		Vector3(-100.0f, 60.6f, -130.2f),
 		Vector3(160.0f, 60.6f, -100.2f),
 	};
@@ -193,8 +279,8 @@ void SpawnManager::OnStealingTreasures()
 		[&](const Vector3& a, const Vector3& b)
 		{
 			// 基準点からの距離を比較
-			float distanceA = DirectX::SimpleMath::Vector3::DistanceSquared(a, treasurePos);
-			float distanceB = DirectX::SimpleMath::Vector3::DistanceSquared(b, treasurePos);
+			float distanceA = DirectX::SimpleMath::Vector3::DistanceSquared(a, center);
+			float distanceB = DirectX::SimpleMath::Vector3::DistanceSquared(b, center);
 			return distanceA > distanceB; // 遠い順なので > を使用
 		});
 
@@ -223,7 +309,7 @@ void SpawnManager::SpawnEnemy()
 	//　****　敵の生成 ****
 	Vector3 treasurePos = GameObjectRegistry::GetInstance()->GetGameObject(GameObjectTag::PLAYER)->GetTransform()->GetPosition();
 	std::uniform_int_distribution<> dist(0, 180);
-	std::unique_ptr<IEnemyFactory> factory = std::make_unique<EnemyFactory::FlyingChaserEnemy>();
+	auto factory = std::make_unique<EnemyFactory::FlyingChaserEnemy>();
 
 	// ハードウェア乱数源からシードを生成
 	static std::random_device seed_gen;
@@ -239,7 +325,7 @@ void SpawnManager::SpawnEnemy()
 	{
 		float degree = (360.0f / NUM) * i + startDegree;
 
-		auto enemy = factory->Create();
+		auto enemy = factory->Create(DefaultSpawnDesc());
 
 		enemy->Initialize(m_pCommonResources, m_pCollisionManager);
 		Vector3 pos;

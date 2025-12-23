@@ -45,7 +45,8 @@ enum class GameObjectTag
 	BUILDING,				// 建物
 	ESCAPE_HELICOPTER,		// 脱出用ヘリコプター
 	WIRE_GRAPPING_AREA,		// ワイヤー照準範囲
-	CAMERA					// カメラ
+	CAMERA,					// カメラ
+	CHECKPOINT,
 };
 
 // クラスの定義 ===============================================================
@@ -105,15 +106,15 @@ public:
 	}
 
 
-	
-	// 衝突処理
-	void OnCollision(const CollisionInfo& info) override = 0;
-
 	// 衝突判定をする直前に行う処理
 	void PreCollision() override {} ;
 
 	// 衝突判定をした直後に行う処理
 	void PostCollision() override {};
+	
+	// 衝突処理
+	void OnCollision(const CollisionInfo& info) override { UNREFERENCED_PARAMETER(info); }
+
 
 // 取得/設定
 public:

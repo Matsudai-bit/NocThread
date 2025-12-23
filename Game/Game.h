@@ -12,8 +12,8 @@
 // **** 追加インクルード ****
 
 // ライブラリ
-#include "Library/ImaseLib/DebugFont.h"             // デバックフォント
-#include "Library/DirectXFramework/RenderTexture.h" // レンダーテクスチャ
+#include "Library/MyLib/DirectXMyToolKit/DebugFont/DebugFont.h" // デバックフォント
+#include "Library/DirectXFramework/RenderTexture.h"             // レンダーテクスチャ
 
 // システム
 #include "Game/Common/CommonResources/CommonResources.h"    // 共通リソース
@@ -33,7 +33,7 @@ private:
     std::unique_ptr<DirectX::CommonStates> m_states;
 
     // デバッグフォント
-    std::unique_ptr<Imase::DebugFont> m_debugFont;
+    std::unique_ptr<MyLib::DebugFont> m_debugFont;
 
     // リソース
     std::unique_ptr<CommonResources> m_commonResources;     ///< 共通リソース

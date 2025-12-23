@@ -17,7 +17,7 @@
 #include "Game/Common/Event/WireSystemObserver/WireSystemSubject.h"
 #include "Game/Common/Event/WireSystemObserver/WireEventData.h"
 #include "Game/GameObjects/Player/State/WireThrowing/WireThrowingPlayerState.cpp.h"
-#include "Library/ImaseLib/DebugFont.h"
+#include "Library/MyLib/DirectXMyToolKit/DebugFont/DebugFont.h"
 #include "Game/Common/Camera/Camera.h"
 
 #include "Game/Common/Screen.h"

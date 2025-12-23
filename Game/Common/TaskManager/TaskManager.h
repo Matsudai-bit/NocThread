@@ -63,6 +63,7 @@ private:
 
 public:
 
+
 	TaskConnectInfo& GetTaskConnectInfo() { return m_connect; }
 
 public:

@@ -53,11 +53,12 @@ public:
 	static constexpr DirectX::SimpleMath::Vector4 BUILDING_MARK_COLOR	{ 0.6f, 0.6f, 0.6f, 1.0f };	// 建物の色
 	static constexpr DirectX::SimpleMath::Vector4 PLAYER_MARK_COLOR		{ 1.0f, 1.0f, 0.0f, 1.0f };	// プレイヤーの色
 	static constexpr DirectX::SimpleMath::Vector4 TREASURE_MARK_COLOR	{ 0.0f, 1.0f, 0.5f, 1.0f };	// お宝の色
+	static constexpr DirectX::SimpleMath::Vector4 CHECKPOINT_MARK_COLOR	{ 1.0f, 1.0f, 0.0f, 1.0f };	// チェックポイント
 	static constexpr DirectX::SimpleMath::Vector4 ENEMY_MARK_COLOR		{ 1.0f, 0.0f, 0.0f, 1.0f };	// 敵の色
 	static constexpr DirectX::SimpleMath::Vector4 HELICOPTER_MARK_COLOR	{ 1.0f, 0.0f, 1.0f, 1.0f };	// ヘリコプターの色
 
 	static constexpr DirectX::SimpleMath::Vector2 RENDERING_SIZE{ 800.0f, 800.0f };
-
+	
 // データメンバの宣言 -----------------------------------------------
 private:
 
@@ -121,6 +122,7 @@ private:
 	void DrawPlayer(DirectX::VertexPositionColorTexture vertexes[VERTEX_NUM], const DirectX::SimpleMath::Vector2& mapSize);
 	void DrawBuilding(DirectX::VertexPositionColorTexture vertexes[VERTEX_NUM], const DirectX::SimpleMath::Vector2& mapSize);
 	void DrawTreasure(DirectX::VertexPositionColorTexture vertexes[VERTEX_NUM], const DirectX::SimpleMath::Vector2& mapSize);
+	void DrawCheckpoint(DirectX::VertexPositionColorTexture vertexes[VERTEX_NUM], const DirectX::SimpleMath::Vector2& mapSize);
 	void DrawEnemy(DirectX::VertexPositionColorTexture vertexes[VERTEX_NUM], const DirectX::SimpleMath::Vector2& mapSize);
 	void DrawHelicopter(DirectX::VertexPositionColorTexture vertexes[VERTEX_NUM], const DirectX::SimpleMath::Vector2& mapSize);
 

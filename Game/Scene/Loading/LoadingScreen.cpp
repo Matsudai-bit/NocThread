@@ -13,7 +13,7 @@
 #include "LoadingScreen.h"
 
 #include "Game/Common/CommonResources/CommonResources.h"
-#include "Library/ImaseLib/DebugFont.h"
+#include "Library/MyLib/DirectXMyToolKit/DebugFont/DebugFont.h"
 #include "Library/DirectXFramework/DeviceResources.h"
 
 #include "Game/Scene/GameplayScene/GameplayScene.h"

@@ -1,0 +1,84 @@
+/*****************************************************************//**
+ * @file    PlayerFactory.h
+ * @brief   敵の生成に関するヘッダーファイル
+ *
+ * @author  松下大暉
+ * @date    2025/08/24
+ *********************************************************************/
+
+// 多重インクルードの防止 =====================================================
+#pragma once
+
+
+
+
+// ヘッダファイルの読み込み ===================================================
+#include "Game/Common/Factory/FactoryBase.h"
+#include "Game/GameObjects/Enemy/Enemy.h"
+#include "Game/Common/Input/InputActionType/InputActionType.h"
+#include "Game/Common/Input/InputSystem/InputSystem.h"
+
+// クラスの前方宣言 ===================================================
+class Player;
+class BuildingManager;
+class PlayerCamera;
+class CommonResources;
+class CollisionManager;
+
+namespace PlayerFactory
+{
+
+    struct PlayerDesk
+    {
+        const CommonResources&  commonResources;
+        CollisionManager*       pCollisionManager;
+        int                     tileNumber;
+        const BuildingManager&  buildingManager;
+        InputSystem<InputActionType::PlyayerActionID>* pPlayerInput;
+        PlayerCamera*           pPlayerCamera;
+
+
+        PlayerDesk(
+            const CommonResources&  commonResources,
+            CollisionManager*       pCollisionManager,
+            const BuildingManager&  buildingManager,
+            int                     tileNumber,
+            InputSystem<InputActionType::PlyayerActionID>* pPlayerInput,
+            PlayerCamera*           pPlayerCamera
+        )
+            : commonResources(commonResources)      
+            , pCollisionManager(pCollisionManager)  
+            , tileNumber(tileNumber)                
+            , buildingManager(buildingManager)      
+            , pPlayerInput(pPlayerInput)            
+            , pPlayerCamera(pPlayerCamera)          
+
+        {
+        }
+    };
+
+	
+
+	/**
+	 * @brief 追跡敵
+	 */
+	class StagePlayer
+		: public FactoryBase<Player, PlayerDesk>
+	{
+	public:
+		// コンストラクタ
+		StagePlayer() = default;
+
+		// デストラクタ
+		~StagePlayer() = default;
+
+	protected:
+
+		// 生成したオブジェクトを組み立てる
+		void Assemble(Player* instance, const PlayerDesk& desc) override;
+	};
+
+	
+
+
+}

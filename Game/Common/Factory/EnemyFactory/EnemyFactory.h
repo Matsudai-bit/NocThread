@@ -13,7 +13,8 @@
 
 
 // ヘッダファイルの読み込み ===================================================
-#include "Game/Common/Factory/EnemyFactory/IEnemyFactory/IEnemyFactory.h"
+#include "Game/Common/Factory/FactoryBase.h"
+#include "Game/GameObjects/Enemy/Enemy.h"
 
 
 // クラスの前方宣言 ===================================================
@@ -26,7 +27,7 @@ namespace EnemyFactory
 	 * @brief 追跡敵
 	 */
 	class TrackingEnemy
-		: public IEnemyFactory
+		: public FactoryBase<Enemy>
 	{
 	public:
 		// コンストラクタ
@@ -37,16 +38,15 @@ namespace EnemyFactory
 
 	public:
 
-		// 生成
-		std::unique_ptr<Enemy> Create() override;
-
+		// 生成したオブジェクトを組み立てる
+		void Assemble(Enemy* instance, const DefaultSpawnDesc& desc) override;
 	};
 
 	/**
 	 * @brief 空中追跡敵
 	 */
 	class FlyingChaserEnemy
-		: public IEnemyFactory
+		: public FactoryBase<Enemy>
 	{
 	public:
 		// コンストラクタ
@@ -56,9 +56,8 @@ namespace EnemyFactory
 		~FlyingChaserEnemy() = default;
 
 	public:
-
-		// 生成
-		std::unique_ptr<Enemy> Create() override;
+		// 生成したオブジェクトを組み立てる
+		void Assemble(Enemy* instance, const DefaultSpawnDesc& desc) override;
 
 	};
 

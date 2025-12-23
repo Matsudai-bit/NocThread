@@ -61,7 +61,7 @@ void TutorialWindow::Initialize(ResourceManager* pResourceManager, std::function
 	m_backgroundAlpha	= std::make_unique<Sprite>();
 	m_arrowSprite		= std::make_unique<Sprite>();
 
-	m_tutorialSprites.resize(5);
+	m_tutorialSprites.resize(6);
 	for (int i = 0; i < m_tutorialSprites.size(); i++)
 	{
 		m_tutorialSprites[i] = std::make_unique<Sprite>();
@@ -73,15 +73,18 @@ void TutorialWindow::Initialize(ResourceManager* pResourceManager, std::function
 	m_tutorialSprites[0]->Initialize(pResourceManager->CreateTexture("Tutorial/tutorial_gameFlow_1.dds"));
 	m_tutorialSprites[1]->Initialize(pResourceManager->CreateTexture("Tutorial/tutorial_gameFlow_2.dds"));
 	m_tutorialSprites[2]->Initialize(pResourceManager->CreateTexture("Tutorial/tutorial_gameFlow_3.dds"));
-	m_tutorialSprites[3]->Initialize(pResourceManager->CreateTexture("Tutorial/tutorial_point_1.dds"));
-	m_tutorialSprites[4]->Initialize(pResourceManager->CreateTexture("Tutorial/tutorial_point_2.dds"));
+	m_tutorialSprites[3]->Initialize(pResourceManager->CreateTexture("Tutorial/tutorial_gameFlow_4.dds"));
+
+	m_tutorialSprites[4]->Initialize(pResourceManager->CreateTexture("Tutorial/tutorial_point_1.dds"));
+	m_tutorialSprites[5]->Initialize(pResourceManager->CreateTexture("Tutorial/tutorial_point_2.dds"));
 	auto screen = Screen::Get();
 
-	m_tutorialSprites[0]->SetScale(0.6f * screen->GetScreenScale());
-	m_tutorialSprites[1]->SetScale(0.6f * screen->GetScreenScale());
-	m_tutorialSprites[2]->SetScale(0.6f * screen->GetScreenScale());
-	m_tutorialSprites[3]->SetScale(1.0f * screen->GetScreenScale());
+	m_tutorialSprites[0]->SetScale(0.4f * screen->GetScreenScale());
+	m_tutorialSprites[1]->SetScale(0.4f * screen->GetScreenScale());
+	m_tutorialSprites[2]->SetScale(0.4f * screen->GetScreenScale());
+	m_tutorialSprites[3]->SetScale(0.4f * screen->GetScreenScale());
 	m_tutorialSprites[4]->SetScale(1.0f * screen->GetScreenScale());
+	m_tutorialSprites[5]->SetScale(1.0f * screen->GetScreenScale());
 
 	// UI“ü—Í‚Ìì¬
 	m_uiInput = InputBindingFactory::CreateUIInput();

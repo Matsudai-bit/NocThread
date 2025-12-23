@@ -14,7 +14,7 @@
 
 #include "Game/GameObjects/Player/State/WalkPlayerState/WalkPlayerState.h"
 #include "Game/GameObjects/Player/State/WireActionPlayerState/WireActionPlayerState.h"
-#include "Library/ImaseLib/DebugFont.h"
+#include "Library/MyLib/DirectXMyToolKit/DebugFont/DebugFont.h"
 
 #include "Game/Common/CommonResources/CommonResources.h"
 

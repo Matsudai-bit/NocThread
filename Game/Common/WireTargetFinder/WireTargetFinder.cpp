@@ -23,8 +23,8 @@
 #include "Game/GameObjects/Player/Player.h"
 
 // 外部ライブラリ・ツール
-#include "Library/ImaseLib/DebugFont.h"
-#include "Library/ImaseLib/DebugDraw.h"
+#include "Library/MyLib/DirectXMyToolKit/DebugCamera/DebugCamera.h"
+#include "Library/DirectXFramework/DebugDraw.h"
 
 
 using namespace DirectX;

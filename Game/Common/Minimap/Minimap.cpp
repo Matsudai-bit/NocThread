@@ -159,8 +159,7 @@ bool Minimap::UpdateTask(float deltaTime)
 {
 	UNREFERENCED_PARAMETER(deltaTime);
 
-	// ミニマップテクスチャの作成
-	CreateMinimapTexture();
+
 
 	return true;
 }
@@ -177,6 +176,9 @@ void Minimap::DrawTask(const Camera& camera)
 	UNREFERENCED_PARAMETER(camera);
 
 	using namespace SimpleMath;
+	// ミニマップテクスチャの作成
+	CreateMinimapTexture();
+
 	// 処理用変数
 	auto states				= m_pCommonResources->GetCommonStates();
 
@@ -310,6 +312,8 @@ void Minimap::CreateMinimapTexture()
 		DrawHelicopter(vertexes, mapSize);
 		// プレイヤーの描画
 		DrawPlayer(vertexes, mapSize);
+		// チェックポイントの描画
+		DrawCheckpoint(vertexes, mapSize);
 		m_primitiveBatch->End();
 
 		//	シェーダの登録を解除しておく
@@ -404,6 +408,36 @@ void Minimap::DrawTreasure(DirectX::VertexPositionColorTexture vertexes[VERTEX_N
 		for (int i = 0; i < VERTEX_NUM; i++)
 		{
 			vertexes[i].color = TREASURE_MARK_COLOR;
+
+			// 図形の描画座標(2D)として扱われる
+			vertexes[i].position = Vector3(minimapPosition.x, minimapPosition.y, 0.0f);
+		}
+
+		// 描画
+		m_primitiveBatch->Draw(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST, &vertexes[0], 1);
+
+	}
+}
+
+void Minimap::DrawCheckpoint(DirectX::VertexPositionColorTexture vertexes[VERTEX_NUM], const DirectX::SimpleMath::Vector2& mapSize)
+{
+	using namespace SimpleMath;
+
+	// チェックポイントを取得する
+	const auto checkpoints = GameObjectRegistry::GetInstance()->GetGameObjects(GameObjectTag::CHECKPOINT);
+
+	for (auto& checkpoint : checkpoints)
+	{
+		if (!checkpoint->IsActive()) { continue; }
+		// 座標の取得
+		Vector3 checkpointPosition = checkpoint->GetTransform()->GetPosition();
+		// ミニマップ上の座標の算出
+		Vector2 minimapPosition = CalcMinimapPosition(checkpointPosition, mapSize);
+
+		// 頂点情報の登録
+		for (int i = 0; i < VERTEX_NUM; i++)
+		{
+			vertexes[i].color = CHECKPOINT_MARK_COLOR;
 
 			// 図形の描画座標(2D)として扱われる
 			vertexes[i].position = Vector3(minimapPosition.x, minimapPosition.y, 0.0f);

@@ -49,4 +49,5 @@ public:
 	// イベントメッセージを受け取る
 	virtual void OnGameFlowEvent(GameFlowEventID eventID) = 0;
 
+
 };

@@ -22,11 +22,15 @@
 #include "Game/Common/TaskManager/TaskManager.h"
 
 // クラスの前方宣言 ===================================================
-class EnemyManager; // 敵管理
+class EnemyManager;		// 敵管理
+class PlayerManager;	// プレイヤー管理
+class BuildingManager;	// 建物管理
+
 class Enemy;
 class CommonResources; // 共通リソース
 class CollisionManager;// 衝突管理
 class EscapeHelicopter; // 脱出用ヘリコプター
+class PlayerCamera;
 
 // クラスの定義 ===============================================================
 /**
@@ -39,10 +43,18 @@ class SpawnManager
 // クラス定数の宣言 -------------------------------------------------
 public:
 
+	const std::string STAGE_DATA_FOLDER_PATH = "Resources/Data/MainStage";
 
 
 // データメンバの宣言 -----------------------------------------------
 private:
+
+	// ゲームオブジェクトの参照管理
+	EnemyManager*		m_pEnemyManager;	///< 敵管理
+	PlayerManager*		m_pPlayerManager;	///< プレイヤー管理
+	BuildingManager*	m_pBuildingManager;	///< 建物管理
+	PlayerCamera*		m_pPlayerCamera;	///< プレイヤーカメラ
+	std::vector<std::unique_ptr<EscapeHelicopter>>* m_pEscapeHelicopters; ///< 脱出用ヘリコプター群
 
 	// オブジェクトプール (仮で持つ)
 	std::vector < std::unique_ptr<Enemy>> m_enemyPool;	// 敵のオブジェクトプール
@@ -50,9 +62,7 @@ private:
 	// イベントスタック
 	std::vector<std::function<void()>> m_eventStack;	///< イベントスタック
 
-	EnemyManager* m_pEnemyManager;	///< 敵管理
 
-	std::vector<std::unique_ptr<EscapeHelicopter>>* m_pEscapeHelicopters; ///< 脱出用ヘリコプター群
 
 	// 簡易フラグ
 	bool m_stoleTreasure;
@@ -73,17 +83,42 @@ public:
 	// デストラクタ
 	~SpawnManager();
 
+	// 仮 ==========================================-
+	struct PlayerData
+	{
+		int tileNumber;
+	};
+	struct StageLayoutData
+	{
+		std::string buildingJsonName;
+		std::string playerJsonName;
+	};
 
 // 操作
 public:
 	// 初期化処理
-	void Initialize(EnemyManager* pEnemyManager, std::vector<std::unique_ptr<EscapeHelicopter>>* pEscapeHelicopters,const CommonResources* pCommonResources, CollisionManager* pCollisionManager);
+	void Initialize(
+		const CommonResources* pCommonResources, 
+		CollisionManager* pCollisionManager);
 
 	// 更新処理
 	bool UpdateTask(float deltaTime) override;
 
 	// 終了処理
 	void Finalize();
+
+	// ゲームの初期配置をする
+	void SetupInitialLayout();
+
+	void CreatePlayer(PlayerData data, CollisionManager* pCollisionManager);
+
+	// ゲームオブジェクト管理の設定
+	void SetManagers(
+		PlayerManager* pPlayerManager,
+		BuildingManager* pBuildingManager,
+		EnemyManager* pEnemyManager,
+		std::vector<std::unique_ptr<EscapeHelicopter>>* pEscapeHelicopters,
+		PlayerCamera* pPlayerCamera);
 
 // イベント関連
 public:

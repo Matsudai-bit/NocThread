@@ -28,7 +28,7 @@ GameFlowMessenger::~GameFlowMessenger()
  * 
  * @param[in] observer@“o˜^‚·‚éŠÄ‹Ò
  */
-void GameFlowMessenger::RegistrObserver(IGameFlowObserver* observer)
+void GameFlowMessenger::RegistryObserver(IGameFlowObserver* observer)
 {
     // “o˜^‚³‚ê‚Ä‚¢‚È‚¯‚ê‚Î“o˜^
     m_observers.push_back(observer);

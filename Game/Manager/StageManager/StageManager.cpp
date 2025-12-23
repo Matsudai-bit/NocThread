@@ -43,14 +43,16 @@
 #include "Game/Common/GameObjectManager/EnemyManager/EnemyManager.h"
 #include "Game/Common/SpawnManager/SpawnManager.h"
 #include "Game/Manager/PlayerManager/PlayerManager.h"
+#include "Game/Manager/CheckpointManager/CheckpointManager.h"
 
 #include "Game/Common/Camera/PlayerCamera/PlayerCamera.h"
 #include "Game/GameObjects/Player/PlayerController/PlayerController.h"
 
 #include "Game/Common/UserInterfaceTool/Canvas/Canvas.h"
 #include "Game/Common/UserInterfaceTool/Sprite/Sprite.h"
+#include "Game/Common/SpawnManager/SpawnManager.h"
 
-#include "Library/ImaseLib/DebugFont.h"
+#include "Library/MyLib/DirectXMyToolKit/DebugFont/DebugFont.h"
 #include "Game//Common/GameObjectRegistry/GameObjectRegistry.h"
 #include "Game/Common/Event/Messenger/GameFlowMessenger/GameFlowMessenger.h"
 #include "Game/Common/TaskManager/TaskManager.h"
@@ -75,6 +77,7 @@ using namespace DirectX;
 StageManager::StageManager(const CommonResources* pCommonResources)
 	: m_pCommonResources{ pCommonResources }
 	, m_isStoppingUpdate{ false }
+	, m_pSpawnManager	{ nullptr }
 {
 
 }
@@ -96,9 +99,37 @@ StageManager::~StageManager()
  * @param[in] screenHeight		画面の縦幅
  * * @return なし
  */
-void StageManager::Initialize()
+void StageManager::Initialize(SpawnManager* pSpawnManager, CollisionManager* pCollisionManager, TaskManager* pTaskManager)
 {
-	using namespace SimpleMath;
+	CreateWindowSizeDependentResources();
+
+	// 出現管理の設定
+	m_pSpawnManager = pSpawnManager;
+
+	// ****プレイヤー管理の作成 * ***
+		m_playerManager = std::make_unique<PlayerManager>();
+	m_playerManager->Initialize(m_pCommonResources, pCollisionManager, m_playerCamera.get());
+
+	// ----- 各種ゲームオブジェクトの作成 -------
+	m_buildingManager = std::make_unique<BuildingManager>(m_pCommonResources);
+	m_buildingManager->Initialize();
+
+	// **** 床の生成 *****
+	m_floor = std::make_unique<Floor>();
+	// 床の初期化
+	m_floor->Initialize(SimpleMath::Vector3(0.0f, 0.0f, 0.0f), m_pCommonResources, pCollisionManager);
+
+	// **** プレイヤーカメラの初期化処理 ****
+	m_playerCamera->Initialize(m_pCommonResources, pCollisionManager);
+
+	// ***** 敵管理の作成 *****
+	m_enemyManager = std::make_unique<EnemyManager>();
+	m_enemyManager->Initialize();
+	// **** チェックポイント管理 の作成 ****
+	m_checkpointManager = std::make_unique<CheckpointManager>();
+
+	// タスクの追加
+	AddTask(pTaskManager);
 
 }
 
@@ -204,8 +235,6 @@ void StageManager::DrawInGameObjects(const Camera& camera)
 	m_skySphere.Draw(m_pCommonResources->GetDeviceResources()->GetD3DDeviceContext(), *m_pCommonResources->GetCommonStates(), world, camera.GetViewMatrix(), camera.GetProjectionMatrix());
 }
 
-
-
 // シーンの終了
 void StageManager::OnEndScene()
 {
@@ -218,125 +247,63 @@ void StageManager::OnEndScene()
 
 }
 
-
-void from_json(const nlohmann::json& j, StageManager::StageLayoutData& data)
+void StageManager::CreateCheckpoint(CollisionManager* pCollisionManager)
 {
-	j.at("BuildingData").get_to(data.buildingJsonName);
-	j.at("PlayerData").get_to(data.playerJsonName);
-}
-void from_json(const nlohmann::json& j, StageManager::PlayerData& data)
-{
-	j.at("PlaceTileNumber").get_to(data.tileNumber);
-}
-
-void StageManager::CreatePlayer(PlayerData data, CollisionManager* pCollisionManager)
-{
-	using namespace nlohmann;
-
-	json playerJson{};
-
 	const Building* tileBuilding = nullptr;
-	if (m_buildingManager->FindBuilding(data.tileNumber, tileBuilding) )
+	if (m_buildingManager->FindBuilding(11, tileBuilding))
 	{
-		m_playerManager = std::make_unique<PlayerManager>();
-		m_playerManager->Initialize(m_pCommonResources, pCollisionManager, m_playerCamera.get());
-
-		m_playerManager->GetPlayer()->GetTransform()->SetPosition(tileBuilding->GetTransform()->GetPosition() + SimpleMath::Vector3(0.0f, 80.0f, 0.0f));
-
-
+		m_checkpointManager->CreateCheckpoint(tileBuilding->GetTransform()->GetPosition() + SimpleMath::Vector3(0.0f, tileBuilding->GetExtent().y, 0.0f), pCollisionManager, m_pCommonResources);
 	}
-
-
-
-
 }
 
 /**
  * @brief ステージの生成
  * */
-void StageManager::CreateStage(CollisionManager* pCollisionManager, TaskManager* pTaskManager)
+void StageManager::CreateStage(CollisionManager* pCollisionManager)
 {
 	using namespace SimpleMath;
-	CreateWindowSizeDependentResources();
+	if (m_pSpawnManager == nullptr) {return;}
 
-	nlohmann::json stageLayoutJson;
+	// ***** 最初のステージレイアウトの作成 *****
+	m_pSpawnManager->SetManagers(m_playerManager.get(), m_buildingManager.get(), m_enemyManager.get(), &m_escapeHelicopter, m_playerCamera.get());
 
-	const std::string stageLayoutDataPath = STAGE_DATA_FOLDER_PATH + "/" + "stageLayoutData.json";
-	std::ifstream ifs(stageLayoutDataPath);
+	// ステージの作成
+	m_pSpawnManager->SetupInitialLayout();
 
-	ifs >> stageLayoutJson;
 
-	auto stageLayoutData = stageLayoutJson.get<StageLayoutData>();
 
-	nlohmann::json playerDataJson;
-	const std::string playerDataPath = STAGE_DATA_FOLDER_PATH + "/" + stageLayoutData.playerJsonName;
-	std::ifstream ifs2(playerDataPath);
-	ifs2 >> playerDataJson;
-	if (!ifs2.is_open())
-	{
-		return;
-	}
-	auto playerData = playerDataJson.get<PlayerData>();
-	
-	// ----- 各種ゲームオブジェクトの作成 -------
-	m_buildingManager = std::make_unique<BuildingManager>(m_pCommonResources);
-	m_buildingManager->Initialize();
-	m_buildingManager->RequestCreate(pCollisionManager, m_pCommonResources);
-	// **** 床の生成 *****
-	m_floor = std::make_unique<Floor>();
-	// 床の初期化
-	m_floor->Initialize(SimpleMath::Vector3(0.0f, 0.0f, 0.0f), m_pCommonResources, pCollisionManager);
-
-	// **** プレイヤーカメラの初期化処理 ****
-	m_playerCamera->Initialize(m_pCommonResources, pCollisionManager);
-
-	// ***** プレイヤー管理の生成 *****
-	CreatePlayer(playerData, pCollisionManager);
-	// m_playerManager = std::make_unique<PlayerManager>();
-	//m_playerManager->Initialize(m_pCommonResources, pCollisionManager, m_playerCamera.get());
-	////// カメラにプレイヤーを設定する
-	//m_playerCamera->SetPlayer(m_playerManager->GetPlayer());
-
-		// メインカメラの設定 
+	// プレイヤーカメラにプレイヤーを設定
 	m_playerCamera->SetPlayer(m_playerManager->GetPlayer());
 	MainCamera::GetInstance()->SetCamera(m_playerCamera.get());
-	
 
-	// ***** 敵管理の作成 *****
-	m_enemyManager = std::make_unique<EnemyManager>();
-	m_enemyManager->Initialize();
-
-	// ***** 出現管理の作成 *****
-	m_spawnManager = std::make_unique<SpawnManager>();
-	m_spawnManager->Initialize(m_enemyManager.get(), &m_escapeHelicopter, m_pCommonResources, pCollisionManager);
 
 	// **** 天球の作成 ****
 	m_skySphere = m_pCommonResources->GetResourceManager()->CreateModel("skyDome.sdkmesh");
+	// チェックポイントの作成
+	CreateCheckpoint(pCollisionManager);
+	//// ハードウェアz乱数源からシードを生成
+	//static std::random_device seed_gen;
 
-	// ハードウェア乱数源からシードを生成
-	static std::random_device seed_gen;
+	//// シードを使って乱数エンジンを初期化
+	//std::mt19937 engine(seed_gen());
 
-	// シードを使って乱数エンジンを初期化
-	std::mt19937 engine(seed_gen());
+	//std::vector<Vector3> randomPosition =
+	//{
+	//	TREASURE_POS_CANDIDATE_1,
+	//	TREASURE_POS_CANDIDATE_2,
+	//	TREASURE_POS_CANDIDATE_3,
+	//};
+	//std::shuffle(randomPosition.begin(), randomPosition.end(), engine);
+	//auto& treasurePosition = randomPosition.front();
 
-	std::vector<Vector3> randomPosition =
-	{
-		TREASURE_POS_CANDIDATE_1,
-		TREASURE_POS_CANDIDATE_2,
-		TREASURE_POS_CANDIDATE_3,
-	};
-	std::shuffle(randomPosition.begin(), randomPosition.end(), engine);
-	auto& treasurePosition = randomPosition.front();
-
-	// お宝の生成
-	m_treasure = std::make_unique<Treasure>();
-	m_treasure->GetTransform()->SetPosition(treasurePosition);
-	m_treasure->Initialize(m_pCommonResources, pCollisionManager);
+	//// お宝の生成
+	//m_treasure = std::make_unique<Treasure>();
+	//m_treasure->GetTransform()->SetPosition(treasurePosition);
+	//m_treasure->Initialize(m_pCommonResources, pCollisionManager);
 
 	// m_buildingManager->Save();
+		// メインカメラの設定 
 
-	// タスクの追加
-	AddTask(pTaskManager);
 
 }
 
@@ -351,21 +318,23 @@ void StageManager::AddTask(TaskManager* pTaskManager)
 	std::vector<Task*> addTasks =
 	{
 		m_playerCamera	.get(),
-		m_spawnManager	.get(),
 		m_floor			.get(),
 		m_playerManager	.get(),
 		m_buildingManager.get(),
 		m_enemyManager	.get(),
-		m_treasure		.get()
+		m_treasure		.get(),
+		m_checkpointManager.get()
 	};
 	for (auto& helicopter : m_escapeHelicopter)
 	{
+		
 		addTasks.push_back(helicopter.get());
 	}
 
 	// 追加
 	for (auto& task : addTasks)
 	{
+		if (task == nullptr) { continue; }
 		pTaskManager->AddTask(task);
 		// 親の設定
 		task->ChangeParent(this);

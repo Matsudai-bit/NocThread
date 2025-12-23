@@ -55,7 +55,7 @@ public :
 public:
 
 	// ŠÄŽ‹ŽÒ‚Ì“o˜^
-	void RegistrObserver(IGameFlowObserver* observer);
+	void RegistryObserver(IGameFlowObserver* observer);
 
 	// ’Ê’m
 	void Notify(GameFlowEventID eventID);

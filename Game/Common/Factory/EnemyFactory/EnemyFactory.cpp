@@ -15,30 +15,18 @@
 #include "Game/GameObjects/Enemy/Behaviour/Update/FlyingChaserEnemyBehaviour/FlyingChaserEnemyBehaviour.h"
 
 /**
- * @brief 追跡する敵の生成
+ * @brief オブジェクトを組み立てる
  * 
- * @param[in] pPlayer
- * @return 
+ * @param[in] instance　生成されたオブジェクト
  */
-std::unique_ptr<Enemy> EnemyFactory::TrackingEnemy::Create()
+void EnemyFactory::TrackingEnemy::Assemble(Enemy* instance, const DefaultSpawnDesc& desc)
 {
-	std::unique_ptr<Enemy> enemy = std::make_unique<Enemy>();
+	instance->AddUpdateBehaviour(std::make_unique<FlyingChaserEnemyBehaviour>());
 
-	enemy->AddUpdateBehaviour(std::make_unique<TrackingEnemyBehaviour>());
-
-	return std::move(enemy);
 }
 
-/**
- * @brief 空中追跡敵の生成
- * 
- * @return 
- */
-std::unique_ptr<Enemy> EnemyFactory::FlyingChaserEnemy::Create()
+void EnemyFactory::FlyingChaserEnemy::Assemble(Enemy* instance, const DefaultSpawnDesc& desc)
 {
-	std::unique_ptr<Enemy> enemy = std::make_unique<Enemy>();
+	instance->AddUpdateBehaviour(std::make_unique<FlyingChaserEnemyBehaviour>());
 
-	enemy->AddUpdateBehaviour(std::make_unique<FlyingChaserEnemyBehaviour>());
-
-	return std::move(enemy);
 }

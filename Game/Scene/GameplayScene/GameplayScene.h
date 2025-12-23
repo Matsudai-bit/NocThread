@@ -19,12 +19,11 @@
 #include "Game/Manager/SceneManager/SceneManager.h"
 
 // ライブラリ
-#include "Library/ImaseLib/DebugCamera.h"       // デバックカメラ
-#include "Library/ImaseLib/DebugDraw.h"         // デバック描画
-#include "Library/ImaseLib/GridFloor.h"         // デバック床
+#include "Library/MyLib/DirectXMyToolKit/DebugCamera/DebugCamera.h"       // デバックカメラ
+#include "Library/DirectXFramework/DebugDraw.h"         // デバック描画
+#include "Library/MyLib/DirectXMyToolKit/GridFloor/GridFloor.h"         // デバック床
 
 #include "Game/Common/Screen.h"
-
 
 // システム
 #include "Game/Common/CommonResources/CommonResources.h"                // 共通リソース
@@ -44,6 +43,9 @@ class GameEffectManager;// エフェクト管理
 class StageManager;		// ステージ管理
 class TaskManager;		// タスク管理
 class Minimap;			// ミニマップ
+class GameDirector;		// ゲーム進行の監督
+class SpawnManager;		// 出現管理
+
 
 
 // クラスの定義 ===============================================================
@@ -75,13 +77,14 @@ private:
 	std::unique_ptr<StateMachine<GameplayScene>> m_stateMachine; ///< ステートマシーン
 
     // システム
+	std::unique_ptr<GameDirector>		m_gameDirector;		///< ゲーム進行の監督
     std::unique_ptr<CollisionManager>   m_collisionManager; ///< 衝突管理
 	std::unique_ptr<GameEffectManager>	m_gameEffectManager;///< ゲームエフェクト管理
 	std::unique_ptr<TaskManager>		m_taskManager;		///< タスク管理
-
+	std::unique_ptr<SpawnManager>		m_spawnManager;		///< 出現管理
 
 	// その他
-	std::unique_ptr<StageManager> m_stageManager;
+	std::unique_ptr<StageManager> m_stageManager;	///< ステージ上のオブジェクトを管理
 	
 	std::unique_ptr<Minimap>	m_miniMap; ///< ミニマップ
 
@@ -152,6 +155,9 @@ private:
 
 	// 基盤の作成
 	void CreatePlatform();
+
+	// 基盤のセットアップ
+	void SetupPlatform();
 
 	// ステージの生成
 	void CreateStage();

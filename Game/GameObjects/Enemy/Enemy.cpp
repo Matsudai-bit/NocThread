@@ -21,7 +21,7 @@
 #include "Game/Common/Collision/CollisionManager/CollisionManager.h"
 
 #include "Game/Common/Helper/MovementHelper/MovementHelper.h"
-#include "Library/ImaseLib/DebugFont.h"
+#include "Library/MyLib/DirectXMyToolKit/DebugFont/DebugFont.h"
 
 #include "Game/Common/ResultData/ResultData.h"
 
