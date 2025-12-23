@@ -58,9 +58,7 @@ void CheckpointManager::Initialize(const CommonResources* pCommonResources)
 bool CheckpointManager::UpdateTask(float deltaTime)
 {
 	for (auto& checkpoint : m_checkpoints)
-	{
-		if (!checkpoint->IsActive()) { continue; }
-		
+	{		
 		// ‰Šú‰»ˆ—
 		checkpoint->Update(deltaTime);	
 	}
@@ -76,9 +74,7 @@ bool CheckpointManager::UpdateTask(float deltaTime)
 void CheckpointManager::DrawTask(const Camera& camera)
 {
 	for (auto& checkpoint : m_checkpoints)
-	{
-		if (!checkpoint->IsActive()) { continue; }
-		
+	{		
 		// ‰Šú‰»ˆ—
 		checkpoint->Draw(camera);
 		

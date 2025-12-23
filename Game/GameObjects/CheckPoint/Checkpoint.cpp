@@ -36,9 +36,7 @@ Checkpoint::Checkpoint()
 	: m_isEnabled{ false }
 {
 	// コライダーの作成
-	//m_collider = std::make_unique<Cylinder>(SimpleMath::Vector3::UnitY, 1.0f, GetTransform()->GetPosition(), 3.0f);
-	//m_collider = std::make_unique<Sphere>(GetTransform()->GetPosition(), 1.0f);
-	m_collider = std::make_unique<AABB>(GetTransform()->GetPosition(), SimpleMath::Vector3(9.0f, 3.0f, 9.0f));
+	m_collider = std::make_unique<AABB>(GetTransform()->GetPosition(), SimpleMath::Vector3(7.0f, 5.0f, 7.0f));
 
 	m_checkpointObject = std::make_unique<CheckpointObjectController>();
 
@@ -116,20 +114,24 @@ void Checkpoint::Draw(const Camera& camera)
 
 	m_checkpointObject->Draw(context, GetCommonResources()->GetCommonStates(), camera);
 
-	// 目印
-	auto cylinder = DirectX::GeometricPrimitive::CreateCylinder(context, 1000.f, 0.4f);
+	if (m_isEnabled)
+	{
+		// 目印
+		auto cylinder = DirectX::GeometricPrimitive::CreateCylinder(context, 1000.f, 0.4f);
 
 
-	Matrix transMat = Matrix::CreateTranslation(GetTransform()->GetPosition());
-	Matrix rotateMat = Matrix::CreateFromQuaternion(GetTransform()->GetRotation());
-	Matrix scaleMat = Matrix::CreateScale(GetTransform()->GetScale());
+		Matrix transMat = Matrix::CreateTranslation(GetTransform()->GetPosition());
+		Matrix rotateMat = Matrix::CreateFromQuaternion(GetTransform()->GetRotation());
+		Matrix scaleMat = Matrix::CreateScale(GetTransform()->GetScale());
 
-	Matrix world = scaleMat * rotateMat * transMat;
-	world = SimpleMath::Matrix::Identity;
-	world *= Matrix::CreateTranslation(GetTransform()->GetPosition());
-	cylinder->Draw(world, camera.GetViewMatrix(), camera.GetProjectionMatrix(), Colors::GreenYellow);
+		Matrix world = scaleMat * rotateMat * transMat;
+		world = SimpleMath::Matrix::Identity;
+		world *= Matrix::CreateTranslation(GetTransform()->GetPosition());
+		cylinder->Draw(world, camera.GetViewMatrix(), camera.GetProjectionMatrix(), Colors::GreenYellow);
 
-	m_collider->Draw(context, camera.GetViewMatrix(), camera.GetProjectionMatrix());
+		//m_collider->Draw(context, camera.GetViewMatrix(), camera.GetProjectionMatrix());
+
+	}
 
 }
 
@@ -160,5 +162,6 @@ void Checkpoint::OnCollision(const CollisionInfo& info)
 		// プレイヤーがチェックポイントを通過したことを通知する
 		GameFlowMessenger::GetInstance()->Notify(GameFlowEventID::CHECKPOINT_PASSED);
 
+		m_checkpointObject->RequestLookAtHelicopter();
 	}
 }

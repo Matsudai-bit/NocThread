@@ -116,7 +116,8 @@ public:
 	// 衝突処理
 	void OnCollision(const CollisionInfo& info) override ;
 
-
+	// 衝突処理後の処理
+	void PostCollision() override;
 
 	// 取得/設定
 public:
@@ -167,4 +168,6 @@ private:
 	// 最も遠い目標座標を取得する
 	DirectX::SimpleMath::Vector3 GetFarTargetPosition(std::vector<DirectX::SimpleMath::Vector3> targetPositions);
 
+	// ターゲットを絞り込む
+	void RefineAndSortTargets();
 };

@@ -43,6 +43,12 @@ class CheckpointObjectController
 		HEAD
 	};
 
+	enum class State
+	{
+		IDLING,
+		LOOK_AT_HELICOPTER
+	};
+
 // クラス定数の宣言 -------------------------------------------------
 public:
 
@@ -56,6 +62,17 @@ private:
 	std::unordered_map<ModelPartID, std::unique_ptr<DirectX::Model>>	m_models;
 
 	float m_rotateAngle;
+
+	State m_state;
+
+	DirectX::SimpleMath::Quaternion m_neckRotation;
+	DirectX::SimpleMath::Quaternion m_startNeckRotation;
+	DirectX::SimpleMath::Quaternion m_targetNeckRotation;
+
+	DirectX::SimpleMath::Quaternion m_headRotation;
+	DirectX::SimpleMath::Quaternion m_startHeadRotation;
+	DirectX::SimpleMath::Quaternion m_targetHeadRotation;
+	float m_lerpT;
 
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
@@ -80,6 +97,9 @@ public:
 
 	// 終了処理
 	void Finalize();
+
+	// ヘリコプターを見るよう要求
+	void RequestLookAtHelicopter();
 
 
 // 取得/設定

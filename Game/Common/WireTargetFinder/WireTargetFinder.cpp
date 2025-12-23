@@ -155,8 +155,6 @@ void WireTargetFinder::PreCollision()
  */
 void WireTargetFinder::OnCollision(const CollisionInfo& info)
 {
-
-
 	SimpleMath::Vector3 targetPosition;
 
 	auto capsule = dynamic_cast<const Capsule*>(info.pMyCollider);
@@ -166,6 +164,11 @@ void WireTargetFinder::OnCollision(const CollisionInfo& info)
 	{
 		m_grappleTargetPositionCache.emplace_back(targetPosition);
 	}
+}
+
+void WireTargetFinder::PostCollision()
+{
+	RefineAndSortTargets();
 }
 
 /**
@@ -391,14 +394,29 @@ DirectX::SimpleMath::Vector3 WireTargetFinder::GetFarTargetPosition(std::vector<
 {
 	using namespace SimpleMath;
 
+	return (targetPositions.size() != 0) ? targetPositions.back() : SimpleMath::Vector3::Zero;
+}
+
+/**
+ * @brief ターゲットを絞り込みソートする
+ * 
+ */
+void WireTargetFinder::RefineAndSortTargets()
+{
+	using namespace SimpleMath;
+
+	float constraint = 30.0f;
+	
+	m_grappleTargetPositionCache.erase(std::remove_if(m_grappleTargetPositionCache.begin(), m_grappleTargetPositionCache.end(), [&](const Vector3& s)
+		{
+			return (Vector3::DistanceSquared(s, m_pPlayer->GetTransform()->GetPosition()) < constraint * constraint);
+		}), m_grappleTargetPositionCache.end());
+
 	// 近い順にソートする
-	std::sort(targetPositions.begin(), targetPositions.end(), [&](const Vector3& lhs, const Vector3& rhs)
+	std::sort(m_grappleTargetPositionCache.begin(), m_grappleTargetPositionCache.end(), [&](const Vector3& lhs, const Vector3& rhs)
 		{
 			return Vector3::DistanceSquared(lhs, m_pPlayer->GetTransform()->GetPosition()) < Vector3::DistanceSquared(rhs, m_pPlayer->GetTransform()->GetPosition());
 		});
-
-
-	return (targetPositions.size() != 0) ? targetPositions.back() : SimpleMath::Vector3::Zero;
 }
 
 /**
@@ -411,6 +429,7 @@ DirectX::SimpleMath::Vector3 WireTargetFinder::GetFarTargetPosition(std::vector<
 std::vector<DirectX::SimpleMath::Vector3> WireTargetFinder::GetTargetPositionCandidatesForDirection(std::vector<DirectX::SimpleMath::Vector3> searchDirections)
 {
 	using namespace SimpleMath;
+
 	// 目標座標の候補
 	std::vector<Vector3> targetPositions;
 
