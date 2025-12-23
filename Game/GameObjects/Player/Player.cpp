@@ -377,7 +377,9 @@ void Player::OnCollisionWire(GameObject* pHitObject)
  */
 void Player::OnCollisionWithWall(GameObject* pHitObject, ICollider* pHitCollider)
 {
-	pHitObject;
+	UNREFERENCED_PARAMETER(pHitObject);
+
+
 
 	// 矩形にキャスト
 	const Box2D* pHitBox = dynamic_cast<const Box2D*>(pHitCollider);
@@ -424,7 +426,10 @@ void Player::OnCollisionWithWall(GameObject* pHitObject, ICollider* pHitCollider
 void Player::OnCollisionWithBuilding(GameObject* pHitObject, ICollider* pHitCollider)
 {
 	UNREFERENCED_PARAMETER(pHitObject);
-
+	if (State::STTEPPING == m_state || State::WIRE_ACTION == m_state)
+	{
+		RequestChangeState(State::IDLE);
+	}
 	// 矩形にキャスト
 	const AABB* pHitBox = dynamic_cast<const AABB*>(pHitCollider);
 
