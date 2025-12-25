@@ -108,7 +108,7 @@ void Wire::Initialize(
 	// §–ñ‚Ì’Ç‰Á
 	std::vector<std::unique_ptr<ConstraintFactory>> constraintFactories;
 	constraintFactories.emplace_back(std::make_unique<CollisionConstraintFactory>(m_pCollisionManager, simulationParam));
-	m_simulator->SetConstraint(&constraintFactories);
+	//m_simulator->SetConstraint(&constraintFactories);
 
 	m_length = length;
 

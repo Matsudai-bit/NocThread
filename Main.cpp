@@ -11,7 +11,7 @@
 
 using namespace DirectX;
 
-#define GAME_MODE
+//#define GAME_MODE
 
 #ifdef __clang__
 #pragma clang diagnostic ignored "-Wcovered-switch-default"
@@ -61,9 +61,9 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 #else 
     // ウィンドウの表示
     // フルスクリーンにするかどうか
-    //if (MessageBox(NULL, L"フルスクリーンにしますか？", L"画面モード設定", MB_YESNO) == IDYES)
-    //    s_fullscreen = true;
-    //else
+    if (MessageBox(NULL, L"フルスクリーンにしますか？", L"画面モード設定", MB_YESNO) == IDYES)
+        s_fullscreen = true;
+    else
         s_fullscreen = false;
 #endif 
 

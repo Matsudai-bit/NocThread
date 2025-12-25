@@ -199,7 +199,6 @@ DirectX::SimpleMath::Vector3 WireTargetFinder::GetTargetPosition()
 bool WireTargetFinder::IsFindTarget() const
 {
 	
-
 	return m_grappleTargetPositionCache.size() > 0;
 
 }
@@ -405,7 +404,7 @@ void WireTargetFinder::RefineAndSortTargets()
 {
 	using namespace SimpleMath;
 
-	float constraint = 30.0f;
+	float constraint = 20.0f;
 	
 	m_grappleTargetPositionCache.erase(std::remove_if(m_grappleTargetPositionCache.begin(), m_grappleTargetPositionCache.end(), [&](const Vector3& s)
 		{

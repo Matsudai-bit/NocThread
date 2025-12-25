@@ -380,7 +380,7 @@ void XPBDSimulator::IterateConstraints(float deltaTime)
 			// 位置の補正ベクトル Δx の計算
 
 			// 各制約が自身に関わるパーティクルに補正を適用する
-			constraint->ApplyPositionCorrection(Δλ); // 仮のメソッド
+			constraint->ApplyPositionCorrection(Δλ); 
 		}
 		i = i + 1;
 	}

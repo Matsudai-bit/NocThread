@@ -58,7 +58,7 @@ public:
 	static constexpr float	SEARCH_ANGLE_OFFSET_YAW = 48.0f;
 	static constexpr float	SEARCH_ANGLE_STEP_PITCH = 10.0f;
 
-	static constexpr float	SEARCH_ANGLE_START_PITCH = 20.f;
+	static constexpr float	SEARCH_ANGLE_START_PITCH = 35.f;
 
 // データメンバの宣言 -----------------------------------------------
 private:
