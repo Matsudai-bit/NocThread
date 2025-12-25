@@ -452,6 +452,9 @@
     <Filter Include="Library\MyLib\NlohmannUtils">
       <UniqueIdentifier>{2e8cf36b-3e0a-46ff-8c3e-a1a3fe40ccfe}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\Common\Behaviour">
+      <UniqueIdentifier>{3b2469f0-bc4c-44c0-91b6-f4d57868b62e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -885,6 +888,12 @@
     <ClInclude Include="Library\MyLib\NlohmannUtils\NlohmannUtils.h">
       <Filter>Library\MyLib\NlohmannUtils</Filter>
     </ClInclude>
+    <ClInclude Include="Game\Common\Behaviour\SteeringBehavior\SteeringBehavior.h">
+      <Filter>Game\Common\Behaviour</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Common\Behaviour\SteeringBehavior\SteeringParameters.h">
+      <Filter>Game\Common\Behaviour</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -1254,6 +1263,12 @@
     </ClCompile>
     <ClCompile Include="Library\MyLib\NlohmannUtils\NlohmannUtils.cpp">
       <Filter>Library\MyLib\NlohmannUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Common\Behaviour\SteeringBehavior\SteeringBehavior.cpp">
+      <Filter>Game\Common\Behaviour</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Common\Behaviour\SteeringBehavior\SteeringParameters.cpp">
+      <Filter>Game\Common\Behaviour</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -237,21 +237,22 @@ void GameplayScene::SetUpForGameStart()
  */
 void GameplayScene::CreatePlatform()
 {
-	// **** ゲーム進行の監督の作成 ****
+	// ステートマシーンの作成
+	m_stateMachine = std::make_unique <StateMachine<GameplayScene>>(this);
+
+	// ゲーム進行の監督の作成
 	m_gameDirector = std::make_unique<GameDirector>();
 
-	// **** 衝突管理の生成 ****
+	// 衝突管理の生成
 	m_collisionManager = std::make_unique<CollisionManager>();
 
-	// **** エフェクト管理の作成 ****
+	// エフェクト管理の作成
 	m_gameEffectManager = std::make_unique<GameEffectManager>();
 
-	// **** ステートマシーンの作成 ****
-	m_stateMachine = std::make_unique <StateMachine<GameplayScene>>(this);
-	// **** タスク管理の作成 ****
+	// タスク管理の作成
 	m_taskManager = std::make_unique<TaskManager>();
 
-	// **** オブジェクト出現管理の作成 ****
+	// オブジェクト出現管理の作成
 	m_spawnManager = std::make_unique<SpawnManager>();
 
 	// ステージ管理の作成
@@ -298,7 +299,6 @@ void GameplayScene::CreateStage()
  */
 void GameplayScene::CreateTask()
 {
-	
 	// **** タスクの登録 ****
 	m_taskManager->AddTask(m_gameDirector.get());		// GameDirector
 	m_taskManager->AddTask(m_stageManager.get());		// StageManager

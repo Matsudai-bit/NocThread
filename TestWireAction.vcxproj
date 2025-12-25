@@ -180,6 +180,8 @@
     </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Game\Common\Behaviour\SteeringBehavior\SteeringBehavior.h" />
+    <ClInclude Include="Game\Common\Behaviour\SteeringBehavior\SteeringParameters.h" />
     <ClInclude Include="Game\Common\Camera\Camera.h" />
     <ClInclude Include="Game\Common\Camera\MainCamera\MainCamera.h" />
     <ClInclude Include="Game\Common\Camera\PlayerCamera\PlayerCamera.h" />
@@ -331,6 +333,8 @@
     <ClInclude Include="StepTimer.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Game\Common\Behaviour\SteeringBehavior\SteeringBehavior.cpp" />
+    <ClCompile Include="Game\Common\Behaviour\SteeringBehavior\SteeringParameters.cpp" />
     <ClCompile Include="Game\Common\Camera\Camera.cpp" />
     <ClCompile Include="Game\Common\Camera\MainCamera\MainCamera.cpp" />
     <ClCompile Include="Game\Common\Camera\PlayerCamera\PlayerCamera.cpp" />

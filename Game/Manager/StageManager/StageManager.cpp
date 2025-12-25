@@ -50,7 +50,6 @@
 
 #include "Game/Common/UserInterfaceTool/Canvas/Canvas.h"
 #include "Game/Common/UserInterfaceTool/Sprite/Sprite.h"
-#include "Game/Common/SpawnManager/SpawnManager.h"
 
 #include "Library/MyLib/DirectXMyToolKit/DebugFont/DebugFont.h"
 #include "Game//Common/GameObjectRegistry/GameObjectRegistry.h"
@@ -269,42 +268,16 @@ void StageManager::CreateStage(CollisionManager* pCollisionManager)
 
 	// ステージの作成
 	m_pSpawnManager->SetupInitialLayout();
-
+	// チェックポイントの作成 *** 今後Manager化
+	CreateCheckpoint(pCollisionManager);
 
 
 	// プレイヤーカメラにプレイヤーを設定
 	m_playerCamera->SetPlayer(m_playerManager->GetPlayer());
 	MainCamera::GetInstance()->SetCamera(m_playerCamera.get());
 
-
 	// **** 天球の作成 ****
 	m_skySphere = m_pCommonResources->GetResourceManager()->CreateModel("skyDome.sdkmesh");
-	// チェックポイントの作成
-	CreateCheckpoint(pCollisionManager);
-	//// ハードウェアz乱数源からシードを生成
-	//static std::random_device seed_gen;
-
-	//// シードを使って乱数エンジンを初期化
-	//std::mt19937 engine(seed_gen());
-
-	//std::vector<Vector3> randomPosition =
-	//{
-	//	TREASURE_POS_CANDIDATE_1,
-	//	TREASURE_POS_CANDIDATE_2,
-	//	TREASURE_POS_CANDIDATE_3,
-	//};
-	//std::shuffle(randomPosition.begin(), randomPosition.end(), engine);
-	//auto& treasurePosition = randomPosition.front();
-
-	//// お宝の生成
-	//m_treasure = std::make_unique<Treasure>();
-	//m_treasure->GetTransform()->SetPosition(treasurePosition);
-	//m_treasure->Initialize(m_pCommonResources, pCollisionManager);
-
-	// m_buildingManager->Save();
-		// メインカメラの設定 
-
-
 }
 
 /**
