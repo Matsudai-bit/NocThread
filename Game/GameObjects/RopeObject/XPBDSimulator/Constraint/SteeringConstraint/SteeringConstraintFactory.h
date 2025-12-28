@@ -1,6 +1,6 @@
 /*****************************************************************//**
- * @file    ConstraintFactoryBase.h
- * @brief   制約のに関するヘッダーファイル
+ * @file    SteeringConstraintFactory.h
+ * @brief   操舵制約の生成器に関するヘッダーファイル
  *
  * @author  松下大暉
  * @date    2025/10/09
@@ -13,20 +13,25 @@
 
 
 // ヘッダファイルの読み込み ===================================================
+#include <memory>
+#include <vector>
+#include "Game/GameObjects/RopeObject/XPBDSimulator/Constraint/ConstraintFactory.h"
 
 #include "Game/GameObjects/RopeObject/XPBDSimulator/XPBDSimulator.h"
 
 // クラスの前方宣言 ===================================================
+class SimParticle; // シミュレーションのパーティクル
+
+class ICollider; // コライダーインターフェース
+class CollisionManager; // 衝突管理
 class IConstraint;
-class SimParticle;
-
-
 
 // クラスの定義 ===============================================================
 /**
- * @brief 制約の生成
+ * @brief 操舵制約の生成器
  */
-class ConstraintFactoryBase
+class SteeringConstraintFactory
+	: public ConstraintFactoryBase
 {
 // クラス定数の宣言 -------------------------------------------------
 public:
@@ -36,26 +41,29 @@ public:
 // データメンバの宣言 -----------------------------------------------
 private:
 
-	bool m_isDynamic; ///< 毎フレーム制約の更新をかけるかどうか
+	XPBDSimulator::Parameter m_paramater;
 
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
 public:
 	// コンストラクタ
-	ConstraintFactoryBase(bool isDynamic);
+	SteeringConstraintFactory(XPBDSimulator::Parameter paramater);
 
 	// デストラクタ
-	virtual ~ConstraintFactoryBase() = default;
+	~SteeringConstraintFactory();
 
+
+// 操作
+public:
+	
 	// 制約の作成
-	virtual std::vector<std::unique_ptr<IConstraint>> CreateConstraint(std::vector<XPBDSimulator::Particle>* pParticles) = 0;
-
-
+	std::vector<std::unique_ptr<IConstraint>> CreateConstraint(std::vector<XPBDSimulator::Particle>* pParticles) override;
 
 // 取得/設定
 public:
 
-	bool IsDynamic() { return m_isDynamic; };
+// 内部実装
+private:
 
 
 };

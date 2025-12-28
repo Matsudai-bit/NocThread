@@ -26,7 +26,7 @@ using namespace DirectX;
  * @param[in] pParticle パーティクル
  */
 CollisionConstraintFactory::CollisionConstraintFactory(CollisionManager* pCollisionManager, XPBDSimulator::Parameter paramater)
-	: ConstraintFactory		{ true }
+	: ConstraintFactoryBase		{ true }
 	,m_pCollisionManager	{ pCollisionManager }
 	, m_paramater			{ paramater }
 {

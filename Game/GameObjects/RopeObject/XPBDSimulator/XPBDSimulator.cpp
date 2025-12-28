@@ -233,7 +233,7 @@ void XPBDSimulator::Reset()
  * 
  * @param[in] constraintFactories ê›íËÇ∑ÇÈêßñÒ
  */
-void XPBDSimulator::SetConstraint(std::vector<std::unique_ptr<ConstraintFactory>>* constraintFactories)
+void XPBDSimulator::SetConstraint(std::vector<std::unique_ptr<ConstraintFactoryBase>>* constraintFactories)
 {
 	for (int i = 0; i < constraintFactories->size(); i++)
 	{

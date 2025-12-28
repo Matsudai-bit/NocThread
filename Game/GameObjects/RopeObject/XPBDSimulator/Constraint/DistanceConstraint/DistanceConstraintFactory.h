@@ -31,7 +31,7 @@ class IConstraint;
  * @brief ‹——£§–ñ‚Ì¶¬Ší
  */
 class DistanceConstraintFactory
-	: public ConstraintFactory
+	: public ConstraintFactoryBase
 {
 // ƒNƒ‰ƒX’è”‚ÌéŒ¾ -------------------------------------------------
 public:

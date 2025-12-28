@@ -29,7 +29,7 @@ using namespace DirectX;
  * @param[in] pParticle パーティクル
  */
 DistanceConstraintFactory::DistanceConstraintFactory()
-	: ConstraintFactory{ false }
+	: ConstraintFactoryBase{ false }
 {
 }
 

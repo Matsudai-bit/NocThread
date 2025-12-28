@@ -31,7 +31,7 @@ class IConstraint;
  * @brief Õ“Ë§–ñ‚Ì¶¬Ší
  */
 class CollisionConstraintFactory
-	: public ConstraintFactory
+	: public ConstraintFactoryBase
 {
 // ƒNƒ‰ƒX’è”‚ÌéŒ¾ -------------------------------------------------
 public:

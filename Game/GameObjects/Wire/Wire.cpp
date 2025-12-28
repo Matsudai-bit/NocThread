@@ -29,6 +29,7 @@
 #include "Game/Common/Camera/Camera.h"
 
 #include "Game/GameObjects/RopeObject/XPBDSimulator/Constraint/CollisionConstraint/CollisionConstraintFactory.h"
+#include "Game/GameObjects/RopeObject/XPBDSimulator/Constraint/SteeringConstraint/SteeringConstraintFactory.h"
 
 
 using namespace DirectX;
@@ -106,9 +107,10 @@ void Wire::Initialize(
 	m_simulator = std::make_unique<XPBDSimulator>();
 
 	// êßñÒÇÃí«â¡
-	std::vector<std::unique_ptr<ConstraintFactory>> constraintFactories;
-	constraintFactories.emplace_back(std::make_unique<CollisionConstraintFactory>(m_pCollisionManager, simulationParam));
-	//m_simulator->SetConstraint(&constraintFactories);
+	std::vector<std::unique_ptr<ConstraintFactoryBase>> constraintFactories;
+	//constraintFactories.emplace_back(std::make_unique<CollisionConstraintFactory>(m_pCollisionManager, simulationParam));
+	constraintFactories.emplace_back(std::make_unique<SteeringConstraintFactory>(simulationParam));
+	m_simulator->SetConstraint(&constraintFactories);
 
 	m_length = length;
 

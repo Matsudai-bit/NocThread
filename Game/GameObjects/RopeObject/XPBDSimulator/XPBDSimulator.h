@@ -24,7 +24,7 @@ class ParticleObject;
 class RopeObject;
 class DistanceConstraint;
 class IConstraint;			// 制約インターフェース
-class ConstraintFactory;	// 制約生成インターフェース
+class ConstraintFactoryBase;	// 制約生成インターフェース
 
 class CollisionManager; // 衝突管理
 
@@ -77,7 +77,7 @@ private:
 	std::vector<std::unique_ptr<IConstraint>> m_staticConstraints;  ///< 静的制約群 
 	std::vector<std::unique_ptr<IConstraint>> m_dynamicConstraints; ///< 動的制約群　（毎フレーム更新される）
 
-	std::vector<std::unique_ptr<ConstraintFactory>> m_constraintFactories; ///< 制約生成群
+	std::vector<std::unique_ptr<ConstraintFactoryBase>> m_constraintFactories; ///< 制約生成群
 
 	// **** テスト用 :　絶対置き換えること ******
 	CollisionManager* m_pCollisionManager;
@@ -120,7 +120,7 @@ public:
 	void SetCollisionManager(CollisionManager* pCollisionManager) { m_pCollisionManager = pCollisionManager; }
 
 	// 制約の設定
-	void SetConstraint(std::vector<std::unique_ptr<ConstraintFactory>>* constraintFactories);
+	void SetConstraint(std::vector<std::unique_ptr<ConstraintFactoryBase>>* constraintFactories);
 
 
 // 内部実装

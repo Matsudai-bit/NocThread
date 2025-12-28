@@ -28,7 +28,7 @@ using namespace DirectX;
  * @param[in] ‚È‚µ
  */
 FlyingChaserEnemyBehaviour::FlyingChaserEnemyBehaviour()
-	: m_steeringBehavior{ nullptr }
+	: m_steeringBehavior{ nullptr , 18.0f, 0.0001f}
 {
 	m_playerTargetTimeCounter.Reset();
 

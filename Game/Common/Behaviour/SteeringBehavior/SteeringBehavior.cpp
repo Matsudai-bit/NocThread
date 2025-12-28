@@ -3,13 +3,17 @@
 
 #include "SteeringParameters.h"
 // コンストラクタ
-SteeringBehavior::SteeringBehavior(MovableObject* owner)
+SteeringBehavior::SteeringBehavior(MovableObject* owner, const float& maxSpeed, const float& maxForce)
 	:
 	m_owner(owner),					// サッカー選手
 	m_targetPosition{},										// ターゲット位置
 	m_steeringForce{},										// 操舵力
 	m_soccerBallTarget{},									// ターゲットの位置(ボールの位置又は予測したボールの位置)
-	m_flags{}														// ビットフラグ
+	m_flags{}		,												// ビットフラグ
+	m_maxSpeed{ maxSpeed },
+	m_steeringMaxForce{maxForce}
+	
+
 {}
 
 // 操舵力を蓄積する

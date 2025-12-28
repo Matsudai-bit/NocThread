@@ -47,7 +47,7 @@ public:
 
 public :
 	// コンストラクタ
-	SteeringBehavior(MovableObject* owner);
+	SteeringBehavior(MovableObject* owner, const float& maxSpeed, const float& maxForce);
 	// 操舵力を蓄積する
 	bool AccumulateForce(DirectX::SimpleMath::Vector3& sf, const DirectX::SimpleMath::Vector3& forceToAdd);
 	// 操舵力を計算する
@@ -69,4 +69,7 @@ private:
 	DirectX::SimpleMath::Vector3 m_soccerBallTarget;
 	// ビットフラグ(BEHAVIOR_TYPE)を立てることによって現在の行動を表す
 	int m_flags;
+
+	float m_maxSpeed;
+	float m_steeringMaxForce;
 };

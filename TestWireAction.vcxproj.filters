@@ -461,6 +461,9 @@
     <Filter Include="Game\Common\Minimap">
       <UniqueIdentifier>{5b126132-1180-4e61-8614-23a99c9a404e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\GameObjects\RopeObject\XPBDSimulator\Constraint\SteeringConstraint">
+      <UniqueIdentifier>{723cbe91-ee7e-45d0-9023-a136156c3dad}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -904,6 +907,12 @@
     <ClInclude Include="Game\Common\Minimap\Minimap.h">
       <Filter>Game\Common\Minimap</Filter>
     </ClInclude>
+    <ClInclude Include="Game\GameObjects\RopeObject\XPBDSimulator\Constraint\SteeringConstraint\SteeringConstraint.h">
+      <Filter>Game\GameObjects\RopeObject\XPBDSimulator\Constraint\SteeringConstraint</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameObjects\RopeObject\XPBDSimulator\Constraint\SteeringConstraint\SteeringConstraintFactory.h">
+      <Filter>Game\GameObjects\RopeObject\XPBDSimulator\Constraint\Factory</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -1283,6 +1292,12 @@
     </ClCompile>
     <ClCompile Include="Game\Common\Minimap\Minimap.cpp">
       <Filter>Game\Common\Minimap</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\GameObjects\RopeObject\XPBDSimulator\Constraint\SteeringConstraint\SteeringConstraint.cpp">
+      <Filter>Game\GameObjects\RopeObject\XPBDSimulator\Constraint\SteeringConstraint</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\GameObjects\RopeObject\XPBDSimulator\Constraint\SteeringConstraint\SteeringConstraintFactory.cpp">
+      <Filter>Game\GameObjects\RopeObject\XPBDSimulator\Constraint\Factory</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
