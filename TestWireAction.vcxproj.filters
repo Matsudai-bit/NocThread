@@ -455,6 +455,12 @@
     <Filter Include="Game\Common\Behaviour">
       <UniqueIdentifier>{3b2469f0-bc4c-44c0-91b6-f4d57868b62e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\Common\GameObjectManager\BuildingManager">
+      <UniqueIdentifier>{f6e53160-7af8-4ef5-9feb-56261af68b54}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Common\Minimap">
+      <UniqueIdentifier>{5b126132-1180-4e61-8614-23a99c9a404e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -811,7 +817,6 @@
     <ClInclude Include="Game\Common\EntityManager\IEntity.h">
       <Filter>Game\Common\EntityManager</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Manager\BuildingManager\BuildingManager.h" />
     <ClInclude Include="Game\Manager\PlayerManager\PlayerManager.h">
       <Filter>Game\Common\GameObjectManager\PlayerManager</Filter>
     </ClInclude>
@@ -836,7 +841,6 @@
     <ClInclude Include="Game\GameObjects\Common\Transform\Transform.h">
       <Filter>Game\GameObjects\Common\Transform</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Common\Minimap\Minimap.h" />
     <ClInclude Include="Library\MyLib\DirectXMyToolKit\OffscreenRendering\OffscreenRendering.h">
       <Filter>Library\MyLib\DirectX\DirectXMyToolKit\OffscreenRendering</Filter>
     </ClInclude>
@@ -893,6 +897,12 @@
     </ClInclude>
     <ClInclude Include="Game\Common\Behaviour\SteeringBehavior\SteeringParameters.h">
       <Filter>Game\Common\Behaviour</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Manager\BuildingManager\BuildingManager.h">
+      <Filter>Game\Common\GameObjectManager\BuildingManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Common\Minimap\Minimap.h">
+      <Filter>Game\Common\Minimap</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1196,7 +1206,6 @@
     <ClCompile Include="Game\Common\EntityManager\IEntity.cpp">
       <Filter>Game\Common\EntityManager</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Manager\BuildingManager\BuildingManager.cpp" />
     <ClCompile Include="Game\Manager\PlayerManager\PlayerManager.cpp">
       <Filter>Game\Common\GameObjectManager\PlayerManager</Filter>
     </ClCompile>
@@ -1221,7 +1230,6 @@
     <ClCompile Include="Game\GameObjects\Common\Transform\Transform.cpp">
       <Filter>Game\GameObjects\Common\Transform</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Common\Minimap\Minimap.cpp" />
     <ClCompile Include="Library\MyLib\DirectXMyToolKit\OffscreenRendering\OffscreenRendering.cpp">
       <Filter>Library\MyLib\DirectX\DirectXMyToolKit\OffscreenRendering</Filter>
     </ClCompile>
@@ -1269,6 +1277,12 @@
     </ClCompile>
     <ClCompile Include="Game\Common\Behaviour\SteeringBehavior\SteeringParameters.cpp">
       <Filter>Game\Common\Behaviour</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Manager\BuildingManager\BuildingManager.cpp">
+      <Filter>Game\Common\GameObjectManager\BuildingManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Common\Minimap\Minimap.cpp">
+      <Filter>Game\Common\Minimap</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -310,7 +310,7 @@ void Player::Draw(const Camera& camera)
 	//GetCommonResources()->GetDebugFont()->AddString(100, 130, Colors::White, L"speed : %f ", GetVelocity().Length());
 
 	// ワイヤー照準検出器の表示
-	m_wireTargetFinder->Draw(camera);
+	//m_wireTargetFinder->Draw(camera);
 
 	//m_collider->Draw(context, view, proj);
 

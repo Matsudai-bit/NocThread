@@ -15,7 +15,7 @@ SteeringBehavior::SteeringBehavior(MovableObject* owner)
 // ‘€‘Ç—Í‚ğ’~Ï‚·‚é
 bool SteeringBehavior::AccumulateForce(DirectX::SimpleMath::Vector3& steeringForce, const DirectX::SimpleMath::Vector3& forceToAdd)
 {
-	const float MAX_FORCE = 1.0f;
+	const float MAX_FORCE = 0.001f;
 
 	float magnitudeRemaining = MAX_FORCE - steeringForce.Length();
 
