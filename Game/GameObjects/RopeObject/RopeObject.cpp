@@ -61,6 +61,11 @@ void RopeObject::Initialize(const CommonResources* pCommonResouces)
 
 	// エフェクトの作成
 	m_effect = std::make_unique<BasicEffect>(device);
+	m_effect->SetTextureEnabled(false);
+	m_effect->SetVertexColorEnabled(true);
+	m_effect->SetLightEnabled(0, false);
+	m_effect->SetLightEnabled(1, false);
+	m_effect->SetLightEnabled(2, false);
 
 	// インプットレイアウトの作成
 	DX::ThrowIfFailed(
@@ -112,11 +117,6 @@ void RopeObject::Draw(const Camera& camera)
 	context->RSSetState(pStates->CullClockwise());              // カリングしない
 
 
-	// テクスチャサンプラーの設定
-	ID3D11SamplerState* samplers[] = { pStates->PointWrap() };
-	context->PSSetSamplers(0, 1, samplers);
-
-
 
 	// ワールド行列
 	SimpleMath::Matrix world = SimpleMath::Matrix::Identity;/* rotationZ* rotationX;*/
@@ -147,6 +147,48 @@ void RopeObject::Draw(const Camera& camera)
 		vertex[1].position = m_particles[i]->GetPosition();
 
 		// 描画
+		m_batch->Draw(D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP, vertex, 2);
+
+
+	}
+	m_batch->End();
+	// 深度ステンシルバッファの設定
+	context->OMSetDepthStencilState(pStates->DepthDefault(), 0);
+
+	// ブレンドステートの設定
+	context->OMSetBlendState(pStates->AlphaBlend(), nullptr, 0xffffffff);
+
+	// カリングの設定
+	context->RSSetState(pStates->CullNone());              // カリングしない
+	context->RSSetState(pStates->CullClockwise());              // カリングしない
+
+
+
+	// ワールド行列
+	m_effect->SetWorld(world);
+	// ビュー行列
+	m_effect->SetView(camera.GetViewMatrix());
+	// 射影行列
+	m_effect->SetProjection(camera.GetProjectionMatrix());
+
+	m_effect->SetColorAndAlpha(DirectX::Colors::Yellow);
+	// エフェクトを適応する
+	m_effect->Apply(context);
+
+	// 入力レイアウト
+	context->IASetInputLayout(m_inputLayout.Get());
+
+
+	m_batch->Begin();
+	for (size_t i = 0; i < m_particles.size(); i++)
+	{
+		VertexPositionColor vertex[2]{};
+		vertex[0].color = SimpleMath::Vector4(1, 1.0f, 1.0f, 1);
+		vertex[1].color = SimpleMath::Vector4(1, 1.0f, 1.0f, 1);
+		vertex[0].position = m_particles[i]->GetPosition();
+		auto direction = m_particles[i]->GetVelocity();
+		direction.Normalize();
+		vertex[1].position = m_particles[i]->GetPosition() + direction * 1.5f;
 		m_batch->Draw(D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP, vertex, 2);
 	}
 	m_batch->End();

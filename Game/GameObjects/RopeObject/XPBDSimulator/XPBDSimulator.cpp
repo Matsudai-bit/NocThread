@@ -203,6 +203,7 @@ void XPBDSimulator::Finalize()
  */
 void XPBDSimulator::Simulate(float deltaTime)
 {
+	if (m_particles.size() <= 1) { return; }
 	// 予測位置の算出
 	PredictNextPositions(deltaTime);
 
@@ -281,6 +282,11 @@ void XPBDSimulator::ResetConstraintParameters()
 	{
 		constraint->ResetConstraintParam(m_parameter.flexibility);
 	}
+	// 制約の初期化
+	for (auto& constraint : m_dynamicConstraints)
+	{
+		constraint->ResetConstraintParam(m_parameter.flexibility);
+	}
 }
 
 /**
@@ -295,9 +301,10 @@ void XPBDSimulator::GenerateConstraints()
 	m_dynamicConstraints.clear();
 
 	
-	// 制約の生成
+	// 動的な制約の生成
 	for (auto& constraintFactory : m_constraintFactories)
 	{
+		if (!constraintFactory->IsDynamic()) { continue; }
 		// 生成した制約の格納配列
 		std::vector<std::unique_ptr<IConstraint>> creationConstraints;
 
@@ -335,11 +342,11 @@ void XPBDSimulator::IterateConstraints(float deltaTime)
 	// コピーを取って使う
 	//constraints.reserve(m_ropeSegments.size() + m_constraints.size());
 
-	for (auto& con : m_staticConstraints)
+	for (auto& con : m_dynamicConstraints)
 	{
 		constraints.push_back(con.get());
 	}
-	for (auto& con : m_dynamicConstraints)
+	for (auto& con : m_staticConstraints)
 	{
 		constraints.push_back(con.get());
 	}

@@ -426,7 +426,7 @@ void Player::OnCollisionWithWall(GameObject* pHitObject, ICollider* pHitCollider
 void Player::OnCollisionWithBuilding(GameObject* pHitObject, ICollider* pHitCollider)
 {
 	UNREFERENCED_PARAMETER(pHitObject);
-	if (State::STTEPPING == m_state || State::WIRE_ACTION == m_state)
+	if (State::STTEPPING == m_state /*|| State::WIRE_ACTION == m_state*/)
 	{
 		RequestChangeState(State::IDLE);
 	}

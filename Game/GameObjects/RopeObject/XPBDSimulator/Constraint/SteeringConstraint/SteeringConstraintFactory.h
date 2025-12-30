@@ -25,7 +25,7 @@ class SimParticle; // シミュレーションのパーティクル
 class ICollider; // コライダーインターフェース
 class CollisionManager; // 衝突管理
 class IConstraint;
-
+class CommonResources;
 // クラスの定義 ===============================================================
 /**
  * @brief 操舵制約の生成器
@@ -43,11 +43,17 @@ private:
 
 	XPBDSimulator::Parameter m_paramater;
 
+	const CommonResources* m_pCommonResources;
+
+	std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionColor>> m_primitiveBatch;
+	std::unique_ptr < DirectX::BasicEffect> m_basicEffect;
+	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_inputLayout;
+
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
 public:
 	// コンストラクタ
-	SteeringConstraintFactory(XPBDSimulator::Parameter paramater);
+	SteeringConstraintFactory(const CommonResources* pCommonResources, XPBDSimulator::Parameter paramater);
 
 	// デストラクタ
 	~SteeringConstraintFactory();

@@ -24,12 +24,13 @@ using namespace DirectX;
  *
  * @param[in] pParticle パーティクル
  */
-SteeringConstraint::SteeringConstraint(SimParticle* pParticle, const DirectX::SimpleMath::Vector3& targetPosition)
+SteeringConstraint::SteeringConstraint(const CommonResources* pCommonResources, SimParticle* pParticle, const DirectX::SimpleMath::Vector3& targetPosition)
 	: m_pParticle{ pParticle }
 	, m_constraintParam{}
 	, m_targetPosition{ targetPosition }
+	, m_pCommonResources{ pCommonResources }
 {
-
+	m_steeringBehavior = std::make_unique<SteeringBehavior>(18.0f, 0.01f);
 }
 
 
@@ -59,64 +60,58 @@ void SteeringConstraint::ResetConstraintParam(float flexibility)
 float SteeringConstraint::EvaluateConstraint() const
 {
 	using namespace SimpleMath;
-	return 1.0f;
-	float distanceSqr = Vector3::DistanceSquared(m_targetPosition, m_pParticle->GetX());
-	if (MyLib::ApproxEqual(distanceSqr, 0.0f))
-	{
-		return 0.0f;
-	}
-
-	return 1.0f - (1.0f / distanceSqr);
+	// C = |xi - target|
+	Vector3 diff = m_pParticle->GetXi() - m_targetPosition;
+	return diff.Length();
 }
 
 float SteeringConstraint::ComputeLambdaCorrection(float dt, float C) const
 {
 
-	return dt;
+	auto vector = m_targetPosition - m_pParticle->GetXi();
+	auto distance = vector.Length();
+
+	// 柔らかさのスケーリング (時間で正規化)
+	auto αTilda = m_constraintParam.α / (dt * dt);
+
+	if (distance < 1e-6f) return 0.0f;
+
+	/// 単位方向ベクトル (制約勾配)
+	auto deltaC = vector / distance; // ΔC
+
+	// 合計の逆質量
+	float invM = m_pParticle->GetInvMass() ;
+
+	// 有効質量 + 柔軟性による安定化項
+	return (C - αTilda * m_constraintParam.λ) / (deltaC.Dot(invM * deltaC) + αTilda);
 }
 
 DirectX::SimpleMath::Vector3 SteeringConstraint::ComputeDeltaX(float deltaLambda) const
 {
 	using namespace SimpleMath;
-	auto kb = Keyboard::Get().GetState();
 
-	// 入力に応じた水平ベクトル
-	Vector3 inputVector;
-	if (kb.A)	inputVector += Vector3::Left;
-	if (kb.D)	inputVector += Vector3::Right;
-	if (kb.W)		inputVector += Vector3::Up;
-	if (kb.S)	inputVector += Vector3::Down;
+	Vector3 diff = m_targetPosition - m_pParticle->GetXi() ;
+	float dist = diff.Length();
 
-	if (MyLib::ApproxEqual(inputVector.LengthSquared(), 0.0f))
-	{
-		return Vector3::Zero;
-	}
+	if (dist < 1e-6f) return Vector3::Zero;
 
-	// 現在のカメラの方向た方向を求める(Y軸だけ回転させる)
-	auto camera = MainCamera::GetInstance()->GetCamera();
-	auto cameraForward = camera->GetTarget() - camera->GetEye();
-	
-	
-	cameraForward.y = 0.0f;
-	cameraForward.Normalize();
+	// 勾配 ∇C = (xi - target) / |xi - target|
+	Vector3 gradient = diff / dist;
 
-	// カメラの「右方向」を取得（カメラの向き × Y軸）
-	SimpleMath::Vector3 cameraRight = cameraForward.Cross(SimpleMath::Vector3::Up);
-	cameraRight.Normalize();
-
-	// ローカル入力をカメラ空間に変換（X:右、Z:前）
-	// Z方向が正面同士の時に-の乗算になり結果敵に反対方向に向いてしまうため-で補正
-	SimpleMath::Vector3 worldMovementDir = -inputVector.z * cameraForward + inputVector.x * cameraRight;
-
-	worldMovementDir.Normalize();
-
-
-	return worldMovementDir * 0.5f * deltaLambda;
+	// Δx = Δλ * ∇C
+	return deltaLambda * gradient;
 }
 
 void SteeringConstraint::ApplyPositionCorrection(float deltaLambda)
 {
+	// 1. XPBDとしての補正量を算出
 	auto deltaX = ComputeDeltaX(deltaLambda);
-	m_pParticle->SetXi(m_pParticle->GetXi() + deltaX);
+
+	// 2. ステアリング行動で補正をフィルタリング（滑らかにする）
+	m_steeringBehavior->SetTargetPosition(m_targetPosition);
+	auto steeringForce = m_steeringBehavior->Calculate(m_pParticle->GetXi(), m_pParticle->GetInvMass() * deltaX);
+
+	// 3. 位置を更新
+	m_pParticle->SetXi(m_pParticle->GetXi() + steeringForce);
 
 }

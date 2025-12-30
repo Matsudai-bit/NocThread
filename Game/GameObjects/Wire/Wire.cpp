@@ -35,7 +35,7 @@
 using namespace DirectX;
 
 # define DEBUG
-
+#include "Library/MyLib/DirectXMyToolKit/DebugFont/DebugFont.h"
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
@@ -108,8 +108,8 @@ void Wire::Initialize(
 
 	// 制約の追加
 	std::vector<std::unique_ptr<ConstraintFactoryBase>> constraintFactories;
-	//constraintFactories.emplace_back(std::make_unique<CollisionConstraintFactory>(m_pCollisionManager, simulationParam));
-	constraintFactories.emplace_back(std::make_unique<SteeringConstraintFactory>(simulationParam));
+	constraintFactories.emplace_back(std::make_unique<CollisionConstraintFactory>(m_pCollisionManager, simulationParam));
+	constraintFactories.emplace_back(std::make_unique<SteeringConstraintFactory>(GetCommonResources(),  simulationParam));
 	m_simulator->SetConstraint(&constraintFactories);
 
 	m_length = length;
@@ -193,14 +193,20 @@ void Wire::Draw(const Camera& camera)
 	if (kb->IsKeyPressed( Keyboard::U)) debug = !debug;
 
 	if (debug)
-	for (const auto& obj : m_particleObjects)
 	{
-		Model ballModel = GetCommonResources()->GetResourceManager()->CreateModel("Ball.sdkmesh");
+		for (const auto& obj : m_particleObjects)
+		{
+			Model ballModel = GetCommonResources()->GetResourceManager()->CreateModel("Ball.sdkmesh");
 
-		world = SimpleMath::Matrix::CreateScale(0.05f);
-		world *= SimpleMath::Matrix::CreateTranslation(obj->GetPosition());
-		ballModel.Draw(context, *states, world, camera.GetViewMatrix(), camera.GetProjectionMatrix());
+			world = SimpleMath::Matrix::CreateScale(0.05f);
+			world *= SimpleMath::Matrix::CreateTranslation(obj->GetPosition());
+			ballModel.Draw(context, *states, world, camera.GetViewMatrix(), camera.GetProjectionMatrix());
+		}
+
+		GetCommonResources()->GetDebugFont()->AddString(10, 50, Colors::Red, L"particle velocity : (%f, %f, %f) ", m_particleObjects.back()->GetVelocity().x, m_particleObjects.back()->GetVelocity().y, m_particleObjects.back()->GetVelocity().z);
+		GetCommonResources()->GetDebugFont()->AddString(10, 70, Colors::Red, L"particle position : (%f, %f, %f) ", m_particleObjects.back()->GetPosition().x, m_particleObjects.back()->GetPosition().y, m_particleObjects.back()->GetPosition().z);
 	}
+
 
 # else
 	if (m_particleObjects.size() > 0)

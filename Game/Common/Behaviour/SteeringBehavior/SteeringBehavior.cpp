@@ -3,9 +3,8 @@
 
 #include "SteeringParameters.h"
 // コンストラクタ
-SteeringBehavior::SteeringBehavior(MovableObject* owner, const float& maxSpeed, const float& maxForce)
+SteeringBehavior::SteeringBehavior(const float& maxSpeed, const float& maxForce)
 	:
-	m_owner(owner),					// サッカー選手
 	m_targetPosition{},										// ターゲット位置
 	m_steeringForce{},										// 操舵力
 	m_soccerBallTarget{},									// ターゲットの位置(ボールの位置又は予測したボールの位置)
@@ -21,7 +20,7 @@ bool SteeringBehavior::AccumulateForce(DirectX::SimpleMath::Vector3& steeringFor
 {
 	const float MAX_FORCE = 0.001f;
 
-	float magnitudeRemaining = MAX_FORCE - steeringForce.Length();
+	float magnitudeRemaining = m_steeringMaxForce - steeringForce.Length();
 
 	// 加えられる操舵力に余裕がないのでfalseを返す
 	if (magnitudeRemaining <= 0.0f)
@@ -42,7 +41,7 @@ bool SteeringBehavior::AccumulateForce(DirectX::SimpleMath::Vector3& steeringFor
 }
 
 // 操舵力を計算する
-DirectX::SimpleMath::Vector3 SteeringBehavior::Calculate()
+DirectX::SimpleMath::Vector3 SteeringBehavior::Calculate(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& velocity)
 {
 	DirectX::SimpleMath::Vector3 force = DirectX::SimpleMath::Vector3::Zero;;
 	// 操舵力をリセットする
@@ -52,7 +51,7 @@ DirectX::SimpleMath::Vector3 SteeringBehavior::Calculate()
 /*	if (On(BEHAVIOR_TYPE::ARRIVE))
 	{
 	*/	// 到着行動を行う
-		force += Arrive(m_targetPosition, DECELERATION::FAST) * SteeringParameters::ARRIVE_WEIGHT;
+		force += Arrive(position, velocity, m_targetPosition, DECELERATION::FAST) * SteeringParameters::ARRIVE_WEIGHT;
 		if (!AccumulateForce(m_steeringForce, force))
 			return m_steeringForce;
 //	}
@@ -62,13 +61,15 @@ DirectX::SimpleMath::Vector3 SteeringBehavior::Calculate()
 }
 
 // 「到着」行動
-DirectX::SimpleMath::Vector3 SteeringBehavior::Arrive(const DirectX::SimpleMath::Vector3& targetPosition, DECELERATION deceleration)
+DirectX::SimpleMath::Vector3 SteeringBehavior::Arrive(
+	const DirectX::SimpleMath::Vector3& position,
+	const DirectX::SimpleMath::Vector3& velocity,
+	const DirectX::SimpleMath::Vector3& targetPosition,
+	DECELERATION deceleration)
 {
-	const float MAX_SPEED = 50.0f;
-
 
 	// ターゲットに向かうためのベクトルを計算する
-	DirectX::SimpleMath::Vector3 toTarget = targetPosition - m_owner->GetTransform()->GetPosition();
+	DirectX::SimpleMath::Vector3 toTarget = targetPosition - position;
 	// 目標位置までの距離を計算する
 	float distance = toTarget.Length();
 	// 目的位置までの距離が0より大きい場合
@@ -79,12 +80,12 @@ DirectX::SimpleMath::Vector3 SteeringBehavior::Arrive(const DirectX::SimpleMath:
 		// 指定された望ましい減速で目標に到達するのに必要な速度を計算する
 		float speed = distance / ((float)deceleration * decelerationTweaker);
 		// 速度が最大移動速度を超えないようにする
-		speed = std::min(speed, MAX_SPEED);
+		speed = std::min(speed, m_maxSpeed);
 
 		// 「到着」行動の様な処理を行う
 		DirectX::SimpleMath::Vector3 desiredVelocity = toTarget * speed / distance;
 		// 操舵力を返す
-		return (desiredVelocity - m_owner->GetVelocity());
+		return (desiredVelocity - velocity);
 	}
 	// 操舵力ゼロを返す
 	return DirectX::SimpleMath::Vector3::Zero;

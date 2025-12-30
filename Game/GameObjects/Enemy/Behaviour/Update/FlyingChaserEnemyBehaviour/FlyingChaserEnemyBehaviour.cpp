@@ -28,7 +28,7 @@ using namespace DirectX;
  * @param[in] ‚È‚µ
  */
 FlyingChaserEnemyBehaviour::FlyingChaserEnemyBehaviour()
-	: m_steeringBehavior{ nullptr , 18.0f, 0.0001f}
+	: m_steeringBehavior{ 18.0f, 0.000001f}
 {
 	m_playerTargetTimeCounter.Reset();
 
@@ -69,7 +69,6 @@ void FlyingChaserEnemyBehaviour::Update(Enemy* pEnemy, float deltaTime, const Co
 	UNREFERENCED_PARAMETER(deltaTime);
 	using namespace SimpleMath;
 
-	m_steeringBehavior.SetOwner(pEnemy);
 
 
 	m_playerTargetTimeCounter.UpperTime(deltaTime);
@@ -129,7 +128,7 @@ void FlyingChaserEnemyBehaviour::Update(Enemy* pEnemy, float deltaTime, const Co
 	pEnemy->AddForceToVelocity(flyingVelocity);
 
 
-	DirectX::SimpleMath::Vector3 steeringForce = m_steeringBehavior.Calculate();
+	DirectX::SimpleMath::Vector3 steeringForce = m_steeringBehavior.Calculate(pEnemy->GetTransform()->GetPosition(), pEnemy->GetVelocity());
 	pEnemy->AddForceToVelocity(steeringForce);
 }
 

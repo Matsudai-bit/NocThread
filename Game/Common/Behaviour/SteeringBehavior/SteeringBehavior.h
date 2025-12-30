@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Game/GameObjects/Common/MovableObject/MovableObject.h"
 
 // 操舵行動クラスを定義する
 class SteeringBehavior
@@ -36,30 +35,25 @@ public:
 	DirectX::SimpleMath::Vector3 GetTargetPosition() const { return m_targetPosition; };
 	// ターゲットの位置を設定する
 	void SetTargetPosition(const DirectX::SimpleMath::Vector3& targetPosition) { m_targetPosition = targetPosition; 	}
-	// 進行方向の成分を取得する
-	float GetForwardComponent() const { return m_owner->GetTransform()->GetForward().Dot(m_steeringForce); }
-	// 進行方向の横力の成分を取得する
-	float GetSideComponent() const { return m_owner->GetTransform()->GetRight().Dot(m_steeringForce); }
+
 	// 操舵力を取得する
 	DirectX::SimpleMath::Vector3 GetForce() const { return m_steeringForce; }
 
-	void SetOwner(MovableObject* owner) { m_owner = owner; };
 
 public :
 	// コンストラクタ
-	SteeringBehavior(MovableObject* owner, const float& maxSpeed, const float& maxForce);
+	SteeringBehavior(const float& maxSpeed, const float& maxForce);
 	// 操舵力を蓄積する
 	bool AccumulateForce(DirectX::SimpleMath::Vector3& sf, const DirectX::SimpleMath::Vector3& forceToAdd);
 	// 操舵力を計算する
-	DirectX::SimpleMath::Vector3 Calculate();
+	DirectX::SimpleMath::Vector3 Calculate(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& velocity);
 	// 到着行動
-	DirectX::SimpleMath::Vector3 Arrive(const DirectX::SimpleMath::Vector3& target, DECELERATION deceleration);
+	DirectX::SimpleMath::Vector3 Arrive(const DirectX::SimpleMath::Vector3& position, const DirectX::SimpleMath::Vector3& velocity, const DirectX::SimpleMath::Vector3& target, DECELERATION deceleration);
 
 
 
 private:
-	// サッカー選手
-	MovableObject* m_owner;
+
 	// ターゲット位置
 	DirectX::SimpleMath::Vector3 m_targetPosition;
 

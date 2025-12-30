@@ -14,11 +14,13 @@
 
 // ヘッダファイルの読み込み ===================================================
 #include "Game/GameObjects/RopeObject/XPBDSimulator/Constraint/IConstraint.h"
+#include "Game/Common/Behaviour/SteeringBehavior/SteeringBehavior.h"
 
 // クラスの前方宣言 ===================================================
 class SimParticle; // シミュレーションのパーティクル
 
 class ICollider; // コライダーインターフェース
+class CommonResources;
 
 // クラスの定義 ===============================================================
 /**
@@ -41,6 +43,10 @@ private:
 
 	DirectX::SimpleMath::Vector3 m_targetPosition;
 
+	std::unique_ptr<SteeringBehavior> m_steeringBehavior;
+
+	const CommonResources* m_pCommonResources;
+
 public:
 
 
@@ -50,7 +56,7 @@ public:
 // コンストラクタ/デストラクタ
 public:
 	// コンストラクタ
-	SteeringConstraint(SimParticle* pParticle,const DirectX::SimpleMath::Vector3& targetPosition);
+	SteeringConstraint(const CommonResources* pCommonResources, SimParticle* pParticle,const DirectX::SimpleMath::Vector3& targetPosition);
 
 	// デストラクタ
 	~SteeringConstraint();
