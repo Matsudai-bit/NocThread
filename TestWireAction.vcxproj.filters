@@ -464,6 +464,9 @@
     <Filter Include="Game\GameObjects\RopeObject\XPBDSimulator\Constraint\SteeringConstraint">
       <UniqueIdentifier>{723cbe91-ee7e-45d0-9023-a136156c3dad}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resources\Shaders\FrustumCulling">
+      <UniqueIdentifier>{79e9824a-f191-47a0-9920-4aa629466599}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -1355,6 +1358,9 @@
     </FxCompile>
     <FxCompile Include="Shaders\SimpleShape2D\SimpleRectangle\SimpleRectangle_PS.hlsl">
       <Filter>Resources\Shaders\SimpleShape2D\SimpleRectangle</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\FrustumCulling\FrustumCullingCS.hlsl">
+      <Filter>Resources\Shaders\FrustumCulling</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>
