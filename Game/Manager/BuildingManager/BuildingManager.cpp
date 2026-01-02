@@ -82,6 +82,7 @@ void from_json(const json& j, BuildingSaveData& s)
 BuildingManager::BuildingManager(const CommonResources* pCommonResources)
 	: m_pCommonResources{ pCommonResources }
 {
+	m_buildings.clear();
 
 }
 
@@ -106,7 +107,6 @@ BuildingManager::~BuildingManager()
  */
 void BuildingManager::Initialize()
 {
-	m_buildings.clear();
 
 
 	ID3D11Device1* device = m_pCommonResources->GetDeviceResources()->GetD3DDevice();
@@ -122,8 +122,8 @@ void BuildingManager::Initialize()
 		device->CreateBuffer(&desc, nullptr, m_constantBuffer.ReleaseAndGetAddressOf()));
 	
 	//バッファの生成
-	MyLib::CreateStructuredBuffer(D3D11_BIND_SHADER_RESOURCE, D3D11_USAGE_DYNAMIC, sizeof(ParticleCompute), static_cast<UINT>(DEFAULT_BUFFER_SIZE),m_particleBuffer.ReleaseAndGetAddressOf(), device);
-	MyLib::CreateStructuredBuffer(D3D11_BIND_UNORDERED_ACCESS, D3D11_USAGE_DEFAULT, sizeof(ResultCompute), static_cast<UINT>(DEFAULT_BUFFER_SIZE), m_resultBuffer.ReleaseAndGetAddressOf(), device);
+	MyLib::CreateStructuredBuffer(D3D11_BIND_SHADER_RESOURCE, D3D11_USAGE_DYNAMIC, sizeof(ParticleCompute), static_cast<UINT>(334 * 10),m_particleBuffer.ReleaseAndGetAddressOf(), device);
+	MyLib::CreateStructuredBuffer(D3D11_BIND_UNORDERED_ACCESS, D3D11_USAGE_DEFAULT, sizeof(ResultCompute), static_cast<UINT>(334 * 10), m_resultBuffer.ReleaseAndGetAddressOf(), device);
 	MyLib::CreateStagingBuffer(m_resultBuffer.Get(), m_stagingBuffer.ReleaseAndGetAddressOf(), device);
 	
 	// SRVの生成
@@ -253,14 +253,18 @@ bool BuildingManager::RequestCreate(CollisionManager* pCollisionManager, const C
 			Vector3 position(saveData.position.x, saveData.position.y, saveData.position.z);
 			Vector3 scale(saveData.scale.x, saveData.scale.y, saveData.scale.z);
 
-			// 既存の CreateBuilding 関数を呼び出し
-			CreateBuilding(
-				position,
-				scale,
-				saveData.tileNumber,
-				pCollisionManager,
-				pCommonResources
-			);
+			for (int i = 0; i < 10; i++)
+			{
+				// 既存の CreateBuilding 関数を呼び出し
+				CreateBuilding(
+					position,
+					scale,
+					saveData.tileNumber,
+					pCollisionManager,
+					pCommonResources
+				);
+			}
+
 			
 
 		}
@@ -273,6 +277,7 @@ bool BuildingManager::RequestCreate(CollisionManager* pCollisionManager, const C
 		std::cerr << "JSON Error during loading (" << filename << "): " << e.what() << std::endl;
 		return false;
 	}
+
 }
 
 

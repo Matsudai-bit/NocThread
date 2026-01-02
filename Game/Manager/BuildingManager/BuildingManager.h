@@ -59,7 +59,7 @@ public:
 		int index;
 	};
 
-	static constexpr int DEFAULT_BUFFER_SIZE = sizeof(ParticleCompute) * 500;
+	static constexpr int DEFAULT_BUFFER_SIZE = 500;
 
 // データメンバの宣言 -----------------------------------------------
 private:
