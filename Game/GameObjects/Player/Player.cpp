@@ -48,7 +48,7 @@
 // 外部ライブラリ・ツール
 #include "Library/DirectXFramework/DebugDraw.h"
 #include "Library/MyLib/DirectXMyToolKit/DebugFont/DebugFont.h"
-#include "Library/MyLib/DirectXMyToolKit/DirectXMyToolKit.h"
+#include "Library/MyLib/DirectXMyToolKit/DirectXUtils.h"
 #include "Library/MyLib/Ray/Ray.h"
 
 using namespace DirectX;

@@ -35,10 +35,20 @@ class BuildingManager
 // クラス定数の宣言 -------------------------------------------------
 public:
 
+	/**
+	 * @brief カメラのフラスタムのバッファ
+	 */
+	struct CameraFrustumConstantBuffer
+	{
+		DirectX::SimpleMath::Vector4 planes[6];
+		int maxIndexCount;
+		float padding[3];
+
+
+	};
 
 	//今回使うパーティクルの資料例
 	struct ParticleCompute {
-		DirectX::SimpleMath::Vector4 planes[6];
 
 		float radius;
 		DirectX::SimpleMath::Vector3 position;
@@ -49,7 +59,7 @@ public:
 		int index;
 	};
 
-	static constexpr int DEFAULT_BUFFER_SIZE = sizeof(ParticleCompute) * 1000;
+	static constexpr int DEFAULT_BUFFER_SIZE = sizeof(ParticleCompute) * 500;
 
 // データメンバの宣言 -----------------------------------------------
 private:
@@ -68,12 +78,14 @@ private:
 	// パーティクル
 	std::vector<ParticleCompute> m_particles;
 	// バッファ
-	ID3D11Buffer* m_pParticleBuffer;
-	ID3D11Buffer* m_pResultBuffer;
+	Microsoft::WRL::ComPtr<ID3D11Buffer> m_particleBuffer;
+	Microsoft::WRL::ComPtr<ID3D11Buffer> m_resultBuffer;
+	Microsoft::WRL::ComPtr<ID3D11Buffer> m_constantBuffer;
+	Microsoft::WRL::ComPtr<ID3D11Buffer> m_stagingBuffer;
 	// SRV
-	ID3D11ShaderResourceView* m_pParticleSRV;
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_particleSRV;
 	// UAV
-	ID3D11UnorderedAccessView* m_pResultUAV;
+	Microsoft::WRL::ComPtr<ID3D11UnorderedAccessView> m_resultUAV;
 
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
@@ -124,11 +136,8 @@ public:
 // 内部実装
 private:
 
-	void CreateStructuredBuffer(UINT BindFlags, D3D11_USAGE Usage, UINT elementSize, UINT count, ID3D11Buffer** ppBuffer, ID3D11Device1* device);
-	void CreateBufferSRV(ID3D11Buffer* pSourceBuffer, ID3D11ShaderResourceView** ppSRView, ID3D11Device1* device);
-	void CreateBufferUAV(ID3D11Buffer* pSourceBuffer, ID3D11UnorderedAccessView** ppUAView, ID3D11Device1* device);
 
-	ID3D11Buffer* CreateAndCopyToBuffer(ID3D11Buffer* pSourceBuffer, ID3D11Device1* device, ID3D11DeviceContext* context);
+
 
 	void DrawDefault(const Camera& camera);
 	void DrawCS(const Camera& camera);

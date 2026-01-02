@@ -702,7 +702,7 @@
     <ClInclude Include="Game\Scene\ResultScene\ResultScene.h">
       <Filter>Game\Scene\ResultScene</Filter>
     </ClInclude>
-    <ClInclude Include="Library\MyLib\DirectXMyToolKit\DirectXMyToolKit.h">
+    <ClInclude Include="Library\MyLib\DirectXMyToolKit\DirectXUtils.h">
       <Filter>Library\MyLib\DirectX\DirectXMyToolKit</Filter>
     </ClInclude>
     <ClInclude Include="Game\Common\WireTargetFinder\WireTargetFinder.h">
@@ -1103,7 +1103,7 @@
     <ClCompile Include="Game\Scene\ResultScene\ResultScene.cpp">
       <Filter>Game\Scene\ResultScene</Filter>
     </ClCompile>
-    <ClCompile Include="Library\MyLib\DirectXMyToolKit\DirectXMyToolKit.cpp">
+    <ClCompile Include="Library\MyLib\DirectXMyToolKit\DirectXUtils.cpp">
       <Filter>Library\MyLib\DirectX\DirectXMyToolKit</Filter>
     </ClCompile>
     <ClCompile Include="Game\Common\WireTargetFinder\WireTargetFinder.cpp">

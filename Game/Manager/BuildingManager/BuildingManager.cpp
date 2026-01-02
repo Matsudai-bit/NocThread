@@ -13,6 +13,7 @@
 #include "Library/DirectXFramework/DebugDraw.h"
 #include "Library/MyLib/DirectXMyToolKit/DebugFont/DebugFont.h"
 #include "Library/DirectXFramework/ReadData.h"
+#include "Library/MyLib/DirectXMyToolKit/DirectXUtils.h"
 
 #include <fstream>
 #include <iostream>
@@ -109,15 +110,27 @@ void BuildingManager::Initialize()
 
 
 	ID3D11Device1* device = m_pCommonResources->GetDeviceResources()->GetD3DDevice();
+	// 定数バッファの作成
+	D3D11_BUFFER_DESC desc{};
+	desc.BindFlags	= D3D11_BIND_CONSTANT_BUFFER;
+	desc.Usage		= D3D11_USAGE_DYNAMIC;
+	desc.ByteWidth = sizeof(CameraFrustumConstantBuffer);
+	desc.CPUAccessFlags =  D3D10_CPU_ACCESS_WRITE;
+	;
+
+	DX::ThrowIfFailed(
+		device->CreateBuffer(&desc, nullptr, m_constantBuffer.ReleaseAndGetAddressOf()));
+	
 	//バッファの生成
-	CreateStructuredBuffer(D3D11_BIND_SHADER_RESOURCE, D3D11_USAGE_DYNAMIC, sizeof(ParticleCompute), static_cast<UINT>(DEFAULT_BUFFER_SIZE), &m_pParticleBuffer, device);
-	CreateStructuredBuffer(D3D11_BIND_UNORDERED_ACCESS, D3D11_USAGE_DEFAULT, sizeof(ResultCompute), static_cast<UINT>(DEFAULT_BUFFER_SIZE), &m_pResultBuffer, device);
+	MyLib::CreateStructuredBuffer(D3D11_BIND_SHADER_RESOURCE, D3D11_USAGE_DYNAMIC, sizeof(ParticleCompute), static_cast<UINT>(DEFAULT_BUFFER_SIZE),m_particleBuffer.ReleaseAndGetAddressOf(), device);
+	MyLib::CreateStructuredBuffer(D3D11_BIND_UNORDERED_ACCESS, D3D11_USAGE_DEFAULT, sizeof(ResultCompute), static_cast<UINT>(DEFAULT_BUFFER_SIZE), m_resultBuffer.ReleaseAndGetAddressOf(), device);
+	MyLib::CreateStagingBuffer(m_resultBuffer.Get(), m_stagingBuffer.ReleaseAndGetAddressOf(), device);
 	
 	// SRVの生成
-	CreateBufferSRV(m_pParticleBuffer, &m_pParticleSRV, device);
+	MyLib::CreateBufferSRV(m_particleBuffer.Get(), m_particleSRV.ReleaseAndGetAddressOf(), device);
 
 	// UAVの生成
-	CreateBufferUAV(m_pResultBuffer, &m_pResultUAV, device);
+	MyLib::CreateBufferUAV(m_resultBuffer.Get(), m_resultUAV.ReleaseAndGetAddressOf(), device);
 
 	// コンピュートシェーダの作成
 	std::vector<uint8_t> cs = DX::ReadData(L"Resources/Shaders/FrustumCullingCS.cso");
@@ -160,7 +173,6 @@ bool BuildingManager::UpdateTask(float deltaTime)
 void BuildingManager::DrawTask(const Camera& camera)
 {
 	using namespace SimpleMath;
-
 	
 	// 1. 開始時刻の記録
 	auto start = std::chrono::high_resolution_clock::now();
@@ -174,7 +186,7 @@ void BuildingManager::DrawTask(const Camera& camera)
 	// duration_cast で希望の単位に変換（ここではマイクロ秒 ?s）
 	auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
 
-	//m_pCommonResources->GetDebugFont()->AddString(100, 100, Colors::Red, L"duration(?s) = %d", duration.count());
+	m_pCommonResources->GetDebugFont()->AddString(100, 100, Colors::Red, L"duration(?s) = %d", duration.count());
 
 	
 }
@@ -249,6 +261,8 @@ bool BuildingManager::RequestCreate(CollisionManager* pCollisionManager, const C
 				pCollisionManager,
 				pCommonResources
 			);
+			
+
 		}
 
 		std::cout << "Successfully loaded and created " << buildingSaves.size() << " buildings." << std::endl;
@@ -316,92 +330,7 @@ bool BuildingManager::FindBuilding(const int& tileNumber, const Building*& outBu
 	return true;
 }
 
-void BuildingManager::CreateStructuredBuffer(UINT BindFlags, D3D11_USAGE Usage, UINT elementSize, UINT count, ID3D11Buffer** ppBuffer, ID3D11Device1* device)
-{
-	D3D11_BUFFER_DESC desc{};
-	desc.BindFlags		= BindFlags;
-	desc.Usage			= Usage;
-	desc.ByteWidth		= elementSize * count;
-	desc.MiscFlags		= D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
-	desc.StructureByteStride = elementSize;
-	desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 
-	DX::ThrowIfFailed(
-		device->CreateBuffer(&desc, nullptr, ppBuffer));
-}
-
-void BuildingManager::CreateBufferSRV(ID3D11Buffer* pSourceBuffer, ID3D11ShaderResourceView** ppSRView, ID3D11Device1* device)
-{
-	if (!pSourceBuffer || !ppSRView || !device) { return; }
-
-
-	D3D11_BUFFER_DESC sourceBufferDesc{};
-	pSourceBuffer->GetDesc(&sourceBufferDesc);
-
-	// SRVのStructuredBuffer であることを確認
-	if (!(sourceBufferDesc.MiscFlags & D3D11_RESOURCE_MISC_BUFFER_STRUCTURED) ||
-		sourceBufferDesc.StructureByteStride == 0 ||
-		sourceBufferDesc.BindFlags != D3D11_BIND_SHADER_RESOURCE) {return;}
-
-	D3D11_SHADER_RESOURCE_VIEW_DESC desc{};
-	desc.ViewDimension	= D3D11_SRV_DIMENSION_BUFFER;
-	desc.Format			= DXGI_FORMAT_UNKNOWN;
-	desc.Buffer.NumElements		= sourceBufferDesc.ByteWidth / sourceBufferDesc.StructureByteStride;
-	desc.Buffer.FirstElement	= 0;
-	
-	DX::ThrowIfFailed(
-		device->CreateShaderResourceView(pSourceBuffer, &desc, ppSRView));
-}
-
-void BuildingManager::CreateBufferUAV(ID3D11Buffer* pSourceBuffer, ID3D11UnorderedAccessView** ppUAView, ID3D11Device1* device)
-{
-	if (!pSourceBuffer || !ppUAView || !device) { return; }
-
-
-	D3D11_BUFFER_DESC sourceBufferDesc{};
-	pSourceBuffer->GetDesc(&sourceBufferDesc);
-
-	// UAVのStructuredBuffer であることを確認
-	if (!(sourceBufferDesc.MiscFlags & D3D11_RESOURCE_MISC_BUFFER_STRUCTURED) ||
-		sourceBufferDesc.StructureByteStride == 0 ||
-		sourceBufferDesc.BindFlags != D3D11_BIND_UNORDERED_ACCESS) {	return;	}
-
-
-	D3D11_UNORDERED_ACCESS_VIEW_DESC desc{};
-	desc.ViewDimension = D3D11_UAV_DIMENSION_BUFFER;
-	desc.Format = DXGI_FORMAT_UNKNOWN;
-	desc.Buffer.NumElements = sourceBufferDesc.ByteWidth / sourceBufferDesc.StructureByteStride;
-	desc.Buffer.FirstElement = 0;
-
-
-	DX::ThrowIfFailed(
-		device->CreateUnorderedAccessView(pSourceBuffer, &desc, ppUAView));
-}
-
-ID3D11Buffer* BuildingManager::CreateAndCopyToBuffer(ID3D11Buffer* pSourceBuffer, ID3D11Device1* device, ID3D11DeviceContext* context)
-{
-	// ソースバッファの情報を取得
-	D3D11_BUFFER_DESC sourceDesc;
-	pSourceBuffer->GetDesc(&sourceDesc);
-
-	// ステージングバッファの作成
-	D3D11_BUFFER_DESC desc{};
-	desc.ByteWidth	= sourceDesc.ByteWidth;	// 元と同じサイズ
-	desc.Usage		= D3D11_USAGE_STAGING;	// CPU転送用の設定
-	desc.BindFlags	= 0;					// パイプラインにバインドしない
-	desc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;   // CPUでの読み取りを許可
-	desc.MiscFlags	= 0;
-
-	ID3D11Buffer* pStagingBuffer;
-
-	DX::ThrowIfFailed(
-		device->CreateBuffer(&desc, nullptr, &pStagingBuffer));
-
-	// ソース元のバッファの中身を一括コピー
-	context->CopyResource(pStagingBuffer, pSourceBuffer);
-
-	return pStagingBuffer;
-}
 
 void BuildingManager::DrawDefault(const Camera& camera)
 {
@@ -430,78 +359,81 @@ void BuildingManager::DrawDefault(const Camera& camera)
 void BuildingManager::DrawCS(const Camera& camera)
 {
 	using namespace SimpleMath;
+	auto context = m_pCommonResources->GetDeviceResources()->GetD3DDeviceContext();
+	auto device = m_pCommonResources->GetDeviceResources()->GetD3DDevice();
+
+	UINT buildingCount = static_cast<UINT>(m_buildings.size());
 
 	const auto cameraFrustum = camera.CalcFrustum();
 	const int PLANE_NUM = 6;
 
-	//**** 送るデータの作成 ****
+	// 1. 定数バッファの更新 (平面情報 + 最大数)
 	{
-		m_particles.clear();
-		// 6つの平面を受け取る配列
 		DirectX::XMVECTOR planesM[PLANE_NUM];
-		// 平面を取得
 		cameraFrustum.GetPlanes(&planesM[0], &planesM[1], &planesM[2], &planesM[3], &planesM[4], &planesM[5]);
 
+		CameraFrustumConstantBuffer constantData{};
+		for (int j = 0; j < PLANE_NUM; j++) {
+			constantData.planes[j] = Vector4(planesM[j]);
+		}
+		constantData.maxIndexCount = buildingCount; // ★ガード用のカウント
 
-		for (size_t i = 0; i < m_buildings.size(); i++)
-		{
-			ParticleCompute sendingData;
-
-			for (int j = 0; j < PLANE_NUM; j++)
-			{
-				sendingData.planes[j] = Vector4(planesM[j]);
-			}
-			sendingData.position = m_buildings[i]->GetCullingCollider()->GetPosition();
-			sendingData.radius = m_buildings[i]->GetCullingCollider()->GetRadius();
-
-			m_particles.emplace_back(sendingData);
+		D3D11_MAPPED_SUBRESOURCE subRes;
+		if (SUCCEEDED(context->Map(m_constantBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &subRes))) {
+			memcpy(subRes.pData, &constantData, sizeof(CameraFrustumConstantBuffer));
+			context->Unmap(m_constantBuffer.Get(), 0);
 		}
 	}
 
-
-
-	auto context = m_pCommonResources->GetDeviceResources()->GetD3DDeviceContext();
-	auto device = m_pCommonResources->GetDeviceResources()->GetD3DDevice();
-	// パーティクルの資料をバッファに入れる
+	// 2. 建物データの更新 (位置 + 半径)
 	{
+		m_particles.clear();
+		for (auto& building : m_buildings) {
+			ParticleCompute data;
+			data.position = building->GetCullingCollider()->GetPosition();
+			data.radius = building->GetCullingCollider()->GetRadius();
+			m_particles.emplace_back(data);
+		}
+
 		D3D11_MAPPED_SUBRESOURCE subRes;
-		context->Map(m_pParticleBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &subRes);
-		auto pBufType = (ParticleCompute*)subRes.pData;
-		memcpy(subRes.pData, m_particles.data(), sizeof(ParticleCompute) * m_particles.size());
-		context->Unmap(m_pParticleBuffer, 0);
+		if (SUCCEEDED(context->Map(m_particleBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &subRes))) {
+			memcpy(subRes.pData, m_particles.data(), sizeof(ParticleCompute) * m_particles.size());
+			context->Unmap(m_particleBuffer.Get(), 0);
+		}
 	}
 
 	//　コンピュートシェーダー実行
-	ID3D11ShaderResourceView* pSRVs[1] = { m_pParticleSRV };
+	ID3D11ShaderResourceView* pSRVs[1] = {m_particleSRV.Get() };
+	ID3D11Buffer* pBuff[1] = { m_constantBuffer.Get() };
+	context->CSSetConstantBuffers(0, 1, pBuff);
 	context->CSSetShaderResources(0, 1, pSRVs);
 	context->CSSetShader(m_computeShader.Get(), nullptr, 0);
-	context->CSSetUnorderedAccessViews(0, 1, &m_pResultUAV, 0);
-	context->Dispatch(256, 1, 1);
+	context->CSSetUnorderedAccessViews(0, 1, m_resultUAV.GetAddressOf(), 0);
+	UINT threadGroupsX = (static_cast<UINT>(m_buildings.size()) + 255) / 256;
+	context->Dispatch(threadGroupsX, 1, 1);
 
 	// uavの再設定によるリソースバリア
 	ID3D11UnorderedAccessView* nulluav = nullptr;
 	context->CSSetUnorderedAccessViews(0, 1, &nulluav, nullptr);
 	std::vector<ResultCompute> cullingResults(m_particles.size());
 	// コンピュートシェーダーの結果を取得
+	context->CopyResource(m_stagingBuffer.Get(), m_resultBuffer.Get());
+	D3D11_MAPPED_SUBRESOURCE subRes{};
+	if (SUCCEEDED(context->Map(m_stagingBuffer.Get(), 0, D3D11_MAP_READ, 0, &subRes)))
 	{
-		auto stagingBuffer = CreateAndCopyToBuffer(m_pResultBuffer, device, context);
-		D3D11_MAPPED_SUBRESOURCE subRes{};
-		context->Map(stagingBuffer, 0, D3D11_MAP_READ, 0, &subRes);
-		auto pResultData = (ResultCompute*)subRes.pData;
-		memcpy(cullingResults.data(), pResultData, sizeof(ResultCompute) * cullingResults.size());
-		context->Unmap(stagingBuffer, 0);
-	}
+		auto pResultData = reinterpret_cast<ResultCompute*>(subRes.pData);
 
-	cullingResults.erase(std::remove_if(cullingResults.begin(), cullingResults.end(),
-		[&](const ResultCompute& result)
+		// 5. 結果を走査して描画
+		for (UINT i = 0; i < buildingCount; ++i)
 		{
-			return (result.index == -1);
+			if (pResultData[i].index != -1)
+			{
+				m_buildings[i]->Draw(camera);
+			}
 		}
-	), cullingResults.end());
 
-	for (auto& result : cullingResults)
-	{
-		m_buildings[result.index]->Draw(camera);
+		// 使い終わってから Unmap する
+		context->Unmap(m_stagingBuffer.Get(), 0);
 	}
 }
 

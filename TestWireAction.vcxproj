@@ -323,7 +323,7 @@
     <ClInclude Include="Library\MyLib\DirectXMyToolKit\DebugCamera\DebugCamera.h" />
     <ClInclude Include="Library\MyLib\DirectXMyToolKit\DebugFont\DebugFont.h" />
     <ClInclude Include="Library\MyLib\DirectXMyToolKit\DepthStencil\DepthStencil.h" />
-    <ClInclude Include="Library\MyLib\DirectXMyToolKit\DirectXMyToolKit.h" />
+    <ClInclude Include="Library\MyLib\DirectXMyToolKit\DirectXUtils.h" />
     <ClInclude Include="Library\MyLib\DirectXMyToolKit\GridFloor\GridFloor.h" />
     <ClInclude Include="Library\MyLib\DirectXMyToolKit\ModelPart\ModelPart.h" />
     <ClInclude Include="Library\MyLib\DirectXMyToolKit\OffscreenRendering\OffscreenRendering.h" />
@@ -480,7 +480,7 @@
     <ClCompile Include="Library\MyLib\DirectXMyToolKit\DebugCamera\DebugCamera.cpp" />
     <ClCompile Include="Library\MyLib\DirectXMyToolKit\DebugFont\DebugFont.cpp" />
     <ClCompile Include="Library\MyLib\DirectXMyToolKit\DepthStencil\DepthStencil.cpp" />
-    <ClCompile Include="Library\MyLib\DirectXMyToolKit\DirectXMyToolKit.cpp" />
+    <ClCompile Include="Library\MyLib\DirectXMyToolKit\DirectXUtils.cpp" />
     <ClCompile Include="Library\MyLib\DirectXMyToolKit\GridFloor\GridFloor.cpp" />
     <ClCompile Include="Library\MyLib\DirectXMyToolKit\OffscreenRendering\OffscreenRendering.cpp" />
     <ClCompile Include="Library\MyLib\MathUtils\MathUtils.cpp" />

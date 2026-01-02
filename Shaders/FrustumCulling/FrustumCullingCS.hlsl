@@ -1,15 +1,19 @@
 
-
-// パーティクル構造体
-struct ParticleCompute
+// フラスタム平面情報（全スレッド共通）
+cbuffer CameraFrustum : register(b0)
 {
-    float4 planes[6];
+    float4 FrustumPlanes[6];
+    int maxIndexCount;
+};
 
+// CSの入力情報（球情報）
+struct SphereCompute
+{
     float radius;
     float3 position;
 };
 
-struct ResultCompute
+struct OutCompute
 {
     int index ;
 };
@@ -23,9 +27,9 @@ struct CSInput
 };
 
 // In
-StructuredBuffer<ParticleCompute> particle : register(t0);
+StructuredBuffer<SphereCompute> particle : register(t0);
 // Out
-RWStructuredBuffer<ResultCompute> BufOut : register(u0);
+RWStructuredBuffer<OutCompute> BufOut : register(u0);
 
 #define size_x    256
 #define size_y      1
@@ -35,36 +39,29 @@ RWStructuredBuffer<ResultCompute> BufOut : register(u0);
 void main(const CSInput input)
 {
     uint index = input.dispatch.x;
+    
+    // 境界チェック（ここはメモリ破壊防止のため return が最も安全）
+    if (index >= maxIndexCount)
+        return;
 
-    // バッファ外アクセスの防止
-    // ※ 実際のパーティクル数を定数バッファ等で渡してチェックするのが安全です
-    ParticleCompute p = particle[index];
+    SphereCompute p = particle[index];
 
-    // 最初は「内側」と仮定する
-    bool isVisible = true;
+    // 全ての平面に対して「内側かどうか」を 1.0 (True) か 0.0 (False) で累積
+    float isVisible = 1.0f;
 
-    // 全ての平面に対してチェック
-   // 法線が「外向き」の場合のループ
+    [unroll] // ループを物理的に展開して分岐を消去するようコンパイラに指示
     for (int i = 0; i < 6; ++i)
     {
-        float dist = dot(p.planes[i].xyz, p.position) + p.planes[i].w;
-
-    // 外側向きの場合、距離が +radius より大きければ「完全に外側」
-        if (dist > p.radius)
-        {
-            isVisible = false;
-            break;
-        }
+        float dist = dot(FrustumPlanes[i].xyz, p.position) + FrustumPlanes[i].w;
+        
+        // step(a, b) は a <= b なら 1.0、そうでなければ 0.0 を返す
+        // 外向き法線の場合、dist <= p.radius なら合格
+        isVisible *= step(dist, p.radius);
     }
 
-    // 結果の書き込み
-    if (isVisible)
-    {
-        BufOut[index].index = (int) index;
-    }
-    else
-    {
-        BufOut[index].index = -1;
-    }
+    // --- 2. 書き込み時の分岐排除 ---
+    
+    // isVisible が 1.0 なら index、0.0 なら -1 を書き込む
+    BufOut[index].index = (isVisible > 0.5f) ? (int) index : -1;
   
 }
