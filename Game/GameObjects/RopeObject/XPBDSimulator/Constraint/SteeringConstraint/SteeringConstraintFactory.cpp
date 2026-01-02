@@ -119,7 +119,7 @@ std::vector<std::unique_ptr<IConstraint>> SteeringConstraintFactory::CreateConst
 
         // --- 最終的なステアリング量の算出 ---
         // 自動補正 ＋ プレイヤーの入力。 100.0f は演出の強さ（ウェイト）
-        Vector3 totalSteeringOffset = autoInertiaOffset + (moveDirection * 100.0f);
+        Vector3 totalSteeringOffset = autoInertiaOffset + (moveDirection * 130.0f);
 
         // --- 先端ほど強く流れるように調整 ---
         // 根元 (0.0) から先端 (1.0) に向かって影響度を上げる
