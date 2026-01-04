@@ -12,6 +12,7 @@
 
 #include "Game/Common/CommonResources/CommonResources.h"
 #include "Library/DirectXFramework/DeviceResources.h"
+#include "Game/Common/ResourceManager/ResourceManager.h"
 #include "Game/Common/Camera/Camera.h"
 using namespace DirectX;
 
@@ -73,6 +74,8 @@ void RopeObject::Initialize(const CommonResources* pCommonResouces)
 			device, m_effect.get(), m_inputLayout.ReleaseAndGetAddressOf()
 		)
 	);
+
+	m_ropeModel = std::make_unique<Model>(pCommonResouces->GetResourceManager()->CreateModel("rope.sdkmesh"));
 }
 
 
@@ -142,7 +145,7 @@ void RopeObject::Draw(const Camera& camera)
 		auto startPos = m_particles[i - 1]->GetPosition();
 		auto endPos = m_particles[i]->GetPosition();
 
-		auto centerPos = (startPos + endPos) / 2.0f;
+		auto centerPos = startPos;// (startPos + endPos) / 2.0f;
 
 		// ロープの向き
 		auto direction = endPos - startPos;
@@ -171,13 +174,13 @@ void RopeObject::Draw(const Camera& camera)
 
 		SimpleMath::Matrix rotation = SimpleMath::Matrix::CreateFromQuaternion(q);
 		SimpleMath::Matrix translation = SimpleMath::Matrix::CreateTranslation(centerPos);
-		SimpleMath::Matrix scale = SimpleMath::Matrix::CreateScale(0.1f, length , 0.1f);
+		SimpleMath::Matrix scale = SimpleMath::Matrix::CreateScale(0.03f, length*0.1f , 0.03f);
 
 		// ワールド行列
 		SimpleMath::Matrix world = scale * rotation * translation;
 		
-		cylinder->Draw(world, camera.GetViewMatrix(), camera.GetProjectionMatrix(), DirectX::Colors::Red);
-		sphere->Draw(SimpleMath::Matrix::CreateScale(0.1f) * SimpleMath::Matrix::CreateTranslation(startPos), camera.GetViewMatrix(), camera.GetProjectionMatrix(), DirectX::Colors::Red);
+		m_ropeModel->Draw(context, *pStates, world, camera.GetViewMatrix(), camera.GetProjectionMatrix());
+		//sphere->Draw(SimpleMath::Matrix::CreateScale(0.5f) * SimpleMath::Matrix::CreateTranslation(endPos), camera.GetViewMatrix(), camera.GetProjectionMatrix(), DirectX::Colors::Red);
 
 		//// 頂点
 		//VertexPositionColor vertex[2]{};

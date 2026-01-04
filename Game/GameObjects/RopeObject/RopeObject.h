@@ -45,7 +45,7 @@ private:
 
 	const CommonResources* m_pCommonResources;	///< 共通リソース
 	
-
+	std::unique_ptr<DirectX::Model> m_ropeModel;					///< モデルデータ
 
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
