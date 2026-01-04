@@ -116,7 +116,8 @@ void RopeObject::Draw(const Camera& camera)
 	context->RSSetState(pStates->CullNone());              // カリングしない
 	context->RSSetState(pStates->CullClockwise());              // カリングしない
 
-
+	auto cylinder = GeometricPrimitive::CreateCylinder(context, 1.f, 0.5f, 10, false);
+	auto sphere = GeometricPrimitive::CreateSphere(context, 0.5f);
 
 	// ワールド行列
 	SimpleMath::Matrix world = SimpleMath::Matrix::Identity;/* rotationZ* rotationX;*/
@@ -133,25 +134,65 @@ void RopeObject::Draw(const Camera& camera)
 	// 入力レイアウト
 	context->IASetInputLayout(m_inputLayout.Get());
 
-	m_batch->Begin();
+	//m_batch->Begin();
 	// 線の描画処理
 	for (size_t i = 1; i < m_particles.size(); i++)
 	{
+		// 円同士の中点を計算
+		auto startPos = m_particles[i - 1]->GetPosition();
+		auto endPos = m_particles[i]->GetPosition();
 
-		// 頂点
-		VertexPositionColor vertex[2]{};
-		vertex[0].color = SimpleMath::Vector4(1, 1.0f, 1.0f, 1);
-		vertex[1].color = SimpleMath::Vector4(1, 1.0f, 1.0f, 1);
+		auto centerPos = (startPos + endPos) / 2.0f;
 
-		vertex[0].position = m_particles[i - 1]->GetPosition();
-		vertex[1].position = m_particles[i]->GetPosition();
+		// ロープの向き
+		auto direction = endPos - startPos;
 
-		// 描画
-		m_batch->Draw(D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP, vertex, 2);
+		if (direction.Length() <= 0.0f)
+		{
+			continue;
+		}
+
+		// ロープの長さ
+		float length = direction.Length();
+
+		// ロープの回転
+		direction.Normalize();
+		auto up = SimpleMath::Vector3::Up;
+		auto right = up.Cross(direction);
+		right.Normalize();
+
+		if (right.Length() <= 0.0f)
+		{
+			right = SimpleMath::Vector3::Right;
+		}
+
+		SimpleMath::Quaternion q;
+		q = SimpleMath::Quaternion::CreateFromAxisAngle(right, acosf(direction.Dot(SimpleMath::Vector3::Up)));
+
+		SimpleMath::Matrix rotation = SimpleMath::Matrix::CreateFromQuaternion(q);
+		SimpleMath::Matrix translation = SimpleMath::Matrix::CreateTranslation(centerPos);
+		SimpleMath::Matrix scale = SimpleMath::Matrix::CreateScale(0.1f, length , 0.1f);
+
+		// ワールド行列
+		SimpleMath::Matrix world = scale * rotation * translation;
+		
+		cylinder->Draw(world, camera.GetViewMatrix(), camera.GetProjectionMatrix(), DirectX::Colors::Red);
+		sphere->Draw(SimpleMath::Matrix::CreateScale(0.1f) * SimpleMath::Matrix::CreateTranslation(startPos), camera.GetViewMatrix(), camera.GetProjectionMatrix(), DirectX::Colors::Red);
+
+		//// 頂点
+		//VertexPositionColor vertex[2]{};
+		//vertex[0].color = SimpleMath::Vector4(1, 1.0f, 1.0f, 1);
+		//vertex[1].color = SimpleMath::Vector4(1, 1.0f, 1.0f, 1);
+
+		//vertex[0].position = m_particles[i - 1]->GetPosition();
+		//vertex[1].position = m_particles[i]->GetPosition();
+
+		//// 描画
+		//m_batch->Draw(D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP, vertex, 2);
 
 
 	}
-	m_batch->End();
+	//m_batch->End();
 	// 深度ステンシルバッファの設定
 	context->OMSetDepthStencilState(pStates->DepthDefault(), 0);
 

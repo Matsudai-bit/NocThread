@@ -479,7 +479,7 @@ void Wire::OnCollision(const CollisionInfo& info)
 
 
 			// **** ƒƒCƒ„[‚Ìì¬ *****
-			if (CreateRope(m_owner.pGameObject->GetTransform()->GetPosition(), intersectionPos, m_simulationParam, 0.9f))
+			if (CreateRope(m_owner.pGameObject->GetTransform()->GetPosition(), intersectionPos, m_simulationParam, 0.8f))
 			{
 
 				m_owner.pHolderInterface->OnCollisionWire(info.pOtherObject);
