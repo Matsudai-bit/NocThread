@@ -61,6 +61,15 @@ inline GameObjectTag operator&(GameObjectTag a, GameObjectTag b)
 	return static_cast<GameObjectTag>(static_cast<uint32_t>(a) & static_cast<uint32_t>(b));
 }
 
+
+
+// ==演算子の定義
+inline bool operator==(GameObjectTag a, GameObjectTag b)
+{
+	return static_cast<uint32_t>(a) == static_cast<uint32_t>(b);
+}
+
+
 // クラスの定義 ===============================================================
 /**
  * @brief	ゲームオブジェクト

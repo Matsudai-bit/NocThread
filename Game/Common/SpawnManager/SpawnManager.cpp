@@ -164,20 +164,7 @@ void SpawnManager::SetupInitialLayout()
 }
 
 
-void SpawnManager::CreatePlayer(PlayerData data, CollisionManager* pCollisionManager)
-{
-	using namespace nlohmann;
 
-	json playerJson{};
-
-	const Building* tileBuilding = nullptr;
-	if (m_pBuildingManager->FindBuilding(data.tileNumber, tileBuilding))
-	{
-
-		m_pPlayerManager->GetPlayer()->GetTransform()->SetPosition(tileBuilding->GetTransform()->GetPosition() + SimpleMath::Vector3(0.0f, 80.0f, 0.0f));
-	}
-
-}
 /**
  * @brief ゲームオブジェクト管理の設定
  * 

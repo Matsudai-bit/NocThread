@@ -374,7 +374,6 @@ void BuildingManager::DrawFrustumCullingCS(const Camera& camera)
 {
 	using namespace SimpleMath;
 	auto context = m_pCommonResources->GetDeviceResources()->GetD3DDeviceContext();
-	auto device = m_pCommonResources->GetDeviceResources()->GetD3DDevice();
 
 	UINT buildingCount = static_cast<UINT>(m_buildings.size());
 

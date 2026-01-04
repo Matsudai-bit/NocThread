@@ -252,13 +252,13 @@ void Game::Render()
     // ƒV[ƒ“ŠÇ—‚Ì•`‰æˆ—
     m_sceneManager->Render();
 
-    //if (m_commonResources->IsCopyScreenRequest())
-    //{
-    //    auto renderTarget = m_deviceResources->GetRenderTarget();
-    //    context->CopyResource(m_copyRenderTexture->GetRenderTarget(), renderTarget);
+    if (m_commonResources->IsCopyScreenRequest())
+    {
+        auto renderTarget = m_deviceResources->GetRenderTarget();
+        context->CopyResource(m_copyRenderTexture->GetRenderTarget(), renderTarget);
 
-    //    m_commonResources->SetCopyScreenRequest(false);
-    //}
+        m_commonResources->SetCopyScreenRequest(false);
+    }
 
     // FPS‚ðŽæ“¾‚·‚é
     uint32_t fps = m_timer.GetFramesPerSecond();

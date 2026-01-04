@@ -163,35 +163,35 @@ void RopeObject::Draw(const Camera& camera)
 	context->RSSetState(pStates->CullClockwise());              // カリングしない
 
 
+	// パーティクルの移動ベクトル表示（デバッグ用）
+	//// ワールド行列
+	//m_effect->SetWorld(world);
+	//// ビュー行列
+	//m_effect->SetView(camera.GetViewMatrix());
+	//// 射影行列
+	//m_effect->SetProjection(camera.GetProjectionMatrix());
 
-	// ワールド行列
-	m_effect->SetWorld(world);
-	// ビュー行列
-	m_effect->SetView(camera.GetViewMatrix());
-	// 射影行列
-	m_effect->SetProjection(camera.GetProjectionMatrix());
+	//m_effect->SetColorAndAlpha(DirectX::Colors::Yellow);
+	//// エフェクトを適応する
+	//m_effect->Apply(context);
 
-	m_effect->SetColorAndAlpha(DirectX::Colors::Yellow);
-	// エフェクトを適応する
-	m_effect->Apply(context);
-
-	// 入力レイアウト
-	context->IASetInputLayout(m_inputLayout.Get());
+	//// 入力レイアウト
+	//context->IASetInputLayout(m_inputLayout.Get());
 
 
-	m_batch->Begin();
-	for (size_t i = 0; i < m_particles.size(); i++)
-	{
-		VertexPositionColor vertex[2]{};
-		vertex[0].color = SimpleMath::Vector4(1, 1.0f, 1.0f, 1);
-		vertex[1].color = SimpleMath::Vector4(1, 1.0f, 1.0f, 1);
-		vertex[0].position = m_particles[i]->GetPosition();
-		auto direction = m_particles[i]->GetVelocity();
-		direction.Normalize();
-		vertex[1].position = m_particles[i]->GetPosition() + direction * 1.5f;
-		m_batch->Draw(D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP, vertex, 2);
-	}
-	m_batch->End();
+	//m_batch->Begin();
+	//for (size_t i = 0; i < m_particles.size(); i++)
+	//{
+	//	VertexPositionColor vertex[2]{};
+	//	vertex[0].color = SimpleMath::Vector4(1, 1.0f, 1.0f, 1);
+	//	vertex[1].color = SimpleMath::Vector4(1, 1.0f, 1.0f, 1);
+	//	vertex[0].position = m_particles[i]->GetPosition();
+	//	auto direction = m_particles[i]->GetVelocity();
+	//	direction.Normalize();
+	//	vertex[1].position = m_particles[i]->GetPosition() + direction * 1.5f;
+	//	m_batch->Draw(D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP, vertex, 2);
+	//}
+	//m_batch->End();
 
 
 

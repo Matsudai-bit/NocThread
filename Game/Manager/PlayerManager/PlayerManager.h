@@ -62,7 +62,7 @@ public:
 // ‘€ì
 public:
 	// ‰Šú‰»ˆ—
-	void Initialize(const CommonResources* pCommonResources, CollisionManager* pCollisionManager, const PlayerCamera* pPlayerCamera);
+	void Initialize(const CommonResources* pCommonResources,  const PlayerCamera* pPlayerCamera);
 
 	// XVˆ—
 	bool UpdateTask(float deltaTime) override;

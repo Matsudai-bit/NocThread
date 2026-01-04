@@ -48,15 +48,16 @@ public:
 	};
 
 	//今回使うパーティクルの資料例
-	struct ParticleCompute {
+	struct ParticleCompute 
+	{
 
-		float radius;
-		DirectX::SimpleMath::Vector3 position;
+		float radius{};
+		DirectX::SimpleMath::Vector3 position{};
 	};
 
 	struct ResultCompute
 	{
-		int index;
+		int index{};
 	};
 
 	static constexpr int DEFAULT_BUFFER_SIZE = 500;

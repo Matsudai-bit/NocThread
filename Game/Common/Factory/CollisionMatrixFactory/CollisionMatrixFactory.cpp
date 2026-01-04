@@ -22,6 +22,8 @@ using namespace DirectX;
  */
 void CollisionMatrixFactory::StageCollisionMatrix::Assemble(CollisionMatrix* instance, const DefaultSpawnDesc& desc)
 {
+	UNREFERENCED_PARAMETER(desc);
+
 	instance->ClearMatrix();
 
 	// “o˜^‚·‚é

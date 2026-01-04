@@ -106,8 +106,8 @@ void StageManager::Initialize(SpawnManager* pSpawnManager, CollisionManager* pCo
 	m_pSpawnManager = pSpawnManager;
 
 	// ****プレイヤー管理の作成 * ***
-		m_playerManager = std::make_unique<PlayerManager>();
-	m_playerManager->Initialize(m_pCommonResources, pCollisionManager, m_playerCamera.get());
+	m_playerManager = std::make_unique<PlayerManager>();
+	m_playerManager->Initialize(m_pCommonResources,  m_playerCamera.get());
 
 	// ----- 各種ゲームオブジェクトの作成 -------
 	m_buildingManager = std::make_unique<BuildingManager>(m_pCommonResources);

@@ -49,8 +49,7 @@ public:
 
 // ‘€ì
 public:
-	// ‰Šú‰»ˆ—
-	void Initialize(const CommonResources* pCommonResources);
+	
 
 	// XVˆ—
 	bool UpdateTask(float deltaTime) override;

@@ -227,6 +227,11 @@ void XPBDSimulator::Simulate(float deltaTime)
 void XPBDSimulator::Reset()
 {
 	m_particles.clear();
+
+	for (auto& factory : m_constraintFactories)
+	{
+		factory->Reset();
+	}
 }
 
 /**

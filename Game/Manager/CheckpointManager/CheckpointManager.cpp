@@ -35,17 +35,6 @@ CheckpointManager::~CheckpointManager()
 
 
 
-/**
- * @brief ‰Šú‰»ˆ—
- *
- * @param[in] ‚È‚µ
- *
- * @return ‚È‚µ
- */
-void CheckpointManager::Initialize(const CommonResources* pCommonResources)
-{
-
-}
 
 /**
  * @brief XVˆ—

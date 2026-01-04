@@ -61,7 +61,6 @@ Checkpoint::~Checkpoint()
  */
 void Checkpoint::Initialize(const CommonResources* pCommonResources, CollisionManager* pCollisionManager)
 {
-	auto context = pCommonResources->GetDeviceResources()->GetD3DDeviceContext();
 	// ‹¤’ÊƒŠƒ\[ƒX‚Ìİ’è
 	SetCommonResources(pCommonResources);
 

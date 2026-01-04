@@ -87,6 +87,8 @@ bool Task::IsEnabled() const
 // 更新関数
 void TaskManager::Update(float deltaTime)
 {
+	// 描画順序管理テーブルクリア
+	m_ot.clear();
 	// ルートタスクから子供タスクに向かって再起的に更新処理を実行する
 	ChildTaskUpdate(m_rootTask.get(), deltaTime);
 
@@ -109,8 +111,7 @@ void TaskManager::Render(const Camera& camera)
 		(*it)->DrawTask(camera);
 	}
 
-	// 描画順序管理テーブルクリア
-	m_ot.clear();
+
 
 	// 実行中のタスクをルートタスクに設定
 	m_currentTask = m_rootTask.get();

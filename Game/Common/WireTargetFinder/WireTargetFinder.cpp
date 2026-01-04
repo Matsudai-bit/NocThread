@@ -103,6 +103,8 @@ void WireTargetFinder::Update()
  */
 void WireTargetFinder::Draw(const Camera& camera)
 {
+	UNREFERENCED_PARAMETER(camera);
+
 	auto context = GetCommonResources()->GetDeviceResources()->GetD3DDeviceContext();
 
 
@@ -113,19 +115,19 @@ void WireTargetFinder::Draw(const Camera& camera)
 
 	//DX::DrawRay(m_primitiveBatch.get(), m_capsuleCollider->GetPosition() + (-m_capsuleCollider->GetAxis() * (m_capsuleCollider->GetLength() / 2.0f)), m_capsuleCollider->GetAxis() * m_capsuleCollider->GetLength(), false, Colors::Red);
 
-	m_primitiveBatch->Begin();
-	for (auto direction : GetSearchDirections())
-	{
-		DX::DrawRay(m_primitiveBatch.get(), m_pPlayer->GetTransform()->GetPosition(), direction * 30.0f, false, Colors::Yellow);
-	}
-	
-	m_primitiveBatch->End();
+	//m_primitiveBatch->Begin();
+	//for (auto direction : GetSearchDirections())
+	//{
+	//	DX::DrawRay(m_primitiveBatch.get(), m_pPlayer->GetTransform()->GetPosition(), direction * 30.0f, false, Colors::Yellow);
+	//}
+	//
+	//m_primitiveBatch->End();
 
-	for (auto& data : m_grappleTargetPositionCache)
-	{
+	//for (auto& data : m_grappleTargetPositionCache)
+	//{
 
-		a->Draw(SimpleMath::Matrix::CreateTranslation(data), camera.GetViewMatrix(), camera.GetProjectionMatrix(), Colors::Blue, nullptr, true);
-	}
+	//	a->Draw(SimpleMath::Matrix::CreateTranslation(data), camera.GetViewMatrix(), camera.GetProjectionMatrix(), Colors::Blue, nullptr, true);
+	//}
 
 }
 
@@ -358,7 +360,7 @@ bool WireTargetFinder::CalcWireTargetPosition(
 	const ICollider* pHitCollider)
 {
 	const float MIN_GRAPPLE_DISTANCE_THRESHOLD = 1.1f;
-	
+ 
 	if (pHitObject->GetTag() == GameObjectTag::BUILDING || pHitObject->GetTag() == GameObjectTag::ESCAPE_HELICOPTER)
 	{
 		// AABB‚ÉƒLƒƒƒXƒg

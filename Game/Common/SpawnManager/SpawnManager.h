@@ -110,8 +110,6 @@ public:
 	// ゲームの初期配置をする
 	void SetupInitialLayout();
 
-	void CreatePlayer(PlayerData data, CollisionManager* pCollisionManager);
-
 	// ゲームオブジェクト管理の設定
 	void SetManagers(
 		PlayerManager* pPlayerManager,

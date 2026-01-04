@@ -15,8 +15,12 @@
 
 void TownFactory::Assemble(std::vector<Building>* instance, const DefaultSpawnDesc& desc)
 {
+	UNREFERENCED_PARAMETER(instance);
+	UNREFERENCED_PARAMETER(desc);
 }
 
 void FlyingChaserBuilding::Assemble(Building* instance, const DefaultSpawnDesc& desc)
 {
+	UNREFERENCED_PARAMETER(instance);
+	UNREFERENCED_PARAMETER(desc);
 }
