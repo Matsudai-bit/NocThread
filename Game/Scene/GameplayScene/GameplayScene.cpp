@@ -20,6 +20,9 @@
 
 #include "Game/Common/Camera/PlayerCamera/PlayerCamera.h"
 
+// ファクトリー
+#include "Game/Common/Factory/CollisionMatrixFactory/CollisionMatrixFactory.h"
+
 // ゲームデータ
 #include "Game/Common/ResultData/ResultData.h"
 #include "Game/Common/CommonResources/CommonResources.h"
@@ -28,6 +31,7 @@
 #include "Game/Common/GameDirector/GameDirector.h"
 #include "Game/Common/ResourceManager/ResourceManager.h"
 #include "Game/Common/Collision/CollisionManager/CollisionManager.h"
+#include "Game/Common/Collision/CollisionMatrix/CollisionMatrix.h"
 #include "Game/Common/SoundManager/SoundManager.h"
 #include "Game/Common/SoundManager/SoundPaths.h"
 #include "Game/Scene/Loading/LoadingScreen.h"
@@ -132,6 +136,8 @@ void GameplayScene::Render()
 {
 	// 状態の描画処理
 	m_stateMachine->Draw();
+	
+
 }
 
 /**
@@ -245,6 +251,8 @@ void GameplayScene::CreatePlatform()
 
 	// 衝突管理の生成
 	m_collisionManager = std::make_unique<CollisionManager>();
+	// 衝突検知表の生成
+	m_collisionMatrix = CollisionMatrixFactory::StageCollisionMatrix().Create(DefaultSpawnDesc());
 
 	// エフェクト管理の作成
 	m_gameEffectManager = std::make_unique<GameEffectManager>();
@@ -274,6 +282,8 @@ void GameplayScene::SetupPlatform()
 	// ステージの初期化処理
 	m_stageManager->Initialize(m_spawnManager.get(), m_collisionManager.get(), m_taskManager.get());
 
+	// 衝突管理に衝突検知表を設定
+	m_collisionManager->SetCollisionMatrix(m_collisionMatrix.get());
 
 	// ゲームディレクターの初期化処理
 	m_gameDirector->Initialize();

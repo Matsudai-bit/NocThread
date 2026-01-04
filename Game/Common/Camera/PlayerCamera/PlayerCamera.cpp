@@ -73,7 +73,7 @@ void PlayerCamera::Initialize(const CommonResources* pCommonResources, Collision
 	m_sphereCollider->SetRadius(COLLIDER_RADIUS);
 
 	// 衝突管理への登録
-	pCollisionManager->AddCollisionObjectData(this, m_sphereCollider.get());
+	pCollisionManager->AddCollisionData(CollisionData(this, m_sphereCollider.get()));
 
 	m_nextCameraTargetPosition = SimpleMath::Vector3::Zero;
 

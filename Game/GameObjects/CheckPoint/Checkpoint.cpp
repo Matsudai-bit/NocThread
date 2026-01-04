@@ -65,7 +65,7 @@ void Checkpoint::Initialize(const CommonResources* pCommonResources, CollisionMa
 	// 共通リソースの設定
 	SetCommonResources(pCommonResources);
 
-	pCollisionManager->AddCollisionObjectData(this, m_collider.get());
+	pCollisionManager->AddCollisionData(CollisionData(this, m_collider.get()));
 
 	// チェックポイントを有効化する
 	m_isEnabled = true;

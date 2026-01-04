@@ -177,7 +177,7 @@ void BuildingManager::DrawTask(const Camera& camera)
 	// 1. 開始時刻の記録
 	auto start = std::chrono::high_resolution_clock::now();
 
-	DrawCS(camera);
+	DrawFrustumCulling(camera);
 
 	// 3. 終了時刻の記録
 	auto end = std::chrono::high_resolution_clock::now();
@@ -253,17 +253,16 @@ bool BuildingManager::RequestCreate(CollisionManager* pCollisionManager, const C
 			Vector3 position(saveData.position.x, saveData.position.y, saveData.position.z);
 			Vector3 scale(saveData.scale.x, saveData.scale.y, saveData.scale.z);
 
-			for (int i = 0; i < 10; i++)
-			{
-				// 既存の CreateBuilding 関数を呼び出し
-				CreateBuilding(
-					position,
-					scale,
-					saveData.tileNumber,
-					pCollisionManager,
-					pCommonResources
-				);
-			}
+			
+			// 既存の CreateBuilding 関数を呼び出し
+			CreateBuilding(
+				position,
+				scale,
+				saveData.tileNumber,
+				pCollisionManager,
+				pCommonResources
+			);
+			
 
 			
 
@@ -339,6 +338,16 @@ bool BuildingManager::FindBuilding(const int& tileNumber, const Building*& outBu
 
 void BuildingManager::DrawDefault(const Camera& camera)
 {
+	// 建物の描画処理
+	for (auto& building : m_buildings)
+	{
+
+			building->Draw(camera);
+	}
+}
+
+void BuildingManager::DrawFrustumCulling(const Camera& camera)
+{
 	const auto cameraFrustum = camera.CalcFrustum();
 
 	// 建物の描画処理
@@ -361,7 +370,7 @@ void BuildingManager::DrawDefault(const Camera& camera)
 	}
 }
 
-void BuildingManager::DrawCS(const Camera& camera)
+void BuildingManager::DrawFrustumCullingCS(const Camera& camera)
 {
 	using namespace SimpleMath;
 	auto context = m_pCommonResources->GetDeviceResources()->GetD3DDeviceContext();

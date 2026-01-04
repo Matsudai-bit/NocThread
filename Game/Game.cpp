@@ -155,6 +155,7 @@ void Game::Initialize(HWND window, int width, int height)
 
     context->ClearRenderTargetView(m_deviceResources->GetRenderTargetView(), Colors::Black);
 
+
     // ***** ImGuiの初期設定 *****
     //  バージョンの確認
     IMGUI_CHECKVERSION();
@@ -172,22 +173,26 @@ void Game::Initialize(HWND window, int width, int height)
 
     // TODO: Change the timer settings if you want something other than the default variable timestep mode.
     // e.g. for 60 FPS fixed timestep update logic, call:
-    /*
-    m_timer.SetFixedTimeStep(true);
-    m_timer.SetTargetElapsedSeconds(1.0 / 60);
-    */
+    //m_timer.SetFixedTimeStep(true);
+    //m_timer.SetTargetElapsedSeconds(1.0 / 60);
+
+    
 }
 
 #pragma region Frame Update
 // Executes the basic game loop.
 void Game::Tick()
-{
+{    
+    // **** ImGuiの更新処理 ****
+//  新フレームの開始
+    ImGui_ImplDX11_NewFrame();
+    ImGui_ImplWin32_NewFrame();
+    ImGui::NewFrame();
+
     m_timer.Tick([&]()
     {
         Update(m_timer);
     });
-
-
 
     Render();
 }
@@ -195,15 +200,6 @@ void Game::Tick()
 // Updates the world.
 void Game::Update(DX::StepTimer const& timer)
 {
-    // **** ImGuiの更新処理 ****
-    //  新フレームの開始
-    ImGui_ImplDX11_NewFrame();
-    ImGui_ImplWin32_NewFrame();
-    ImGui::NewFrame();
-
-    //  デモウィンドウの描画
-    ImGui::ShowDemoWindow();
-
     float deltaTime = float(timer.GetElapsedSeconds());
 
     // キーボードトラッカーの更新処理
@@ -256,13 +252,13 @@ void Game::Render()
     // シーン管理の描画処理
     m_sceneManager->Render();
 
-    if (m_commonResources->IsCopyScreenRequest())
-    {
-        auto renderTarget = m_deviceResources->GetRenderTarget();
-        context->CopyResource(m_copyRenderTexture->GetRenderTarget(), renderTarget);
+    //if (m_commonResources->IsCopyScreenRequest())
+    //{
+    //    auto renderTarget = m_deviceResources->GetRenderTarget();
+    //    context->CopyResource(m_copyRenderTexture->GetRenderTarget(), renderTarget);
 
-        m_commonResources->SetCopyScreenRequest(false);
-    }
+    //    m_commonResources->SetCopyScreenRequest(false);
+    //}
 
     // FPSを取得する
     uint32_t fps = m_timer.GetFramesPerSecond();
@@ -274,6 +270,9 @@ void Game::Render()
     m_debugFont->Render(m_states.get());
 
        // ****  ImGuiの描画処理 ****
+
+        //  デモウィンドウの描画
+    ImGui::ShowDemoWindow();
     ImGui::Render();
     //ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 

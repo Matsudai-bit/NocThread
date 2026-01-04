@@ -187,6 +187,7 @@
     <ClInclude Include="Game\Common\Camera\PlayerCamera\PlayerCamera.h" />
     <ClInclude Include="Game\Common\Collision\Collision.h" />
     <ClInclude Include="Game\Common\Collision\CollisionManager\CollisionManager.h" />
+    <ClInclude Include="Game\Common\Collision\CollisionMatrix\CollisionMatrix.h" />
     <ClInclude Include="Game\Common\Collision\ICollider.h" />
     <ClInclude Include="Game\Common\Collision\ICollision.h" />
     <ClInclude Include="Game\Common\CommonResources\CommonResources.h" />
@@ -203,6 +204,7 @@
     <ClInclude Include="Game\Common\Event\WireSystemObserver\WireSystemSubject.h" />
     <ClInclude Include="Game\Common\ExitController\ExitController.h" />
     <ClInclude Include="Game\Common\Factory\BuildingFactory\BuildingFactory.h" />
+    <ClInclude Include="Game\Common\Factory\CollisionMatrixFactory\CollisionMatrixFactory.h" />
     <ClInclude Include="Game\Common\Factory\EnemyFactory\EnemyFactory.h" />
     <ClInclude Include="Game\Common\Factory\EnemyFactory\IEnemyFactory\IEnemyFactory.h" />
     <ClInclude Include="Game\Common\Factory\FactoryBase.h" />
@@ -328,6 +330,7 @@
     <ClInclude Include="Library\MyLib\DirectXMyToolKit\ModelPart\ModelPart.h" />
     <ClInclude Include="Library\MyLib\DirectXMyToolKit\OffscreenRendering\OffscreenRendering.h" />
     <ClInclude Include="Library\MyLib\EasingKit\EasingKit.h" />
+    <ClInclude Include="Library\MyLib\FrameTimer\FrameTimer.h" />
     <ClInclude Include="Library\MyLib\MathUtils\MathUtils.h" />
     <ClInclude Include="Library\MyLib\NlohmannUtils\NlohmannUtils.h" />
     <ClInclude Include="Library\MyLib\Ray\Ray.h" />
@@ -342,6 +345,7 @@
     <ClCompile Include="Game\Common\Camera\PlayerCamera\PlayerCamera.cpp" />
     <ClCompile Include="Game\Common\Collision\Collision.cpp" />
     <ClCompile Include="Game\Common\Collision\CollisionManager\CollisionManager.cpp" />
+    <ClCompile Include="Game\Common\Collision\CollisionMatrix\CollisionMatrix.cpp" />
     <ClCompile Include="Game\Common\CommonResources\CommonResources.cpp" />
     <ClCompile Include="Game\Common\ElapsedTimeCounter\ElapsedTimeCounter.cpp" />
     <ClCompile Include="Game\Common\EntityManager\EntityManager.cpp" />
@@ -352,6 +356,7 @@
     <ClCompile Include="Game\Common\Event\WireSystemObserver\WireSystemSubject.cpp" />
     <ClCompile Include="Game\Common\ExitController\ExitController.cpp" />
     <ClCompile Include="Game\Common\Factory\BuildingFactory\BuildingFactory.cpp" />
+    <ClCompile Include="Game\Common\Factory\CollisionMatrixFactory\CollisionMatrixFactory.cpp" />
     <ClCompile Include="Game\Common\Factory\EnemyFactory\EnemyFactory.cpp" />
     <ClCompile Include="Game\Common\Factory\PlayerFactory\PlayerFactory.cpp" />
     <ClCompile Include="Game\Common\GameDirector\GameDirector.cpp" />
@@ -483,6 +488,7 @@
     <ClCompile Include="Library\MyLib\DirectXMyToolKit\DirectXUtils.cpp" />
     <ClCompile Include="Library\MyLib\DirectXMyToolKit\GridFloor\GridFloor.cpp" />
     <ClCompile Include="Library\MyLib\DirectXMyToolKit\OffscreenRendering\OffscreenRendering.cpp" />
+    <ClCompile Include="Library\MyLib\FrameTimer\FrameTimer.cpp" />
     <ClCompile Include="Library\MyLib\MathUtils\MathUtils.cpp" />
     <ClCompile Include="Library\MyLib\NlohmannUtils\NlohmannUtils.cpp" />
     <ClCompile Include="Library\MyLib\Ray\Ray.cpp" />

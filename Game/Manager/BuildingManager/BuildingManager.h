@@ -140,5 +140,6 @@ private:
 
 
 	void DrawDefault(const Camera& camera);
-	void DrawCS(const Camera& camera);
+	void DrawFrustumCulling(const Camera& camera);
+	void DrawFrustumCullingCS(const Camera& camera);
 };

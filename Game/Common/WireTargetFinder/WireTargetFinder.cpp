@@ -446,49 +446,26 @@ std::vector<DirectX::SimpleMath::Vector3> WireTargetFinder::GetTargetPositionCan
 	
 	// サイズを設定
 	m_capsules.resize(searchDirections.size());
-
-
-
+	Vector3 playerPosition = m_pPlayer->GetTransform()->GetPosition();
 
 	for (size_t i = 0; i < searchDirections.size(); i++)
 	{
-		Capsule capsule = CreateCapsuleCollider(m_pPlayer->GetTransform()->GetPosition(), searchDirections[i], m_wireLength * std::abs(searchDirections[i].y * 1.3f), m_wireRadius);
+		float capsuleLength = m_wireLength * std::abs(searchDirections[i].y * 1.3f);
+		Capsule capsule = CreateCapsuleCollider(playerPosition, searchDirections[i], capsuleLength, m_wireRadius);
 
 		(m_capsules[i]) = capsule;
-		
-		
-
-		//// 衝突情報
-		//std::vector<const GameObject*> hitGameObjects{};
-		//std::vector<const ICollider*> hitColliders{};
-
-		//// 衝突判定
-		//if (m_pCollisionManager->RetrieveCollisionData(&capsule, &hitGameObjects, &hitColliders))
-		//{
-
-		//	for (size_t i = 0; i < hitGameObjects.size(); i++)
-		//	{
-		//		// 処理用変数
-		//		auto pHitObject		= hitGameObjects[i];
-		//		auto pHitCollider	= hitColliders[i];
-
-		//		SimpleMath::Vector3 targetPosition;
-
-		//		// 目標座標の算出
-		//		if (CalcWireTargetPosition(&targetPosition, capsule, pHitObject, pHitCollider))
-		//		{
-		//			targetPositions.emplace_back(targetPosition);
-		//		}
-		//	}
-		//}
 
 	}
+	m_broadCollider.SetRadius(m_wireLength);
+	m_broadCollider.Transform(playerPosition);
 	if (registry)
 	{
+		CollisionData data{ nullptr, &m_broadCollider };
 		for (auto& capsule : m_capsules)
 		{
-			m_pCollisionManager->AddCollisionObjectData(this, &capsule);
+			data.children.push_back(CollisionData(this, &capsule));
 		}
+		m_pCollisionManager->AddCollisionData(data);
 	}
 	return targetPositions;
 }

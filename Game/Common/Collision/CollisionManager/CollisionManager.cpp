@@ -25,7 +25,7 @@
 CollisionManager::CollisionManager()
 	:m_collisionData{}
 {
-
+	
 }
 
 
@@ -67,113 +67,24 @@ bool CollisionManager::UpdateTask(float deltaTime)
 {
 	UNREFERENCED_PARAMETER(deltaTime);
 
-
 	// 衝突判定の流れ
 	// 衝突判定->衝突処理->押し出し
 	if (m_collisionData.empty() || m_collisionData.size() == 0) return true;
 
+	// 事前処理
+	PreCollision();
+
 	// 衝突したオブジェクト情報群
 	std::vector<DetectedCollisonData> detectedCollisions{};
 
-	std::set<GameObject*> collisionObject;
+	// 衝突を検知する
+	UpdateDetection(&detectedCollisions);
 
-	for (auto& data : m_collisionData)
-	{
-		collisionObject.insert(data.pGameObject);
-	}
+	// 衝突を通知する
+	NotifyCollisionEvents(&detectedCollisions);
 
-
-	// 衝突判定の前の処理をする
-	for (auto& collisionObj : collisionObject)
-	{
-		collisionObj->PreCollision();
-	}
-
-	// **** 衝突判定の更新 ****
-	for (size_t i = 0; i < m_collisionData.size() - 1; i++)
-	{
-		// 処理用オブジェクト
-		GameObject* gameObjectA = m_collisionData[i].pGameObject;
-
-		// 活動していなければ飛ばす
-		if (gameObjectA->IsActive() == false) continue;
-
-
-		for (size_t j = i + 1; j < m_collisionData.size(); j++)
-		{
-			// 処理用オブジェクト
-			GameObject* gameObjectB = m_collisionData[j].pGameObject;
-
-			// ===== 冗長(修正予定） ======
-			if (gameObjectA->GetTag() == GameObjectTag::BUILDING &&
-				gameObjectB->GetTag() == GameObjectTag::BUILDING) continue;
-			if (gameObjectA->GetTag() == GameObjectTag::WIRE_GRAPPING_AREA && gameObjectB->GetTag() == GameObjectTag::WIRE_GRAPPING_AREA)
-			{
-				continue;
-			}
-			// ===========================
-
-			//活動していなければ飛ばす
-			if (gameObjectB->IsActive() == false) continue;
-			if (gameObjectA == gameObjectB) continue;
-
-
-			// 衝突しているかどうか
-			if (DetectCollision(m_collisionData[i].pCollider, m_collisionData[j].pCollider))
-			{
-				// 衝突検知された情報を登録
-				detectedCollisions.push_back({ &m_collisionData[i], &m_collisionData[j] });
-
-				// 衝突処理
-				//m_collisionData[i].pGameObject->OnCollision(m_collisionData[j].pGameObject, m_collisionData[j].pCollider);
-				//m_collisionData[j].pGameObject->OnCollision(m_collisionData[i].pGameObject, m_collisionData[i].pCollider);
-			}
-		}
-	}
-
-
-	// **** 衝突したオブジェクトの衝突処理 ****
-	for (int i = 0; i < detectedCollisions.size(); i++)
-	{
-		// ゲームオブジェクトの取得
-		GameObject* pGameObjectA = detectedCollisions[i].pCollisionDataA->pGameObject;
-		GameObject* pGameObjectB = detectedCollisions[i].pCollisionDataB->pGameObject;
-
-		// コライダーの取得
-		ICollider* pColliderA = detectedCollisions[i].pCollisionDataA->pCollider;
-		ICollider* pColliderB = detectedCollisions[i].pCollisionDataB->pCollider;
-
-		// 衝突処理
-		pGameObjectA->OnCollision(CollisionInfo(pColliderB, pGameObjectB, pColliderA));
-		pGameObjectB->OnCollision(CollisionInfo(pColliderA, pGameObjectA, pColliderB));
-	}
-
-	// 押し出し *まだ非対応
-	//for (int i = 0; i < detectedCollisions.size(); i++)
-	//{
-	//	// 処理用変数
-	//	GameObject* gameObjectA = detectedCollisions[i].pCollisionInfoA->pGameObject;
-	//	GameObject* gameObjectB = detectedCollisions[i].pCollisionInfoB->pGameObject;
-
-	//	// 衝突検知された押し出しデータを登録
-	//	OverlapManager::OverlapData overlapDataA = OverlapManager::CalcOverlapData(*detectedCollisions[i].pCollisionInfoA, *detectedCollisions[i].pCollisionInfoB);
-	//	OverlapManager::OverlapData overlapDataB = OverlapManager::CalcOverlapData(*detectedCollisions[i].pCollisionInfoB, *detectedCollisions[i].pCollisionInfoA);
-
-	//	if (DetectCollision(detectedCollisions[i].pCollisionInfoA->pCollider, detectedCollisions[i].pCollisionInfoB->pCollider))
-	//		if (BoxCharacter* pBoxCharacter = dynamic_cast<BoxCharacter*>(gameObjectA))
-	//			pBoxCharacter->PushOut(overlapDataA.overlap, overlapDataA.hitGameObjectInfo.pGameObject);
-
-	//	if (DetectCollision(detectedCollisions[i].pCollisionInfoA->pCollider, detectedCollisions[i].pCollisionInfoB->pCollider))
-	//		if (BoxCharacter* pBoxCharacter = dynamic_cast<BoxCharacter*>(gameObjectB))
-	//			pBoxCharacter->PushOut(overlapDataB.overlap, overlapDataB.hitGameObjectInfo.pGameObject);
-
-	//}
-
-	// 衝突判定の直後の処理をする
-	for (auto& collisionObj : collisionObject)
-	{
-		collisionObj->PostCollision();
-	}
+	// 事後処理
+	FinalizeCollision();
 
 	// タスクを継続する
 	return true;
@@ -215,34 +126,11 @@ void CollisionManager::Finalize()
 	m_collisionData.clear();
 }
 
-/// <summary>
-/// 衝突判定をするオブジェクトの追加
-/// </summary>
-/// <param name="collisionData">衝突判定に必要な情報</param>
-void CollisionManager::AddCollisionObjectData(GameObject* pAddGameObject, ICollider* pCollider)
+
+void CollisionManager::AddCollisionData(const CollisionData& collisionData)
 {
-
-	if (pAddGameObject == nullptr || pCollider == nullptr) return;
-
-	// 重複していないか捜す
-	auto findIt = std::find_if(m_collisionData.begin(), m_collisionData.end(), 
-		[&](const CollisionData& data) 
-		{
-			return (pAddGameObject == data.pGameObject && pCollider == data.pCollider);
-		});
-
-	// 重複しているのが見つかっていれば飛ばす
-	if (findIt != m_collisionData.end()) return;
-
-	// 衝突判定データの生成
-	CollisionData newCollisionData{};
-	newCollisionData.pGameObject = pAddGameObject;
-	newCollisionData.pCollider = pCollider;
-
 	// 衝突判定データの追加
-	m_collisionData.push_back(newCollisionData);
-
-
+	m_collisionData.push_back(collisionData);
 }
 
 /**
@@ -643,6 +531,8 @@ bool CollisionManager::DetectCollision(const ICollider* pColliderA, const IColli
 		return false;
 }
 
+
+
 /**
  * @brief 指定したオブジェクトの種類と衝突しているかどうか
  *
@@ -696,6 +586,137 @@ bool CollisionManager::RetrieveCollisionData(const ICollider* pCheckCollider, st
 	}
 
 	return isHit;
+}
+
+/**
+ * @brief 衝突判定直前処理
+ */
+void CollisionManager::PreCollision()
+{
+	// 衝突判定の前の処理をする
+	for (auto& data : m_collisionData)
+	{
+		if (data.pGameObject)
+		{
+			data.pGameObject->PreCollision();
+		}
+	}
+}
+
+/**
+ * @brief 衝突の検知
+ * 
+ * @param[out] pOutResults 検知された衝突
+ */
+void CollisionManager::UpdateDetection(std::vector<DetectedCollisonData>* pOutResults)
+{
+
+	for (size_t i = 0; i < m_collisionData.size() - 1; i++)
+	{
+
+		for (size_t j = i + 1; j < m_collisionData.size(); j++)
+		{
+			CheckCollisionPair(m_collisionData[i], m_collisionData[j], pOutResults);
+		}
+	}
+}
+
+/**
+ * @brief 衝突の通知
+ *
+ * @param[in] pDetectedCollisions 検知された衝突
+ */
+void CollisionManager::NotifyCollisionEvents(std::vector<DetectedCollisonData>* pDetectedCollisions)
+{
+	// **** 衝突したオブジェクトの衝突処理 ****
+	for (int i = 0; i < pDetectedCollisions->size(); i++)
+	{
+		// ゲームオブジェクトの取得
+		GameObject* pGameObjectA = (*pDetectedCollisions)[i].pCollisionDataA->pGameObject;
+		GameObject* pGameObjectB = (*pDetectedCollisions)[i].pCollisionDataB->pGameObject;
+
+		if (!pGameObjectA || !pGameObjectB) { continue; }
+
+		// コライダーの取得
+		ICollider* pColliderA = (*pDetectedCollisions)[i].pCollisionDataA->pCollider;
+		ICollider* pColliderB = (*pDetectedCollisions)[i].pCollisionDataB->pCollider;
+
+		// 衝突処理
+		pGameObjectA->OnCollision(CollisionInfo(pColliderB, pGameObjectB, pColliderA));
+		pGameObjectB->OnCollision(CollisionInfo(pColliderA, pGameObjectA, pColliderB));
+	}
+}
+
+/**
+ * @brief 事後処理
+ */
+void CollisionManager::FinalizeCollision()
+{
+	// 衝突判定の直後の処理をする
+	for (auto& data : m_collisionData)
+	{
+		if (data.pGameObject)
+		{
+			data.pGameObject->PostCollision();
+
+		}
+
+	}
+
+}
+
+/**
+ * @brief ペアの衝突チェック
+ * 
+ * @param[in] collisionDataA	衝突データA
+ * @param[in] collisionDataB	衝突データB
+ * 
+ * @param[out] pOutResults 検知された衝突を格納する
+ */
+void CollisionManager::CheckCollisionPair(const CollisionData& collisionDataA, const CollisionData& collisionDataB, std::vector<DetectedCollisonData>* pOutResults)
+{
+	// 処理用オブジェクト
+	GameObject* gameObjectA = collisionDataA.pGameObject;
+
+	// 活動していなければ飛ばす
+	if (gameObjectA && gameObjectA->IsActive() == false) return;
+
+
+	// 処理用オブジェクト
+	GameObject* gameObjectB = collisionDataB.pGameObject;
+
+
+	// ゲームオブジェクトタグのビットインデックス
+	uint32_t gameObjectTagIndexA = collisionDataA.tagBitIndex;
+	// 衝突検知をするかどうか
+	if (gameObjectA && gameObjectB && m_pCollisionMatrix &&
+		!m_pCollisionMatrix->ShouldCollide(gameObjectTagIndexA, gameObjectB->GetTag())) {
+		return;
+	}
+
+	//活動していなければ飛ばす
+	if (gameObjectB && gameObjectB->IsActive() == false) return;
+
+	if (gameObjectA == gameObjectB) return;
+
+
+	// 衝突しているかどうか
+	if (DetectCollision(collisionDataA.pCollider, collisionDataB.pCollider))
+	{
+		// 衝突検知された情報を登録
+		pOutResults->push_back({ &collisionDataA, &collisionDataB });
+
+		// 子を持っている場合その子も検知する
+		for (auto& child : collisionDataA.children)
+		{
+			CheckCollisionPair(child, collisionDataB, pOutResults);
+		}
+		for (auto& child : collisionDataB.children)
+		{
+			CheckCollisionPair(child, collisionDataA, pOutResults);
+		}
+	}
+
 }
 
 

@@ -288,7 +288,7 @@ void Wire::ShootWire(const DirectX::SimpleMath::Vector3& origin, const DirectX::
 
 	m_collider->Set(origin, origin,true);
 
-	m_pCollisionManager->AddCollisionObjectData(this, m_collider.get());
+	m_pCollisionManager->AddCollisionData(CollisionData(this, m_collider.get()));
 
 	m_particleObjects.emplace_back(std::make_unique<ParticleObject>());
 	m_particleObjects.back()->SetPosition(origin);
@@ -322,7 +322,7 @@ void Wire::ShootWireToTarget(const DirectX::SimpleMath::Vector3& origin, const D
 
 	m_collider->Set(origin, origin, true);
 
-	m_pCollisionManager->AddCollisionObjectData(this, m_collider.get());
+	m_pCollisionManager->AddCollisionData(CollisionData(this, m_collider.get()));
 
 	m_particleObjects.emplace_back(std::make_unique<ParticleObject>());
 	m_particleObjects.back()->SetPosition(origin);

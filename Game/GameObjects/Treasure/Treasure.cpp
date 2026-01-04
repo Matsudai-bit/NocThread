@@ -73,7 +73,7 @@ void Treasure::Initialize(const CommonResources* pCommonResources, CollisionMana
 	m_collider = std::make_unique<Sphere>(GetTransform()->GetPosition(), 1.0f * GetTransform()->GetScale().x);
 
 	// Õ“ËŠÇ—‚Ì“o˜^
-	pCollisionManager->AddCollisionObjectData(this, m_collider.get());
+	pCollisionManager->AddCollisionData(CollisionData(this, m_collider.get()));
 
 	m_isActive = true;
 

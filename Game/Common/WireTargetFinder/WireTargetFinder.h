@@ -83,6 +83,7 @@ private:
 	const Camera* m_pCamera;
 
 	std::vector<Capsule> m_capsules; ///< カプセル群
+	Sphere m_broadCollider;
 
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ

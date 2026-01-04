@@ -467,6 +467,12 @@
     <Filter Include="Resources\Shaders\FrustumCulling">
       <UniqueIdentifier>{79e9824a-f191-47a0-9920-4aa629466599}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\Common\Factory\CollisionMatrixFactory">
+      <UniqueIdentifier>{35d9625c-8468-465f-a430-18ddd1ebab63}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Library\MyLib\FrameTimer">
+      <UniqueIdentifier>{d4406896-bbc7-407b-8abf-a9fd166f94d7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -916,6 +922,15 @@
     <ClInclude Include="Game\GameObjects\RopeObject\XPBDSimulator\Constraint\SteeringConstraint\SteeringConstraintFactory.h">
       <Filter>Game\GameObjects\RopeObject\XPBDSimulator\Constraint\Factory</Filter>
     </ClInclude>
+    <ClInclude Include="Game\Common\Collision\CollisionMatrix\CollisionMatrix.h">
+      <Filter>Game\Common\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Common\Factory\CollisionMatrixFactory\CollisionMatrixFactory.h">
+      <Filter>Game\Common\Factory\CollisionMatrixFactory</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\MyLib\FrameTimer\FrameTimer.h">
+      <Filter>Library\MyLib\FrameTimer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -1301,6 +1316,15 @@
     </ClCompile>
     <ClCompile Include="Game\GameObjects\RopeObject\XPBDSimulator\Constraint\SteeringConstraint\SteeringConstraintFactory.cpp">
       <Filter>Game\GameObjects\RopeObject\XPBDSimulator\Constraint\Factory</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Common\Collision\CollisionMatrix\CollisionMatrix.cpp">
+      <Filter>Game\Common\Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Common\Factory\CollisionMatrixFactory\CollisionMatrixFactory.cpp">
+      <Filter>Game\Common\Factory\CollisionMatrixFactory</Filter>
+    </ClCompile>
+    <ClCompile Include="Library\MyLib\FrameTimer\FrameTimer.cpp">
+      <Filter>Library\MyLib\FrameTimer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -14,6 +14,8 @@
 // ライブラリ
 #include "Library/MyLib/DirectXMyToolKit/DebugFont/DebugFont.h" // デバックフォント
 #include "Library/DirectXFramework/RenderTexture.h"             // レンダーテクスチャ
+#include "Library/MyLib/FrameTimer/FrameTimer.h"
+
 
 // システム
 #include "Game/Common/CommonResources/CommonResources.h"    // 共通リソース
@@ -48,6 +50,7 @@ private:
 
     // その他
     std::unique_ptr<DX::RenderTexture>  m_copyRenderTexture;
+    std::unique_ptr<MyLib::FrameTimer> m_frameTimer;
 
 public:
 
