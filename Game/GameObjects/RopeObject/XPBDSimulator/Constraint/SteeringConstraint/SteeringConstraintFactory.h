@@ -18,6 +18,7 @@
 #include "Game/GameObjects/RopeObject/XPBDSimulator/Constraint/ConstraintFactory.h"
 
 #include "Game/GameObjects/RopeObject/XPBDSimulator/XPBDSimulator.h"
+#include "Game/Common/ElapsedTimeCounter/ElapsedTimeCounter.h"
 
 // クラスの前方宣言 ===================================================
 class SimParticle; // シミュレーションのパーティクル
@@ -36,7 +37,9 @@ class SteeringConstraintFactory
 // クラス定数の宣言 -------------------------------------------------
 public:
 
-
+	static constexpr float DUMPING_DURATION = 1.0f; // ワイヤーの慣性が減衰しきる時間
+	static constexpr float AUTO_INERTIA_STRENGTH = 50.0f; // 自動でかかる慣性の強さ
+	static constexpr float INPUT_INERTIA_STRENGTH = 130.0f; // 入力によりでかかる慣性の強さ
 
 // データメンバの宣言 -----------------------------------------------
 private:
@@ -45,9 +48,8 @@ private:
 
 	const CommonResources* m_pCommonResources;
 
-	std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionColor>> m_primitiveBatch;
-	std::unique_ptr < DirectX::BasicEffect> m_basicEffect;
-	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_inputLayout;
+
+	ElapsedTimeCounter m_elapsedTimeCounter;	///< 経過時間カウンター
 
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
@@ -61,7 +63,8 @@ public:
 
 // 操作
 public:
-	
+	// リセット
+	void Reset() override;
 	// 制約の作成
 	std::vector<std::unique_ptr<IConstraint>> CreateConstraint(std::vector<XPBDSimulator::Particle>* pParticles) override;
 
@@ -71,5 +74,14 @@ public:
 // 内部実装
 private:
 
+	// 入力に対するステアリング力を計算する
+	DirectX::SimpleMath::Vector3 ComputeInputSteeringForce(const DirectX::SimpleMath::Vector3& cameraForward) const;
+
+	// カメラが向く方向へ導くステアリング力を計算する
+	DirectX::SimpleMath::Vector3 ComputeCameraDirectedSteeringForce(
+		const DirectX::SimpleMath::Vector3& cameraForward,
+		const DirectX::SimpleMath::Vector3& particleRootPosition,
+		const SimParticle& particle,
+		const float& inertiaDamping) const;
 
 };

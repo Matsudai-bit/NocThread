@@ -50,6 +50,8 @@ public:
 	// §–ñ‚Ìì¬
 	virtual std::vector<std::unique_ptr<IConstraint>> CreateConstraint(std::vector<XPBDSimulator::Particle>* pParticles) = 0;
 
+	// ƒŠƒZƒbƒg
+	virtual void Reset() {};
 
 
 // æ“¾/İ’è
