@@ -174,7 +174,7 @@ void RopeObject::Draw(const Camera& camera)
 
 		SimpleMath::Matrix rotation = SimpleMath::Matrix::CreateFromQuaternion(q);
 		SimpleMath::Matrix translation = SimpleMath::Matrix::CreateTranslation(centerPos);
-		SimpleMath::Matrix scale = SimpleMath::Matrix::CreateScale(0.03f, length*0.1f , 0.03f);
+		SimpleMath::Matrix scale = SimpleMath::Matrix::CreateScale(0.02f, length*0.1f , 0.02f);
 
 		// ワールド行列
 		SimpleMath::Matrix world = scale * rotation * translation;
@@ -195,7 +195,7 @@ void RopeObject::Draw(const Camera& camera)
 
 
 	}
-	//m_batch->End();
+//	m_batch->End();
 	// 深度ステンシルバッファの設定
 	context->OMSetDepthStencilState(pStates->DepthDefault(), 0);
 

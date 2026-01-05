@@ -123,8 +123,8 @@ public:
 	// 描画に関するオフセット値
 	static constexpr float CURSOR_Y_OFFSET_SCALE = 140.f;            // カーソルのY軸オフセットの画面スケール係数
 	static constexpr float MODEL_DEFAULT_OFFSET_Y = -2.5f;           // モデルのデフォルトY軸オフセットのスケール係数
-	static constexpr float WIRE_ACTION_OFFSET_X = 1.7f;              // ワイヤーアクション時のX軸オフセット
-	static constexpr float WIRE_ACTION_OFFSET_Y = -1.8f;             // ワイヤーアクション時のY軸オフセット
+	static constexpr float WIRE_ACTION_OFFSET_X = 1.9f;              // ワイヤーアクション時のX軸オフセット
+	static constexpr float WIRE_ACTION_OFFSET_Y = -1.7f;             // ワイヤーアクション時のY軸オフセット
 
 // データメンバの宣言 -----------------------------------------------
 private:

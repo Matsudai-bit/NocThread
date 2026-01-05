@@ -177,7 +177,7 @@ void BuildingManager::DrawTask(const Camera& camera)
 	// 1. 開始時刻の記録
 	auto start = std::chrono::high_resolution_clock::now();
 
-	DrawFrustumCulling(camera);
+	DrawDefault(camera);
 
 	// 3. 終了時刻の記録
 	auto end = std::chrono::high_resolution_clock::now();

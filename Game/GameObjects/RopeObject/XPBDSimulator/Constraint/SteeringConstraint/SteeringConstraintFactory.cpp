@@ -40,6 +40,7 @@ SteeringConstraintFactory::SteeringConstraintFactory(const CommonResources* pCom
     , m_pCommonResources{ pCommonResources }
     , m_elapsedTimeCounter{}
 {
+	m_playerInput = InputBindingFactory::CreatePlayerInput();
 }
 
 
@@ -140,20 +141,28 @@ DirectX::SimpleMath::Vector3 SteeringConstraintFactory::ComputeInputSteeringForc
 {
     using namespace SimpleMath;
 
+	m_playerInput->Update(m_pCommonResources->GetKeyboardTracker(), m_pCommonResources->GetMouseTracker(), m_pCommonResources->GetGamePadTracker());
+
     // “ü—Í‚ÌŽæ“¾
     auto kb = Keyboard::Get().GetState();
     Vector3 rawInput;
-    if (kb.A) rawInput += Vector3::Left;
-    if (kb.D) rawInput += Vector3::Right;
-    if (kb.W) rawInput += Vector3::Backward;
-    if (kb.S) rawInput += Vector3::Forward;
+
+    // ‰œ‚Ö
+    if (m_playerInput->IsInput(InputActionType::PlyayerActionID::FRONT_MOVE)) { rawInput += SimpleMath::Vector3::Forward; }
+    // Žè‘O‚Ö
+    if (m_playerInput->IsInput(InputActionType::PlyayerActionID::BACK_MOVE)) { rawInput += SimpleMath::Vector3::Backward; }
+    // ‰E‚Ö
+    if (m_playerInput->IsInput(InputActionType::PlyayerActionID::RIGHT_MOVE)) { rawInput += SimpleMath::Vector3::Right; }
+    // ¶‚Ö
+    if (m_playerInput->IsInput(InputActionType::PlyayerActionID::LEFT_MOVE)) { rawInput += SimpleMath::Vector3::Left; }
 
     Vector3 cameraRight = cameraForward.Cross(Vector3::Up);
     cameraRight.Normalize();
 
     // “ü—Í‚ðƒJƒƒ‰‹óŠÔ‚ÌˆÚ“®•ûŒü‚É•ÏŠ·
-    Vector3 moveDirection = (-rawInput.z * cameraForward) + (-rawInput.x * cameraRight);
-    if (moveDirection.LengthSquared() > 0.001f) {
+    Vector3 moveDirection = (rawInput.z * cameraForward) + (-rawInput.x * cameraRight);
+    if (moveDirection.LengthSquared() > 0.001f) 
+    {
         moveDirection.Normalize();
     }
 

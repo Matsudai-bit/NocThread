@@ -252,8 +252,14 @@ void Player::Draw(const Camera& camera)
 
 	Matrix defaultTransform = Matrix::CreateTranslation(Vector3(0.0f, MODEL_DEFAULT_OFFSET_Y * transform->GetScale().y, 0.0f));
 
+	// ワイヤーアクション中の場合はモデルの位置を調整する
 	if (m_state == State::WIRE_ACTION)
+	{
+
 		defaultTransform *= Matrix::CreateTranslation(Vector3(WIRE_ACTION_OFFSET_X, Player::WIRE_ACTION_OFFSET_Y, 0.0f));
+		// プレイヤーのY軸回転を
+
+	}
 
 	Matrix transformMat = Matrix::CreateTranslation(transform->GetPosition());
 	Matrix rotation = Matrix::CreateFromQuaternion(transform->GetRotation());
@@ -277,22 +283,24 @@ void Player::Draw(const Camera& camera)
 
 	// **** 軸の描画 ****
 
-	// ブレンドステート
-	context->OMSetBlendState(states->Opaque(), nullptr, 0xFFFFFFF);
-	// 深度ステンシルバッファ
-	context->OMSetDepthStencilState(states->DepthDefault(), 0);
-	// カリング
-	context->RSSetState(states->CullNone());
+	//// ブレンドステート
+	//context->OMSetBlendState(states->Opaque(), nullptr, 0xFFFFFFF);
+	//// 深度ステンシルバッファ
+	//context->OMSetDepthStencilState(states->DepthDefault(), 0);
+	//// カリング
+	//context->RSSetState(states->CullNone());
 
-	// インプットレイアウトの設定
-	context->IASetInputLayout(m_inputLayout.Get());
+	//// インプットレイアウトの設定
+	//context->IASetInputLayout(m_inputLayout.Get());
 
-	// ベーシックエフェクト
-	m_basicEffect->SetView(camera.GetViewMatrix());
-	m_basicEffect->SetProjection(camera.GetProjectionMatrix());
-	m_basicEffect->Apply(context);
+	//// ベーシックエフェクト
+	//m_basicEffect->SetView(camera.GetViewMatrix());
+	//m_basicEffect->SetProjection(camera.GetProjectionMatrix());
+	//m_basicEffect->Apply(context);
 
-	SimpleMath::Vector3 forward = transform->GetForward() * 1.5f;
+	//SimpleMath::Vector3 forward = transform->GetForward() * 1.5f;
+
+	//
 
 	/*m_primitiveBatch->Begin();
 	DX::DrawRay(m_primitiveBatch.get(), GetPosition(), forward, false, Colors::Red);

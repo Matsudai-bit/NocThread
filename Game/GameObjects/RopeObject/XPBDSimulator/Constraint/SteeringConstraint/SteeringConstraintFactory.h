@@ -20,6 +20,9 @@
 #include "Game/GameObjects/RopeObject/XPBDSimulator/XPBDSimulator.h"
 #include "Game/Common/ElapsedTimeCounter/ElapsedTimeCounter.h"
 
+#include "Game/Common/Input/InputSystem/InputSystem.h"
+#include "Game/Common/Input/InputBindingFactory/InputBindingFactory.h"
+
 // クラスの前方宣言 ===================================================
 class SimParticle; // シミュレーションのパーティクル
 
@@ -48,8 +51,9 @@ private:
 
 	const CommonResources* m_pCommonResources;
 
-
 	ElapsedTimeCounter m_elapsedTimeCounter;	///< 経過時間カウンター
+
+	std::unique_ptr<InputSystem<InputActionType::PlyayerActionID>> m_playerInput; ///< プレイヤー入力
 
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ

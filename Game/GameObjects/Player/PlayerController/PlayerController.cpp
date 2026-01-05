@@ -83,10 +83,7 @@ void PlayerController::Update(
 	SimpleMath::Vector3 movementDirection = SimpleMath::Vector3::Zero;
 
 	// ‰œ‚Ö
-	if (m_playerInput->IsInput(InputActionType::PlyayerActionID::FRONT_MOVE))
-	{
-		movementDirection += SimpleMath::Vector3::Forward;
-	}
+	if (m_playerInput->IsInput(InputActionType::PlyayerActionID::FRONT_MOVE)){	movementDirection += SimpleMath::Vector3::Forward;}
 	// Žè‘O‚Ö
 	if (m_playerInput->IsInput(InputActionType::PlyayerActionID::BACK_MOVE)) { movementDirection += SimpleMath::Vector3::Backward; }
 	// ‰E‚Ö

@@ -173,8 +173,8 @@ void Game::Initialize(HWND window, int width, int height)
 
     // TODO: Change the timer settings if you want something other than the default variable timestep mode.
     // e.g. for 60 FPS fixed timestep update logic, call:
-    //m_timer.SetFixedTimeStep(true);
-    //m_timer.SetTargetElapsedSeconds(1.0 / 60);
+    m_timer.SetFixedTimeStep(true);
+    m_timer.SetTargetElapsedSeconds(1.0 / 60);
 
     
 }
@@ -260,11 +260,11 @@ void Game::Render()
         m_commonResources->SetCopyScreenRequest(false);
     }
 
-    // FPSを取得する
-    uint32_t fps = m_timer.GetFramesPerSecond();
+    //// FPSを取得する
+    //uint32_t fps = m_timer.GetFramesPerSecond();
 
-    // FPSの表示
-    m_debugFont->AddString(0, 0, Colors::White, L"FPS=%d", fps);
+    //// FPSの表示
+    //m_debugFont->AddString(0, 0, Colors::White, L"FPS=%d", fps);
 
     // デバッグフォントの描画
     m_debugFont->Render(m_states.get());
