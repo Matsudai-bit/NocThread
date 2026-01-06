@@ -50,7 +50,7 @@ DistanceConstraintFactory::~DistanceConstraintFactory()
  * 
  * @return ì¬‚µ‚½Õ“Ë§–ñ
  */
-std::vector<std::unique_ptr<IConstraint>> DistanceConstraintFactory::CreateConstraint(std::vector<XPBDSimulator::Particle>* pParticles)
+std::vector<std::unique_ptr<IConstraint>> DistanceConstraintFactory::CreateConstraint(std::vector<XPBDSimulator::Particle>* pParticles, XPBDSimulator::Parameter paramater)
 {
 	int particleNum = static_cast<int>(pParticles->size() - 1);
 	if (particleNum <= 0) {

@@ -473,6 +473,15 @@
     <Filter Include="Library\MyLib\FrameTimer">
       <UniqueIdentifier>{d4406896-bbc7-407b-8abf-a9fd166f94d7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\Common\TransitionMask">
+      <UniqueIdentifier>{1b63ac83-b748-4d29-b9db-e109526e4308}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\Shaders\SceneFade">
+      <UniqueIdentifier>{6f88e755-6a32-4c07-b984-1bc9f47b1f98}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\Shaders\Minimap">
+      <UniqueIdentifier>{b6f1848c-3cb4-4ae5-9e51-7bf1ac97df6b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -931,6 +940,9 @@
     <ClInclude Include="Library\MyLib\FrameTimer\FrameTimer.h">
       <Filter>Library\MyLib\FrameTimer</Filter>
     </ClInclude>
+    <ClInclude Include="Game\Common\TransitionMask\TransitionMask.h">
+      <Filter>Game\Common\TransitionMask</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -1326,6 +1338,9 @@
     <ClCompile Include="Library\MyLib\FrameTimer\FrameTimer.cpp">
       <Filter>Library\MyLib\FrameTimer</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Common\TransitionMask\TransitionMask.cpp">
+      <Filter>Game\Common\TransitionMask</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />
@@ -1385,6 +1400,12 @@
     </FxCompile>
     <FxCompile Include="Shaders\FrustumCulling\FrustumCullingCS.hlsl">
       <Filter>Resources\Shaders\FrustumCulling</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\SceneFade\PS_Fade.hlsl">
+      <Filter>Resources\Shaders\SceneFade</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\Minimap\Minimap_PS.hlsl">
+      <Filter>Resources\Shaders\Minimap</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

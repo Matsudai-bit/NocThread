@@ -26,6 +26,8 @@
 
 // シーン
 #include "Game/Scene/TitleScene/TitleScene.h"
+#include "Game/Common/TransitionMask/TransitionMask.h"
+#include "Game/Scene/Loading/LoadingScreen.h"
 
 // 状態
 #include "Game/Scene/GameplayScene/State/NormalGameplayState/NormalGameplayState.h"
@@ -257,8 +259,18 @@ void PauseGameplayState::OnPushMenuItem(PauseMenu::MenuItem menuItem)
 	case PauseMenu::MenuItem::SETTING:
 		break;
 	case PauseMenu::MenuItem::RETURN_TITLE:
-		GetOwner()->OnEndScene();
-		GetOwner()->ChangeScene<TitleScene>();
+
+		if (GetOwner()->GetCommonResources()->GetTransitionMask()->IsEnd())
+		{
+			// シーンを切り替える
+			GetOwner()->GetCommonResources()->GetTransitionMask()->Close([&]()
+				{
+					GetOwner()->ChangeScene<TitleScene, LoadingScreen>();
+					GetOwner()->OnEndScene();
+
+				});
+		}
+		
 
 		break;
 	default:

@@ -101,12 +101,12 @@ Minimap::Minimap(const CommonResources* pCommonResources)
 	// スプライトバッチの作成
 	m_spriteBatch = std::make_unique<DirectX::SpriteBatch>(context);
 
-	SimpleMath::Vector2 mapSize = RENDERING_SIZE * Screen::Get()->GetScreenScale();
+	SimpleMath::Vector2 m_mapSize = RENDERING_SIZE * Screen::Get()->GetScreenScale();
 	RECT rect{
 		0,
 		0,
-		static_cast<LONG>(mapSize.x),
-		static_cast<LONG>(mapSize.y)
+		static_cast<LONG>(m_mapSize.x),
+		static_cast<LONG>(m_mapSize.y)
 
 	};
 
@@ -118,7 +118,20 @@ Minimap::Minimap(const CommonResources* pCommonResources)
 	m_offscreenRendering->SetDevice(device);
 	m_offscreenRendering->SetWindow(rect);
 
+	// ピクセルシェーダの作成
+	std::vector<uint8_t> ps_minimap = DX::ReadData(L"Resources/Shaders/Minimap_PS.cso");
+	DX::ThrowIfFailed(
+		device->CreatePixelShader(ps_minimap.data(), ps_minimap.size(), nullptr, m_PS_Minimap.ReleaseAndGetAddressOf())
+	);
+	D3D11_BUFFER_DESC bufferDesk = {};
+	bufferDesk.ByteWidth = static_cast<UINT>(sizeof(MinimapConstantBuffer));
+	bufferDesk.Usage = D3D11_USAGE_DYNAMIC;
+	bufferDesk.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	bufferDesk.CPUAccessFlags = D3D10_CPU_ACCESS_WRITE;
 
+	DX::ThrowIfFailed(
+		device->CreateBuffer(&bufferDesk, nullptr, m_minimapConstantBuffer.ReleaseAndGetAddressOf())
+	);
 }
 
 
@@ -160,6 +173,7 @@ bool Minimap::UpdateTask(float deltaTime)
 	UNREFERENCED_PARAMETER(deltaTime);
 
 
+	m_mapSize = RENDERING_SIZE * Screen::Get()->GetScreenScale();
 
 	return true;
 }
@@ -180,29 +194,51 @@ void Minimap::DrawTask(const Camera& camera)
 	CreateMinimapTexture();
 
 	// 処理用変数
-	auto states				= m_pCommonResources->GetCommonStates();
-
-	SimpleMath::Vector2 mapSize = RENDERING_SIZE * Screen::Get()->GetScreenScale();
+	auto states = m_pCommonResources->GetCommonStates();
+	auto context = m_pCommonResources->GetDeviceResources()->GetD3DDeviceContext();
 
 
 	RECT rect{
 		0,
 		0,
-		static_cast<LONG>(mapSize.x),
-		static_cast<LONG>(mapSize.y)
+		static_cast<LONG>(m_mapSize.x),
+		static_cast<LONG>(m_mapSize.y)
 
 	};
 
 	// ミニマップの描画
-	m_spriteBatch->Begin(SpriteSortMode_Immediate, states->NonPremultiplied());
-	m_spriteBatch->Draw(
-		m_offscreenRendering->GetShaderResourceView(),
-		SimpleMath::Vector2::Zero,
-		&rect,
-		Colors::White,
-		0.0f,SimpleMath::Vector4::Zero,
-		0.2f * Screen::Get()->GetScreenScale());
+	D3D11_MAPPED_SUBRESOURCE mappedResource;
 
+	context->Map(m_minimapConstantBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
+	auto data = static_cast<MinimapConstantBuffer*>(mappedResource.pData);
+	data->transparentColor = MINIMAP_BACK_COLOR;
+	data->aspect = m_mapSize;
+	context->Unmap(m_minimapConstantBuffer.Get(), 0);
+
+	m_spriteBatch->Begin(
+		SpriteSortMode_Immediate, states->NonPremultiplied(), nullptr, nullptr, nullptr,
+		[&]() {
+
+			// 定数バッファの作成
+			ID3D11Buffer* cbuff = { m_minimapConstantBuffer.Get() };
+			context->PSSetConstantBuffers(1, 1, &cbuff);
+
+			//// マスク用テクスチャ
+			//context->PSSetShaderResources(1, 1, m_maskTexture.GetAddressOf());
+
+			// ピクセルシェーダ
+			context->PSSetShader(m_PS_Minimap.Get(), nullptr, 0);
+		}
+	);	
+	{
+		m_spriteBatch->Draw(
+			m_offscreenRendering->GetShaderResourceView(),
+			MAP_POSITION_TOP_LEFT * Screen::Get()->GetScreenScale(),
+			&rect,
+			Colors::White,
+			0.0f, SimpleMath::Vector4::Zero,
+			MAP_SCALE * Screen::Get()->GetScreenScale());
+	}
 	m_spriteBatch->End();
 
 }
@@ -236,17 +272,15 @@ void Minimap::CreateMinimapTexture()
 
 	RECT windowRect = deviceResources->GetOutputSize();
 
-	SimpleMath::Vector2 mapSize = RENDERING_SIZE * Screen::Get()->GetScreenScale();
-
 
 	// オフスクリーンレンダリングの開始
-	m_offscreenRendering->Begin(Color(0.01f, 0.01f, 0.48f));
+	m_offscreenRendering->Begin(Color(MINIMAP_BACK_COLOR));
 	{
 
 		// **** ビューポートの変更 ****
 		D3D11_VIEWPORT vp = {};
-		vp.Width = mapSize.x;	//ビューポートの横幅
-		vp.Height = mapSize.y;	//ビューポートの横幅
+		vp.Width	= m_mapSize.x;	//ビューポートの横幅
+		vp.Height	= m_mapSize.y;	//ビューポートの横幅
 		vp.TopLeftX = 0.0f;			//ビューポートの左上のX座標(ピクセル数）
 		vp.TopLeftY = 0.0f;			//ビューポートの左上のY座標(ピクセル数）
 		vp.MinDepth = 0.0f;			//ビューポートの最小深度（0～1)
@@ -279,7 +313,7 @@ void Minimap::CreateMinimapTexture()
 		ConstantBuffer cb = {};
 		// 表示座標の設定
 		cb.position = Vector2(static_cast<float>(windowRect.right), static_cast<float>(windowRect.bottom));
-		cb.windowSize = mapSize;
+		cb.windowSize = m_mapSize;
 		//cb.windowSize = Vector2(windowRect.right / 2.0f, windowRect.bottom / 2.0f);
 		cb.scale = Vector2(MARK_SIZE, MARK_SIZE) * Screen::Get()->GetScreenScale();
 		cb.dummy = Vector2(static_cast<float>(windowRect.right), static_cast<float>(windowRect.bottom));
@@ -297,7 +331,7 @@ void Minimap::CreateMinimapTexture()
 		// 各描画処理
 		m_primitiveBatch->Begin();
 		// ビルの描画
-		DrawBuilding(vertexes, mapSize);
+		DrawBuilding(vertexes, m_mapSize);
 		m_primitiveBatch->End();
 
 		context->PSSetShader(m_ps_Circle.Get(), nullptr, 0);
@@ -305,15 +339,15 @@ void Minimap::CreateMinimapTexture()
 		m_primitiveBatch->Begin();
 
 		// 敵の描画
-		DrawEnemy(vertexes, mapSize);
+		DrawEnemy(vertexes, m_mapSize);
 		// お宝の描画
-		DrawTreasure(vertexes, mapSize);
+		DrawTreasure(vertexes, m_mapSize);
 		// ヘリコプターの描画
-		DrawHelicopter(vertexes, mapSize);
+		DrawHelicopter(vertexes, m_mapSize);
 		// プレイヤーの描画
-		DrawPlayer(vertexes, mapSize);
+		DrawPlayer(vertexes, m_mapSize);
 		// チェックポイントの描画
-		DrawCheckpoint(vertexes, mapSize);
+		DrawCheckpoint(vertexes, m_mapSize);
 		m_primitiveBatch->End();
 
 		//	シェーダの登録を解除しておく
@@ -329,7 +363,7 @@ void Minimap::CreateMinimapTexture()
 	context->RSSetViewports(1, &viewport);
 }
 
-void Minimap::DrawPlayer(DirectX::VertexPositionColorTexture vertexes[VERTEX_NUM], const DirectX::SimpleMath::Vector2& mapSize)
+void Minimap::DrawPlayer(DirectX::VertexPositionColorTexture vertexes[VERTEX_NUM], const DirectX::SimpleMath::Vector2& m_mapSize)
 {
 	using namespace SimpleMath;
 
@@ -339,10 +373,10 @@ void Minimap::DrawPlayer(DirectX::VertexPositionColorTexture vertexes[VERTEX_NUM
 
 
 	// プレイヤー座標を取得する
-	const auto playerPosition= GameObjectRegistry::GetInstance()->GetGameObject(GameObjectTag::PLAYER)->GetTransform()->GetPosition();
+	const auto playerPosition = GameObjectRegistry::GetInstance()->GetGameObject(GameObjectTag::PLAYER)->GetTransform()->GetPosition();
 
 	// ミニマップ上の座標の算出
-	Vector2 minimapPosition = CalcMinimapPosition(playerPosition, mapSize);
+	Vector2 minimapPosition = CalcMinimapPosition(playerPosition, m_mapSize);
 
 	// 頂点情報の登録
 	for (int i = 0; i < VERTEX_NUM; i++)
@@ -356,10 +390,10 @@ void Minimap::DrawPlayer(DirectX::VertexPositionColorTexture vertexes[VERTEX_NUM
 	// 描画
 	m_primitiveBatch->Draw(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST, &vertexes[0], 1);
 
-	
+
 }
 
-void Minimap::DrawBuilding(DirectX::VertexPositionColorTexture vertexes[VERTEX_NUM], const DirectX::SimpleMath::Vector2& mapSize)
+void Minimap::DrawBuilding(DirectX::VertexPositionColorTexture vertexes[VERTEX_NUM], const DirectX::SimpleMath::Vector2& m_mapSize)
 {
 	using namespace SimpleMath;
 
@@ -372,7 +406,7 @@ void Minimap::DrawBuilding(DirectX::VertexPositionColorTexture vertexes[VERTEX_N
 		// 座標の取得
 		Vector3 buildingPosition = building->GetTransform()->GetPosition();
 		// ミニマップ上の座標の算出
-		Vector2 minimapPosition = CalcMinimapPosition(buildingPosition, mapSize);
+		Vector2 minimapPosition = CalcMinimapPosition(buildingPosition, m_mapSize);
 
 		// 頂点情報の登録
 		for (int i = 0; i < VERTEX_NUM; i++)
@@ -389,7 +423,7 @@ void Minimap::DrawBuilding(DirectX::VertexPositionColorTexture vertexes[VERTEX_N
 	}
 }
 
-void Minimap::DrawTreasure(DirectX::VertexPositionColorTexture vertexes[VERTEX_NUM], const DirectX::SimpleMath::Vector2& mapSize)
+void Minimap::DrawTreasure(DirectX::VertexPositionColorTexture vertexes[VERTEX_NUM], const DirectX::SimpleMath::Vector2& m_mapSize)
 {
 	using namespace SimpleMath;
 
@@ -402,7 +436,7 @@ void Minimap::DrawTreasure(DirectX::VertexPositionColorTexture vertexes[VERTEX_N
 		// 座標の取得
 		Vector3 treasurePosition = treasure->GetTransform()->GetPosition();
 		// ミニマップ上の座標の算出
-		Vector2 minimapPosition = CalcMinimapPosition(treasurePosition, mapSize);
+		Vector2 minimapPosition = CalcMinimapPosition(treasurePosition, m_mapSize);
 
 		// 頂点情報の登録
 		for (int i = 0; i < VERTEX_NUM; i++)
@@ -419,7 +453,7 @@ void Minimap::DrawTreasure(DirectX::VertexPositionColorTexture vertexes[VERTEX_N
 	}
 }
 
-void Minimap::DrawCheckpoint(DirectX::VertexPositionColorTexture vertexes[VERTEX_NUM], const DirectX::SimpleMath::Vector2& mapSize)
+void Minimap::DrawCheckpoint(DirectX::VertexPositionColorTexture vertexes[VERTEX_NUM], const DirectX::SimpleMath::Vector2& m_mapSize)
 {
 	using namespace SimpleMath;
 
@@ -432,7 +466,7 @@ void Minimap::DrawCheckpoint(DirectX::VertexPositionColorTexture vertexes[VERTEX
 		// 座標の取得
 		Vector3 checkpointPosition = checkpoint->GetTransform()->GetPosition();
 		// ミニマップ上の座標の算出
-		Vector2 minimapPosition = CalcMinimapPosition(checkpointPosition, mapSize);
+		Vector2 minimapPosition = CalcMinimapPosition(checkpointPosition, m_mapSize);
 
 		// 頂点情報の登録
 		for (int i = 0; i < VERTEX_NUM; i++)
@@ -449,7 +483,7 @@ void Minimap::DrawCheckpoint(DirectX::VertexPositionColorTexture vertexes[VERTEX
 	}
 }
 
-void Minimap::DrawEnemy(DirectX::VertexPositionColorTexture vertexes[VERTEX_NUM], const DirectX::SimpleMath::Vector2& mapSize)
+void Minimap::DrawEnemy(DirectX::VertexPositionColorTexture vertexes[VERTEX_NUM], const DirectX::SimpleMath::Vector2& m_mapSize)
 {
 	using namespace SimpleMath;
 	// 敵を取得する
@@ -461,7 +495,7 @@ void Minimap::DrawEnemy(DirectX::VertexPositionColorTexture vertexes[VERTEX_NUM]
 		// 座標の取得
 		Vector3 enemyPosition = enemy->GetTransform()->GetPosition();
 		// ミニマップ上の座標の算出
-		Vector2 minimapPosition = CalcMinimapPosition(enemyPosition, mapSize);
+		Vector2 minimapPosition = CalcMinimapPosition(enemyPosition, m_mapSize);
 
 		// 頂点情報の登録
 		for (int i = 0; i < VERTEX_NUM; i++)
@@ -478,7 +512,7 @@ void Minimap::DrawEnemy(DirectX::VertexPositionColorTexture vertexes[VERTEX_NUM]
 	}
 }
 
-void Minimap::DrawHelicopter(DirectX::VertexPositionColorTexture vertexes[VERTEX_NUM], const DirectX::SimpleMath::Vector2& mapSize)
+void Minimap::DrawHelicopter(DirectX::VertexPositionColorTexture vertexes[VERTEX_NUM], const DirectX::SimpleMath::Vector2& m_mapSize)
 {
 	using namespace SimpleMath;
 
@@ -491,7 +525,7 @@ void Minimap::DrawHelicopter(DirectX::VertexPositionColorTexture vertexes[VERTEX
 		// 座標の取得
 		Vector3 helicopterPosition = helicopter->GetTransform()->GetPosition();
 		// ミニマップ上の座標の算出
-		Vector2 minimapPosition = CalcMinimapPosition(helicopterPosition, mapSize);
+		Vector2 minimapPosition = CalcMinimapPosition(helicopterPosition, m_mapSize);
 
 		// 頂点情報の登録
 		for (int i = 0; i < VERTEX_NUM; i++)
@@ -511,13 +545,13 @@ void Minimap::DrawHelicopter(DirectX::VertexPositionColorTexture vertexes[VERTEX
 
 /**
  * @brief ミニマップ上の座標の算出
- * 
+ *
  * @param[in] worldPosition ワールド座標
- * @param[in] mapSize		マップサイズ
- * 
+ * @param[in] m_mapSize		マップサイズ
+ *
  * @return ミニマップ状の座標
  */
-DirectX::SimpleMath::Vector2 Minimap::CalcMinimapPosition(const DirectX::SimpleMath::Vector3& worldPosition, const DirectX::SimpleMath::Vector2& mapSize)
+DirectX::SimpleMath::Vector2 Minimap::CalcMinimapPosition(const DirectX::SimpleMath::Vector3& worldPosition, const DirectX::SimpleMath::Vector2& m_mapSize)
 {
 	using namespace SimpleMath;
 
@@ -527,7 +561,7 @@ DirectX::SimpleMath::Vector2 Minimap::CalcMinimapPosition(const DirectX::SimpleM
 	// 中心からのベクトル
 	Vector2 centerToVector = Vector2(worldPosition.x, worldPosition.z) - mapCenterPosition;
 
-	
+
 	// 距離をミニマップ表示のサイズ感へ縮める
 	Vector2 normalDirection = centerToVector / (SPACE_VALUE / Screen::Get()->GetScreenScale());
 
@@ -536,8 +570,8 @@ DirectX::SimpleMath::Vector2 Minimap::CalcMinimapPosition(const DirectX::SimpleM
 	Vector2 minimapPosition = normalDirection + windowCenter;
 
 	RECT windowRect = m_pCommonResources->GetDeviceResources()->GetOutputSize();
-	minimapPosition.x -= (windowRect.right * 0.5f	- mapSize.x * 0.5f);
-	minimapPosition.y -= (windowRect.bottom * 0.5f - mapSize.y * 0.5f);
+	minimapPosition.x -= (windowRect.right * 0.5f - m_mapSize.x * 0.5f);
+	minimapPosition.y -= (windowRect.bottom * 0.5f - m_mapSize.y * 0.5f);
 
 	return minimapPosition;
 }

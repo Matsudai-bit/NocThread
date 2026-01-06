@@ -28,6 +28,7 @@
 
 #include "Game/Common/Camera/Camera.h"
 
+#include "Game/GameObjects/RopeObject/XPBDSimulator/Constraint/DistanceConstraint/DistanceConstraintFactory.h"
 #include "Game/GameObjects/RopeObject/XPBDSimulator/Constraint/CollisionConstraint/CollisionConstraintFactory.h"
 #include "Game/GameObjects/RopeObject/XPBDSimulator/Constraint/SteeringConstraint/SteeringConstraintFactory.h"
 
@@ -103,14 +104,17 @@ void Wire::Initialize(
 	// ロープオブジェクトの作成
 	m_ropeObject = std::make_unique<RopeObject>();
 	m_ropeObject->Initialize(pCommonResources);
-	// シミュレータ作成
-	m_simulator = std::make_unique<XPBDSimulator>();
 
-	// 制約の追加
-	std::vector<std::unique_ptr<ConstraintFactoryBase>> constraintFactories;
-	constraintFactories.emplace_back(std::make_unique<CollisionConstraintFactory>(m_pCollisionManager, simulationParam));
-	constraintFactories.emplace_back(std::make_unique<SteeringConstraintFactory>(GetCommonResources(),  simulationParam));
-	m_simulator->SetConstraint(&constraintFactories);
+	// **** シミュレータ作成 ****
+	m_simulator = std::make_unique<XPBDSimulator>();
+	// **** 制約の追加 ****
+	// 操舵制約
+	m_simulator->AddConstraint(std::make_unique<SteeringConstraintFactory> (GetCommonResources()));	
+	// 距離制約
+	m_simulator->AddConstraint(std::make_unique<DistanceConstraintFactory> ());						
+	// 衝突制約
+	m_simulator->AddConstraint(std::make_unique<CollisionConstraintFactory>(m_pCollisionManager));	
+
 
 	m_length = length;
 

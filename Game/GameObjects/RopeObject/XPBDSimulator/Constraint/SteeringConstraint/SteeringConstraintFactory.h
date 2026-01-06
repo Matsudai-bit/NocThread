@@ -47,8 +47,6 @@ public:
 // データメンバの宣言 -----------------------------------------------
 private:
 
-	XPBDSimulator::Parameter m_paramater;
-
 	const CommonResources* m_pCommonResources;
 
 	ElapsedTimeCounter m_elapsedTimeCounter;	///< 経過時間カウンター
@@ -59,7 +57,7 @@ private:
 // コンストラクタ/デストラクタ
 public:
 	// コンストラクタ
-	SteeringConstraintFactory(const CommonResources* pCommonResources, XPBDSimulator::Parameter paramater);
+	SteeringConstraintFactory(const CommonResources* pCommonResources);
 
 	// デストラクタ
 	~SteeringConstraintFactory();
@@ -70,7 +68,7 @@ public:
 	// リセット
 	void Reset() override;
 	// 制約の作成
-	std::vector<std::unique_ptr<IConstraint>> CreateConstraint(std::vector<XPBDSimulator::Particle>* pParticles) override;
+	std::vector<std::unique_ptr<IConstraint>> CreateConstraint(std::vector<XPBDSimulator::Particle>* pParticles, XPBDSimulator::Parameter paramater) override;
 
 // 取得/設定
 public:

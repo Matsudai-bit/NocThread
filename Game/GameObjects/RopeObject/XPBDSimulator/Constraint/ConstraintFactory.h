@@ -48,7 +48,7 @@ public:
 	virtual ~ConstraintFactoryBase() = default;
 
 	// §–ñ‚Ìì¬
-	virtual std::vector<std::unique_ptr<IConstraint>> CreateConstraint(std::vector<XPBDSimulator::Particle>* pParticles) = 0;
+	virtual std::vector<std::unique_ptr<IConstraint>> CreateConstraint(std::vector<XPBDSimulator::Particle>* pParticles, XPBDSimulator::Parameter paramater)  = 0;
 
 	// ƒŠƒZƒbƒg
 	virtual void Reset() {};
@@ -57,7 +57,7 @@ public:
 // æ“¾/İ’è
 public:
 
-	bool IsDynamic() { return m_isDynamic; };
+	bool IsDynamic() const { return m_isDynamic; };
 
 
 };

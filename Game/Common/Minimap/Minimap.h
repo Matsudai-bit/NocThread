@@ -44,9 +44,13 @@ private:
 public:
 
 	static const std::vector<D3D11_INPUT_ELEMENT_DESC> INPUT_LAYOUT;
+
+	static constexpr DirectX::SimpleMath::Vector2 MAP_POSITION_TOP_LEFT{ 10.0f, 10.0f,  };  // マップの中心座標(スクリーン座標）
+	static constexpr float MAP_SCALE = 0.15f;
+
 	static constexpr int VERTEX_NUM = 4;
 
-	static constexpr float SPACE_VALUE = 1.f;  // マップ中心からの距離度合　1だとそのままの距離感
+	static constexpr float SPACE_VALUE = 1.0f;  // マップ中心からの距離度合　1だとそのままの距離感
 	static constexpr float MARK_SIZE = 0.025f;  // マークのサイズ
 
 	// マップに表示される色
@@ -58,6 +62,8 @@ public:
 	static constexpr DirectX::SimpleMath::Vector4 HELICOPTER_MARK_COLOR	{ 1.0f, 0.0f, 1.0f, 1.0f };	// ヘリコプターの色
 
 	static constexpr DirectX::SimpleMath::Vector2 RENDERING_SIZE{ 800.0f, 800.0f };
+
+	static constexpr DirectX::SimpleMath::Vector4 MINIMAP_BACK_COLOR { 0.01f, 0.01f, 0.48f, 1.0f};
 	
 // データメンバの宣言 -----------------------------------------------
 private:
@@ -80,10 +86,19 @@ private:
 	// オフスクリーンレンダリング
 	std::unique_ptr<MyLib::OffscreenRendering> m_offscreenRendering;
 
+	DirectX::SimpleMath::Vector2 m_mapSize; ///< マップサイズ
 
 	std::unique_ptr<DirectX::SpriteBatch> m_spriteBatch;
 
+	struct MinimapConstantBuffer
+	{
+		DirectX::SimpleMath::Vector4 transparentColor;
+		DirectX::SimpleMath::Vector2 aspect;
+		float padding[2];
+	};
 
+	Microsoft::WRL::ComPtr<ID3D11PixelShader>	m_PS_Minimap;
+	Microsoft::WRL::ComPtr<ID3D11Buffer>		m_minimapConstantBuffer;
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
 public:

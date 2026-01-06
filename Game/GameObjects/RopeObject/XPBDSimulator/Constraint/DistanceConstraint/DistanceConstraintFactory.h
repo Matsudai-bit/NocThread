@@ -56,7 +56,7 @@ public:
 public:
 	
 	// §–ñ‚Ìì¬
-	std::vector<std::unique_ptr<IConstraint>> CreateConstraint(std::vector<XPBDSimulator::Particle>* pParticles) override;
+	std::vector<std::unique_ptr<IConstraint>> CreateConstraint(std::vector<XPBDSimulator::Particle>* pParticles, XPBDSimulator::Parameter paramater) override;
 
 // æ“¾/İ’è
 public:

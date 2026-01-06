@@ -51,6 +51,7 @@
 #include "Game/Scene/GameplayScene/State/PoseGameplayState/PoseGameplayState.h"
 // シーン
 #include "Game/Scene/ResultScene/ResultScene.h"
+#include "Game/Common/TransitionMask/TransitionMask.h"
 
 using namespace DirectX;
 
@@ -324,6 +325,10 @@ void GameplayScene::CreateTask()
  */
 void GameplayScene::StartGame()
 {
+	// トランジションマスクをオープンする
+	GetCommonResources()->GetTransitionMask()->Open();
+
+
 	// **** 最初の状態 ****
 	m_stateMachine->ChangeState<NormalGameplayState>();
 	// **** BGMを鳴らす ****

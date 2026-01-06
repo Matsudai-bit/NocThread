@@ -34,9 +34,8 @@ using namespace DirectX;
  *
  * @param[in] pParticle パーティクル
  */
-SteeringConstraintFactory::SteeringConstraintFactory(const CommonResources* pCommonResources, XPBDSimulator::Parameter paramater)
+SteeringConstraintFactory::SteeringConstraintFactory(const CommonResources* pCommonResources)
     : ConstraintFactoryBase{ true }
-    , m_paramater{ paramater }
     , m_pCommonResources{ pCommonResources }
     , m_elapsedTimeCounter{}
 {
@@ -69,7 +68,7 @@ void SteeringConstraintFactory::Reset()
  * 
  * @return 作成した衝突制約
  */
-std::vector<std::unique_ptr<IConstraint>> SteeringConstraintFactory::CreateConstraint(std::vector<XPBDSimulator::Particle>* pParticles)
+std::vector<std::unique_ptr<IConstraint>> SteeringConstraintFactory::CreateConstraint(std::vector<XPBDSimulator::Particle>* pParticles, XPBDSimulator::Parameter paramater)
 {
     using namespace SimpleMath;
 

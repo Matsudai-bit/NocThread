@@ -42,13 +42,12 @@ public:
 private:
 	CollisionManager* m_pCollisionManager; ///< 衝突管理
 
-	XPBDSimulator::Parameter m_paramater;
 
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
 public:
 	// コンストラクタ
-	CollisionConstraintFactory(CollisionManager* pCollisionManager, XPBDSimulator::Parameter paramater);
+	CollisionConstraintFactory(CollisionManager* pCollisionManager);
 
 	// デストラクタ
 	~CollisionConstraintFactory();
@@ -58,7 +57,7 @@ public:
 public:
 	
 	// 制約の作成
-	std::vector<std::unique_ptr<IConstraint>> CreateConstraint(std::vector<XPBDSimulator::Particle>* pParticles) override;
+	std::vector<std::unique_ptr<IConstraint>> CreateConstraint(std::vector<XPBDSimulator::Particle>* pParticles, XPBDSimulator::Parameter paramater) override;
 
 // 取得/設定
 public:

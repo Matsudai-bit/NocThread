@@ -105,12 +105,7 @@ void XPBDSimulator::Initialize(Parameter parameter, RopeObject* pRopeObject)
 		pSimParticle->SetV(pParticleObj->GetVelocity());
 		
 		
-
-
 	}
-
-	// 標準として距離制約を登録する
-	m_constraintFactories.emplace_back(std::make_unique<DistanceConstraintFactory>());
 	
 	// 静的な制約を初期化
 	m_staticConstraints.clear();
@@ -124,7 +119,7 @@ void XPBDSimulator::Initialize(Parameter parameter, RopeObject* pRopeObject)
 		std::vector<std::unique_ptr<IConstraint>> creationConstraints;
 
 		// 生成
-		creationConstraints = factory->CreateConstraint(&m_particles);
+		creationConstraints = factory->CreateConstraint(&m_particles, m_parameter);
 
 		// 生成した制約を登録する
 		for (int i = 0; i < creationConstraints.size(); i++)
@@ -234,18 +229,11 @@ void XPBDSimulator::Reset()
 	}
 }
 
-/**
- * @brief 制約の設定
- * 
- * @param[in] constraintFactories 設定する制約
- */
-void XPBDSimulator::SetConstraint(std::vector<std::unique_ptr<ConstraintFactoryBase>>* constraintFactories)
+void XPBDSimulator::AddConstraint(std::unique_ptr<ConstraintFactoryBase> constraintFactory)
 {
-	for (int i = 0; i < constraintFactories->size(); i++)
-	{
-		m_constraintFactories.push_back(std::move((*constraintFactories)[i]));
-	}
+	m_constraintFactories.push_back(std::move((constraintFactory)));
 }
+
 
 /**
  * @brief 各パーティクルの予測位置（xi）を慣性に基づいて計算する
@@ -314,7 +302,7 @@ void XPBDSimulator::GenerateConstraints()
 		std::vector<std::unique_ptr<IConstraint>> creationConstraints;
 
 		// 生成
-		creationConstraints = constraintFactory->CreateConstraint(&m_particles);
+		creationConstraints = constraintFactory->CreateConstraint(&m_particles, m_parameter);
 
 		// 生成した制約を登録する
 		for (int i = 0; i < creationConstraints.size(); i++)
@@ -421,7 +409,7 @@ void XPBDSimulator::FinalizeVelocitiesAndPositions(float deltaTime)
 		// 速度の更新
 		SimpleMath::Vector3 v_potential = ((simP->GetXi() - simP->GetX()) / deltaTime + m_parameter.gravity * deltaTime);
 		simP->SetV(v_potential + m_parameter.gravity * deltaTime);
-
+		
 		particle.simP.m_planeNormal = SimpleMath::Vector3::Zero;
 		// 座標の更新
 		// 予測点を現在の座標とする

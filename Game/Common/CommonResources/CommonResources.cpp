@@ -27,17 +27,21 @@ using namespace DirectX;
  * @param[in] pMouseState		マウスの状態
  * @param[in] pGamePadState		ゲームパッドの状態
  * @param[in] pCopyRenderTexture画面をコピーしたテクスチャ
+ * @param[in] pTransitionMask	シーン遷移表示用マスク
+
  */
 CommonResources::CommonResources(
 	DX::StepTimer*			pStepTimer,
 	DX::DeviceResources*	pDeviceResources,
-	CommonStates*	pCommonStates,
+	CommonStates*			pCommonStates,
 	MyLib::DebugFont*		pDebugFont,
 	ResourceManager*		pResourceManager,
 	Keyboard::KeyboardStateTracker* pKeyboardState,
-	Mouse::ButtonStateTracker* pMouseState,
+	Mouse::ButtonStateTracker*		pMouseState,
 	DirectX::GamePad::ButtonStateTracker* pGamePadState,
-	DX::RenderTexture*					  pCopyRenderTexture)
+	DX::RenderTexture*					  pCopyRenderTexture,
+	TransitionMask*						  pTransitionMask)
+
 	: m_pStepTimer		{pStepTimer}
 	, m_pDeviceResources{pDeviceResources}
 	, m_pCommonStates	{pCommonStates}
@@ -48,6 +52,8 @@ CommonResources::CommonResources(
 	, m_pGamePadState	{ pGamePadState }
 	, m_pCopyRenderTexture{ pCopyRenderTexture }
 	, m_copyScreenRequest{ false }
+	, m_pTransitionMask{ pTransitionMask }
+
 
 {
 
@@ -141,6 +147,16 @@ DirectX::Mouse::ButtonStateTracker* CommonResources::GetMouseTracker() const
 DirectX::GamePad::ButtonStateTracker* CommonResources::GetGamePadTracker() const
 {
 	return m_pGamePadState;
+}
+
+/**
+ * @brief シーン遷移マスク表示の取得
+ *
+ * @return トランジションマスク
+ */
+TransitionMask* CommonResources::GetTransitionMask() const
+{
+	return m_pTransitionMask;
 }
 
 

@@ -175,18 +175,18 @@ void BuildingManager::DrawTask(const Camera& camera)
 	using namespace SimpleMath;
 	
 	// 1. 開始時刻の記録
-	auto start = std::chrono::high_resolution_clock::now();
+	//auto start = std::chrono::high_resolution_clock::now();
 
 	DrawDefault(camera);
 
 	// 3. 終了時刻の記録
-	auto end = std::chrono::high_resolution_clock::now();
+	//auto end = std::chrono::high_resolution_clock::now();
 
 	// 4. 処理時間の計算と表示
 	// duration_cast で希望の単位に変換（ここではマイクロ秒 ?s）
-	auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+	//auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
 
-	m_pCommonResources->GetDebugFont()->AddString(100, 100, Colors::Red, L"duration(?s) = %d", duration.count());
+	//m_pCommonResources->GetDebugFont()->AddString(100, 100, Colors::Red, L"duration(?s) = %d", duration.count());
 
 	
 }

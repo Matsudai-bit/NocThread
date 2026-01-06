@@ -114,13 +114,14 @@ public:
 	// ƒŠƒZƒbƒg‚·‚é
 	void Reset();
 
+	// §–ñ‚Ì’Ç‰Á
+	void AddConstraint(std::unique_ptr<ConstraintFactoryBase> constraintFactory);
+
 // æ“¾/İ’è
 public:
 
 	void SetCollisionManager(CollisionManager* pCollisionManager) { m_pCollisionManager = pCollisionManager; }
 
-	// §–ñ‚Ìİ’è
-	void SetConstraint(std::vector<std::unique_ptr<ConstraintFactoryBase>>* constraintFactories);
 
 
 // “à•”À‘•

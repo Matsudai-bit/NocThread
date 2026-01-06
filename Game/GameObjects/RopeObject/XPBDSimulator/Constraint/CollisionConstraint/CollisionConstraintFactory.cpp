@@ -25,10 +25,9 @@ using namespace DirectX;
  *
  * @param[in] pParticle パーティクル
  */
-CollisionConstraintFactory::CollisionConstraintFactory(CollisionManager* pCollisionManager, XPBDSimulator::Parameter paramater)
+CollisionConstraintFactory::CollisionConstraintFactory(CollisionManager* pCollisionManager)
 	: ConstraintFactoryBase		{ true }
 	,m_pCollisionManager	{ pCollisionManager }
-	, m_paramater			{ paramater }
 {
 }
 
@@ -49,7 +48,7 @@ CollisionConstraintFactory::~CollisionConstraintFactory()
  * 
  * @return 作成した衝突制約
  */
-std::vector<std::unique_ptr<IConstraint>> CollisionConstraintFactory::CreateConstraint(std::vector<XPBDSimulator::Particle>* pParticles)
+std::vector<std::unique_ptr<IConstraint>> CollisionConstraintFactory::CreateConstraint(std::vector<XPBDSimulator::Particle>* pParticles, XPBDSimulator::Parameter paramater)
 {
 	std::vector<std::unique_ptr<IConstraint>> creationConstraints;
 
@@ -156,7 +155,7 @@ std::vector<std::unique_ptr<IConstraint>> CollisionConstraintFactory::CreateCons
 			// 多くのPBD/XPBDの実装では C > 0 (拘束違反) の場合に制約を適用する
 			// ここでは、パーティクルが平面より"下"にいることを違反とするため、EvaluateConstraint() が正になることを期待
 			auto collisionConstraint = std::make_unique<CollisionConstraint>(simParticle);
-			collisionConstraint->ResetConstraintParam(m_paramater.flexibility);
+			collisionConstraint->ResetConstraintParam(paramater.flexibility);
 			collisionConstraint->m_planeDistance = planeNormal.w;
 			collisionConstraint->m_collisionNormal = SimpleMath::Vector3(planeNormal.x, planeNormal.y, planeNormal.z);
 
@@ -168,6 +167,7 @@ std::vector<std::unique_ptr<IConstraint>> CollisionConstraintFactory::CreateCons
 	return creationConstraints;
 	
 }
+
 //
 ///**
 // * @brief 衝突制約の作成
@@ -176,7 +176,7 @@ std::vector<std::unique_ptr<IConstraint>> CollisionConstraintFactory::CreateCons
 // *
 // * @return 作成した衝突制約
 // */
-//std::vector<std::unique_ptr<IConstraint>> CollisionConstraintFactory::CreateConstraint(std::vector<XPBDSimulator::Particle>* pParticles)
+//std::vector<std::unique_ptr<IConstraint>> CollisionConstraintFactory::CreateConstraint(std::vector<XPBDSimulator::Particle>* pParticles, XPBDSimulator::Parameter paramater)
 //{
 //	std::vector<std::unique_ptr<IConstraint>> creationConstraints;
 //
@@ -283,7 +283,7 @@ std::vector<std::unique_ptr<IConstraint>> CollisionConstraintFactory::CreateCons
 //			// 多くのPBD/XPBDの実装では C > 0 (拘束違反) の場合に制約を適用する
 //			// ここでは、パーティクルが平面より"下"にいることを違反とするため、EvaluateConstraint() が正になることを期待
 //			auto collisionConstraint = std::make_unique<CollisionConstraint>(simParticle);
-//			collisionConstraint->ResetConstraintParam(m_paramater.flexibility);
+//			collisionConstraint->ResetConstraintParam(paramater.flexibility);
 //			collisionConstraint->m_planeDistance = planeNormal.w;
 //			collisionConstraint->m_collisionNormal = SimpleMath::Vector3(planeNormal.x, planeNormal.y, planeNormal.z);
 //
