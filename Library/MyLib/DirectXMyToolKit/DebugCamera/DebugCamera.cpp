@@ -23,10 +23,10 @@ DebugCamera::DebugCamera(int windowWidth, int windowHeight)
 {
 	SetWindowSize(windowWidth, windowHeight);
 
-	m_target = SimpleMath::Vector3::Zero;
+	SetTarget( SimpleMath::Vector3::Zero);
 
 	SimpleMath::Vector3 eye(0.0f, 1.0f, 1.0f);
-	m_eye = eye;
+	SetEye(eye);
 	//m_eye *= (DEFAULT_CAMERA_DISTANCE - m_scrollWheelValue / 100);
 
 
@@ -39,58 +39,59 @@ DebugCamera::DebugCamera(int windowWidth, int windowHeight)
 //--------------------------------------------------------------------------------------
 void DebugCamera::Update()
 {
-	auto state = Mouse::Get().GetState();
+	//auto state = Mouse::Get().GetState();
 
-	// 相対モードなら何もしない
-	if (state.positionMode == Mouse::MODE_RELATIVE) return;
+	//// 相対モードなら何もしない
+	//if (state.positionMode == Mouse::MODE_RELATIVE) return;
 
-	m_tracker.Update(state);
+	//m_tracker.Update(state);
 
-	// マウスの左ボタンが押された
-	if (m_tracker.leftButton == Mouse::ButtonStateTracker::ButtonState::PRESSED)
-	{
-		// マウスの座標を取得
-		m_x = state.x;
-		m_y = state.y;
-	}
-	else if (m_tracker.leftButton == Mouse::ButtonStateTracker::ButtonState::RELEASED)
-	{
-		// 現在の回転を保存
-		m_xAngle = m_xTmp;
-		m_yAngle = m_yTmp;
-	}
-	// マウスのボタンが押されていたらカメラを移動させる
-	if (state.leftButton)
-	{
-		Motion(state.x, state.y);
-	}
+	//// マウスの左ボタンが押された
+	//if (m_tracker.leftButton == Mouse::ButtonStateTracker::ButtonState::PRESSED)
+	//{
+	//	// マウスの座標を取得
+	//	m_x = state.x;
+	//	m_y = state.y;
+	//}
+	//else if (m_tracker.leftButton == Mouse::ButtonStateTracker::ButtonState::RELEASED)
+	//{
+	//	// 現在の回転を保存
+	//	m_xAngle = m_xTmp;
+	//	m_yAngle = m_yTmp;
+	//}
+	//// マウスのボタンが押されていたらカメラを移動させる
+	//if (state.leftButton)
+	//{
+	//	Motion(state.x, state.y);
+	//}
 
-	// マウスのフォイール値を取得
-	m_scrollWheelValue = state.scrollWheelValue;
-	if (m_scrollWheelValue > 0)
-	{
-		m_scrollWheelValue = 0;
-		Mouse::Get().ResetScrollWheelValue();
-	}
+	//// マウスのフォイール値を取得
+	//m_scrollWheelValue = state.scrollWheelValue;
+	//if (m_scrollWheelValue > 0)
+	//{
+	//	m_scrollWheelValue = 0;
+	//	Mouse::Get().ResetScrollWheelValue();
+	//}
 
-	// ビュー行列を算出する
-	SimpleMath::Matrix rotY = SimpleMath::Matrix::CreateRotationY(m_yTmp);
-	SimpleMath::Matrix rotX = SimpleMath::Matrix::CreateRotationX(m_xTmp);
+	//// ビュー行列を算出する
+	//SimpleMath::Matrix rotY = SimpleMath::Matrix::CreateRotationY(m_yTmp);
+	//SimpleMath::Matrix rotX = SimpleMath::Matrix::CreateRotationX(m_xTmp);
 
-	SimpleMath::Matrix rt = rotY * rotX;
+	//SimpleMath::Matrix rt = rotY * rotX;
 
-	SimpleMath::Vector3 eye(0.0f, 1.0f, 1.0f);
-	//SimpleMath::Vector3 target(0.0f, 0.0f, 0.0f);
-	SimpleMath::Vector3 up(0.0f, 1.0f, 0.0f);
+	//SimpleMath::Vector3 eye(0.0f, 1.0f, 1.0f);
+	////SimpleMath::Vector3 target(0.0f, 0.0f, 0.0f);
+	//SimpleMath::Vector3 up(0.0f, 1.0f, 0.0f);
 
-	eye = SimpleMath::Vector3::Transform(eye, rt.Invert());
-	//eye *= (DEFAULT_CAMERA_DISTANCE - m_scrollWheelValue / 100);
-	up = SimpleMath::Vector3::Transform(up, rt.Invert());
+	//eye = SimpleMath::Vector3::Transform(eye, rt.Invert());
+	////eye *= (DEFAULT_CAMERA_DISTANCE - m_scrollWheelValue / 100);
+	//up = SimpleMath::Vector3::Transform(up, rt.Invert());
 
-	//m_eye = eye;
-	//m_target = target;
+	////m_eye = eye;
+	////m_target = target;
 
-	m_view = SimpleMath::Matrix::CreateLookAt(m_eye, m_target, up);
+	//SetUp(up);
+	//CalcViewMatrix();
 	
 }
 
@@ -115,20 +116,6 @@ void DebugCamera::Motion(int x, int y)
 	}
 }
 
-DirectX::SimpleMath::Matrix DebugCamera::GetCameraMatrix()
-{
-	return m_view;
-}
-
-DirectX::SimpleMath::Vector3 DebugCamera::GetEyePosition()
-{
-	return m_eye;
-}
-
-DirectX::SimpleMath::Vector3 DebugCamera::GetTargetPosition()
-{
-	return m_target;
-}
 
 void DebugCamera::SetWindowSize(int windowWidth, int windowHeight)
 {
@@ -143,12 +130,3 @@ void DebugCamera::GetWindowSize(int& windowWidth, int& windowHeight)
 	windowHeight = m_screenH;
 }
 
-void MyLib::DebugCamera::SetTarget(const DirectX::SimpleMath::Vector3& target)
-{
-	m_target = target;
-}
-
-void MyLib::DebugCamera::SetEye(const DirectX::SimpleMath::Vector3& eye)
-{
-	m_eye = eye;
-}

@@ -61,7 +61,7 @@ void NormalGameplayState::OnStartState()
 	m_canvas = std::make_unique<Canvas>(context, GetOwner()->GetCommonResources()->GetCommonStates());
 
 	// キャンバスへ登録
-	m_canvas->AddSprite(m_manualSprite.get());
+	//m_canvas->AddSprite(m_manualSprite.get());
 	m_canvas->SetOt(0);  // 一番手前にする
 
 	// スプライトのテクスチャ設定
@@ -122,10 +122,19 @@ void NormalGameplayState::OnUpdate(float deltaTime)
 	
 }
 
+#include "Game/Common/GameObjectRegistry/GameObjectRegistry.h"
 void NormalGameplayState::OnDraw()
 {
 	// 現在のカメラの取得
-	const Camera* pCurrentCamera = MainCamera::GetInstance()->GetCamera();
+	Camera* pCurrentCamera = GetOwner()->GetDebugCamera(); //MainCamera::GetInstance()->GetCamera();
+	auto player = GameObjectRegistry::GetInstance()->GetGameObject(GameObjectTag::PLAYER);
+	pCurrentCamera->SetTarget(player->GetTransform()->GetPosition());
+	pCurrentCamera->SetEye(player->GetTransform()->GetPosition() + SimpleMath::Vector3(-50.0f, 50.0f, 0.0f));
+
+	auto up = SimpleMath::Vector3(-0.5f, 1.0f, 0.0f);
+	up.Normalize();
+	pCurrentCamera->SetUp(up);
+	pCurrentCamera->CalcViewMatrix();
 	// エフェクトにカメラを設定する
 	GameEffectController::GetInstance()->SetCamera(pCurrentCamera);
 	// タスク管理の描画処理

@@ -79,11 +79,23 @@ void from_json(const json& j, BuildingSaveData& s)
  *
  * @param[in] なし
  */
-BuildingManager::BuildingManager(const CommonResources* pCommonResources)
+BuildingManager::BuildingManager(const CommonResources* pCommonResources, Camera* pPlayerCamera)
 	: m_pCommonResources{ pCommonResources }
+	, m_pPlayerCamera {pPlayerCamera}
 {
 	m_buildings.clear();
 
+	auto context = pCommonResources->GetDeviceResources()->GetD3DDeviceContext();
+	auto device = pCommonResources->GetDeviceResources()->GetD3DDevice();
+	m_primitiveBatch  = std::make_unique<PrimitiveBatch<VertexPositionColor>>(context);
+	m_basicEffect  = std::make_unique<BasicEffect>(device);
+	m_basicEffect->SetTextureEnabled(false);
+	m_basicEffect->SetVertexColorEnabled(true);
+	m_basicEffect->SetLightEnabled(0, false);
+	m_basicEffect->SetLightEnabled(1, false);
+	m_basicEffect->SetLightEnabled(2, false);
+	
+	CreateInputLayoutFromEffect<VertexPositionColor>(device, m_basicEffect.get(), m_inputLayout.ReleaseAndGetAddressOf());
 }
 
 
@@ -177,7 +189,7 @@ void BuildingManager::DrawTask(const Camera& camera)
 	// 1. 開始時刻の記録
 	//auto start = std::chrono::high_resolution_clock::now();
 
-	DrawDefault(camera);
+	DrawFrustumCulling(camera);
 
 	// 3. 終了時刻の記録
 	//auto end = std::chrono::high_resolution_clock::now();
@@ -348,7 +360,7 @@ void BuildingManager::DrawDefault(const Camera& camera)
 
 void BuildingManager::DrawFrustumCulling(const Camera& camera)
 {
-	const auto cameraFrustum = camera.CalcFrustum();
+	const auto cameraFrustum = m_pPlayerCamera->CalcFrustum();
 
 	// 建物の描画処理
 	for (auto& building : m_buildings)
@@ -359,6 +371,20 @@ void BuildingManager::DrawFrustumCulling(const Camera& camera)
 			building->GetCullingCollider()->GetPosition(),
 			building->GetCullingCollider()->GetRadius());
 
+		auto context = m_pCommonResources->GetDeviceResources()->GetD3DDeviceContext();
+
+
+		m_basicEffect->SetWorld(SimpleMath::Matrix::Identity);
+		m_basicEffect->SetProjection(camera.GetProjectionMatrix());
+		m_basicEffect->SetView(camera.GetViewMatrix());
+		m_basicEffect->Apply(context);
+
+		context->IASetInputLayout(m_inputLayout.Get());
+
+		m_primitiveBatch->Begin();
+		DX::Draw(m_primitiveBatch.get(), cullingSphere, Colors::Yellow);
+		m_primitiveBatch->End();
+
 		ContainmentType result = cameraFrustum.Contains(cullingSphere);
 		// DISJOINT (完全に外側) でない場合、描画が必要
 		if (result != DISJOINT)
@@ -368,6 +394,20 @@ void BuildingManager::DrawFrustumCulling(const Camera& camera)
 
 
 	}
+
+	auto context = m_pCommonResources->GetDeviceResources()->GetD3DDeviceContext();
+
+
+	m_basicEffect->SetWorld(SimpleMath::Matrix::Identity);
+	m_basicEffect->SetProjection(camera.GetProjectionMatrix());
+	m_basicEffect->SetView(camera.GetViewMatrix());
+	m_basicEffect->Apply(context);
+
+	context->IASetInputLayout(m_inputLayout.Get());
+	
+	m_primitiveBatch->Begin();
+	DX::Draw(m_primitiveBatch.get(), cameraFrustum, Colors::Red);
+		m_primitiveBatch->End();
 }
 
 void BuildingManager::DrawFrustumCullingCS(const Camera& camera)

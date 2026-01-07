@@ -97,6 +97,9 @@ void GameplayScene::Initialize()
 
 	// 基盤の作成
 	CreatePlatform();
+	auto rect = GetCommonResources()->GetDeviceResources()->GetOutputSize();
+	m_debugCamera = std::make_unique<MyLib::DebugCamera>(rect.right, rect.bottom);
+	
 
 	// タスクの作成
 	CreateTask();
@@ -118,6 +121,7 @@ void GameplayScene::Initialize()
  */
 void GameplayScene::Update(float deltaTime)
 {
+	m_debugCamera->Update();
 	// ゲームプレイ時間の加算
 	m_gamePlayingTimeCounter.UpperTime(deltaTime);
 	// 状態の更新処理
@@ -317,7 +321,7 @@ void GameplayScene::CreateTask()
 	m_taskManager->AddTask(m_stageManager->GetPlayerCamera());		// SpawnManager
 	m_taskManager->AddTask(m_collisionManager.get());	// CollisionManager
 	m_taskManager->AddTask(m_gameEffectManager.get());	// EffectManager
-	m_taskManager->AddTask(m_miniMap.get());			// Minimap
+	//m_taskManager->AddTask(m_miniMap.get());			// Minimap
 }
 
 /**

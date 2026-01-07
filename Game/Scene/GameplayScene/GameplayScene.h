@@ -92,6 +92,7 @@ private:
 	std::vector <std::function<void()>> m_eventStack;
 	ElapsedTimeCounter m_gamePlayingTimeCounter;		///< ゲームのプレイ時間カウンター
 
+	std::unique_ptr<MyLib::DebugCamera> m_debugCamera;
 
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
@@ -167,6 +168,8 @@ private:
 
 	// ゲームを開始する
 	void StartGame();
+	public:
+	Camera* GetDebugCamera() { return m_debugCamera.get(); }
 
 
 };

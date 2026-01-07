@@ -64,6 +64,10 @@ public:
 
 // データメンバの宣言 -----------------------------------------------
 private:
+
+	std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionColor>> m_primitiveBatch;
+	std::unique_ptr<DirectX::BasicEffect> m_basicEffect;
+	Microsoft::WRL::ComPtr<ID3D11InputLayout>		m_inputLayout;
 	
 	std::vector<std::unique_ptr<Building>> m_buildings; ///< 建物
 
@@ -88,11 +92,14 @@ private:
 	// UAV
 	Microsoft::WRL::ComPtr<ID3D11UnorderedAccessView> m_resultUAV;
 
+	// デバック
+	Camera* m_pPlayerCamera; 
+
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
 public:
 	// コンストラクタ
-	BuildingManager(const CommonResources* pCommonResources);
+	BuildingManager(const CommonResources* pCommonResources, Camera* pPlayerCamera);
 
 	// デストラクタ
 	~BuildingManager();

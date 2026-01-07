@@ -110,7 +110,7 @@ void StageManager::Initialize(SpawnManager* pSpawnManager, CollisionManager* pCo
 	m_playerManager->Initialize(m_pCommonResources,  m_playerCamera.get());
 
 	// ----- 各種ゲームオブジェクトの作成 -------
-	m_buildingManager = std::make_unique<BuildingManager>(m_pCommonResources);
+	m_buildingManager = std::make_unique<BuildingManager>(m_pCommonResources, m_playerCamera.get());
 	m_buildingManager->Initialize();
 
 	// **** 床の生成 *****

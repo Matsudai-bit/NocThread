@@ -6,14 +6,14 @@
  * @date    2025/5/15
  *********************************************************************/
 
-
+#include "Game/Common/Camera/Camera.h"
 #pragma once
 
 namespace MyLib
 {
 
 	// デバッグ用カメラクラス
-	class DebugCamera
+	class DebugCamera : public Camera
 	{
 		// カメラの距離
 		static const float DEFAULT_CAMERA_DISTANCE;
@@ -29,17 +29,10 @@ namespace MyLib
 
 		float m_sx, m_sy;
 
-		// 生成されたビュー行列
-		DirectX::SimpleMath::Matrix m_view;
 
 		// スクロールフォイール値
 		int m_scrollWheelValue;
 
-		// 視点
-		DirectX::SimpleMath::Vector3 m_eye;
-
-		// 注視点
-		DirectX::SimpleMath::Vector3 m_target;
 
 		// マウストラッカー
 		DirectX::Mouse::ButtonStateTracker m_tracker;
@@ -65,23 +58,7 @@ namespace MyLib
 		/// <param name="mouse">マウスオブジェクトへのポインタ</param>
 		void Update();
 
-		/// <summary>
-		/// デバッグカメラのビュー行列の取得関数
-		/// </summary>
-		/// <returns>ビュー行列</returns>
-		DirectX::SimpleMath::Matrix GetCameraMatrix();
-
-		/// <summary>
-		/// デバッグカメラの位置の取得関数
-		/// </summary>
-		/// <returns>視点の位置</returns>
-		DirectX::SimpleMath::Vector3 GetEyePosition();
-
-		/// <summary>
-		/// デバッグカメラの注視点の取得関数
-		/// </summary>
-		/// <returns>注視点の位置</returns>
-		DirectX::SimpleMath::Vector3 GetTargetPosition();
+	
 
 		/// <summary>
 		/// 画面サイズの設定関数
@@ -95,8 +72,6 @@ namespace MyLib
 		/// </summary>
 		void GetWindowSize(int& windowWidth, int& windowHeight);
 
-		void SetTarget(const DirectX::SimpleMath::Vector3& target);
-		void SetEye(const DirectX::SimpleMath::Vector3& eye);
 
 
 	};
