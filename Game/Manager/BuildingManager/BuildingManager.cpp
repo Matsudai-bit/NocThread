@@ -9,11 +9,13 @@
 // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include <iostream>
+#include <chrono>
 #include <fstream>
 #include "BuildingManager.h"
 
 #include "Game/Common/DeviceResources.h"
 #include "Game/Common/CommonResources/CommonResources.h"
+#include "Library/ImaseLib/DebugFont.h"
 #include "Library/DirectXFramework/ReadData.h"
 
 #include "Game/Common/GameEffect/GameEffectController.h"
@@ -208,10 +210,25 @@ void BuildingManager::Update(float deltaTime)
  */
 void BuildingManager::Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& projection)
 {
+
+	// 1. 開始時刻の記録
+	auto start = std::chrono::high_resolution_clock::now();
+
+
 	// インスタング描画
-	DrawInstance(view, projection);
+	//DrawInstance(view, projection);
 	// 通常描画
 	//DrawNormal(view, projection);
+
+	// 3. 終了時刻の記録
+	auto end = std::chrono::high_resolution_clock::now();
+
+	 // 4. 処理時間の計算と表示
+	 //duration_cast で希望の単位に変換（ここではマイクロ秒 ?s）
+	auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+
+	m_pCommonResources->GetDebugFont()->AddString(100, 100, DirectX::Colors::Red, L"duration(?s) = %d", duration.count());
+
 
 }
 
