@@ -112,12 +112,9 @@ public:
 	// Ä¶
 	void Play() override;
 	// XVˆ—
-	void Update(float deltaTime) override;
+	void Update(float deltaTime, const float& isEnd) override;
 	// •`‰æˆ—
 	void Draw(const Camera& camera) override;
-
-	// Ä¶‚µ‚Ä‚é‚©‚Ç‚¤‚©
-	bool IsPlaying() const override;
 
 // æ“¾/İ’è
 public:

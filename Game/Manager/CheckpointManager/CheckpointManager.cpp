@@ -89,6 +89,5 @@ void CheckpointManager::CreateCheckpoint(const DirectX::SimpleMath::Vector3& pos
 	m_checkpoints.emplace_back(std::move(std::make_unique<Checkpoint>()));
 
 		// ‰Šú‰»ˆ—
-	m_checkpoints.back()->Initialize(pCommonResources, pCollisionManager);
-	m_checkpoints.back()->GetTransform()->SetPosition(position);
+	m_checkpoints.back()->Initialize(pCommonResources, pCollisionManager, position);
 }

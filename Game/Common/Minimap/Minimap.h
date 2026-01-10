@@ -17,6 +17,7 @@
 #include "Library/DirectXFramework/RenderTexture.h"
 #include "Library/MyLib/DirectXMyToolKit/DepthStencil/DepthStencil.h"
 #include "Library/MyLib/DirectXMyToolKit/OffscreenRendering/OffscreenRendering.h"
+#include "Game/Common/UserInterfaceTool/Sprite/Sprite.h"
 
 // クラスの前方宣言 ===================================================
 class CommonResources; // 共通リソース
@@ -45,7 +46,7 @@ public:
 
 	static const std::vector<D3D11_INPUT_ELEMENT_DESC> INPUT_LAYOUT;
 
-	static constexpr DirectX::SimpleMath::Vector2 MAP_POSITION_TOP_LEFT{ 10.0f, 10.0f,  };  // マップの中心座標(スクリーン座標）
+	static constexpr DirectX::SimpleMath::Vector2 MAP_POSITION{ 70.0f, 70.0f,  };  // マップの中心座標(スクリーン座標）
 	static constexpr float MAP_SCALE = 0.15f;
 
 	static constexpr int VERTEX_NUM = 4;
@@ -78,6 +79,9 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11PixelShader>		m_ps_Rectangle;
 	Microsoft::WRL::ComPtr<ID3D11VertexShader>		m_vs;
 	Microsoft::WRL::ComPtr<ID3D11GeometryShader>	m_gs;
+
+	// スプライト
+	std::unique_ptr<Sprite> m_minimapSprite; ///< ミニマップスプライト
 
 	const CommonResources* m_pCommonResources; ///< 共通リソース
 

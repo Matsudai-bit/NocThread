@@ -40,9 +40,12 @@ public:
 private:
 
 	bool m_isEnabled; ///< 有効化されているかどうか
+	bool m_canVisibleMark; ///< マークを表示できるかどうか
 	std::unique_ptr<AABB> m_collider;
 
 	std::unique_ptr< CheckpointObjectController> m_checkpointObject;	///< チェックポイントオブジェクト
+
+	int m_effectHandleID;	///< エフェクトハンドルID
 
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
@@ -57,7 +60,7 @@ public:
 // 操作
 public:
 	// 初期化処理
-	void Initialize(const CommonResources* pCommonResources, CollisionManager* pCollisionManager);
+	void Initialize(const CommonResources* pCommonResources, CollisionManager* pCollisionManager, const DirectX::SimpleMath::Vector3& position);
 
 	// 更新処理
 	void Update(float deltaTime);

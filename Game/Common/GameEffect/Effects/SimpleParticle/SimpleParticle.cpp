@@ -121,13 +121,13 @@ void SimpleParticle::Play()
  *
  * @return なし
  */
-void SimpleParticle::Update(float deltaTime)
+void SimpleParticle::Update(float deltaTime, const float& isEnd)
 {
 	// 時間のカウント
 	m_timeCounter.UpperTime(deltaTime);
 
 	// 時間が来たら
-	if (m_timeCounter.GetElapsedTime() >= 0.1f)
+	if (!isEnd && m_timeCounter.GetElapsedTime() >= 0.1f)
 	{
 		// パーティクルの生成
 		CreateParticle();
@@ -151,6 +151,25 @@ void SimpleParticle::Update(float deltaTime)
 		// 座標の更新処理
 		particle.position.y += particle.speed * deltaTime;
 		particle.time -= deltaTime;
+	}
+
+
+
+	if (isEnd)
+	{
+		auto activeParticleIt = std::find_if(m_particles.begin(), m_particles.end(),
+			[](const Particle& particle)
+			{
+				return particle.isActive == true;
+			});
+
+		if (activeParticleIt == m_particles.end())
+		{
+			// エフェクトの終了を通知
+			SetIsPlaying(false);
+		}
+
+	
 	}
 }
 
@@ -189,7 +208,7 @@ void SimpleParticle::Draw(const Camera& camera)
 		vPCT.position = particle.position;
 
 		// 色の設定
-		vPCT.color = Vector4(0.6f, 1.0f, 0.1f, 0.0f);
+		vPCT.color = Vector4(0.6f, 1.0f, 0.1f, particle.time);
 
 		vertexes.emplace_back(vPCT);
 	}
@@ -253,16 +272,6 @@ void SimpleParticle::Draw(const Camera& camera)
 	context->PSSetShader(nullptr, nullptr, 0);
 }
 
-/**
- * @brief プレイ中かどうか
- * 
- * @returns true  プレイ中
- * @returns false プレイしていない
- */
-bool SimpleParticle::IsPlaying() const
-{
-	return true;
-}
 
 /**
  * @brief 座標の設定
@@ -297,13 +306,13 @@ void SimpleParticle::CreateParticle()
 
 	
 	// 活動時間を決める
-	pCreationParticle->time = 1.0f;
+	pCreationParticle->time = 3.0f;
 
 	// 速さを決める
 	pCreationParticle->speed = 2.0f;
 
 	// 生成位置を決める
-	float radius = 2.0f;
+	float radius = 2.5f;
 	float radian = XMConvertToRadians(static_cast<float>(static_cast<int>(m_randomGenerator()) % 360));
 	pCreationParticle->position.y = m_position.y;
 	pCreationParticle->position.x = m_position.x + std::cos(radian) * radius;

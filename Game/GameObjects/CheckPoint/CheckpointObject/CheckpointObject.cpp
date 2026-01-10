@@ -11,6 +11,7 @@
 #include "CheckpointObject.h"
 #include "Game/Common/ResourceManager/ResourceManager.h"
 #include "Game/Common/Camera/Camera.h"
+
 using namespace DirectX;
 
 
@@ -49,11 +50,14 @@ CheckpointObjectController::~CheckpointObjectController()
  */
 void CheckpointObjectController::Initialize(ResourceManager* pResourceManager)
 {
+	// イベントの追加
+	AddListener(CheckpointControllEventID::LOOK_AT_HELICOPTER, [this]() { LookAtHelicopter(); }, 0);
+
 	// 待機状態
 	m_state = State::IDLING;
 
 	// デフォルト回転の初期化
-	SetInitialRotation(SimpleMath::Quaternion::CreateFromYawPitchRoll(XMConvertToRadians(DEFAULT_ROTATION_Y_DEGREE), 0, 0.0f));
+	m_transform.SetInitialRotation(SimpleMath::Quaternion::CreateFromYawPitchRoll(XMConvertToRadians(DEFAULT_ROTATION_Y_DEGREE), 0, 0.0f));
 
 	// モデルの作成
 	m_models[ModelPartID::BODY] = std::make_unique<Model>(pResourceManager->CreateModel("movingLight_body.sdkmesh"));
@@ -91,6 +95,8 @@ void CheckpointObjectController::Initialize(ResourceManager* pResourceManager)
  */
 void CheckpointObjectController::Update(float deltaTime)
 {
+	// イベントの適用
+	ApplyEvents();
 	if (State::IDLING == m_state)
 	{
 		m_rotateAngle += XMConvertToRadians(deltaTime * 50.0f);
@@ -123,9 +129,9 @@ void CheckpointObjectController::Draw(ID3D11DeviceContext1* context, DirectX::Co
 	using namespace SimpleMath;
 
 	// 行列の作成
-	Matrix transMat	= Matrix::CreateTranslation		(GetPosition());
-	Matrix rotateMat= Matrix::CreateFromQuaternion	(GetRotation());
-	Matrix scaleMat	= Matrix::CreateScale			(GetScale());
+	Matrix transMat	= Matrix::CreateTranslation		(m_transform.GetPosition());
+	Matrix rotateMat= Matrix::CreateFromQuaternion	(m_transform.GetRotation());
+	Matrix scaleMat	= Matrix::CreateScale			(m_transform.GetScale());
 
 	Matrix world = scaleMat * rotateMat * transMat;
 
@@ -143,7 +149,7 @@ void CheckpointObjectController::Draw(ID3D11DeviceContext1* context, DirectX::Co
 	if (m_state == State::LOOK_AT_HELICOPTER && m_lerpT >= 1.0f)
 	{
 		Vector3 targetPosition = Vector3(130.0f, 110.6f, 120.2f);
-		float length = Vector3::Distance(GetPosition(), targetPosition);
+		float length = Vector3::Distance(m_transform.GetPosition(), targetPosition);
 		length /= 2.0f;
 
 		// 目印
@@ -176,7 +182,7 @@ void CheckpointObjectController::Finalize()
  * @brief ヘリコプターみるよう要求
  * 
  */
-void CheckpointObjectController::RequestLookAtHelicopter()
+void CheckpointObjectController::LookAtHelicopter()
 {
 	using namespace SimpleMath;
 	m_state = State::LOOK_AT_HELICOPTER;
@@ -184,7 +190,7 @@ void CheckpointObjectController::RequestLookAtHelicopter()
 	Vector3 targetPosition = Vector3(130.0f, 110.6f, 120.2f);
 
 	// 首の回転の算出
-	Vector3 direction = targetPosition - GetPosition();
+	Vector3 direction = targetPosition - m_transform.GetPosition();
 	direction.Normalize();
 
 	// 角度を求める

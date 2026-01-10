@@ -132,6 +132,9 @@ Minimap::Minimap(const CommonResources* pCommonResources)
 	DX::ThrowIfFailed(
 		device->CreateBuffer(&bufferDesk, nullptr, m_minimapConstantBuffer.ReleaseAndGetAddressOf())
 	);
+
+	// ミニマップ用スプライトの作成
+	m_minimapSprite = std::make_unique<Sprite>();
 }
 
 
@@ -206,6 +209,10 @@ void Minimap::DrawTask(const Camera& camera)
 
 	};
 
+	m_minimapSprite->Initialize(m_offscreenRendering->GetShaderResourceView());
+	m_minimapSprite->SetScale(0.9f * Screen::Get()->GetScreenScale());
+	m_minimapSprite->SetPosition(MAP_POSITION * Screen::Get()->GetScreenScale() * 5.0f);
+
 	// ミニマップの描画
 	D3D11_MAPPED_SUBRESOURCE mappedResource;
 
@@ -223,21 +230,12 @@ void Minimap::DrawTask(const Camera& camera)
 			ID3D11Buffer* cbuff = { m_minimapConstantBuffer.Get() };
 			context->PSSetConstantBuffers(1, 1, &cbuff);
 
-			//// マスク用テクスチャ
-			//context->PSSetShaderResources(1, 1, m_maskTexture.GetAddressOf());
-
 			// ピクセルシェーダ
 			context->PSSetShader(m_PS_Minimap.Get(), nullptr, 0);
 		}
 	);	
 	{
-		m_spriteBatch->Draw(
-			m_offscreenRendering->GetShaderResourceView(),
-			MAP_POSITION_TOP_LEFT * Screen::Get()->GetScreenScale(),
-			&rect,
-			Colors::White,
-			0.0f, SimpleMath::Vector4::Zero,
-			MAP_SCALE * Screen::Get()->GetScreenScale());
+		m_minimapSprite->DrawSprite(m_spriteBatch.get());
 	}
 	m_spriteBatch->End();
 

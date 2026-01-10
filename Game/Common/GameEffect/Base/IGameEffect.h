@@ -51,7 +51,7 @@ public:
 	virtual void Play() = 0;
 
 	// XVˆ—
-	virtual void Update(float deltaTime) = 0;
+	virtual void Update(float deltaTime, const float& isEnd) = 0;
 	// •`‰æˆ—
 	virtual void Draw(const Camera& camera) = 0;
 

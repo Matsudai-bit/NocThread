@@ -37,6 +37,11 @@ public:
 	struct EffectClip
 	{
 		bool isLoop; // ループさせるかどうか
+
+		EffectClip(bool loop = false)
+			: isLoop{ loop }
+		{
+		}
 	};
 
 private:
@@ -48,6 +53,7 @@ private:
 	{
 		EffectClip clip;
 		std::unique_ptr<IGameEffect> effect;
+		bool isEnd = false; // 終了フラグ
 	};
 
 	/**
@@ -121,7 +127,7 @@ public:
 	// エフェクトの再生
 	int PlayEffect(std::unique_ptr<IGameEffect> effect, EffectClip clip);
 	// エフェクトの停止
-	void StopEffect(unsigned int id);
+	void RequestEffectStop(unsigned int id);
 
 	// 終了処理
 	void Finalize();
@@ -139,7 +145,11 @@ private:
 	// 描画処理
 	void Draw(const Camera& camera);
 
+	// 
+	void EraseEffectToMap(unsigned int id);
 
+	// 
+	bool CanEraseEffect(unsigned int id, bool isEnd, EffectClip clip);
 
 
 // 取得/設定

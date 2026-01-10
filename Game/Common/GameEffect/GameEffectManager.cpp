@@ -53,6 +53,7 @@ int GameEffectManager::PlayEffect(std::unique_ptr<IGameEffect> effect, EffectCli
 	// マップに追加
 	m_effectHandles[newID].clip = clip;
 	m_effectHandles[newID].effect = std::move(effect);
+	m_effectHandles[newID].isEnd = false;
 
 	// 再生
 	m_effectHandles[newID].effect->Play();
@@ -65,15 +66,13 @@ int GameEffectManager::PlayEffect(std::unique_ptr<IGameEffect> effect, EffectCli
  * 
  * @param[in] id 識別番号
  */
-void GameEffectManager::StopEffect(unsigned int id)
+void GameEffectManager::RequestEffectStop(unsigned int id)
 {
 	// 存在するかどうか
 	if (m_effectHandles.count(id) > 0)
 	{
-		// 削除
-		m_effectHandles.erase(id);
-		// 識別番号の返却
-		m_idGenerator.RecycleID(id);
+		// 再生終了フラグを立てる
+		m_effectHandles[id].isEnd = true;
 	}
 
 }
@@ -88,40 +87,53 @@ void GameEffectManager::StopEffect(unsigned int id)
  */
 void GameEffectManager::Update(float deltaTime)
 {
-	for (auto& effectHandle : m_effectHandles)
+	for (auto it = m_effectHandles.begin(); it != m_effectHandles.end();)
 	{
-		std::unique_ptr<IGameEffect>& effect	= effectHandle.second.effect;
-		EffectClip					  clip		= effectHandle.second.clip;
+		auto& effectHandle = *it;
+		std::unique_ptr<IGameEffect>& effect = effectHandle.second.effect;
+		EffectClip					  clip = effectHandle.second.clip;
+		bool						isEnd = effectHandle.second.isEnd;
 
 		// 再生中の場合
 		if (effect->IsPlaying())
 		{
 			// 更新処理
-			effect->Update(deltaTime);
+			effect->Update(deltaTime, isEnd);
+
 		}
 
 		// 再生が終了している場合
 		else
 		{
+			// 再生が終了している場合 
+			if (isEnd || !clip.isLoop)
+			{
+				// 再生を停止する
+				// 識別番号の返却
+				m_idGenerator.RecycleID(it->first);
+				// 削除
+				it = m_effectHandles.erase(it);
+				
+				continue;
+			}
+
 			// ループする場合
-			if (clip.isLoop)
+			else
 			{
 				effect->Play();
 			}
-			else
-			{
-				// 再生を停止する
-				StopEffect(effectHandle.first);
-			}
 		}
+		++it;
+		
 	}
+
 }
 
 
 
 /**
  * @brief 描画処理
- * 
+ *
  * @param[in] view　ビュー行列
  * @param[in] proj  射影行列
  */
@@ -133,6 +145,22 @@ void GameEffectManager::Draw(const Camera& camera)
 
 		// 描画処理
 		effect->Draw(camera);
+	}
+}
+/**
+ * @brief マップからエフェクトを削除する
+ *
+ * @param[in] id　識別番号
+ */
+void GameEffectManager::EraseEffectToMap(unsigned int id)
+{
+	// 存在するかどうか
+	if (m_effectHandles.count(id) > 0)
+	{
+		// 削除
+		m_effectHandles.erase(id);
+		// 識別番号の返却
+		m_idGenerator.RecycleID(id);
 	}
 }
 

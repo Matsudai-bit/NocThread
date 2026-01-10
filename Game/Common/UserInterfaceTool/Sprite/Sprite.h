@@ -117,7 +117,7 @@ public:
 	float GetOpacity() const { return m_opacity; }
 	
 	//@‰ñ“]‚Ìİ’è
-	void SetAngle(const float& angle) { m_rotationAngle = angle; }
+	void SetAngle(const float& radian) { m_rotationAngle = radian; }
 	// ‰ñ“]‚Ìæ“¾
 	float GetAngle() const { return m_rotationAngle; }
 

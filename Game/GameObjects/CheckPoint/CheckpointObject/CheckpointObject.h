@@ -17,17 +17,24 @@
 #include <memory>
 #include "Library/MyLib/DirectXMyToolKit/ModelPart/ModelPart.h"
 #include "Game/GameObjects/Common/Transform/Transform.h"
+#include "Game/Common/EventSystem/EventSystem.h"
 
 // クラスの前方宣言 ===================================================
 class ResourceManager;
 class Camera;
+
+enum class CheckpointControllEventID
+{
+	LOOK_AT_HELICOPTER
+};
 
 // クラスの定義 ===============================================================
 /**
  * @brief チェックポイントオブジェクト
  */
 class CheckpointObjectController
-	: public Transform
+	: public EventSystem< CheckpointControllEventID>
+	
 {
 
 // 列挙型の宣言 ----------------------------------------------------
@@ -57,6 +64,8 @@ public:
 
 // データメンバの宣言 -----------------------------------------------
 private:
+
+	Transform m_transform;
 
 	std::unordered_map<ModelPartID, std::unique_ptr<MyLib::ModelPart>>	m_modelParts;
 	std::unordered_map<ModelPartID, std::unique_ptr<DirectX::Model>>	m_models;
@@ -98,16 +107,18 @@ public:
 	// 終了処理
 	void Finalize();
 
-	// ヘリコプターを見るよう要求
-	void RequestLookAtHelicopter();
 
 
 // 取得/設定
 public:
 
+	// トランスフォームの取得
+	Transform* GetTransform()  { return &m_transform; }
 
 // 内部実装
 private:
 
 
+	// ヘリコプターを見るよう要求
+	void LookAtHelicopter();
 };

@@ -102,6 +102,9 @@ void StageManager::Initialize(SpawnManager* pSpawnManager, CollisionManager* pCo
 {
 	CreateWindowSizeDependentResources();
 
+	// ƒƒCƒ“ƒJƒƒ‰‚Ìì¬
+	MainCamera::GetInstance()->SetCamera(m_playerCamera.get());
+
 	// oŒ»ŠÇ—‚Ìİ’è
 	m_pSpawnManager = pSpawnManager;
 
