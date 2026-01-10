@@ -18,6 +18,7 @@
 #include "Library/MyLib/DirectXMyToolKit/DepthStencil/DepthStencil.h"
 #include "Library/MyLib/DirectXMyToolKit/OffscreenRendering/OffscreenRendering.h"
 #include "Game/Common/UserInterfaceTool/Sprite/Sprite.h"
+#include "Game/GameObjects/Common/GameObject.h"
 
 // クラスの前方宣言 ===================================================
 class CommonResources; // 共通リソース
@@ -46,13 +47,15 @@ public:
 
 	static const std::vector<D3D11_INPUT_ELEMENT_DESC> INPUT_LAYOUT;
 
-	static constexpr DirectX::SimpleMath::Vector2 MAP_POSITION{ 70.0f, 70.0f,  };  // マップの中心座標(スクリーン座標）
-	static constexpr float MAP_SCALE = 0.15f;
+	static constexpr DirectX::SimpleMath::Vector2 MAP_POSITION{ 1280.0f, 720.0f,  };  // マップの中心座標(スクリーン座標）
+	static constexpr float MAP_SCALE = 1.0f;
 
 	static constexpr int VERTEX_NUM = 4;
 
 	static constexpr float SPACE_VALUE = 1.0f;  // マップ中心からの距離度合　1だとそのままの距離感
-	static constexpr float MARK_SIZE = 0.025f;  // マークのサイズ
+	static constexpr float SPACE_VALUE_1 = 1.0f;  // マップ中心からの距離度合　1だとそのままの距離感
+	static constexpr float MARK_SIZE = 0.15f;  // マークのサイズ
+	static constexpr float MARK_SIZE_1 = 0.025f;  // マークのサイズ
 
 	// マップに表示される色
 	static constexpr DirectX::SimpleMath::Vector4 BUILDING_MARK_COLOR	{ 0.6f, 0.6f, 0.6f, 1.0f };	// 建物の色
@@ -102,8 +105,41 @@ private:
 		float padding[2];
 	};
 
+	struct  VertexData
+	{
+		DirectX::SimpleMath::Vector3 position;
+		DirectX::SimpleMath::Vector4 color;
+		DirectX::SimpleMath::Vector2 texCoord;
+
+	};
+
 	Microsoft::WRL::ComPtr<ID3D11PixelShader>	m_PS_Minimap;
 	Microsoft::WRL::ComPtr<ID3D11Buffer>		m_minimapConstantBuffer;
+
+	// インスタンシング描画用　-------------------------------------------------
+
+public:
+	struct  InstanceBuffer
+	{
+		DirectX::SimpleMath::Matrix world;
+		DirectX::SimpleMath::Vector4 color;
+
+	};
+	Microsoft::WRL::ComPtr<ID3D11Buffer> m_vertexBufferIns;		///< インスタンシング用バッファ
+	Microsoft::WRL::ComPtr<ID3D11Buffer> m_indexBufferIns;		///< インスタンシング用バッファ
+	Microsoft::WRL::ComPtr<ID3D11Buffer> m_instanceBufferIns;	///< インスタンシング用バッファ
+	Microsoft::WRL::ComPtr<ID3D11Buffer> m_constantBufferIns;	///< 定数バッファ
+	InstanceBuffer* m_pInstanceDataIns;							///< インスタンシング用バッファ
+
+	// 頂点シェーダ
+	Microsoft::WRL::ComPtr <ID3D11VertexShader> m_vsIns;
+	Microsoft::WRL::ComPtr <ID3D11GeometryShader> m_gsIns;
+	Microsoft::WRL::ComPtr <ID3D11PixelShader> m_psIns;
+
+	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_inputLayoutIns;	///< インプットレイアウト
+
+
+
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
 public:
@@ -136,6 +172,9 @@ public:
 // 内部実装
 private:
 
+	void SetUpInstancing();
+	void DrawInstancing();
+
 	// ミニマップテクスチャの作成
 	void CreateMinimapTexture();
 
@@ -148,4 +187,12 @@ private:
 
 	// ミニマップ上の座標の算出
 	DirectX::SimpleMath::Vector2 CalcMinimapPosition(const DirectX::SimpleMath::Vector3& worldPosition, const DirectX::SimpleMath::Vector2& mapSize);
+
+	// インスタンスバッファにゲームオブジェクトの情報をセット
+	void SetInstanceBufferGameObject(InstanceBuffer* instanceData, int* currentIndex, const DirectX::SimpleMath::Vector2& mapSize, const GameObjectTag& tag, const DirectX::SimpleMath::Vector4& color);
+
+	InstanceBuffer GetInstanceData(const DirectX::SimpleMath::Vector3& worldPosition, const float& scale, const DirectX::SimpleMath::Vector4& color, const DirectX::SimpleMath::Vector2& mapSize);
+
+	// 頂点データに渡すマップ上の位置の算出
+	DirectX::SimpleMath::Vector3 CalcVertexMapPosition(const DirectX::SimpleMath::Vector3& worldPosition, const DirectX::SimpleMath::Vector2& mapSize);
 };
