@@ -15,57 +15,28 @@ float4 main(PS_INPUT input) : SV_Target0
     // 配置中心UVの算出（描画UV座標）
     float2 windowCenterUV = (input.Position2D.xy / windowSize);
 
-    // 三角形の頂点座標の算出　時計回りになるように配置 
-    float2 triangleVertex[3] =
-    {
-        scale * float2(0.f, -0.5f) + windowCenterUV,
-        scale * float2(0.5f, 0.5f) + windowCenterUV,
-        scale * float2(-0.5f, 0.5f) + windowCenterUV,
-    };
-    // 各辺のベクトル算出
-    float2 edge[3] =
-    {
-        triangleVertex[1] - triangleVertex[0],
-        triangleVertex[2] - triangleVertex[1],
-        triangleVertex[0] - triangleVertex[2]
-    };
 
-    float isOutside = 0.0f;
-    // 内外判定
-    [unroll] // ループを物理的に展開して分岐を消去するようコンパイラに指示
-    for (int i = 0; i < 3; i++)
-    {
-        // 辺ベクトルと頂点からのベクトルの外積を算出
-        float2 toPoint = input.Tex - triangleVertex[i];
-        float cro = cross2d(edge[i], toPoint);
+    // 距離の算出
+    float2 dist = windowCenterUV - input.Tex * aspect;
+    
+    // 拡大率を適用
+    dist.x /= scale.x;
+    dist.y /= scale.y;
+    
+    // 半径の算出
+    float radius = length(dist);
+    // 短くする(標準だとでかすぎる）
+    radius = radius / 0.5f;
         
-        // 負の場合は外側
-         isOutside += step(0.0f, -cro) ;
-    }
-
-    return input.Color * float4(1.0f, 1.0f, 1.0f, 1.0f - isOutside);
-
-    //// 距離の算出
-    //    float2 dist = centerUV - input.Tex * aspect;
+    float alpha = lerp(1.0f, 0.0f, radius);
     
-    //// 拡大率を適用
-    //dist.x /= scale.x;
-    //dist.y /= scale.y;
+    // 円をくっきり指せる
+    float flag = step(0.0f, alpha);
     
-    //// 半径の算出
-    //float radius = length(dist);
-    //// 短くする(標準だとでかすぎる）
-    //radius = radius / 0.5f;
-        
-    //float alpha = lerp(1.0f , 0.0f, radius);
-    
-    //// 円をくっきり指せる
-    //float flag = step(0.0f, alpha);
-    
-    //float4 outputB = input.Color * float4(1, 1, 1, flag);
+    float4 outputB = input.Color * float4(1, 1, 1, flag);
     
 
     
-    //return outputB;
+    return outputB;
 
 }

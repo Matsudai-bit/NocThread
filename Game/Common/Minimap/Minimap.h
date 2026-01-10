@@ -77,6 +77,7 @@ private:
 	// シェーダ関連
 	Microsoft::WRL::ComPtr<ID3D11PixelShader>		m_ps_Circle;
 	Microsoft::WRL::ComPtr<ID3D11PixelShader>		m_ps_Rectangle;
+	Microsoft::WRL::ComPtr<ID3D11PixelShader>		m_ps_Triangle;
 	Microsoft::WRL::ComPtr<ID3D11VertexShader>		m_vs;
 	Microsoft::WRL::ComPtr<ID3D11GeometryShader>	m_gs;
 

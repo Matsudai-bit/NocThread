@@ -26,8 +26,10 @@ void main(
 
         element.Pos = float4(0.0f, 0.0f, 0.0f, 1.0f) + offset_array[i];
 
-        //element.Pos = mul(element.Pos, matView);
-        //element.Pos = mul(element.Pos, matProj);
+        // angle‚ðŽg—p‚µ‚Ä‰ñ“]‚³‚¹‚é
+        element.Pos.x = offset_array[i].x * cos(angle.x) - offset_array[i].y * sin(angle.x);
+        element.Pos.y = offset_array[i].x * sin(angle.x) + offset_array[i].y * cos(angle.x);
+        element.Pos.z = 0.0f;
 
         element.Color = input[0].Color;
         element.Tex.x = offset_array[i].x + 1.0f;

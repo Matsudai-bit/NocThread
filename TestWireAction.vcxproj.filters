@@ -482,6 +482,9 @@
     <Filter Include="Resources\Shaders\Minimap">
       <UniqueIdentifier>{b6f1848c-3cb4-4ae5-9e51-7bf1ac97df6b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resources\Shaders\SimpleShape2D\SimpleTriangle">
+      <UniqueIdentifier>{59d69dbb-551e-40d7-8b65-c1f95944b592}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -1406,6 +1409,9 @@
     </FxCompile>
     <FxCompile Include="Shaders\Minimap\Minimap_PS.hlsl">
       <Filter>Resources\Shaders\Minimap</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\SimpleShape2D\SimpleTriangle\SimpleTriangle_PS.hlsl">
+      <Filter>Resources\Shaders\SimpleShape2D\SimpleTriangle</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

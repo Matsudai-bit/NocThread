@@ -63,7 +63,12 @@ Minimap::Minimap(const CommonResources* pCommonResources)
 
 	ps = DX::ReadData(L"Resources/Shaders/SimpleRectangle_PS.cso");
 	DX::ThrowIfFailed(
-		device->CreatePixelShader(ps.data(), ps.size(), nullptr, m_ps_Rectangle.ReleaseAndGetAddressOf())
+		device->CreatePixelShader(ps.data(), ps.size(), nullptr, m_ps_Rectangle.ReleaseAndGetAddressOf())	
+	);
+
+	ps = DX::ReadData(L"Resources/Shaders/SimpleTriangle_PS.cso");
+	DX::ThrowIfFailed(
+		device->CreatePixelShader(ps.data(), ps.size(), nullptr, m_ps_Triangle.ReleaseAndGetAddressOf())
 	);
 
 	// ジオメトリシェーダの作成
@@ -310,7 +315,7 @@ void Minimap::CreateMinimapTexture()
 		// 定数バッファにデータを設定する
 		ConstantBuffer cb = {};
 		// 表示座標の設定
-		cb.position = Vector2(static_cast<float>(windowRect.right), static_cast<float>(windowRect.bottom));
+		cb.position = Vector2(XMConvertToRadians( 30.0f), 0.0f);
 		cb.windowSize = m_mapSize;
 		//cb.windowSize = Vector2(windowRect.right / 2.0f, windowRect.bottom / 2.0f);
 		cb.scale = Vector2(MARK_SIZE, MARK_SIZE) * Screen::Get()->GetScreenScale();
@@ -327,27 +332,33 @@ void Minimap::CreateMinimapTexture()
 		context->PSSetShader(m_ps_Rectangle.Get(), nullptr, 0);
 
 		// 各描画処理
-		m_primitiveBatch->Begin();
-		// ビルの描画
-		DrawBuilding(vertexes, m_mapSize);
-		m_primitiveBatch->End();
+		{
+			m_primitiveBatch->Begin();
+			// ビルの描画
+			DrawBuilding(vertexes, m_mapSize);
+			m_primitiveBatch->End();
+		}
 
 		context->PSSetShader(m_ps_Circle.Get(), nullptr, 0);
+		{
+			m_primitiveBatch->Begin();
 
-		m_primitiveBatch->Begin();
+			// 敵の描画
+			DrawEnemy(vertexes, m_mapSize);
+			// お宝の描画
+			DrawTreasure(vertexes, m_mapSize);
+			// ヘリコプターの描画
+			DrawHelicopter(vertexes, m_mapSize);
+			// チェックポイントの描画
+			DrawCheckpoint(vertexes, m_mapSize);
+			m_primitiveBatch->End();
+		}
 
-		// 敵の描画
-		DrawEnemy(vertexes, m_mapSize);
-		// お宝の描画
-		DrawTreasure(vertexes, m_mapSize);
-		// ヘリコプターの描画
-		DrawHelicopter(vertexes, m_mapSize);
-		// プレイヤーの描画
-		DrawPlayer(vertexes, m_mapSize);
-		// チェックポイントの描画
-		DrawCheckpoint(vertexes, m_mapSize);
-		m_primitiveBatch->End();
+		{
 
+			// プレイヤーの描画
+			DrawPlayer(vertexes, m_mapSize);
+		}
 		//	シェーダの登録を解除しておく
 		context->VSSetShader(nullptr, nullptr, 0);
 		context->GSSetShader(nullptr, nullptr, 0);
@@ -367,7 +378,7 @@ void Minimap::DrawPlayer(DirectX::VertexPositionColorTexture vertexes[VERTEX_NUM
 
 	auto context = m_pCommonResources->GetDeviceResources()->GetD3DDeviceContext();
 
-	context->PSSetShader(m_ps_Circle.Get(), nullptr, 0);
+	context->PSSetShader(m_ps_Triangle.Get(), nullptr, 0);
 
 
 	// プレイヤー座標を取得する
@@ -384,9 +395,12 @@ void Minimap::DrawPlayer(DirectX::VertexPositionColorTexture vertexes[VERTEX_NUM
 		// 図形の描画座標(2D)として扱われる
 		vertexes[i].position = Vector3(minimapPosition.x, minimapPosition.y, 0.0f);
 	}
+	m_primitiveBatch->Begin();
 
 	// 描画
 	m_primitiveBatch->Draw(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST, &vertexes[0], 1);
+
+	m_primitiveBatch->End();
 
 
 }

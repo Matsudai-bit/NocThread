@@ -1,11 +1,10 @@
 
 cbuffer ConstBuffer : register(b0)
 {
-    float2 position;
+    float2 angle;
     float2 scale;
     float2 windowSize;
     
-    float2 dummy;
 };
 
 struct VS_INPUT
