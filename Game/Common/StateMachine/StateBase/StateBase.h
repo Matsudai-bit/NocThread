@@ -60,7 +60,7 @@ public:
 		
 
 	// デストラクタ
-	~StateBase() = default;
+	virtual ~StateBase() = default;
 
 // 操作
 protected:

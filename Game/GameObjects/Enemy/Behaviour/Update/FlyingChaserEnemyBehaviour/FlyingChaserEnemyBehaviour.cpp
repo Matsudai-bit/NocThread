@@ -28,7 +28,7 @@ using namespace DirectX;
  * @param[in] ‚È‚µ
  */
 FlyingChaserEnemyBehaviour::FlyingChaserEnemyBehaviour()
-	: m_steeringBehavior{ 18.0f, 0.000001f}
+	: m_steeringBehavior{ 18.0f, 0.000000001f}
 {
 	m_playerTargetTimeCounter.Reset();
 
@@ -69,27 +69,27 @@ void FlyingChaserEnemyBehaviour::Update(Enemy* pEnemy, float deltaTime, const Co
 	UNREFERENCED_PARAMETER(deltaTime);
 	using namespace SimpleMath;
 
+	
+	// ˆê•bŒo‰ß‚·‚é‚Ü‚Å‘Ò‚Â
+	if (m_playerTargetTimeCounter.GetElapsedTime() < 1.0f) 
+	{
+		m_playerTargetTimeCounter.UpperTime(deltaTime);
+		return;
+	}
+	
+	const GameObject* pPlayerObject = GameObjectRegistry::GetInstance()->GetGameObject(GameObjectTag::PLAYER);
+	if (pPlayerObject == nullptr) {
+		return;
+	}
 
+	Vector3 playerPosition = pPlayerObject->GetTransform()->GetPosition();
 
-	m_playerTargetTimeCounter.UpperTime(deltaTime);
+	m_steeringBehavior.SetTargetPosition(playerPosition);
+	m_targetDirection = playerPosition - pEnemy->GetTransform()->GetPosition();
 
-	//if (m_playerTargetTimeCounter.GetElapsedTime() >= 1.0f)
-	//{
-		const GameObject* pPlayerObject = GameObjectRegistry::GetInstance()->GetGameObject(GameObjectTag::PLAYER);
-		if (pPlayerObject == nullptr) {
-			return;
-		}
+	// Y²•ûŒü‚Ìî•ñ‚ğÁ‚·
+	m_targetDirection.Normalize();
 
-		Vector3 playerPosition = pPlayerObject->GetTransform()->GetPosition();
-
-		m_steeringBehavior.SetTargetPosition(playerPosition);
-		m_targetDirection = playerPosition - pEnemy->GetTransform()->GetPosition();
-
-		// Y²•ûŒü‚Ìî•ñ‚ğÁ‚·
-		m_targetDirection.Normalize();
-		m_playerTargetTimeCounter.Reset();
-
-	/*}*/
 
 
 

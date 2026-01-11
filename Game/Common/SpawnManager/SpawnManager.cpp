@@ -28,6 +28,7 @@
 
 // ファクトリー関連
 #include "Game/Common/Factory/PlayerFactory/PlayerFactory.h"
+#include "Game/Common/Factory/BuildingFactory/BuildingFactory.h"
 
 using namespace DirectX;
 
@@ -154,13 +155,28 @@ void SpawnManager::SetupInitialLayout()
 	// プレイヤーデータデータのjsonを読み込んでPlayerData型に変換する
 	if (!MyLib::NlohmannUtils::TryLoadAndConvertJson<PlayerData>(playerDataPath, &playerData)) { return; }
 
-	m_pBuildingManager->RequestCreate(m_pCollisionManager, m_pCommonResources);
+	// **** 建物の生成 ****
+	{
+		TownFactory townFactory;
+		std::string buildingJsonPath = STAGE_DATA_FOLDER_PATH + "/" + stageLayoutData.buildingJsonName;
+		auto buildings = townFactory.Create(TownFactoryDesk{ m_pCollisionManager, *m_pCommonResources, buildingJsonPath });
+		m_pBuildingManager->SetBuildings(std::move(buildings));
+	}
 
 	
-	PlayerFactory::StagePlayer playerFx;
-	auto player = playerFx.Create(PlayerFactory::PlayerDesk{*m_pCommonResources, m_pCollisionManager, *m_pBuildingManager, playerData.tileNumber, m_pPlayerManager->GetPlayerInput(), m_pPlayerCamera});
-	m_pPlayerManager->SetPlayer(std::move(player));
-	
+	// **** プレイヤーの生成 ****
+	{
+		PlayerFactory::StagePlayer playerFactory;
+		auto player = playerFactory.Create(PlayerFactory::PlayerDesk{
+			*m_pCommonResources,
+			m_pCollisionManager,
+			*m_pBuildingManager,
+			playerData.tileNumber,
+			m_pPlayerManager->GetPlayerInput(),
+			m_pPlayerCamera });
+
+		m_pPlayerManager->SetPlayer(std::move(player));
+	}
 }
 
 
@@ -197,6 +213,11 @@ void SpawnManager::OnGameFlowEvent(GameFlowEventID eventID)
 {
 	switch (eventID)
 	{
+	case GameFlowEventID::GAME_START:
+		// イベントの登録
+		m_eventStack.emplace_back([this]() {
+			OnGameStartSpawn();
+			});		break;
 	case GameFlowEventID::STOLE_TREASURE:
 		// イベントの登録
 		m_eventStack.emplace_back([this]() {
@@ -225,7 +246,7 @@ void SpawnManager::OnStealingTreasures()
 
 	auto factory = std::make_unique<EnemyFactory::FlyingChaserEnemy>();
 
-	const int NUM = 10;
+	const int NUM = 3;
 	const float RADIUS = 20.0f;
 
 	for (int i = 0; i < NUM; i++)
@@ -287,6 +308,20 @@ void SpawnManager::OnStealingTreasures()
 
 	// タスクの追加
 	GetTaskManager()->AddTask(m_pEscapeHelicopters->back().get());
+}
+
+void SpawnManager::OnGameStartSpawn()
+{
+	// 左下に敵の生成
+	auto factory = std::make_unique<EnemyFactory::FlyingChaserEnemy>();
+
+	auto enemy = factory->Create(DefaultSpawnDesc());
+	enemy->Initialize(m_pCommonResources, m_pCollisionManager);
+	enemy->GetTransform()->SetPosition(DirectX::SimpleMath::Vector3(0.0f, 20.0f, 200.0f));
+	m_pEnemyManager->AddEnemy(enemy.get());
+	m_enemyPool.push_back(std::move(enemy));
+
+
 }
 
 void SpawnManager::SpawnEnemy()

@@ -90,8 +90,18 @@ Game::~Game()
     m_sceneManager->Finalize();
 
 
-    // DirectXリソースの解放 (ComPtr を使っていれば自動)
-    // ...
+    // 3. 全ての unique_ptr を明示的に破棄する（宣言の逆順が望ましい）
+    m_sceneManager.reset();    // シーンを消す（TitleSceneなどもここで消える）
+    m_transitionMask.reset();
+    m_copyRenderTexture.reset();
+    m_commonResources.reset();
+    m_resourceManager.reset();
+    m_debugFont.reset();       // SpriteFontなどがここで解放される
+    m_states.reset();          // CommonStatesがここで解放される
+    m_audioEngine.reset();
+
+
+    OutputDebugStringA("--- Game Destructor Called ---\n");
 }
 
 // Initialize the Direct3D resources required to run.
@@ -125,7 +135,7 @@ void Game::Initialize(HWND window, int width, int height)
    // **** 生成 ****
    
    // シーンの生成
-    m_sceneManager = std::make_unique<MyLib::SceneManager<CommonResources>>();
+   m_sceneManager = std::make_unique<MyLib::SceneManager<CommonResources>>();
 
     // トラッカーの作成
     m_keyboardStateTracker  = std::make_unique<Keyboard::KeyboardStateTracker>();
@@ -440,6 +450,7 @@ void Game::CreateWindowSizeDependentResources()
 void Game::OnDeviceLost()
 {
     // TODO: Add Direct3D resource cleanup here.
+
 }
 
 void Game::OnDeviceRestored()

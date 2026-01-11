@@ -42,7 +42,6 @@ class Wire
 // ƒNƒ‰ƒX’è”‚ÌéŒ¾ -------------------------------------------------
 public:
 
-	static constexpr float MIN_LENGTH = 1.5f;
 
 // \‘¢‘Ì
 private:

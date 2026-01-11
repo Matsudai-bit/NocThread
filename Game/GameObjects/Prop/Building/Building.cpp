@@ -33,6 +33,10 @@ Building::Building()
 
 
 
+
+
+
+
 /**
  * @brief デストラクタ
  */

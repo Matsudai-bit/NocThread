@@ -70,6 +70,7 @@ void SteeringConstraintFactory::Reset()
  */
 std::vector<std::unique_ptr<IConstraint>> SteeringConstraintFactory::CreateConstraint(std::vector<XPBDSimulator::Particle>* pParticles, XPBDSimulator::Parameter paramater)
 {
+	UNREFERENCED_PARAMETER(paramater);
     using namespace SimpleMath;
 
     // çÏê¨ÇµÇΩêßñÒ

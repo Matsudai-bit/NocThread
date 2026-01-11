@@ -125,7 +125,6 @@ public:
 	// イベントメッセージを受け取る
 	void OnGameFlowEvent(GameFlowEventID eventID) override;
 
-
 // 取得/設定
 public:
 
@@ -135,6 +134,9 @@ private:
 
 	// 宝を盗まれた際の出現処理
 	void OnStealingTreasures();
+
+	// ゲーム開始時の出現処理
+	void OnGameStartSpawn();
 
 	void SpawnEnemy();
 };

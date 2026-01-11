@@ -67,13 +67,9 @@ private:
 	
 	std::vector<std::unique_ptr<Building>> m_buildings; ///< 建物
 
-	nlohmann::json m_stageJson;
-
 	const CommonResources* m_pCommonResources;
 
 	// コンピュートシェーダー関連
-
-
 	// コンピュートシェーダー
 	Microsoft::WRL::ComPtr<ID3D11ComputeShader> m_computeShader;
 	// パーティクル
@@ -112,20 +108,11 @@ public:
 	// 終了処理
 	void Finalize();
 
-	bool RequestCreate(
-		CollisionManager* pCollisionManager,
-		const CommonResources* pCommonResources);
-	void Save();
+
+	void SetBuildings(std::unique_ptr<std::vector<std::unique_ptr<Building>>> buildings);
+
 
 private:
-	void CreateBuilding(
-		const DirectX::SimpleMath::Vector3& position,
-		const DirectX::SimpleMath::Vector3& scale,
-		const int& tileNumber,
-		CollisionManager* pCollisionManager,
-		const CommonResources* pCommonResources);
-
-
 
 
 // 取得/設定

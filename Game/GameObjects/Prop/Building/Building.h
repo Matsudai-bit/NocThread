@@ -52,6 +52,8 @@ public:
 	// コンストラクタ
 	Building();
 
+
+
 	// デストラクタ
 	~Building();
 

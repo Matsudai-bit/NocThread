@@ -177,21 +177,9 @@ void RopeObject::Draw(const Camera& camera)
 		SimpleMath::Matrix scale = SimpleMath::Matrix::CreateScale(0.02f, length*0.1f , 0.02f);
 
 		// ワールド行列
-		SimpleMath::Matrix world = scale * rotation * translation;
+		world = scale * rotation * translation;
 		
 		m_ropeModel->Draw(context, *pStates, world, camera.GetViewMatrix(), camera.GetProjectionMatrix());
-		//sphere->Draw(SimpleMath::Matrix::CreateScale(0.5f) * SimpleMath::Matrix::CreateTranslation(endPos), camera.GetViewMatrix(), camera.GetProjectionMatrix(), DirectX::Colors::Red);
-
-		//// 頂点
-		//VertexPositionColor vertex[2]{};
-		//vertex[0].color = SimpleMath::Vector4(1, 1.0f, 1.0f, 1);
-		//vertex[1].color = SimpleMath::Vector4(1, 1.0f, 1.0f, 1);
-
-		//vertex[0].position = m_particles[i - 1]->GetPosition();
-		//vertex[1].position = m_particles[i]->GetPosition();
-
-		//// 描画
-		//m_batch->Draw(D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP, vertex, 2);
 
 
 	}

@@ -80,7 +80,7 @@ void Canvas::DrawContents()
  */
 void Canvas::Finalize()
 {
-
+	m_sprites.clear();
 }
 
 /**

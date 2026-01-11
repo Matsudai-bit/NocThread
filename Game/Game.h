@@ -30,6 +30,11 @@ class Game final : public DX::IDeviceNotify
 {
 // 追加データメンバ
 private:
+    // Device resources.
+    std::unique_ptr<DX::DeviceResources>    m_deviceResources;
+
+    // Rendering loop timer.
+    DX::StepTimer                           m_timer;
     // 射影行列
     DirectX::SimpleMath::Matrix m_proj;
 
@@ -50,10 +55,10 @@ private:
     std::unique_ptr<DirectX::GamePad::ButtonStateTracker>       m_gamePadStateTracker;  ///< ゲームパッドトラッカー
 
     // その他
-    std::unique_ptr<MyLib::SceneManager<CommonResources>>  m_sceneManager;     ///< シーン管理
     std::unique_ptr<DX::RenderTexture>  m_copyRenderTexture;
     std::unique_ptr<MyLib::FrameTimer>  m_frameTimer;
     std::unique_ptr<TransitionMask>     m_transitionMask;   ///< トランジションマスク
+    std::unique_ptr<MyLib::SceneManager<CommonResources>>  m_sceneManager;     ///< シーン管理
 
 
 public:
@@ -105,11 +110,7 @@ private:
     void CreateDeviceDependentResources();
     void CreateWindowSizeDependentResources();
 
-    // Device resources.
-    std::unique_ptr<DX::DeviceResources>    m_deviceResources;
 
-    // Rendering loop timer.
-    DX::StepTimer                           m_timer;
 
 
 

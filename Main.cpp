@@ -154,6 +154,17 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
     g_game.reset();
 
+    #ifdef GAME_MODE
+    #else 
+     //--- すべてが空になった状態でチェック ---
+	 //メモリリークの報告
+    IDXGIDebug* debugDev;
+    if (SUCCEEDED(DXGIGetDebugInterface1(0, IID_PPV_ARGS(&debugDev)))) {
+        debugDev->ReportLiveObjects(DXGI_DEBUG_ALL, DXGI_DEBUG_RLO_ALL);
+        debugDev->Release();
+    }
+    #endif
+
     CoUninitialize();
 
     //Microsoft::WRL::ComPtr<IDXGIDebug1> debug;

@@ -81,7 +81,7 @@ void NormalGameplayState::OnStartState()
 	GetOwner()->GetTaskManager()->AddTask(m_canvas.get());
 
 	// ステージ管理の更新を開始する
-	GetOwner()->GetStageManager()->StartUpdating();
+	//GetOwner()->GetStageManager()->StartUpdating();
 
 }
 

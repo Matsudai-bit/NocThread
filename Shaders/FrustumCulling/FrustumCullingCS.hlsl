@@ -38,7 +38,7 @@ RWStructuredBuffer<OutCompute> BufOut : register(u0);
 [numthreads(size_x, size_y, size_z)]
 void main(const CSInput input)
 {
-    uint index = input.dispatch.x;
+    int index = input.dispatch.x;
     
     // ‹«ŠEƒ`ƒFƒbƒNi‚±‚±‚Íƒƒ‚ƒŠ”j‰ó–hŽ~‚Ì‚½‚ß return ‚ªÅ‚àˆÀ‘Sj
     if (index >= maxIndexCount)

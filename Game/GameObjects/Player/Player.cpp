@@ -255,10 +255,8 @@ void Player::Draw(const Camera& camera)
 	// ワイヤーアクション中の場合はモデルの位置を調整する
 	if (m_state == State::WIRE_ACTION)
 	{
-
 		defaultTransform *= Matrix::CreateTranslation(Vector3(WIRE_ACTION_OFFSET_X, Player::WIRE_ACTION_OFFSET_Y, 0.0f));
 		// プレイヤーのY軸回転を
-
 	}
 
 	Matrix transformMat = Matrix::CreateTranslation(transform->GetPosition());
@@ -281,7 +279,7 @@ void Player::Draw(const Camera& camera)
 	m_model.DrawSkinned(context, *states, nbones, drawBones.get(), world, camera.GetViewMatrix(), camera.GetProjectionMatrix());
 
 
-	// **** 軸の描画 ****
+	//// **** 軸の描画 ****
 
 	//// ブレンドステート
 	//context->OMSetBlendState(states->Opaque(), nullptr, 0xFFFFFFF);

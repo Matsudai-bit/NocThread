@@ -58,7 +58,7 @@ TitleScene::TitleScene()
  */
 TitleScene::~TitleScene()
 {
-
+	OutputDebugStringA("--- TitleScene Destructor Called ---\n");
 }
 
 

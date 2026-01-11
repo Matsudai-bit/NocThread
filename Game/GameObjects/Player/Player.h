@@ -95,7 +95,7 @@ public:
 	static constexpr float JUMPING_POWER = 1200.0f; // ジャンプ力
 
 	// ワイヤー関連
-	static constexpr float WIRE_LENGTH = 60.0f;					// ワイヤーの長さ
+	static constexpr float WIRE_LENGTH = 65.0f;					// ワイヤーの長さ
 	static constexpr float MAX_TARGETING_RAY_DISTANCE = 30.0f;	// ワイヤーの照準計算に使用する仮想的な最大距離（ワイヤーの実際の長さとは異なる）
 
 	// アニメーション関連
