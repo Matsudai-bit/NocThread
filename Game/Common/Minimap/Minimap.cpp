@@ -52,7 +52,7 @@ std::vector<D3D11_INPUT_ELEMENT_DESC> INPUT_LAYOUT_INSTANCING = {
 
 		{ "COLOR",    1, DXGI_FORMAT_R32G32B32A32_FLOAT, 1,  64, D3D11_INPUT_PER_INSTANCE_DATA, 1 },
 
-
+		{"NORMAL",	  0, DXGI_FORMAT_R32_FLOAT			, 1,  80, D3D11_INPUT_PER_INSTANCE_DATA, 1 }, 
 
 
 };
@@ -424,12 +424,12 @@ void Minimap::DrawInstancing()
 		auto* instanceData = static_cast<InstanceBuffer*>(msr.pData);
 		
 		// インスタンスデータの設定
-		SetInstanceBufferGameObject(instanceData, &instanceCount, mapSize, GameObjectTag::BUILDING, BUILDING_MARK_COLOR);
-		SetInstanceBufferGameObject(instanceData, &instanceCount, mapSize, GameObjectTag::PLAYER, PLAYER_MARK_COLOR);
-		SetInstanceBufferGameObject(instanceData, &instanceCount, mapSize, GameObjectTag::ENEMY, ENEMY_MARK_COLOR);
-		SetInstanceBufferGameObject(instanceData, &instanceCount, mapSize, GameObjectTag::TREASURE, TREASURE_MARK_COLOR);
-		SetInstanceBufferGameObject(instanceData, &instanceCount, mapSize, GameObjectTag::CHECKPOINT, CHECKPOINT_MARK_COLOR);
-		SetInstanceBufferGameObject(instanceData, &instanceCount, mapSize, GameObjectTag::ESCAPE_HELICOPTER, HELICOPTER_MARK_COLOR);
+		SetInstanceBufferGameObject(instanceData, &instanceCount, mapSize, GameObjectTag::BUILDING	, BUILDING_MARK_COLOR, SHAPE_ID::RECTANGLE);
+		SetInstanceBufferGameObject(instanceData, &instanceCount, mapSize, GameObjectTag::PLAYER	, PLAYER_MARK_COLOR, SHAPE_ID::TRIANGLE);
+		SetInstanceBufferGameObject(instanceData, &instanceCount, mapSize, GameObjectTag::ENEMY		, ENEMY_MARK_COLOR, SHAPE_ID::TRIANGLE);
+		SetInstanceBufferGameObject(instanceData, &instanceCount, mapSize, GameObjectTag::TREASURE	, TREASURE_MARK_COLOR, SHAPE_ID::CIRCLE);
+		SetInstanceBufferGameObject(instanceData, &instanceCount, mapSize, GameObjectTag::CHECKPOINT, CHECKPOINT_MARK_COLOR, SHAPE_ID::CIRCLE);
+		SetInstanceBufferGameObject(instanceData, &instanceCount, mapSize, GameObjectTag::ESCAPE_HELICOPTER, HELICOPTER_MARK_COLOR, SHAPE_ID::CIRCLE);
 		// バッファのアンマップ
 		context->Unmap(m_instanceBufferIns.Get(), 0);
 	}
@@ -848,7 +848,7 @@ DirectX::SimpleMath::Vector2 Minimap::CalcMinimapPosition(const DirectX::SimpleM
 //	}
 //}
 
-void Minimap::SetInstanceBufferGameObject(InstanceBuffer* instanceData, int* currentIndex, const DirectX::SimpleMath::Vector2& mapSize, const GameObjectTag& tag, const DirectX::SimpleMath::Vector4& color)
+void Minimap::SetInstanceBufferGameObject(InstanceBuffer* instanceData, int* currentIndex, const DirectX::SimpleMath::Vector2& mapSize, const GameObjectTag& tag, const DirectX::SimpleMath::Vector4& color, const SHAPE_ID& shapeID)
 {
 	// オブジェクトを取得する
 	const auto gameObjects = GameObjectRegistry::GetInstance()->GetGameObjects(tag);
@@ -856,25 +856,28 @@ void Minimap::SetInstanceBufferGameObject(InstanceBuffer* instanceData, int* cur
 	{
 		if (!gameObject->IsActive()) { continue; }
 		// 設定
-		instanceData[*currentIndex] = GetInstanceData(gameObject->GetTransform()->GetPosition(), Minimap::MARK_SIZE, color, mapSize);
+		auto transform = gameObject->GetTransform();
+		instanceData[*currentIndex] = GetInstanceData(transform->GetPosition(), transform->GetRotation(), Minimap::MARK_SIZE, color,shapeID, mapSize);
 		(*currentIndex)++;
 	}
 }
 
 
-Minimap::InstanceBuffer Minimap::GetInstanceData(const DirectX::SimpleMath::Vector3& worldPosition, const float& scale, const DirectX::SimpleMath::Vector4& color, const DirectX::SimpleMath::Vector2& mapSize)
+Minimap::InstanceBuffer Minimap::GetInstanceData(const DirectX::SimpleMath::Vector3& worldPosition, const DirectX::SimpleMath::Quaternion& rotate, const float& scale, const DirectX::SimpleMath::Vector4& color, const SHAPE_ID& shapeID,  const DirectX::SimpleMath::Vector2& mapSize)
 {
-	InstanceBuffer instanceData;
+	InstanceBuffer instanceData; ;
 
 	// ワールド行列の設定
 	auto translationMat = SimpleMath::Matrix::CreateTranslation(CalcVertexMapPosition(worldPosition, mapSize));
+	auto rotationMat = SimpleMath::Matrix::CreateRotationZ(XMConvertToRadians(180.f));
 	auto scaleMat = SimpleMath::Matrix::CreateScale(MARK_SIZE * Screen::Get()->GetScreenScale(), MARK_SIZE * Screen::Get()->GetScreenScale(), 1.0f);
-	auto worldMatrix = scaleMat * translationMat;
+	auto worldMatrix = scaleMat * rotationMat * translationMat;
 
 	instanceData.world = worldMatrix;
 	// 色の設定
 	instanceData.color = color;
 
+	instanceData.shapeID = static_cast<float>(shapeID);
 	return instanceData;
 }
 

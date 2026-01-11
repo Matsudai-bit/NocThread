@@ -42,6 +42,13 @@ private:
 		DirectX::SimpleMath::Vector2 dummy;
 	};
 
+	enum class SHAPE_ID
+	{
+		RECTANGLE	= 0,
+		CIRCLE		= 1,
+		TRIANGLE	= 2,
+	};
+
 // クラス定数の宣言 -------------------------------------------------
 public:
 
@@ -123,6 +130,7 @@ public:
 	{
 		DirectX::SimpleMath::Matrix world;
 		DirectX::SimpleMath::Vector4 color;
+		float shapeID;
 
 	};
 	Microsoft::WRL::ComPtr<ID3D11Buffer> m_vertexBufferIns;		///< インスタンシング用バッファ
@@ -189,9 +197,9 @@ private:
 	DirectX::SimpleMath::Vector2 CalcMinimapPosition(const DirectX::SimpleMath::Vector3& worldPosition, const DirectX::SimpleMath::Vector2& mapSize);
 
 	// インスタンスバッファにゲームオブジェクトの情報をセット
-	void SetInstanceBufferGameObject(InstanceBuffer* instanceData, int* currentIndex, const DirectX::SimpleMath::Vector2& mapSize, const GameObjectTag& tag, const DirectX::SimpleMath::Vector4& color);
+	void SetInstanceBufferGameObject(InstanceBuffer* instanceData, int* currentIndex, const DirectX::SimpleMath::Vector2& mapSize, const GameObjectTag& tag, const DirectX::SimpleMath::Vector4& color, const SHAPE_ID& shapeID);
 
-	InstanceBuffer GetInstanceData(const DirectX::SimpleMath::Vector3& worldPosition, const float& scale, const DirectX::SimpleMath::Vector4& color, const DirectX::SimpleMath::Vector2& mapSize);
+	InstanceBuffer GetInstanceData(const DirectX::SimpleMath::Vector3& worldPosition, const DirectX::SimpleMath::Quaternion& rotate, const float& scale, const DirectX::SimpleMath::Vector4& color, const SHAPE_ID& shapeID, const DirectX::SimpleMath::Vector2& mapSize);
 
 	// 頂点データに渡すマップ上の位置の算出
 	DirectX::SimpleMath::Vector3 CalcVertexMapPosition(const DirectX::SimpleMath::Vector3& worldPosition, const DirectX::SimpleMath::Vector2& mapSize);

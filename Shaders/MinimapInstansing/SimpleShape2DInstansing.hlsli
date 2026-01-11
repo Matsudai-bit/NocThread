@@ -20,12 +20,13 @@ struct VS_INPUT
     float4 World2 : WORLD2;
     float4 World3:  WORLD3;
     float4 Instance_Color : COLOR1;
+    
+    float ShapeID : NORMAL;
 };
 
 struct GS_INPUT
 {
     float4 Pos : SV_POSITION;
-    float3 Position2D : NORMAL;
     float4 Color : COLOR;
     float2 Tex : TEXCOORD;
 
@@ -34,8 +35,10 @@ struct GS_INPUT
 struct PS_INPUT
 {
     float4 Pos : SV_POSITION ;
-    float3 Position2D : NORMAL;
     float4 Instance_Color : COLOR;
     float2 Tex : TEXCOORD;
+    
+    float ShapeID : NORMAL;
+
 
 };

@@ -36,8 +36,7 @@ void main(
         element.Tex.y = -offset_array[i].y + 1.0f;
         element.Tex /= 2.0f;
         
-        element.Position2D = input[0].Position2D;
-       
+        element.ShapeID = input[0].ShapeID;
 		
         output.Append(element);
     }

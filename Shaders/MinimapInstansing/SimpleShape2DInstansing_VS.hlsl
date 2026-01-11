@@ -30,11 +30,14 @@ PS_INPUT main(VS_INPUT input)
     //output.Pos = pos;
     
     output.Instance_Color= input.Instance_Color;
+    
+    // UV座標を回転させる
     output.Tex = input.Tex;
     
+    
+    
     // ピクセルシェーダでの判定用に、ワールド空間（または正規化空間）の座標を渡す
-    output.Position2D = pos.xyz;
-
+    output.ShapeID = input.ShapeID;
     return output;
 }
 
