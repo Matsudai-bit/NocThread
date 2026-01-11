@@ -4,7 +4,6 @@ cbuffer ConstBuffer : register(b0)
     float2 angle;
     float2 scale;
     float2 windowSize;
-    
 };
 
 struct VS_INPUT
@@ -37,8 +36,8 @@ struct PS_INPUT
     float4 Pos : SV_POSITION ;
     float4 Instance_Color : COLOR;
     float2 Tex : TEXCOORD;
-    
-    float ShapeID : NORMAL;
+    float Aspect : TEXCOORD1; // アスペクト比を渡すスロット
+    float ShapeID : BLENDINDICES;
 
 
 };

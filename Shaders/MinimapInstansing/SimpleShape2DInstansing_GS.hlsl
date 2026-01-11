@@ -37,6 +37,7 @@ void main(
         element.Tex /= 2.0f;
         
         element.ShapeID = input[0].ShapeID;
+        element.Aspect = input[0].Aspect;
 		
         output.Append(element);
     }

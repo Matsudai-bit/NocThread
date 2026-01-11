@@ -54,15 +54,20 @@ public:
 
 	static const std::vector<D3D11_INPUT_ELEMENT_DESC> INPUT_LAYOUT;
 
-	static constexpr DirectX::SimpleMath::Vector2 MAP_POSITION{ 1280.0f, 720.0f,  };  // マップの中心座標(スクリーン座標）
-	static constexpr float MAP_SCALE = 1.0f;
+	static constexpr DirectX::SimpleMath::Vector2 RENDERING_SIZE{ 800.0f, 800.0f };
+	static constexpr float MAP_SCALE = 0.2f;
+	static constexpr DirectX::SimpleMath::Vector2 MAP_POSITION{ (RENDERING_SIZE.x / 2.0f) * MAP_SCALE + 10.0f , (RENDERING_SIZE.y / 2.0f)* MAP_SCALE + 10.0f };  // マップの中心座標(スクリーン座標）
 
 	static constexpr int VERTEX_NUM = 4;
 
-	static constexpr float SPACE_VALUE = 1.0f;  // マップ中心からの距離度合　1だとそのままの距離感
+	static constexpr float SPACE_VALUE = 0.9f;  // マップ中心からの距離度合　1だとそのままの距離感
 	static constexpr float SPACE_VALUE_1 = 1.0f;  // マップ中心からの距離度合　1だとそのままの距離感
-	static constexpr float MARK_SIZE = 0.15f;  // マークのサイズ
+	static constexpr float MARK_SIZE = 0.14f;  // マークのサイズ
 	static constexpr float MARK_SIZE_1 = 0.025f;  // マークのサイズ
+
+	static constexpr float PLAYER_MARKER_SCALE = 0.7f;  // マークのサイズ
+
+	static constexpr DirectX::SimpleMath::Vector2 MAP_OFFSET{ 10.0f, 10.0f }; // マップのオフセット位置
 
 	// マップに表示される色
 	static constexpr DirectX::SimpleMath::Vector4 BUILDING_MARK_COLOR	{ 0.6f, 0.6f, 0.6f, 1.0f };	// 建物の色
@@ -72,7 +77,6 @@ public:
 	static constexpr DirectX::SimpleMath::Vector4 ENEMY_MARK_COLOR		{ 1.0f, 0.0f, 0.0f, 1.0f };	// 敵の色
 	static constexpr DirectX::SimpleMath::Vector4 HELICOPTER_MARK_COLOR	{ 1.0f, 0.0f, 1.0f, 1.0f };	// ヘリコプターの色
 
-	static constexpr DirectX::SimpleMath::Vector2 RENDERING_SIZE{ 800.0f, 800.0f };
 
 	static constexpr DirectX::SimpleMath::Vector4 MINIMAP_BACK_COLOR { 0.01f, 0.01f, 0.48f, 1.0f};
 	
@@ -92,7 +96,8 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11GeometryShader>	m_gs;
 
 	// スプライト
-	std::unique_ptr<Sprite> m_minimapSprite; ///< ミニマップスプライト
+	std::unique_ptr<Sprite> m_minimapSprite;	///< ミニマップスプライト
+	std::unique_ptr<Sprite> m_playerMarkSprite; ///< プレイヤーの印スプライト
 
 	const CommonResources* m_pCommonResources; ///< 共通リソース
 
@@ -181,10 +186,10 @@ public:
 private:
 
 	void SetUpInstancing();
-	void DrawInstancing();
+	void DrawInstancing(const DirectX::SimpleMath::Vector2& mapSize);
 
 	// ミニマップテクスチャの作成
-	void CreateMinimapTexture();
+	void CreateMinimapTexture(const DirectX::SimpleMath::Vector2& mapSize);
 
 	void DrawPlayer(DirectX::VertexPositionColorTexture vertexes[VERTEX_NUM], const DirectX::SimpleMath::Vector2& mapSize);
 	void DrawBuilding(DirectX::VertexPositionColorTexture vertexes[VERTEX_NUM], const DirectX::SimpleMath::Vector2& mapSize);
@@ -203,4 +208,8 @@ private:
 
 	// 頂点データに渡すマップ上の位置の算出
 	DirectX::SimpleMath::Vector3 CalcVertexMapPosition(const DirectX::SimpleMath::Vector3& worldPosition, const DirectX::SimpleMath::Vector2& mapSize);
+
+	void DrawPlayerMarker(const DirectX::SimpleMath::Vector2& mapSize);
+
+	DirectX::SimpleMath::Vector2 CalcMinimapPosition() const;
 };

@@ -22,6 +22,7 @@
 // 描画関連
 #include "Game/Common/Camera/Camera.h"
 #include "Game/Common/Screen.h"
+#include "Game/Common/ResourceManager/ResourceManager.h"
 
 #include "Game/Common/GameObjectRegistry/GameObjectRegistry.h"
 
@@ -156,7 +157,10 @@ Minimap::Minimap(const CommonResources* pCommonResources)
 	);
 
 	// ミニマップ用スプライトの作成
-	m_minimapSprite = std::make_unique<Sprite>();
+	m_minimapSprite		= std::make_unique<Sprite>();
+	m_playerMarkSprite = std::make_unique<Sprite>();
+	
+	m_playerMarkSprite->Initialize(m_pCommonResources->GetResourceManager()->CreateTexture("Minimap/mark_player.dds"));
 
 	SetUpInstancing();
 }
@@ -216,16 +220,17 @@ void Minimap::DrawTask(const Camera& camera)
 {
 	UNREFERENCED_PARAMETER(camera);
 
+	auto outputSize = m_pCommonResources->GetDeviceResources()->GetOutputSize();
+	auto mapSize = m_mapSize;// SimpleMath::Vector2(outputSize.right, outputSize.bottom);
+
 	using namespace SimpleMath;
 	// ミニマップテクスチャの作成
-	CreateMinimapTexture();
+	CreateMinimapTexture(mapSize);
 
 	// 処理用変数
 	auto states = m_pCommonResources->GetCommonStates();
 	auto context = m_pCommonResources->GetDeviceResources()->GetD3DDeviceContext();
 
-	auto outputSize = m_pCommonResources->GetDeviceResources()->GetOutputSize();
-	auto mapSize = SimpleMath::Vector2(outputSize.right, outputSize.bottom);
 
 	RECT rect{
 		0,
@@ -237,7 +242,7 @@ void Minimap::DrawTask(const Camera& camera)
 
 	m_minimapSprite->Initialize(m_offscreenRendering->GetShaderResourceView());
 	m_minimapSprite->SetScale(MAP_SCALE * Screen::Get()->GetScreenScale());
-	m_minimapSprite->SetPosition(MAP_POSITION * Screen::Get()->GetScreenScale());
+	m_minimapSprite->SetPosition(CalcMinimapPosition() * Screen::Get()->GetScreenScale());
 	m_minimapSprite->SetRegion(rect);
 
 	// ミニマップの描画
@@ -382,9 +387,14 @@ void Minimap::SetUpInstancing()
 		m_inputLayoutIns.ReleaseAndGetAddressOf());
 }
 
-void Minimap::DrawInstancing()
+void Minimap::DrawInstancing(const DirectX::SimpleMath::Vector2& mapSize)
 {
 	D3D11_MAPPED_SUBRESOURCE msr;
+	
+	int instanceCount = 0;
+
+	
+
 
 	auto context = m_pCommonResources->GetDeviceResources()->GetD3DDeviceContext();
 
@@ -415,9 +425,6 @@ void Minimap::DrawInstancing()
 		context->Unmap(m_vertexBufferIns.Get(), 0);
 	}
 
-	auto outputSize = m_pCommonResources->GetDeviceResources()->GetOutputSize();
-	auto mapSize =  SimpleMath::Vector2(outputSize.right, outputSize.bottom);
-	int instanceCount = 0;
 	// インスタンスバッファの設定
 	{
 		context->Map(m_instanceBufferIns.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &msr);
@@ -425,7 +432,7 @@ void Minimap::DrawInstancing()
 		
 		// インスタンスデータの設定
 		SetInstanceBufferGameObject(instanceData, &instanceCount, mapSize, GameObjectTag::BUILDING	, BUILDING_MARK_COLOR, SHAPE_ID::RECTANGLE);
-		SetInstanceBufferGameObject(instanceData, &instanceCount, mapSize, GameObjectTag::PLAYER	, PLAYER_MARK_COLOR, SHAPE_ID::TRIANGLE);
+	//	SetInstanceBufferGameObject(instanceData, &instanceCount, mapSize, GameObjectTag::PLAYER	, PLAYER_MARK_COLOR, SHAPE_ID::TRIANGLE);
 		SetInstanceBufferGameObject(instanceData, &instanceCount, mapSize, GameObjectTag::ENEMY		, ENEMY_MARK_COLOR, SHAPE_ID::TRIANGLE);
 		SetInstanceBufferGameObject(instanceData, &instanceCount, mapSize, GameObjectTag::TREASURE	, TREASURE_MARK_COLOR, SHAPE_ID::CIRCLE);
 		SetInstanceBufferGameObject(instanceData, &instanceCount, mapSize, GameObjectTag::CHECKPOINT, CHECKPOINT_MARK_COLOR, SHAPE_ID::CIRCLE);
@@ -506,7 +513,7 @@ void Minimap::DrawInstancing()
 /**
  * @brief オフスクリーンレンダリングを使用してミニマップテクスチャの作成
   */
-void Minimap::CreateMinimapTexture()
+void Minimap::CreateMinimapTexture(const DirectX::SimpleMath::Vector2& mapSize)
 {
 	using namespace SimpleMath;
 	// 処理用変数
@@ -517,22 +524,26 @@ void Minimap::CreateMinimapTexture()
 
 	RECT windowRect = deviceResources->GetOutputSize();
 
-	DrawInstancing();
+	
+
+
 	// オフスクリーンレンダリングの開始
 	m_offscreenRendering->Begin(Color(MINIMAP_BACK_COLOR));
 	{
 		
-		//// **** ビューポートの変更 ****
-		//D3D11_VIEWPORT vp = {};
-		//vp.Width	= m_mapSize.x;	//ビューポートの横幅
-		//vp.Height	= m_mapSize.y;	//ビューポートの横幅
-		//vp.TopLeftX = 0.0f;			//ビューポートの左上のX座標(ピクセル数）
-		//vp.TopLeftY = 0.0f;			//ビューポートの左上のY座標(ピクセル数）
-		//vp.MinDepth = 0.0f;			//ビューポートの最小深度（0～1)
-		//vp.MaxDepth = 1.0f;			//ビューポートの最大深度（0～1)
-		//context->RSSetViewports(1, &vp);
+		// **** ビューポートの変更 ****
+		D3D11_VIEWPORT vp = {};
+		vp.Width	= m_mapSize.x;	//ビューポートの横幅
+		vp.Height	= m_mapSize.y;	//ビューポートの横幅
+		vp.TopLeftX = 0.0f;			//ビューポートの左上のX座標(ピクセル数）
+		vp.TopLeftY = 0.0f;			//ビューポートの左上のY座標(ピクセル数）
+		vp.MinDepth = 0.0f;			//ビューポートの最小深度（0～1)
+		vp.MaxDepth = 1.0f;			//ビューポートの最大深度（0～1)
+		context->RSSetViewports(1, &vp);
 
+		DrawInstancing(mapSize);
 
+		DrawPlayerMarker(mapSize);
 
 		////	半透明描画指定
 		//ID3D11BlendState* blendstate = states->NonPremultiplied();
@@ -613,8 +624,8 @@ void Minimap::CreateMinimapTexture()
 	m_offscreenRendering->End();
 
 	// **** ビューポートを元に戻す ****
-	//auto const viewport = deviceResources->GetScreenViewport();
-	//context->RSSetViewports(1, &viewport);
+	auto const viewport = deviceResources->GetScreenViewport();
+	context->RSSetViewports(1, &viewport);
 }
 
 void Minimap::DrawPlayer(DirectX::VertexPositionColorTexture vertexes[VERTEX_NUM], const DirectX::SimpleMath::Vector2& m_mapSize)
@@ -824,29 +835,15 @@ DirectX::SimpleMath::Vector2 Minimap::CalcMinimapPosition(const DirectX::SimpleM
 
 	// ミニマップ地点
 	Vector2 windowCenter = Vector2(Screen::Get()->GetCenterXF(), Screen::Get()->GetCenterYF());
-	Vector2 windowLeftTop = Vector2(0.f, 0.f);
+	Vector2 windowLeftTop = Vector2(0.0f, 0.f) + MAP_OFFSET;
 	Vector2 minimapPosition = normalDirection + windowLeftTop;
 
 	RECT windowRect = m_pCommonResources->GetDeviceResources()->GetOutputSize();
-	minimapPosition.x -= (windowRect.right * 0.5f - m_mapSize.x * 0.5f);
-	minimapPosition.y -= (windowRect.bottom * 0.5f - m_mapSize.y * 0.5f);
+	//minimapPosition.x -= (windowRect.right * 0.5f - m_mapSize.x * 0.5f);
+//	minimapPosition.y -= (windowRect.bottom * 0.5f - m_mapSize.y * 0.5f);
 
 	return minimapPosition;
 }
-//
-//void Minimap::SetInstanceBufferBuilding(InstanceBuffer* instanceData, int* currentIndex, const DirectX::SimpleMath::Vector2& mapSize)
-//{
-//	// 建物を取得する
-//	const auto buildings = GameObjectRegistry::GetInstance()->GetGameObjects(GameObjectTag::BUILDING);
-//	for (auto& building : buildings)
-//	{
-//		if (!building->IsActive()) { continue; }
-//		
-//		// 設定
-//		instanceData[*currentIndex] = GetInstanceData(building->GetTransform()->GetPosition(), Minimap::MARK_SIZE, BUILDING_MARK_COLOR, mapSize) ;
-//		(*currentIndex)++;
-//	}
-//}
 
 void Minimap::SetInstanceBufferGameObject(InstanceBuffer* instanceData, int* currentIndex, const DirectX::SimpleMath::Vector2& mapSize, const GameObjectTag& tag, const DirectX::SimpleMath::Vector4& color, const SHAPE_ID& shapeID)
 {
@@ -869,9 +866,8 @@ Minimap::InstanceBuffer Minimap::GetInstanceData(const DirectX::SimpleMath::Vect
 
 	// ワールド行列の設定
 	auto translationMat = SimpleMath::Matrix::CreateTranslation(CalcVertexMapPosition(worldPosition, mapSize));
-	auto rotationMat = SimpleMath::Matrix::CreateRotationZ(XMConvertToRadians(180.f));
-	auto scaleMat = SimpleMath::Matrix::CreateScale(MARK_SIZE * Screen::Get()->GetScreenScale(), MARK_SIZE * Screen::Get()->GetScreenScale(), 1.0f);
-	auto worldMatrix = scaleMat * rotationMat * translationMat;
+	auto scaleMat = SimpleMath::Matrix::CreateScale(MARK_SIZE , MARK_SIZE , 1.0f);
+	auto worldMatrix = scaleMat *  translationMat;
 
 	instanceData.world = worldMatrix;
 	// 色の設定
@@ -887,5 +883,36 @@ DirectX::SimpleMath::Vector3 Minimap::CalcVertexMapPosition(const DirectX::Simpl
 	auto minimapPos = CalcMinimapPosition(worldPosition, mapSize);
 	auto convertedPos = SimpleMath::Vector3(minimapPos.x / (mapSize.x / 2.0f), -(minimapPos.y / (mapSize.y / 2.0f)), 0.0f);
 
+
+
 	return convertedPos;
+}
+
+void Minimap::DrawPlayerMarker(const DirectX::SimpleMath::Vector2& mapSize)
+{
+
+	// プレイヤーの位置にマークを移動
+	auto player = GameObjectRegistry::GetInstance()->GetGameObject(GameObjectTag::PLAYER);
+	if (player)
+	{
+
+		auto minimapPosition = CalcMinimapPosition(player->GetTransform()->GetPosition(), mapSize);
+		auto worldPosition = minimapPosition + (mapSize / 2.0f);
+		m_playerMarkSprite->SetPosition(worldPosition);
+		m_playerMarkSprite->SetAngle(-player->GetTransform()->GetRotation().ToEuler().y);
+		m_playerMarkSprite->SetScale(PLAYER_MARKER_SCALE * MARK_SIZE);
+
+		m_spriteBatch->Begin();
+		{
+			m_playerMarkSprite->DrawSprite(m_spriteBatch.get());
+		}
+		m_spriteBatch->End();
+
+	}
+}
+
+DirectX::SimpleMath::Vector2 Minimap::CalcMinimapPosition() const
+{
+	auto screenScale = Screen::Get()->GetScreenScale();
+	return DirectX::SimpleMath::Vector2((RENDERING_SIZE.x / 2.0f) * MAP_SCALE * screenScale + 10.0f, (RENDERING_SIZE.y / 2.0f) * MAP_SCALE * screenScale + 10.0f);
 }

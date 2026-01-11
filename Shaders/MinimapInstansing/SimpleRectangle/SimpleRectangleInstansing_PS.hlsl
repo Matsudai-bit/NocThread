@@ -91,6 +91,7 @@ float4 getTriangle(float2 uv, float aspect, float4 color)
 
 float4 main(PS_INPUT input) : SV_Target0
 {
+    
     // 1. アスペクト比 (横 / 縦)
     float aspect = windowSize.x / windowSize.y;
     
