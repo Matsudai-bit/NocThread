@@ -15,6 +15,8 @@
 #include "Game/Common/UserInterfaceTool/Sprite/Sprite.h"
 
 #include "Game/Common/Input/InputBindingFactory/InputBindingFactory.h"
+#include <Game\Common\SoundManager\SoundManager.h>
+#include <Game\Common\SoundManager\SoundPaths.h>
 
 using namespace DirectX;
 
@@ -109,10 +111,14 @@ void TutorialWindow::Update(
 
 	if (CanMoveRight())
 	{
+		// SE‚ÌÄ¶
+		SoundManager::GetInstance()->Play(SoundPaths::SE_CURSOR_MOVING, false, 1.0f);
 		m_currentTutorialSpriteIndex++;
 	}
 	if (CanMoveLeft())
 	{
+		// SE‚ÌÄ¶
+		SoundManager::GetInstance()->Play(SoundPaths::SE_CURSOR_MOVING, false, 1.0f);
 		m_currentTutorialSpriteIndex--;
 	}
 
@@ -124,6 +130,8 @@ void TutorialWindow::Update(
 	if (m_uiInput->IsInput(InputActionType::UIActionID::CONFIRM, InputSystem<InputActionType::UIActionID>::InputOption::PRESSED) ||
 		m_uiInput->IsInput(InputActionType::UIActionID::CANCEL, InputSystem<InputActionType::UIActionID>::InputOption::PRESSED))
 	{
+		// SE‚ÌÄ¶
+		SoundManager::GetInstance()->Play(SoundPaths::SE_CANCEL, false, 0.4f);
 		m_closeWindow();
 	}
 }

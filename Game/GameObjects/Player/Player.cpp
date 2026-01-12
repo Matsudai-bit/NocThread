@@ -361,6 +361,12 @@ void Player::OnCollision(const CollisionInfo& info)
 		OnCollisionWithBuilding(info.pOtherObject, info.pOtherCollider);
 	}
 
+	if (info.pOtherObject->GetTag() == GameObjectTag::CHECKPOINT)
+	{
+		// SE‚ÌÄ¶
+		SoundManager::GetInstance()->Play(SoundPaths::SE_PLAYER_PASSING, false, 1.5f);
+	}
+
 }
 
 /**
@@ -829,7 +835,7 @@ void Player::BehaviourWireAction(const float& deltaTime, const float& speed)
  *
  */
 void Player::ShootWire()
-{
+{	
 	auto eyePos = m_pPlayerCamera->GetEye();
 
 	// ƒeƒXƒg ------------------------------------------------------
@@ -885,6 +891,10 @@ void Player::ResolvePushOutAndBounce(DirectX::SimpleMath::Vector3 overlap, const
  */
 void Player::Jump(float deltaTime)
 {
+	// SE‚ÌÄ¶
+	SoundManager::GetInstance()->Play(SoundPaths::SE_PLAYER_JUMP, false, 0.4f);
+
+
 	AddForceToVelocityY(JUMPING_POWER * deltaTime);
 }
 

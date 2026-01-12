@@ -91,7 +91,7 @@ void Checkpoint::Initialize(const CommonResources* pCommonResources, CollisionMa
 	m_checkpointObject->Initialize(GetCommonResources()->GetResourceManager());
 
 
-	m_effectHandleID = GameEffectController::GetInstance()->PlayEffect(std::make_unique<SimpleParticle>(GetCommonResources()->GetDeviceResources(), GetTransform()->GetPosition(), MainCamera::GetInstance()->GetCamera()), GameEffectManager::EffectClip(true) );
+	m_effectHandleID =  GameEffectController::GetInstance()->PlayEffect(std::make_unique<SimpleParticle>(GetCommonResources()->GetDeviceResources(), GetTransform()->GetPosition(), MainCamera::GetInstance()->GetCamera()), GameEffectManager::EffectClip(true));
 
 }
 

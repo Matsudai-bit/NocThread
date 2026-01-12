@@ -58,6 +58,9 @@ void ShootingWirePlayerState::OnStartState()
 
 	// YŽ²‚Ì‘¬“x‚ð‚È‚­‚·
 	//GetOwner()->ResetVelocityY();
+
+	// SE‚ÌÄ¶
+	SoundManager::GetInstance()->Play(SoundPaths::SE_PLAYER_SHOOTINGWIRE, false, 1.0f);
 }
 
 /**

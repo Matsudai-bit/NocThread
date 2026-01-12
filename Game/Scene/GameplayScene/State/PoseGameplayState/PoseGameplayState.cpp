@@ -35,6 +35,8 @@
 #include "Game/Manager/StageManager/StageManager.h"
 #include "Game/Common/GameEffect/GameEffectController.h"
 #include "Game/Common/Camera/MainCamera/MainCamera.h"
+#include <Game\Common\SoundManager\SoundPaths.h>
+#include <Game\Common\SoundManager\SoundManager.h>
 
 using namespace DirectX;
 
@@ -247,19 +249,25 @@ void PauseGameplayState::OnExitState()
  */
 void PauseGameplayState::OnPushMenuItem(PauseMenu::MenuItem menuItem)
 {
+
 	switch (menuItem)
 	{
 	case PauseMenu::MenuItem::CONTINUE:
+		// SE‚ÌÄ¶
+		SoundManager::GetInstance()->Play(SoundPaths::SE_CANCEL, false, 0.4f);
 		ContinueGame();
 		break;
 	case PauseMenu::MenuItem::TUTORIAL:
+		// SE‚ÌÄ¶
+		SoundManager::GetInstance()->Play(SoundPaths::SE_DECIDE, false, 1.0f);
 		m_isDisplayingTutorialWindow = true;
 		m_canvas->AddSprite(m_tutorialWindow.get());
 		break;
 	case PauseMenu::MenuItem::SETTING:
 		break;
 	case PauseMenu::MenuItem::RETURN_TITLE:
-
+		// SE‚ÌÄ¶
+		SoundManager::GetInstance()->Play(SoundPaths::SE_DECIDE, false, 1.0f);
 		if (GetOwner()->GetCommonResources()->GetTransitionMask()->IsEnd())
 		{
 			// ƒV[ƒ“‚ğØ‚è‘Ö‚¦‚é

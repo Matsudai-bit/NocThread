@@ -262,11 +262,12 @@ DirectX::SimpleMath::Vector2 TitleScene::CalcCenterOrigin(ID3D11ShaderResourceVi
  * * @param[in] menuItem　押されたアイテム
  */
 void TitleScene::OnPushMenuItem(TitleMenu::MenuItem menuItem)
-{
+{ 
 	switch (menuItem)
 	{
 	case TitleMenu::MenuItem::PLAY:
-	{
+	{// SEの再生
+		SoundManager::GetInstance()->Play(SoundPaths::SE_BUTTON_CLICK_GAMESTART, false, 1.0f);
 		std::string newStateName = "Change GameplayScene";
 		OutputDebugString(L"%ls\n", std::wstring(newStateName.begin(), newStateName.end()).c_str());
 
@@ -275,14 +276,19 @@ void TitleScene::OnPushMenuItem(TitleMenu::MenuItem menuItem)
 	}
 	break;
 	case TitleMenu::MenuItem::TUTORIAL:
+	
+		// SEの再生
+		SoundManager::GetInstance()->Play(SoundPaths::SE_DECIDE, false, 1.0f);
 		// キャンバスに追加
 		m_canvas->AddSprite(m_tutorialWindow.get());
 		m_isDisplayingTutorialWindow = true;
 		break;
 	case TitleMenu::MenuItem::SETTING:
+		
 		break;
 	case TitleMenu::MenuItem::QUIT:
-		
+		// SEの再生
+		SoundManager::GetInstance()->Play(SoundPaths::SE_DECIDE, false, 1.0f);
 		m_isQuit = true;
 		GetCommonResources()->GetTransitionMask()->Close([&]() {PostQuitMessage(0);; });
 

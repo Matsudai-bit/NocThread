@@ -27,7 +27,8 @@
 #include "Game/Common/Event/Messenger/GameFlowMessenger/IGameFlowObserver.h"
 #include "Game/Common/Input/InputActionType/InputActionType.h"
 #include "Game/Common/Input/InputSystem/InputSystem.h"
-
+#include "Game/Common/SoundManager/SoundManager.h"
+#include "Game/Common/SoundManager/SoundPaths.h"
 #include "Library/DirectXFramework/Animation.h"
 
 // ƒNƒ‰ƒX‚Ì‘O•ûéŒ¾ ===================================================

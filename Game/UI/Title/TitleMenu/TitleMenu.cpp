@@ -20,6 +20,8 @@
 #include "Game/Common/Input/InputBindingFactory/InputBindingFactory.h"
 
 #include "Library/MyLib/EasingKit/EasingKit.h"
+#include <Game\Common\SoundManager\SoundManager.h>
+#include <Game\Common\SoundManager\SoundPaths.h>
 
 using namespace DirectX;
 
@@ -141,12 +143,19 @@ void TitleMenu::Update(float deltaTime)
 
 	if (CanMoveDownSelector())
 	{
+		// SE‚ÌÄ¶
+		SoundManager::GetInstance()->Play(SoundPaths::SE_CURSOR_MOVING, false, 1.0f);
+
+		
+
 		// Œ¸ŽZ‚·‚é
 		m_currentSelectItemForInt++;
 	}
 
 	if (CanMoveUpSelector())
-	{
+	{		
+		// SE‚ÌÄ¶
+		SoundManager::GetInstance()->Play(SoundPaths::SE_CURSOR_MOVING, false, 1.0f);
 		// ‰ÁŽZ‚·‚é
 		m_currentSelectItemForInt--;
 	}

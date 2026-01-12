@@ -360,6 +360,12 @@ void Minimap::DrawInstancing(const DirectX::SimpleMath::Vector2& mapSize)
 	context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	context->OMSetDepthStencilState(m_pCommonResources->GetCommonStates()->DepthDefault(), 0);
+
+	//	”¼“§–¾•`‰æŽw’è
+	ID3D11BlendState* blendState = m_pCommonResources->GetCommonStates()->NonPremultiplied();
+
+	//	“§–¾”»’èˆ—
+	context->OMSetBlendState(blendState, nullptr, 0xFFFFFFFF);
 	//	ƒJƒŠƒ“ƒO‚Í‚È‚µ
 	context->RSSetState(m_pCommonResources->GetCommonStates()->CullNone());
 
