@@ -29,6 +29,7 @@ namespace MyLib
 }
 
 class ResourceManager;	// リソース管理
+class TransitionMask;	// シーン遷移マスク表示クラス
 
 
 
@@ -59,6 +60,8 @@ private:
 	DirectX::Mouse::ButtonStateTracker*			m_pMouseState;		///< マウスの状態
 	DirectX::GamePad::ButtonStateTracker*		m_pGamePadState;	///< ゲームパッドの状態
 
+	TransitionMask* m_pTransitionMask;								///< シーン遷移マスク表示クラス
+
 	// ---- 仮実装 ----
 	DX::RenderTexture* m_pCopyRenderTexture;			///< 画面をコピーしたテクスチャ
 	bool m_copyScreenRequest;
@@ -77,7 +80,9 @@ public:
 		DirectX::Keyboard::KeyboardStateTracker*pKeyboardState,
 		DirectX::Mouse::ButtonStateTracker*		pMouseState,
 		DirectX::GamePad::ButtonStateTracker*	pGamePadState,
-		DX::RenderTexture*						pCopyRenderTexture);
+		DX::RenderTexture*						pCopyRenderTexture,
+		TransitionMask* pTransitionMask);
+
 
 	// デストラクタ
 	~CommonResources();
@@ -109,6 +114,9 @@ public:
 
 	// ゲームパッドの取得
 	DirectX::GamePad::ButtonStateTracker* GetGamePadTracker() const;
+
+	// シーン遷移マスク表示の取得
+	TransitionMask* GetTransitionMask() const;
 
 	// 画面をコピーしたテクスチャの取得
 	DX::RenderTexture* GetCopyScreenTexture() const { return m_pCopyRenderTexture; }

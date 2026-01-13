@@ -15,7 +15,7 @@ float4 main(PS_INPUT input) : SV_Target0
     
     float alpha = lerp(1.0f * 0.8f, 0.0f, lerpValue);
     
-    float4 outputB = float4(input.Color.rgb, alpha );
+    float4 outputB = float4(input.Color.rgb, alpha * input.Color.a );
     
 
     

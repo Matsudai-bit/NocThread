@@ -28,13 +28,15 @@
 
 #include "Game/Common/Camera/Camera.h"
 
+#include "Game/GameObjects/RopeObject/XPBDSimulator/Constraint/DistanceConstraint/DistanceConstraintFactory.h"
 #include "Game/GameObjects/RopeObject/XPBDSimulator/Constraint/CollisionConstraint/CollisionConstraintFactory.h"
+#include "Game/GameObjects/RopeObject/XPBDSimulator/Constraint/SteeringConstraint/SteeringConstraintFactory.h"
 
 
 using namespace DirectX;
 
 # define DEBUG
-
+#include "Library/MyLib/DirectXMyToolKit/DebugFont/DebugFont.h"
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ
@@ -102,13 +104,17 @@ void Wire::Initialize(
 	// ロープオブジェクトの作成
 	m_ropeObject = std::make_unique<RopeObject>();
 	m_ropeObject->Initialize(pCommonResources);
-	// シミュレータ作成
-	m_simulator = std::make_unique<XPBDSimulator>();
 
-	// 制約の追加
-	std::vector<std::unique_ptr<ConstraintFactory>> constraintFactories;
-	constraintFactories.emplace_back(std::make_unique<CollisionConstraintFactory>(m_pCollisionManager, simulationParam));
-	m_simulator->SetConstraint(&constraintFactories);
+	// **** シミュレータ作成 ****
+	m_simulator = std::make_unique<XPBDSimulator>();
+	// **** 制約の追加 ****
+	// 操舵制約
+	m_simulator->AddConstraint(std::make_unique<SteeringConstraintFactory> (GetCommonResources()));	
+	// 距離制約
+	m_simulator->AddConstraint(std::make_unique<DistanceConstraintFactory> ());						
+	// 衝突制約
+	m_simulator->AddConstraint(std::make_unique<CollisionConstraintFactory>(m_pCollisionManager));	
+
 
 	m_length = length;
 
@@ -191,14 +197,20 @@ void Wire::Draw(const Camera& camera)
 	if (kb->IsKeyPressed( Keyboard::U)) debug = !debug;
 
 	if (debug)
-	for (const auto& obj : m_particleObjects)
 	{
-		Model ballModel = GetCommonResources()->GetResourceManager()->CreateModel("Ball.sdkmesh");
+		for (const auto& obj : m_particleObjects)
+		{
+			Model ballModel = GetCommonResources()->GetResourceManager()->CreateModel("Ball.sdkmesh");
 
-		world = SimpleMath::Matrix::CreateScale(0.05f);
-		world *= SimpleMath::Matrix::CreateTranslation(obj->GetPosition());
-		ballModel.Draw(context, *states, world, camera.GetViewMatrix(), camera.GetProjectionMatrix());
+			world = SimpleMath::Matrix::CreateScale(0.05f);
+			world *= SimpleMath::Matrix::CreateTranslation(obj->GetPosition());
+			ballModel.Draw(context, *states, world, camera.GetViewMatrix(), camera.GetProjectionMatrix());
+		}
+
+		GetCommonResources()->GetDebugFont()->AddString(10, 50, Colors::Red, L"particle velocity : (%f, %f, %f) ", m_particleObjects.back()->GetVelocity().x, m_particleObjects.back()->GetVelocity().y, m_particleObjects.back()->GetVelocity().z);
+		GetCommonResources()->GetDebugFont()->AddString(10, 70, Colors::Red, L"particle position : (%f, %f, %f) ", m_particleObjects.back()->GetPosition().x, m_particleObjects.back()->GetPosition().y, m_particleObjects.back()->GetPosition().z);
 	}
+
 
 # else
 	if (m_particleObjects.size() > 0)
@@ -280,7 +292,7 @@ void Wire::ShootWire(const DirectX::SimpleMath::Vector3& origin, const DirectX::
 
 	m_collider->Set(origin, origin,true);
 
-	m_pCollisionManager->AddCollisionObjectData(this, m_collider.get());
+	m_pCollisionManager->AddCollisionData(CollisionData(this, m_collider.get()));
 
 	m_particleObjects.emplace_back(std::make_unique<ParticleObject>());
 	m_particleObjects.back()->SetPosition(origin);
@@ -314,7 +326,7 @@ void Wire::ShootWireToTarget(const DirectX::SimpleMath::Vector3& origin, const D
 
 	m_collider->Set(origin, origin, true);
 
-	m_pCollisionManager->AddCollisionObjectData(this, m_collider.get());
+	m_pCollisionManager->AddCollisionData(CollisionData(this, m_collider.get()));
 
 	m_particleObjects.emplace_back(std::make_unique<ParticleObject>());
 	m_particleObjects.back()->SetPosition(origin);
@@ -471,7 +483,7 @@ void Wire::OnCollision(const CollisionInfo& info)
 
 
 			// **** ワイヤーの作成 *****
-			if (CreateRope(m_owner.pGameObject->GetTransform()->GetPosition(), intersectionPos, m_simulationParam, 0.9f))
+			if (CreateRope(m_owner.pGameObject->GetTransform()->GetPosition(), intersectionPos, m_simulationParam, 0.8f))
 			{
 
 				m_owner.pHolderInterface->OnCollisionWire(info.pOtherObject);

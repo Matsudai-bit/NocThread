@@ -35,17 +35,6 @@ CheckpointManager::~CheckpointManager()
 
 
 
-/**
- * @brief ‰Šú‰»ˆ—
- *
- * @param[in] ‚È‚µ
- *
- * @return ‚È‚µ
- */
-void CheckpointManager::Initialize(const CommonResources* pCommonResources)
-{
-
-}
 
 /**
  * @brief XVˆ—
@@ -58,9 +47,7 @@ void CheckpointManager::Initialize(const CommonResources* pCommonResources)
 bool CheckpointManager::UpdateTask(float deltaTime)
 {
 	for (auto& checkpoint : m_checkpoints)
-	{
-		if (!checkpoint->IsActive()) { continue; }
-		
+	{		
 		// ‰Šú‰»ˆ—
 		checkpoint->Update(deltaTime);	
 	}
@@ -76,9 +63,7 @@ bool CheckpointManager::UpdateTask(float deltaTime)
 void CheckpointManager::DrawTask(const Camera& camera)
 {
 	for (auto& checkpoint : m_checkpoints)
-	{
-		if (!checkpoint->IsActive()) { continue; }
-		
+	{		
 		// ‰Šú‰»ˆ—
 		checkpoint->Draw(camera);
 		
@@ -104,6 +89,5 @@ void CheckpointManager::CreateCheckpoint(const DirectX::SimpleMath::Vector3& pos
 	m_checkpoints.emplace_back(std::move(std::make_unique<Checkpoint>()));
 
 		// ‰Šú‰»ˆ—
-	m_checkpoints.back()->Initialize(pCommonResources, pCollisionManager);
-	m_checkpoints.back()->GetTransform()->SetPosition(position);
+	m_checkpoints.back()->Initialize(pCommonResources, pCollisionManager, position);
 }

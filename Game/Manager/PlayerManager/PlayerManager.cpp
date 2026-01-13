@@ -49,7 +49,7 @@ PlayerManager::~PlayerManager()
  * @param[in] pCollisionManager	衝突管理
  * @param[in] pPlayerCamera		プレイヤーカメラ
  */
-void PlayerManager::Initialize(const CommonResources* pCommonResources, CollisionManager* pCollisionManager, const PlayerCamera* pPlayerCamera)
+void PlayerManager::Initialize(const CommonResources* pCommonResources, const PlayerCamera* pPlayerCamera)
 {
 	m_pCommonResources = pCommonResources;
 

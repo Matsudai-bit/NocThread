@@ -45,7 +45,7 @@ class TaskManager;		// タスク管理
 class Minimap;			// ミニマップ
 class GameDirector;		// ゲーム進行の監督
 class SpawnManager;		// 出現管理
-
+class CollisionMatrix;	// 衝突検知する対応付け表
 
 
 // クラスの定義 ===============================================================
@@ -82,6 +82,7 @@ private:
 	std::unique_ptr<GameEffectManager>	m_gameEffectManager;///< ゲームエフェクト管理
 	std::unique_ptr<TaskManager>		m_taskManager;		///< タスク管理
 	std::unique_ptr<SpawnManager>		m_spawnManager;		///< 出現管理
+	std::unique_ptr<CollisionMatrix>	m_collisionMatrix;	///< 出現管理
 
 	// その他
 	std::unique_ptr<StageManager> m_stageManager;	///< ステージ上のオブジェクトを管理
@@ -149,7 +150,6 @@ private:
 	// --------------------------------------------------------------------
 	// 初期設定関連 
 	// --------------------------------------------------------------------
-
 	// ゲーム開始時のセットアップ
 	void SetUpForGameStart();
 

@@ -103,15 +103,15 @@ void WireTargetFinder::Update()
  */
 void WireTargetFinder::Draw(const Camera& camera)
 {
+	UNREFERENCED_PARAMETER(camera);
+
 	auto context = GetCommonResources()->GetDeviceResources()->GetD3DDeviceContext();
 
 
 	std::unique_ptr<GeometricPrimitive>  a = GeometricPrimitive::CreateSphere(context, 0.5f);
 
-	// デバック表示
-	//m_capsuleCollider->Draw(context, view, projection);
+	 //デバック表示
 
-	//DX::DrawRay(m_primitiveBatch.get(), m_capsuleCollider->GetPosition() + (-m_capsuleCollider->GetAxis() * (m_capsuleCollider->GetLength() / 2.0f)), m_capsuleCollider->GetAxis() * m_capsuleCollider->GetLength(), false, Colors::Red);
 
 	m_primitiveBatch->Begin();
 	for (auto direction : GetSearchDirections())
@@ -155,8 +155,6 @@ void WireTargetFinder::PreCollision()
  */
 void WireTargetFinder::OnCollision(const CollisionInfo& info)
 {
-
-
 	SimpleMath::Vector3 targetPosition;
 
 	auto capsule = dynamic_cast<const Capsule*>(info.pMyCollider);
@@ -166,6 +164,11 @@ void WireTargetFinder::OnCollision(const CollisionInfo& info)
 	{
 		m_grappleTargetPositionCache.emplace_back(targetPosition);
 	}
+}
+
+void WireTargetFinder::PostCollision()
+{
+	RefineAndSortTargets();
 }
 
 /**
@@ -196,7 +199,6 @@ DirectX::SimpleMath::Vector3 WireTargetFinder::GetTargetPosition()
 bool WireTargetFinder::IsFindTarget() const
 {
 	
-
 	return m_grappleTargetPositionCache.size() > 0;
 
 }
@@ -355,8 +357,8 @@ bool WireTargetFinder::CalcWireTargetPosition(
 	const GameObject* pHitObject,
 	const ICollider* pHitCollider)
 {
-	const float MIN_GRAPPLE_DISTANCE_THRESHOLD = 1.1f;
-	
+
+ 
 	if (pHitObject->GetTag() == GameObjectTag::BUILDING || pHitObject->GetTag() == GameObjectTag::ESCAPE_HELICOPTER)
 	{
 		// AABBにキャスト
@@ -366,7 +368,7 @@ bool WireTargetFinder::CalcWireTargetPosition(
 			if (GetIntersectionPointOnSurface(*aabb, hitCapsuleCollider, &targetPosition))
 			{
 				// 距離が MIN_GRAPPLE_DISTANCE_THRESHOLD 以下の場合除外
-				if (MIN_GRAPPLE_DISTANCE_THRESHOLD * MIN_GRAPPLE_DISTANCE_THRESHOLD < SimpleMath::Vector3::DistanceSquared(GetTransform()->GetPosition(), targetPosition))
+				if (MIN_GRAPPLE_DISTANCE_THRESHOLD * MIN_GRAPPLE_DISTANCE_THRESHOLD < SimpleMath::Vector3::DistanceSquared(m_pPlayer->GetTransform()->GetPosition(), targetPosition))
 				{
 					*pTargetPosition = targetPosition;
 					return true;
@@ -391,14 +393,29 @@ DirectX::SimpleMath::Vector3 WireTargetFinder::GetFarTargetPosition(std::vector<
 {
 	using namespace SimpleMath;
 
+	return (targetPositions.size() != 0) ? targetPositions.back() : SimpleMath::Vector3::Zero;
+}
+
+/**
+ * @brief ターゲットを絞り込みソートする
+ * 
+ */
+void WireTargetFinder::RefineAndSortTargets()
+{
+	using namespace SimpleMath;
+
+	float constraint = 20.0f;
+	
+	m_grappleTargetPositionCache.erase(std::remove_if(m_grappleTargetPositionCache.begin(), m_grappleTargetPositionCache.end(), [&](const Vector3& s)
+		{
+			return (Vector3::DistanceSquared(s, m_pPlayer->GetTransform()->GetPosition()) < constraint * constraint);
+		}), m_grappleTargetPositionCache.end());
+
 	// 近い順にソートする
-	std::sort(targetPositions.begin(), targetPositions.end(), [&](const Vector3& lhs, const Vector3& rhs)
+	std::sort(m_grappleTargetPositionCache.begin(), m_grappleTargetPositionCache.end(), [&](const Vector3& lhs, const Vector3& rhs)
 		{
 			return Vector3::DistanceSquared(lhs, m_pPlayer->GetTransform()->GetPosition()) < Vector3::DistanceSquared(rhs, m_pPlayer->GetTransform()->GetPosition());
 		});
-
-
-	return (targetPositions.size() != 0) ? targetPositions.back() : SimpleMath::Vector3::Zero;
 }
 
 /**
@@ -411,6 +428,7 @@ DirectX::SimpleMath::Vector3 WireTargetFinder::GetFarTargetPosition(std::vector<
 std::vector<DirectX::SimpleMath::Vector3> WireTargetFinder::GetTargetPositionCandidatesForDirection(std::vector<DirectX::SimpleMath::Vector3> searchDirections)
 {
 	using namespace SimpleMath;
+
 	// 目標座標の候補
 	std::vector<Vector3> targetPositions;
 
@@ -428,49 +446,26 @@ std::vector<DirectX::SimpleMath::Vector3> WireTargetFinder::GetTargetPositionCan
 	
 	// サイズを設定
 	m_capsules.resize(searchDirections.size());
-
-
-
+	Vector3 playerPosition = m_pPlayer->GetTransform()->GetPosition();
 
 	for (size_t i = 0; i < searchDirections.size(); i++)
 	{
-		Capsule capsule = CreateCapsuleCollider(m_pPlayer->GetTransform()->GetPosition(), searchDirections[i], m_wireLength * std::abs(searchDirections[i].y * 1.3f), m_wireRadius);
+		float capsuleLength = m_wireLength * std::abs(searchDirections[i].y * 1.3f);
+		Capsule capsule = CreateCapsuleCollider(playerPosition, searchDirections[i], capsuleLength, m_wireRadius);
 
 		(m_capsules[i]) = capsule;
-		
-		
-
-		//// 衝突情報
-		//std::vector<const GameObject*> hitGameObjects{};
-		//std::vector<const ICollider*> hitColliders{};
-
-		//// 衝突判定
-		//if (m_pCollisionManager->RetrieveCollisionData(&capsule, &hitGameObjects, &hitColliders))
-		//{
-
-		//	for (size_t i = 0; i < hitGameObjects.size(); i++)
-		//	{
-		//		// 処理用変数
-		//		auto pHitObject		= hitGameObjects[i];
-		//		auto pHitCollider	= hitColliders[i];
-
-		//		SimpleMath::Vector3 targetPosition;
-
-		//		// 目標座標の算出
-		//		if (CalcWireTargetPosition(&targetPosition, capsule, pHitObject, pHitCollider))
-		//		{
-		//			targetPositions.emplace_back(targetPosition);
-		//		}
-		//	}
-		//}
 
 	}
+	m_broadCollider.SetRadius(m_wireLength);
+	m_broadCollider.Transform(playerPosition);
 	if (registry)
 	{
+		CollisionData data{ nullptr, &m_broadCollider };
 		for (auto& capsule : m_capsules)
 		{
-			m_pCollisionManager->AddCollisionObjectData(this, &capsule);
+			data.children.push_back(CollisionData(this, &capsule));
 		}
+		m_pCollisionManager->AddCollisionData(data);
 	}
 	return targetPositions;
 }

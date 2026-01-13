@@ -27,10 +27,10 @@ public:
 // データメンバの宣言 -----------------------------------------------
 private:
 
-	DirectX::SimpleMath::Vector3	m_position;		///< 座標
-	DirectX::SimpleMath::Quaternion m_rotation;		///< 回転
-	DirectX::SimpleMath::Quaternion m_initialRotation;///< 初期回転　モデルを初期状態で傾け解く場合などに使用する
-	DirectX::SimpleMath::Vector3	m_scale;		///< スケール
+	DirectX::SimpleMath::Vector3	m_position;			///< 座標
+	DirectX::SimpleMath::Quaternion m_rotation;			///< 回転
+	DirectX::SimpleMath::Quaternion m_initialRotation;	///< 初期回転　モデルを初期状態で傾け解く場合などに使用する
+	DirectX::SimpleMath::Vector3	m_scale;			///< スケール
 
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
@@ -46,7 +46,9 @@ public:
 public:
 	
 	// 正面ベクトルの取得
-	DirectX::SimpleMath::Vector3 GetForward() const;
+	DirectX::SimpleMath::Vector3 GetForward()	const;
+	// 右にベクトルの取得
+	DirectX::SimpleMath::Vector3 GetRight()		const;
 
 // 取得/設定
 public:

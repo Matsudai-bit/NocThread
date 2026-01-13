@@ -180,11 +180,14 @@
     </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Game\Common\Behaviour\SteeringBehavior\SteeringBehavior.h" />
+    <ClInclude Include="Game\Common\Behaviour\SteeringBehavior\SteeringParameters.h" />
     <ClInclude Include="Game\Common\Camera\Camera.h" />
     <ClInclude Include="Game\Common\Camera\MainCamera\MainCamera.h" />
     <ClInclude Include="Game\Common\Camera\PlayerCamera\PlayerCamera.h" />
     <ClInclude Include="Game\Common\Collision\Collision.h" />
     <ClInclude Include="Game\Common\Collision\CollisionManager\CollisionManager.h" />
+    <ClInclude Include="Game\Common\Collision\CollisionMatrix\CollisionMatrix.h" />
     <ClInclude Include="Game\Common\Collision\ICollider.h" />
     <ClInclude Include="Game\Common\Collision\ICollision.h" />
     <ClInclude Include="Game\Common\CommonResources\CommonResources.h" />
@@ -201,6 +204,7 @@
     <ClInclude Include="Game\Common\Event\WireSystemObserver\WireSystemSubject.h" />
     <ClInclude Include="Game\Common\ExitController\ExitController.h" />
     <ClInclude Include="Game\Common\Factory\BuildingFactory\BuildingFactory.h" />
+    <ClInclude Include="Game\Common\Factory\CollisionMatrixFactory\CollisionMatrixFactory.h" />
     <ClInclude Include="Game\Common\Factory\EnemyFactory\EnemyFactory.h" />
     <ClInclude Include="Game\Common\Factory\EnemyFactory\IEnemyFactory\IEnemyFactory.h" />
     <ClInclude Include="Game\Common\Factory\FactoryBase.h" />
@@ -232,6 +236,7 @@
     <ClInclude Include="Game\Common\StateMachine\StateBase\StateBase.h" />
     <ClInclude Include="Game\Common\StateMachine\StateMachine.h" />
     <ClInclude Include="Game\Common\TaskManager\TaskManager.h" />
+    <ClInclude Include="Game\Common\TransitionMask\TransitionMask.h" />
     <ClInclude Include="Game\Common\UserInterfaceTool\Canvas\Canvas.h" />
     <ClInclude Include="Game\Common\UserInterfaceTool\SpriteAnimator\SpriteAnimator.h" />
     <ClInclude Include="Game\Common\UserInterfaceTool\SpriteNumber\SpriteNumber.h" />
@@ -276,6 +281,8 @@
     <ClInclude Include="Game\GameObjects\RopeObject\XPBDSimulator\Constraint\DistanceConstraint\DistanceConstraintFactory.h" />
     <ClInclude Include="Game\GameObjects\RopeObject\XPBDSimulator\Constraint\IConstraint.h" />
     <ClInclude Include="Game\GameObjects\RopeObject\XPBDSimulator\Constraint\ConstraintFactory.h" />
+    <ClInclude Include="Game\GameObjects\RopeObject\XPBDSimulator\Constraint\SteeringConstraint\SteeringConstraint.h" />
+    <ClInclude Include="Game\GameObjects\RopeObject\XPBDSimulator\Constraint\SteeringConstraint\SteeringConstraintFactory.h" />
     <ClInclude Include="Game\GameObjects\RopeObject\XPBDSimulator\SimParticle\SimParticle.h" />
     <ClInclude Include="Game\GameObjects\RopeObject\XPBDSimulator\XPBDSimulator.h" />
     <ClInclude Include="Game\GameObjects\StageObject\StageObject.h" />
@@ -319,11 +326,12 @@
     <ClInclude Include="Library\MyLib\DirectXMyToolKit\DebugCamera\DebugCamera.h" />
     <ClInclude Include="Library\MyLib\DirectXMyToolKit\DebugFont\DebugFont.h" />
     <ClInclude Include="Library\MyLib\DirectXMyToolKit\DepthStencil\DepthStencil.h" />
-    <ClInclude Include="Library\MyLib\DirectXMyToolKit\DirectXMyToolKit.h" />
+    <ClInclude Include="Library\MyLib\DirectXMyToolKit\DirectXUtils.h" />
     <ClInclude Include="Library\MyLib\DirectXMyToolKit\GridFloor\GridFloor.h" />
     <ClInclude Include="Library\MyLib\DirectXMyToolKit\ModelPart\ModelPart.h" />
     <ClInclude Include="Library\MyLib\DirectXMyToolKit\OffscreenRendering\OffscreenRendering.h" />
     <ClInclude Include="Library\MyLib\EasingKit\EasingKit.h" />
+    <ClInclude Include="Library\MyLib\FrameTimer\FrameTimer.h" />
     <ClInclude Include="Library\MyLib\MathUtils\MathUtils.h" />
     <ClInclude Include="Library\MyLib\NlohmannUtils\NlohmannUtils.h" />
     <ClInclude Include="Library\MyLib\Ray\Ray.h" />
@@ -331,11 +339,14 @@
     <ClInclude Include="StepTimer.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Game\Common\Behaviour\SteeringBehavior\SteeringBehavior.cpp" />
+    <ClCompile Include="Game\Common\Behaviour\SteeringBehavior\SteeringParameters.cpp" />
     <ClCompile Include="Game\Common\Camera\Camera.cpp" />
     <ClCompile Include="Game\Common\Camera\MainCamera\MainCamera.cpp" />
     <ClCompile Include="Game\Common\Camera\PlayerCamera\PlayerCamera.cpp" />
     <ClCompile Include="Game\Common\Collision\Collision.cpp" />
     <ClCompile Include="Game\Common\Collision\CollisionManager\CollisionManager.cpp" />
+    <ClCompile Include="Game\Common\Collision\CollisionMatrix\CollisionMatrix.cpp" />
     <ClCompile Include="Game\Common\CommonResources\CommonResources.cpp" />
     <ClCompile Include="Game\Common\ElapsedTimeCounter\ElapsedTimeCounter.cpp" />
     <ClCompile Include="Game\Common\EntityManager\EntityManager.cpp" />
@@ -346,6 +357,7 @@
     <ClCompile Include="Game\Common\Event\WireSystemObserver\WireSystemSubject.cpp" />
     <ClCompile Include="Game\Common\ExitController\ExitController.cpp" />
     <ClCompile Include="Game\Common\Factory\BuildingFactory\BuildingFactory.cpp" />
+    <ClCompile Include="Game\Common\Factory\CollisionMatrixFactory\CollisionMatrixFactory.cpp" />
     <ClCompile Include="Game\Common\Factory\EnemyFactory\EnemyFactory.cpp" />
     <ClCompile Include="Game\Common\Factory\PlayerFactory\PlayerFactory.cpp" />
     <ClCompile Include="Game\Common\GameDirector\GameDirector.cpp" />
@@ -374,6 +386,7 @@
     <ClCompile Include="Game\Common\StateMachine\StateBase\StateBase.cpp" />
     <ClCompile Include="Game\Common\StateMachine\StateMachine.cpp" />
     <ClCompile Include="Game\Common\TaskManager\TaskManager.cpp" />
+    <ClCompile Include="Game\Common\TransitionMask\TransitionMask.cpp" />
     <ClCompile Include="Game\Common\UserInterfaceTool\Canvas\Canvas.cpp" />
     <ClCompile Include="Game\Common\UserInterfaceTool\SpriteAnimator\SpriteAnimator.cpp" />
     <ClCompile Include="Game\Common\UserInterfaceTool\SpriteNumber\SpriteNumber.cpp" />
@@ -413,6 +426,8 @@
     <ClCompile Include="Game\GameObjects\RopeObject\XPBDSimulator\Constraint\DistanceConstraint\DistanceConstraintFactory.cpp" />
     <ClCompile Include="Game\GameObjects\RopeObject\XPBDSimulator\Constraint\IConstraint.cpp" />
     <ClCompile Include="Game\GameObjects\RopeObject\XPBDSimulator\Constraint\ConstraintFactory.cpp" />
+    <ClCompile Include="Game\GameObjects\RopeObject\XPBDSimulator\Constraint\SteeringConstraint\SteeringConstraint.cpp" />
+    <ClCompile Include="Game\GameObjects\RopeObject\XPBDSimulator\Constraint\SteeringConstraint\SteeringConstraintFactory.cpp" />
     <ClCompile Include="Game\GameObjects\RopeObject\XPBDSimulator\SimParticle\SimParticle.cpp" />
     <ClCompile Include="Game\GameObjects\RopeObject\XPBDSimulator\XPBDSimulator.cpp" />
     <ClCompile Include="Game\GameObjects\StageObject\StageObject.cpp" />
@@ -472,9 +487,10 @@
     <ClCompile Include="Library\MyLib\DirectXMyToolKit\DebugCamera\DebugCamera.cpp" />
     <ClCompile Include="Library\MyLib\DirectXMyToolKit\DebugFont\DebugFont.cpp" />
     <ClCompile Include="Library\MyLib\DirectXMyToolKit\DepthStencil\DepthStencil.cpp" />
-    <ClCompile Include="Library\MyLib\DirectXMyToolKit\DirectXMyToolKit.cpp" />
+    <ClCompile Include="Library\MyLib\DirectXMyToolKit\DirectXUtils.cpp" />
     <ClCompile Include="Library\MyLib\DirectXMyToolKit\GridFloor\GridFloor.cpp" />
     <ClCompile Include="Library\MyLib\DirectXMyToolKit\OffscreenRendering\OffscreenRendering.cpp" />
+    <ClCompile Include="Library\MyLib\FrameTimer\FrameTimer.cpp" />
     <ClCompile Include="Library\MyLib\MathUtils\MathUtils.cpp" />
     <ClCompile Include="Library\MyLib\NlohmannUtils\NlohmannUtils.cpp" />
     <ClCompile Include="Library\MyLib\Ray\Ray.cpp" />
@@ -498,6 +514,7 @@
   <ItemGroup>
     <None Include="packages.config" />
     <None Include="Shaders\CircleShadow.hlsli" />
+    <None Include="Shaders\MinimapInstansing\SimpleShape2DInstansing.hlsli" />
     <None Include="Shaders\SimpleParticle\SimpleParticle.hlsli" />
     <None Include="Shaders\SimpleShape2D\SimpleShape2D.hlsli" />
   </ItemGroup>
@@ -525,6 +542,54 @@
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources/Shaders/%(Filename).cso</ObjectFileOutput>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4.0</ShaderModel>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Resources/Shaders/%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
+    <FxCompile Include="Shaders\FrustumCulling\FrustumCullingCS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4.0</ShaderModel>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources/Shaders/%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Resources/Shaders/%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
+    <FxCompile Include="Shaders\MinimapInstansing\SimpleRectangle\SimpleRectangleInstansing_PS.hlsl">
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4.0</ShaderModel>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources/Shaders/%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Resources/Shaders/%(Filename).cso</ObjectFileOutput>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="Shaders\MinimapInstansing\SimpleShape2DInstansing_GS.hlsl">
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4.0</ShaderModel>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources/Shaders/%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Resources/Shaders/%(Filename).cso</ObjectFileOutput>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Geometry</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Geometry</ShaderType>
+    </FxCompile>
+    <FxCompile Include="Shaders\MinimapInstansing\SimpleShape2DInstansing_VS.hlsl">
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4.0</ShaderModel>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources/Shaders/%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Resources/Shaders/%(Filename).cso</ObjectFileOutput>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+    </FxCompile>
+    <FxCompile Include="Shaders\Minimap\Minimap_PS.hlsl">
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources/Shaders/%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Resources/Shaders/%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
+    <FxCompile Include="Shaders\SceneFade\PS_Fade.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4.0</ShaderModel>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources/Shaders/%(Filename).cso</ObjectFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Resources/Shaders/%(Filename).cso</ObjectFileOutput>
     </FxCompile>
     <FxCompile Include="Shaders\SimpleParticle\SimpleParticle_GS.hlsl">
@@ -580,6 +645,14 @@
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4.0</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources/Shaders/%(Filename).cso</ObjectFileOutput>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Resources/Shaders/%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
+    <FxCompile Include="Shaders\SimpleShape2D\SimpleTriangle\SimpleTriangle_PS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4.0</ShaderModel>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources/Shaders/%(Filename).cso</ObjectFileOutput>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Resources/Shaders/%(Filename).cso</ObjectFileOutput>
     </FxCompile>

@@ -125,7 +125,7 @@ void Wall::Initialize(
         // Õ“Ë”»’èŠÇ—‚Ö‚Ì“o˜^
     for (auto& collider : m_collider)
     {
-        pCollisionManager->AddCollisionObjectData(this, collider.get());
+        pCollisionManager->AddCollisionData(CollisionData(this, collider.get()));
     }
  
 }

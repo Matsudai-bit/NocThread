@@ -18,7 +18,7 @@
 #include "Game/Common/Camera/PlayerCamera/PlayerCamera.h"
 
 #include "Library/MyLib/DirectXMyToolKit/DebugFont/DebugFont.h"
-#include "Library/MyLib/DirectXMyToolKit/DirectXMyToolKit.h"
+#include "Library/MyLib/DirectXMyToolKit/DirectXUtils.h"
 
 
 using namespace DirectX;

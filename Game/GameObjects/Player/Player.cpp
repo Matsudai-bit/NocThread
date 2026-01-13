@@ -48,7 +48,7 @@
 // 外部ライブラリ・ツール
 #include "Library/DirectXFramework/DebugDraw.h"
 #include "Library/MyLib/DirectXMyToolKit/DebugFont/DebugFont.h"
-#include "Library/MyLib/DirectXMyToolKit/DirectXMyToolKit.h"
+#include "Library/MyLib/DirectXMyToolKit/DirectXUtils.h"
 #include "Library/MyLib/Ray/Ray.h"
 
 using namespace DirectX;
@@ -116,7 +116,7 @@ void Player::Initialize(const CommonResources* pCommonResources, CollisionManage
 	// コライダの作成
 	m_collider = std::make_unique<Sphere>(GetTransform()->GetPosition(), GetTransform()->GetScale().x * DEFAULT_COLLIDER_RADIUS_FACTOR);
 
-	pCollisionManager->AddCollisionObjectData(this, m_collider.get());
+	pCollisionManager->AddCollisionData(CollisionData(this, m_collider.get()));
 
 	m_basicEffect = std::make_unique<BasicEffect>(device);
 	m_basicEffect->SetVertexColorEnabled(true);
@@ -252,8 +252,12 @@ void Player::Draw(const Camera& camera)
 
 	Matrix defaultTransform = Matrix::CreateTranslation(Vector3(0.0f, MODEL_DEFAULT_OFFSET_Y * transform->GetScale().y, 0.0f));
 
+	// ワイヤーアクション中の場合はモデルの位置を調整する
 	if (m_state == State::WIRE_ACTION)
+	{
 		defaultTransform *= Matrix::CreateTranslation(Vector3(WIRE_ACTION_OFFSET_X, Player::WIRE_ACTION_OFFSET_Y, 0.0f));
+		// プレイヤーのY軸回転を
+	}
 
 	Matrix transformMat = Matrix::CreateTranslation(transform->GetPosition());
 	Matrix rotation = Matrix::CreateFromQuaternion(transform->GetRotation());
@@ -275,24 +279,26 @@ void Player::Draw(const Camera& camera)
 	m_model.DrawSkinned(context, *states, nbones, drawBones.get(), world, camera.GetViewMatrix(), camera.GetProjectionMatrix());
 
 
-	// **** 軸の描画 ****
+	//// **** 軸の描画 ****
 
-	// ブレンドステート
-	context->OMSetBlendState(states->Opaque(), nullptr, 0xFFFFFFF);
-	// 深度ステンシルバッファ
-	context->OMSetDepthStencilState(states->DepthDefault(), 0);
-	// カリング
-	context->RSSetState(states->CullNone());
+	//// ブレンドステート
+	//context->OMSetBlendState(states->Opaque(), nullptr, 0xFFFFFFF);
+	//// 深度ステンシルバッファ
+	//context->OMSetDepthStencilState(states->DepthDefault(), 0);
+	//// カリング
+	//context->RSSetState(states->CullNone());
 
-	// インプットレイアウトの設定
-	context->IASetInputLayout(m_inputLayout.Get());
+	//// インプットレイアウトの設定
+	//context->IASetInputLayout(m_inputLayout.Get());
 
-	// ベーシックエフェクト
-	m_basicEffect->SetView(camera.GetViewMatrix());
-	m_basicEffect->SetProjection(camera.GetProjectionMatrix());
-	m_basicEffect->Apply(context);
+	//// ベーシックエフェクト
+	//m_basicEffect->SetView(camera.GetViewMatrix());
+	//m_basicEffect->SetProjection(camera.GetProjectionMatrix());
+	//m_basicEffect->Apply(context);
 
-	SimpleMath::Vector3 forward = transform->GetForward() * 1.5f;
+	//SimpleMath::Vector3 forward = transform->GetForward() * 1.5f;
+
+	//
 
 	/*m_primitiveBatch->Begin();
 	DX::DrawRay(m_primitiveBatch.get(), GetPosition(), forward, false, Colors::Red);
@@ -310,7 +316,7 @@ void Player::Draw(const Camera& camera)
 	//GetCommonResources()->GetDebugFont()->AddString(100, 130, Colors::White, L"speed : %f ", GetVelocity().Length());
 
 	// ワイヤー照準検出器の表示
-	//m_wireTargetFinder->Draw(view, projection);
+	//m_wireTargetFinder->Draw(camera);
 
 	//m_collider->Draw(context, view, proj);
 
@@ -353,6 +359,12 @@ void Player::OnCollision(const CollisionInfo& info)
 	else if (info.pOtherObject->GetTag() == GameObjectTag::BUILDING)
 	{
 		OnCollisionWithBuilding(info.pOtherObject, info.pOtherCollider);
+	}
+
+	if (info.pOtherObject->GetTag() == GameObjectTag::CHECKPOINT)
+	{
+		// SEの再生
+		SoundManager::GetInstance()->Play(SoundPaths::SE_PLAYER_PASSING, false, 1.5f);
 	}
 
 }
@@ -426,7 +438,7 @@ void Player::OnCollisionWithWall(GameObject* pHitObject, ICollider* pHitCollider
 void Player::OnCollisionWithBuilding(GameObject* pHitObject, ICollider* pHitCollider)
 {
 	UNREFERENCED_PARAMETER(pHitObject);
-	if (State::STTEPPING == m_state || State::WIRE_ACTION == m_state)
+	if (State::STTEPPING == m_state /*|| State::WIRE_ACTION == m_state*/)
 	{
 		RequestChangeState(State::IDLE);
 	}
@@ -823,7 +835,7 @@ void Player::BehaviourWireAction(const float& deltaTime, const float& speed)
  *
  */
 void Player::ShootWire()
-{
+{	
 	auto eyePos = m_pPlayerCamera->GetEye();
 
 	// テスト ------------------------------------------------------
@@ -879,6 +891,10 @@ void Player::ResolvePushOutAndBounce(DirectX::SimpleMath::Vector3 overlap, const
  */
 void Player::Jump(float deltaTime)
 {
+	// SEの再生
+	SoundManager::GetInstance()->Play(SoundPaths::SE_PLAYER_JUMP, false, 0.4f);
+
+
 	AddForceToVelocityY(JUMPING_POWER * deltaTime);
 }
 

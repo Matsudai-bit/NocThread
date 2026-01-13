@@ -72,7 +72,7 @@ float CollisionConstraint::ComputeLambdaCorrection(float dt, float C) const
 	 // XPBDÇ≈ÇÕ |ÅﬁC|^2 ÇÕ |n|^2 = 1.0f
 	 // wi ÇÕãtéøó 
 	float invMass = m_pParticle->GetInvMass();
-	float gradientSquared = m_collisionNormal.LengthSquared();// m_planeNormal.LengthSquared(); // í èÌÇÕ1.0fÅ@ã∞ÇÁÇ≠ó ÅH
+	float gradientSquared = m_collisionNormal.LengthSquared();// m_planeNormal.LengthSquared(); 
 	if (gradientSquared < 1e-6f) return 0.0f; // É[ÉçèúéZñhé~
 
 	// è_ÇÁÇ©Ç≥ÇÃÉXÉPÅ[ÉäÉìÉO (éûä‘Ç≈ê≥ãKâª)

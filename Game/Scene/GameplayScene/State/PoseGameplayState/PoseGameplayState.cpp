@@ -26,6 +26,8 @@
 
 // シーン
 #include "Game/Scene/TitleScene/TitleScene.h"
+#include "Game/Common/TransitionMask/TransitionMask.h"
+#include "Game/Scene/Loading/LoadingScreen.h"
 
 // 状態
 #include "Game/Scene/GameplayScene/State/NormalGameplayState/NormalGameplayState.h"
@@ -33,6 +35,8 @@
 #include "Game/Manager/StageManager/StageManager.h"
 #include "Game/Common/GameEffect/GameEffectController.h"
 #include "Game/Common/Camera/MainCamera/MainCamera.h"
+#include <Game\Common\SoundManager\SoundPaths.h>
+#include <Game\Common\SoundManager\SoundManager.h>
 
 using namespace DirectX;
 
@@ -245,20 +249,36 @@ void PauseGameplayState::OnExitState()
  */
 void PauseGameplayState::OnPushMenuItem(PauseMenu::MenuItem menuItem)
 {
+
 	switch (menuItem)
 	{
 	case PauseMenu::MenuItem::CONTINUE:
+		// SEの再生
+		SoundManager::GetInstance()->Play(SoundPaths::SE_CANCEL, false, 0.4f);
 		ContinueGame();
 		break;
 	case PauseMenu::MenuItem::TUTORIAL:
+		// SEの再生
+		SoundManager::GetInstance()->Play(SoundPaths::SE_DECIDE, false, 1.0f);
 		m_isDisplayingTutorialWindow = true;
 		m_canvas->AddSprite(m_tutorialWindow.get());
 		break;
 	case PauseMenu::MenuItem::SETTING:
 		break;
 	case PauseMenu::MenuItem::RETURN_TITLE:
-		GetOwner()->OnEndScene();
-		GetOwner()->ChangeScene<TitleScene>();
+		// SEの再生
+		SoundManager::GetInstance()->Play(SoundPaths::SE_DECIDE, false, 1.0f);
+		if (GetOwner()->GetCommonResources()->GetTransitionMask()->IsEnd())
+		{
+			// シーンを切り替える
+			GetOwner()->GetCommonResources()->GetTransitionMask()->Close([&]()
+				{
+					GetOwner()->ChangeScene<TitleScene, LoadingScreen>();
+					GetOwner()->OnEndScene();
+
+				});
+		}
+		
 
 		break;
 	default:

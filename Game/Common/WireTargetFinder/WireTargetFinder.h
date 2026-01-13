@@ -53,12 +53,15 @@ private:
 public:
 
 	// 上下左右に広がるグリッドを想定したサンプリング
-	static constexpr int	SEARCH_DIRECTION_NUM = 3; 
-	static constexpr float	SEARCH_ANGLE_STEP_YAW = 8.0f;
-	static constexpr float	SEARCH_ANGLE_OFFSET_YAW = 48.0f;
-	static constexpr float	SEARCH_ANGLE_STEP_PITCH = 10.0f;
+	static constexpr int	SEARCH_DIRECTION_NUM = 4;		// 各軸の探索方向数 (中心 + 両端)
+	static constexpr float	SEARCH_ANGLE_STEP_YAW = 9.0f;	// 探索角度のステップ (ヨー方向:横)
+	static constexpr float	SEARCH_ANGLE_STEP_PITCH = 10.0f;// 探索角度のステップ (ピッチ方向:縦)
 
-	static constexpr float	SEARCH_ANGLE_START_PITCH = 20.f;
+	static constexpr float	SEARCH_ANGLE_OFFSET_YAW = 30.0f;// 探索角度の開始 (ヨー方向:横)
+	static constexpr float	SEARCH_ANGLE_START_PITCH = 20.f;// 探索角度の開始 (ピッチ方向:縦)
+
+	
+	static constexpr float MIN_GRAPPLE_DISTANCE_THRESHOLD = 15.1f; // 最小距離の閾値
 
 // データメンバの宣言 -----------------------------------------------
 private:
@@ -83,6 +86,7 @@ private:
 	const Camera* m_pCamera;
 
 	std::vector<Capsule> m_capsules; ///< カプセル群
+	Sphere m_broadCollider;
 
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
@@ -116,7 +120,8 @@ public:
 	// 衝突処理
 	void OnCollision(const CollisionInfo& info) override ;
 
-
+	// 衝突処理後の処理
+	void PostCollision() override;
 
 	// 取得/設定
 public:
@@ -167,4 +172,6 @@ private:
 	// 最も遠い目標座標を取得する
 	DirectX::SimpleMath::Vector3 GetFarTargetPosition(std::vector<DirectX::SimpleMath::Vector3> targetPositions);
 
+	// ターゲットを絞り込む
+	void RefineAndSortTargets();
 };

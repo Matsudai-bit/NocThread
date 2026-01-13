@@ -49,5 +49,20 @@ DirectX::SimpleMath::Vector3 Transform::GetForward() const
 	return SimpleMath::Vector3::TransformNormal(forward, rot);
 }
 
+/**
+ * @brief 右ベクトルの取得
+ * 
+ * @return 右ベクトル
+ */
+DirectX::SimpleMath::Vector3 Transform::GetRight() const
+{
+	// 右に分解する
+	SimpleMath::Vector3 right = SimpleMath::Vector3::Right;
+	// ローカルに修正する
+	SimpleMath::Matrix rot = SimpleMath::Matrix::CreateFromQuaternion(GetRotation());
+
+	return SimpleMath::Vector3::TransformNormal(right, rot);
+}
+
 
 

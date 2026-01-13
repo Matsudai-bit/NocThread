@@ -17,7 +17,7 @@
 #include "Game/Common/Event/WireSystemObserver/WireSystemSubject.h"
 #include "Game/Common/Event/WireSystemObserver/WireEventData.h"
 
-#include "Library/MyLib/DirectXMyToolKit/DirectXMyToolKit.h"
+#include "Library/MyLib/DirectXMyToolKit/DirectXUtils.h"
 
 #include "Game/Common/Camera/Camera.h"
 #include "Library/MyLib/Ray/Ray.h"

@@ -32,22 +32,43 @@ class CollisionInfo;	// 衝突情報
 /**
  * @brief ゲームオブジェクトのタグ
  */
-enum class GameObjectTag
+enum class GameObjectTag :	uint32_t
 {
-	PLAYER,
-	FLOOR,
-	WIRE,
-	WALL,
-	BALL,
-	STAGE_OBJECT,
-	ENEMY,
-	TREASURE,
-	BUILDING,				// 建物
-	ESCAPE_HELICOPTER,		// 脱出用ヘリコプター
-	WIRE_GRAPPING_AREA,		// ワイヤー照準範囲
-	CAMERA,					// カメラ
-	CHECKPOINT,
+	PLAYER				= 1 << 0,		// プレイヤー
+	FLOOR				= 1 << 1,	// 床
+	WIRE				= 1 << 2,	// ワイヤー
+	WALL				= 1 << 3,	// 壁
+	BALL				= 1 << 4,	// ボール
+	STAGE_OBJECT		= 1 << 5,	// ステージ上のオブジェクト
+	ENEMY				= 1 << 6,	// 敵
+	TREASURE			= 1 << 7,	// 宝
+	BUILDING			= 1 << 8,	// 建物
+	ESCAPE_HELICOPTER	= 1 << 9,	// 脱出用ヘリコプター
+	WIRE_GRAPPING_AREA	= 1 << 10,	// ワイヤー照準範囲
+	CAMERA				= 1 << 11,	// カメラ
+	CHECKPOINT			= 1 << 12,	// チェックポイントオブジェクト
+
 };
+
+// ビット演算子を使いやすくするためのオーバーロード（任意）
+inline GameObjectTag operator|(GameObjectTag a, GameObjectTag b) 
+{
+	return static_cast<GameObjectTag>(static_cast<uint32_t>(a) | static_cast<uint32_t>(b));
+}
+// AND演算子 (&) の定義 (判定時に使う)
+inline GameObjectTag operator&(GameObjectTag a, GameObjectTag b) 
+{
+	return static_cast<GameObjectTag>(static_cast<uint32_t>(a) & static_cast<uint32_t>(b));
+}
+
+
+
+// ==演算子の定義
+inline bool operator==(GameObjectTag a, GameObjectTag b)
+{
+	return static_cast<uint32_t>(a) == static_cast<uint32_t>(b);
+}
+
 
 // クラスの定義 ===============================================================
 /**
@@ -56,7 +77,6 @@ enum class GameObjectTag
 class GameObject 
 	: public ICollision
 	, public Task
-
 {
 // クラス定数の宣言 -------------------------------------------------
 public:
@@ -74,7 +94,6 @@ private:
 	std::unordered_map<std::type_index, void*>  m_childs;
 
 	std::unique_ptr<Transform> m_transform;		///< トランスフォーム
-
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
 public:
@@ -83,8 +102,6 @@ public:
 
 	// デストラクタ
 	virtual ~GameObject();
-
-
 
 // 操作
 public:
@@ -133,7 +150,6 @@ public:
 	const CommonResources* GetCommonResources() const {	return m_pCommonResources;}
 	// 共通リソースの設定
 	void SetCommonResources(const CommonResources* pCommonResources) { m_pCommonResources = pCommonResources; }
-
 
 
 // 内部実装

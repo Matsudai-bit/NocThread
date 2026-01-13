@@ -130,7 +130,7 @@ public:
      * @param[in] callback      イベント発生時に呼び出されるコールバック関数
      * @param[in] listenerPriority このリスナー（コールバック）の呼び出し優先度 (数値が小さいほど先に呼び出される)
      */
-    template<typename TEventData, typename Func>
+    template<typename TEventData , typename Func>
     void AddListener(EventID id, Func callback, int listenerPriority = 0)
     {
         // TEventDataがEventDataの派生クラスであることをコンパイル時にチェック
@@ -169,6 +169,19 @@ public:
                 });
         }
     }
+	// オーバーロード: 引数なしコールバック用
+    void AddListener(EventID id, std::function<void()> callback, int listenerPriority = 0)
+    {
+		AddListener<EventData>(id,
+			[callback](const EventData& data)
+			{
+				UNREFERENCED_PARAMETER(data);
+				callback();
+			},
+			listenerPriority);
+    }
+
+
     /**
  * @brief 特定のイベントIDに登録された全てのリスナーを削除する
  *
@@ -226,7 +239,7 @@ public:
      * @param[in] id    発火するイベントのID
      * @param[in] data  イベントに付随するデータ (unique_ptrで所有権を渡す)
      */
-    void FireEvent(EventID id, std::unique_ptr<EventData> data)
+    void FireEvent(EventID id, std::unique_ptr<EventData> data = std::make_unique<EventData>())
     {
         // イベントデータが有効であることを確認
         if (data) 
@@ -253,7 +266,7 @@ public:
             m_isSortEventQueue = false;
         }
     }
-
+ 
 
     /**
      * @brief 全てのイベントの適用

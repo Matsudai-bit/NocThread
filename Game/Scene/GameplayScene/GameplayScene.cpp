@@ -18,6 +18,10 @@
 // DirectX系
 #include "Library/DirectXFramework/DeviceResources.h"
 
+#include "Game/Common/Camera/PlayerCamera/PlayerCamera.h"
+
+// ファクトリー
+#include "Game/Common/Factory/CollisionMatrixFactory/CollisionMatrixFactory.h"
 
 // ゲームデータ
 #include "Game/Common/ResultData/ResultData.h"
@@ -27,6 +31,7 @@
 #include "Game/Common/GameDirector/GameDirector.h"
 #include "Game/Common/ResourceManager/ResourceManager.h"
 #include "Game/Common/Collision/CollisionManager/CollisionManager.h"
+#include "Game/Common/Collision/CollisionMatrix/CollisionMatrix.h"
 #include "Game/Common/SoundManager/SoundManager.h"
 #include "Game/Common/SoundManager/SoundPaths.h"
 #include "Game/Scene/Loading/LoadingScreen.h"
@@ -44,9 +49,9 @@
 // 状態
 #include "Game/Scene/GameplayScene/State/NormalGameplayState/NormalGameplayState.h"
 #include "Game/Scene/GameplayScene/State/PoseGameplayState/PoseGameplayState.h"
-
 // シーン
 #include "Game/Scene/ResultScene/ResultScene.h"
+#include "Game/Common/TransitionMask/TransitionMask.h"
 
 using namespace DirectX;
 
@@ -132,6 +137,8 @@ void GameplayScene::Render()
 {
 	// 状態の描画処理
 	m_stateMachine->Draw();
+	
+
 }
 
 /**
@@ -237,21 +244,24 @@ void GameplayScene::SetUpForGameStart()
  */
 void GameplayScene::CreatePlatform()
 {
-	// **** ゲーム進行の監督の作成 ****
+	// ステートマシーンの作成
+	m_stateMachine = std::make_unique <StateMachine<GameplayScene>>(this);
+
+	// ゲーム進行の監督の作成
 	m_gameDirector = std::make_unique<GameDirector>();
 
-	// **** 衝突管理の生成 ****
+	// 衝突管理の生成
 	m_collisionManager = std::make_unique<CollisionManager>();
+	// 衝突検知表の生成
+	m_collisionMatrix = CollisionMatrixFactory::StageCollisionMatrix().Create(DefaultSpawnDesc());
 
-	// **** エフェクト管理の作成 ****
+	// エフェクト管理の作成
 	m_gameEffectManager = std::make_unique<GameEffectManager>();
 
-	// **** ステートマシーンの作成 ****
-	m_stateMachine = std::make_unique <StateMachine<GameplayScene>>(this);
-	// **** タスク管理の作成 ****
+	// タスク管理の作成
 	m_taskManager = std::make_unique<TaskManager>();
 
-	// **** オブジェクト出現管理の作成 ****
+	// オブジェクト出現管理の作成
 	m_spawnManager = std::make_unique<SpawnManager>();
 
 	// ステージ管理の作成
@@ -273,6 +283,8 @@ void GameplayScene::SetupPlatform()
 	// ステージの初期化処理
 	m_stageManager->Initialize(m_spawnManager.get(), m_collisionManager.get(), m_taskManager.get());
 
+	// 衝突管理に衝突検知表を設定
+	m_collisionManager->SetCollisionMatrix(m_collisionMatrix.get());
 
 	// ゲームディレクターの初期化処理
 	m_gameDirector->Initialize();
@@ -298,11 +310,11 @@ void GameplayScene::CreateStage()
  */
 void GameplayScene::CreateTask()
 {
-	
 	// **** タスクの登録 ****
 	m_taskManager->AddTask(m_gameDirector.get());		// GameDirector
 	m_taskManager->AddTask(m_stageManager.get());		// StageManager
 	m_taskManager->AddTask(m_spawnManager.get());		// SpawnManager
+	m_taskManager->AddTask(m_stageManager->GetPlayerCamera());		// SpawnManager
 	m_taskManager->AddTask(m_collisionManager.get());	// CollisionManager
 	m_taskManager->AddTask(m_gameEffectManager.get());	// EffectManager
 	m_taskManager->AddTask(m_miniMap.get());			// Minimap
@@ -313,6 +325,10 @@ void GameplayScene::CreateTask()
  */
 void GameplayScene::StartGame()
 {
+	// トランジションマスクをオープンする
+	GetCommonResources()->GetTransitionMask()->Open();
+
+
 	// **** 最初の状態 ****
 	m_stateMachine->ChangeState<NormalGameplayState>();
 	// **** BGMを鳴らす ****

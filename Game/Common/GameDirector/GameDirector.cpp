@@ -58,6 +58,7 @@ void GameDirector::Initialize()
  */
 bool GameDirector::UpdateTask(float deltaTime)
 {
+	UNREFERENCED_PARAMETER(deltaTime);
 	ResolveGameFlowEvent();
 
 	return true;

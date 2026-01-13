@@ -10,6 +10,7 @@
 #include "pch.h"
 #include "Checkpoint.h"
 
+#include "Game/Common/GameObjectRegistry/GameObjectRegistry.h"
 // ライブラリ関連
 #include "Library/DirectXFramework/DeviceResources.h"
 // リソース関連
@@ -19,11 +20,17 @@
 #include "Game/Common/Camera/Camera.h"
 // ゲームシステム関連
 #include "Game/Common/Collision/CollisionManager/CollisionManager.h"
+#include "Game/Common/GameEffect/GameEffectController.h"
 // イベント関連
 #include "Game/Common/Event/Messenger/GameFlowMessenger/GameFlowMessenger.h"
 
 #include "Game/GameObjects/CheckPoint/CheckpointObject/CheckpointObject.h"
 
+// エフェクト関連
+#include "Game/Common/GameEffect/Effects/SimpleParticle/SimpleParticle.h"
+
+// カメラ
+#include "Game/Common/Camera/MainCamera/MainCamera.h"
 using namespace DirectX;
 
 // メンバ関数の定義 ===========================================================
@@ -34,11 +41,11 @@ using namespace DirectX;
  */
 Checkpoint::Checkpoint()
 	: m_isEnabled{ false }
+	, m_effectHandleID{ -1 }
+	, m_canVisibleMark{ true }
 {
 	// コライダーの作成
-	//m_collider = std::make_unique<Cylinder>(SimpleMath::Vector3::UnitY, 1.0f, GetTransform()->GetPosition(), 3.0f);
-	//m_collider = std::make_unique<Sphere>(GetTransform()->GetPosition(), 1.0f);
-	m_collider = std::make_unique<AABB>(GetTransform()->GetPosition(), SimpleMath::Vector3(9.0f, 3.0f, 9.0f));
+	m_collider = std::make_unique<AABB>(GetTransform()->GetPosition(), SimpleMath::Vector3(7.0f, 5.0f, 7.0f));
 
 	m_checkpointObject = std::make_unique<CheckpointObjectController>();
 
@@ -61,23 +68,30 @@ Checkpoint::~Checkpoint()
  * @param[in] pCommonResources　共通リソース
  * @param[in] pCollisionManager 衝突管理
  */
-void Checkpoint::Initialize(const CommonResources* pCommonResources, CollisionManager* pCollisionManager)
+void Checkpoint::Initialize(const CommonResources* pCommonResources, CollisionManager* pCollisionManager, const DirectX::SimpleMath::Vector3& position)
 {
-	auto context = pCommonResources->GetDeviceResources()->GetD3DDeviceContext();
 	// 共通リソースの設定
 	SetCommonResources(pCommonResources);
 
-	pCollisionManager->AddCollisionObjectData(this, m_collider.get());
+	pCollisionManager->AddCollisionData(CollisionData(this, m_collider.get()));
 
 	// チェックポイントを有効化する
 	m_isEnabled = true;
+	// マークを表示可能にする
+	m_canVisibleMark = true;
 
 
-	// スケールの設定
-	m_checkpointObject->SetScale(2.0f);
+	// トランスフォームの設定
+	GetTransform()->SetPosition(position);
+
+	// オブジェクトの初期化
+	m_checkpointObject->GetTransform()->SetScale(2.0f);
 
 
 	m_checkpointObject->Initialize(GetCommonResources()->GetResourceManager());
+
+
+	m_effectHandleID =  GameEffectController::GetInstance()->PlayEffect(std::make_unique<SimpleParticle>(GetCommonResources()->GetDeviceResources(), GetTransform()->GetPosition(), MainCamera::GetInstance()->GetCamera()), GameEffectManager::EffectClip(true));
 
 }
 
@@ -92,10 +106,24 @@ void Checkpoint::Initialize(const CommonResources* pCommonResources, CollisionMa
 void Checkpoint::Update(float deltaTime)
 {
 	UNREFERENCED_PARAMETER(deltaTime);
-	m_checkpointObject->SetPosition(GetTransform()->GetPosition());
+	m_checkpointObject->GetTransform()->SetPosition(GetTransform()->GetPosition());
 	m_collider->SetCenter(GetTransform()->GetPosition());
 
 	m_checkpointObject->Update(deltaTime);
+
+	// プレイヤーの取得
+	auto player = GameObjectRegistry::GetInstance()->GetGameObject(GameObjectTag::PLAYER);
+	if (player)
+	{
+		// プレイヤーの距離が一定以下ならば目印を消す
+		float distanceSqr = DirectX::SimpleMath::Vector3::DistanceSquared(player->GetTransform()->GetPosition(), GetTransform()->GetPosition());
+
+		//if (distanceSqr <= CHECKPOINT_MARKER_HIDE_DISTANCE_SQR)
+		m_canVisibleMark = (distanceSqr >= 100.0f * 100.0f);
+
+
+	}
+
 }
 
 
@@ -116,20 +144,24 @@ void Checkpoint::Draw(const Camera& camera)
 
 	m_checkpointObject->Draw(context, GetCommonResources()->GetCommonStates(), camera);
 
-	// 目印
-	auto cylinder = DirectX::GeometricPrimitive::CreateCylinder(context, 1000.f, 0.4f);
+	if (m_isEnabled && m_canVisibleMark)
+	{
+		// 目印
+		auto cylinder = DirectX::GeometricPrimitive::CreateCylinder(context, 1000.f, 0.4f);
 
 
-	Matrix transMat = Matrix::CreateTranslation(GetTransform()->GetPosition());
-	Matrix rotateMat = Matrix::CreateFromQuaternion(GetTransform()->GetRotation());
-	Matrix scaleMat = Matrix::CreateScale(GetTransform()->GetScale());
+		Matrix transMat = Matrix::CreateTranslation(GetTransform()->GetPosition());
+		Matrix rotateMat = Matrix::CreateFromQuaternion(GetTransform()->GetRotation());
+		Matrix scaleMat = Matrix::CreateScale(GetTransform()->GetScale());
 
-	Matrix world = scaleMat * rotateMat * transMat;
-	world = SimpleMath::Matrix::Identity;
-	world *= Matrix::CreateTranslation(GetTransform()->GetPosition());
-	cylinder->Draw(world, camera.GetViewMatrix(), camera.GetProjectionMatrix(), Colors::GreenYellow);
+		Matrix world = scaleMat * rotateMat * transMat;
+		world = SimpleMath::Matrix::Identity;
+		world *= Matrix::CreateTranslation(GetTransform()->GetPosition());
+		cylinder->Draw(world, camera.GetViewMatrix(), camera.GetProjectionMatrix(), Colors::GreenYellow);
 
-	m_collider->Draw(context, camera.GetViewMatrix(), camera.GetProjectionMatrix());
+		//m_collider->Draw(context, camera.GetViewMatrix(), camera.GetProjectionMatrix());
+
+	}
 
 }
 
@@ -160,5 +192,12 @@ void Checkpoint::OnCollision(const CollisionInfo& info)
 		// プレイヤーがチェックポイントを通過したことを通知する
 		GameFlowMessenger::GetInstance()->Notify(GameFlowEventID::CHECKPOINT_PASSED);
 
+		m_checkpointObject->FireEvent(CheckpointControllEventID::LOOK_AT_HELICOPTER);
+
+		if (m_effectHandleID != -1)
+		{
+			GameEffectController::GetInstance()->StopEffect(m_effectHandleID);
+			m_effectHandleID = -1;
+		}
 	}
 }

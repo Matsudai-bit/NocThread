@@ -58,7 +58,6 @@ void WireActionPlayerState::OnStartState()
 void WireActionPlayerState::OnUpdate(float deltaTime)
 {
 	GetOwner()->SetVelocity(GetOwner()->GetWire()->GetStartVelocity());
-
 	// ワイヤーアクション挙動
 	GetOwner()->BehaviourWireAction(deltaTime, 1.4f);
 
@@ -69,6 +68,7 @@ void WireActionPlayerState::OnUpdate(float deltaTime)
 	//GetOwner()->ApplyMoveInput(deltaTime);
 
 	GetOwner()->RotateForMoveDirection(deltaTime);
+	GetOwner()->ResetVelocity();
 
 	// 移動
 	GetOwner()->Move(deltaTime);

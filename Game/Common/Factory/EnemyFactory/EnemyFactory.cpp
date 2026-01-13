@@ -21,12 +21,14 @@
  */
 void EnemyFactory::TrackingEnemy::Assemble(Enemy* instance, const DefaultSpawnDesc& desc)
 {
+	UNREFERENCED_PARAMETER(desc);
 	instance->AddUpdateBehaviour(std::make_unique<FlyingChaserEnemyBehaviour>());
 
 }
 
 void EnemyFactory::FlyingChaserEnemy::Assemble(Enemy* instance, const DefaultSpawnDesc& desc)
 {
+	UNREFERENCED_PARAMETER(desc);
 	instance->AddUpdateBehaviour(std::make_unique<FlyingChaserEnemyBehaviour>());
 
 }

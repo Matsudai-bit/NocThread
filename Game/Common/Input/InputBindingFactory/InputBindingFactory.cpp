@@ -113,7 +113,7 @@ std::unique_ptr<InputSystem<InputActionType::UIActionID>> InputBindingFactory::C
 	uiInput->RegisterGamePadInput(ActionID::LEFT_MOVE	, InputSystem<ActionID>::GamePadButtons::D_PAD_LEFT);
 
 	// ‰EˆÚ“®
-	uiInput->RegisterKeyboardInput(ActionID::RIGHT_MOVE, Keyboard::Keys::Left);
+	uiInput->RegisterKeyboardInput(ActionID::RIGHT_MOVE, Keyboard::Keys::Right);
 	uiInput->RegisterKeyboardInput(ActionID::RIGHT_MOVE, Keyboard::Keys::D);
 	uiInput->RegisterGamePadInput(ActionID::RIGHT_MOVE, InputSystem<ActionID>::GamePadButtons::LEFT_STICK_RIGHT);
 	uiInput->RegisterGamePadInput(ActionID::RIGHT_MOVE, InputSystem<ActionID>::GamePadButtons::D_PAD_RIGHT);

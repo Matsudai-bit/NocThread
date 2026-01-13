@@ -58,7 +58,7 @@ int GameEffectController::PlayEffect(std::unique_ptr<IGameEffect> effect, GameEf
  */
 void GameEffectController::StopEffect(unsigned int id)
 {
-    m_pGameEffectManager->StopEffect(id);
+    m_pGameEffectManager->RequestEffectStop(id);
 }
 
 

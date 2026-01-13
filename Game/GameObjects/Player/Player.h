@@ -27,7 +27,8 @@
 #include "Game/Common/Event/Messenger/GameFlowMessenger/IGameFlowObserver.h"
 #include "Game/Common/Input/InputActionType/InputActionType.h"
 #include "Game/Common/Input/InputSystem/InputSystem.h"
-
+#include "Game/Common/SoundManager/SoundManager.h"
+#include "Game/Common/SoundManager/SoundPaths.h"
 #include "Library/DirectXFramework/Animation.h"
 
 // クラスの前方宣言 ===================================================
@@ -95,7 +96,7 @@ public:
 	static constexpr float JUMPING_POWER = 1200.0f; // ジャンプ力
 
 	// ワイヤー関連
-	static constexpr float WIRE_LENGTH = 60.0f;					// ワイヤーの長さ
+	static constexpr float WIRE_LENGTH = 65.0f;					// ワイヤーの長さ
 	static constexpr float MAX_TARGETING_RAY_DISTANCE = 30.0f;	// ワイヤーの照準計算に使用する仮想的な最大距離（ワイヤーの実際の長さとは異なる）
 
 	// アニメーション関連
@@ -123,8 +124,8 @@ public:
 	// 描画に関するオフセット値
 	static constexpr float CURSOR_Y_OFFSET_SCALE = 140.f;            // カーソルのY軸オフセットの画面スケール係数
 	static constexpr float MODEL_DEFAULT_OFFSET_Y = -2.5f;           // モデルのデフォルトY軸オフセットのスケール係数
-	static constexpr float WIRE_ACTION_OFFSET_X = 1.7f;              // ワイヤーアクション時のX軸オフセット
-	static constexpr float WIRE_ACTION_OFFSET_Y = -1.8f;             // ワイヤーアクション時のY軸オフセット
+	static constexpr float WIRE_ACTION_OFFSET_X = 1.9f;              // ワイヤーアクション時のX軸オフセット
+	static constexpr float WIRE_ACTION_OFFSET_Y = -1.7f;             // ワイヤーアクション時のY軸オフセット
 
 // データメンバの宣言 -----------------------------------------------
 private:

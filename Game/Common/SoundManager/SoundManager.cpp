@@ -46,7 +46,7 @@ SoundManager::~SoundManager()
  * 
  * @returns -1	ƒGƒ‰[
  * @returns 0> Ž¯•ÊŽq */
-int SoundManager::Play(const std::string& filePath, bool isLoop)
+int SoundManager::Play(const std::string& filePath, bool isLoop, float volume)
 {
 	std::unique_ptr<DirectX::SoundEffectInstance> soundInstance = m_pResourceManager->CreateSoundEffect(filePath)->CreateInstance();
 	soundInstance->Play(isLoop);
@@ -62,7 +62,7 @@ int SoundManager::Play(const std::string& filePath, bool isLoop)
 	// “o˜^‚·‚é
 	m_sounds.insert({ newId, std::move(soundInstance) });
 
-	return Play(newId);
+	return Play(newId, isLoop, volume);
 }
 
 /**
@@ -75,13 +75,13 @@ int SoundManager::Play(const std::string& filePath, bool isLoop)
  * @returns 0> Ž¯•ÊŽq
  * 
  */
-int SoundManager::Play(int id, bool isLoop)
+int SoundManager::Play(int id, bool isLoop, float volume)
 {
 	if (m_sounds.find(id) == m_sounds.end()){return -1;}
 
 	m_sounds[id]->Play(isLoop);
 
-	m_sounds[id]->SetVolume(0.3f);
+	m_sounds[id]->SetVolume(volume);
 
 	return id;
 }

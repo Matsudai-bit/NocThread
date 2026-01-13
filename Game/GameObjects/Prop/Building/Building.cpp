@@ -33,6 +33,10 @@ Building::Building()
 
 
 
+
+
+
+
 /**
  * @brief ƒfƒXƒgƒ‰ƒNƒ^
  */
@@ -81,7 +85,7 @@ void Building::Initialize(const CommonResources* pCommonResources, CollisionMana
 		std::unique_ptr<AABB> collider = std::make_unique<AABB>(GetTransform()->GetPosition() + SimpleMath::Vector3(0.0f, (extents.y / 2.0f) - 0.5f, 0.0f), extents + m_colliderExtendOffset);
 
 		// Õ“ËŠÇ—‚É“o˜^
-		pCollisionManager->AddCollisionObjectData(this, collider.get());
+		pCollisionManager->AddCollisionData(CollisionData(this, collider.get()));
 
 		// “o˜^
 		m_collider.emplace_back(std::move(collider));

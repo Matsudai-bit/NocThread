@@ -35,16 +35,54 @@ class BuildingManager
 // クラス定数の宣言 -------------------------------------------------
 public:
 
+	/**
+	 * @brief カメラのフラスタムのバッファ
+	 */
+	struct CameraFrustumConstantBuffer
+	{
+		DirectX::SimpleMath::Vector4 planes[6];
+		int maxIndexCount;
+		float padding[3];
 
+
+	};
+
+	//今回使うパーティクルの資料例
+	struct ParticleCompute 
+	{
+
+		float radius{};
+		DirectX::SimpleMath::Vector3 position{};
+	};
+
+	struct ResultCompute
+	{
+		int index{};
+	};
+
+	static constexpr int DEFAULT_BUFFER_SIZE = 500;
 
 // データメンバの宣言 -----------------------------------------------
 private:
 	
 	std::vector<std::unique_ptr<Building>> m_buildings; ///< 建物
 
-	nlohmann::json m_stageJson;
-
 	const CommonResources* m_pCommonResources;
+
+	// コンピュートシェーダー関連
+	// コンピュートシェーダー
+	Microsoft::WRL::ComPtr<ID3D11ComputeShader> m_computeShader;
+	// パーティクル
+	std::vector<ParticleCompute> m_particles;
+	// バッファ
+	Microsoft::WRL::ComPtr<ID3D11Buffer> m_particleBuffer;
+	Microsoft::WRL::ComPtr<ID3D11Buffer> m_resultBuffer;
+	Microsoft::WRL::ComPtr<ID3D11Buffer> m_constantBuffer;
+	Microsoft::WRL::ComPtr<ID3D11Buffer> m_stagingBuffer;
+	// SRV
+	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_particleSRV;
+	// UAV
+	Microsoft::WRL::ComPtr<ID3D11UnorderedAccessView> m_resultUAV;
 
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
@@ -70,20 +108,11 @@ public:
 	// 終了処理
 	void Finalize();
 
-	bool RequestCreate(
-		CollisionManager* pCollisionManager,
-		const CommonResources* pCommonResources);
-	void Save();
+
+	void SetBuildings(std::unique_ptr<std::vector<std::unique_ptr<Building>>> buildings);
+
 
 private:
-	void CreateBuilding(
-		const DirectX::SimpleMath::Vector3& position,
-		const DirectX::SimpleMath::Vector3& scale,
-		const int& tileNumber,
-		CollisionManager* pCollisionManager,
-		const CommonResources* pCommonResources);
-
-
 
 
 // 取得/設定
@@ -96,4 +125,9 @@ public:
 private:
 
 
+
+
+	void DrawDefault(const Camera& camera);
+	void DrawFrustumCulling(const Camera& camera);
+	void DrawFrustumCullingCS(const Camera& camera);
 };

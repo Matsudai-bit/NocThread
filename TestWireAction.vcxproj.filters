@@ -452,6 +452,39 @@
     <Filter Include="Library\MyLib\NlohmannUtils">
       <UniqueIdentifier>{2e8cf36b-3e0a-46ff-8c3e-a1a3fe40ccfe}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\Common\Behaviour">
+      <UniqueIdentifier>{3b2469f0-bc4c-44c0-91b6-f4d57868b62e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Common\GameObjectManager\BuildingManager">
+      <UniqueIdentifier>{f6e53160-7af8-4ef5-9feb-56261af68b54}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Common\Minimap">
+      <UniqueIdentifier>{5b126132-1180-4e61-8614-23a99c9a404e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\GameObjects\RopeObject\XPBDSimulator\Constraint\SteeringConstraint">
+      <UniqueIdentifier>{723cbe91-ee7e-45d0-9023-a136156c3dad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\Shaders\FrustumCulling">
+      <UniqueIdentifier>{79e9824a-f191-47a0-9920-4aa629466599}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Common\Factory\CollisionMatrixFactory">
+      <UniqueIdentifier>{35d9625c-8468-465f-a430-18ddd1ebab63}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Library\MyLib\FrameTimer">
+      <UniqueIdentifier>{d4406896-bbc7-407b-8abf-a9fd166f94d7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Common\TransitionMask">
+      <UniqueIdentifier>{1b63ac83-b748-4d29-b9db-e109526e4308}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\Shaders\SceneFade">
+      <UniqueIdentifier>{6f88e755-6a32-4c07-b984-1bc9f47b1f98}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\Shaders\Minimap">
+      <UniqueIdentifier>{b6f1848c-3cb4-4ae5-9e51-7bf1ac97df6b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resources\Shaders\SimpleShape2D\SimpleTriangle">
+      <UniqueIdentifier>{59d69dbb-551e-40d7-8b65-c1f95944b592}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -687,7 +720,7 @@
     <ClInclude Include="Game\Scene\ResultScene\ResultScene.h">
       <Filter>Game\Scene\ResultScene</Filter>
     </ClInclude>
-    <ClInclude Include="Library\MyLib\DirectXMyToolKit\DirectXMyToolKit.h">
+    <ClInclude Include="Library\MyLib\DirectXMyToolKit\DirectXUtils.h">
       <Filter>Library\MyLib\DirectX\DirectXMyToolKit</Filter>
     </ClInclude>
     <ClInclude Include="Game\Common\WireTargetFinder\WireTargetFinder.h">
@@ -808,7 +841,6 @@
     <ClInclude Include="Game\Common\EntityManager\IEntity.h">
       <Filter>Game\Common\EntityManager</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Manager\BuildingManager\BuildingManager.h" />
     <ClInclude Include="Game\Manager\PlayerManager\PlayerManager.h">
       <Filter>Game\Common\GameObjectManager\PlayerManager</Filter>
     </ClInclude>
@@ -833,7 +865,6 @@
     <ClInclude Include="Game\GameObjects\Common\Transform\Transform.h">
       <Filter>Game\GameObjects\Common\Transform</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Common\Minimap\Minimap.h" />
     <ClInclude Include="Library\MyLib\DirectXMyToolKit\OffscreenRendering\OffscreenRendering.h">
       <Filter>Library\MyLib\DirectX\DirectXMyToolKit\OffscreenRendering</Filter>
     </ClInclude>
@@ -884,6 +915,36 @@
     </ClInclude>
     <ClInclude Include="Library\MyLib\NlohmannUtils\NlohmannUtils.h">
       <Filter>Library\MyLib\NlohmannUtils</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Common\Behaviour\SteeringBehavior\SteeringBehavior.h">
+      <Filter>Game\Common\Behaviour</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Common\Behaviour\SteeringBehavior\SteeringParameters.h">
+      <Filter>Game\Common\Behaviour</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Manager\BuildingManager\BuildingManager.h">
+      <Filter>Game\Common\GameObjectManager\BuildingManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Common\Minimap\Minimap.h">
+      <Filter>Game\Common\Minimap</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameObjects\RopeObject\XPBDSimulator\Constraint\SteeringConstraint\SteeringConstraint.h">
+      <Filter>Game\GameObjects\RopeObject\XPBDSimulator\Constraint\SteeringConstraint</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\GameObjects\RopeObject\XPBDSimulator\Constraint\SteeringConstraint\SteeringConstraintFactory.h">
+      <Filter>Game\GameObjects\RopeObject\XPBDSimulator\Constraint\Factory</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Common\Collision\CollisionMatrix\CollisionMatrix.h">
+      <Filter>Game\Common\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Common\Factory\CollisionMatrixFactory\CollisionMatrixFactory.h">
+      <Filter>Game\Common\Factory\CollisionMatrixFactory</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\MyLib\FrameTimer\FrameTimer.h">
+      <Filter>Library\MyLib\FrameTimer</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Common\TransitionMask\TransitionMask.h">
+      <Filter>Game\Common\TransitionMask</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1072,7 +1133,7 @@
     <ClCompile Include="Game\Scene\ResultScene\ResultScene.cpp">
       <Filter>Game\Scene\ResultScene</Filter>
     </ClCompile>
-    <ClCompile Include="Library\MyLib\DirectXMyToolKit\DirectXMyToolKit.cpp">
+    <ClCompile Include="Library\MyLib\DirectXMyToolKit\DirectXUtils.cpp">
       <Filter>Library\MyLib\DirectX\DirectXMyToolKit</Filter>
     </ClCompile>
     <ClCompile Include="Game\Common\WireTargetFinder\WireTargetFinder.cpp">
@@ -1187,7 +1248,6 @@
     <ClCompile Include="Game\Common\EntityManager\IEntity.cpp">
       <Filter>Game\Common\EntityManager</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Manager\BuildingManager\BuildingManager.cpp" />
     <ClCompile Include="Game\Manager\PlayerManager\PlayerManager.cpp">
       <Filter>Game\Common\GameObjectManager\PlayerManager</Filter>
     </ClCompile>
@@ -1212,7 +1272,6 @@
     <ClCompile Include="Game\GameObjects\Common\Transform\Transform.cpp">
       <Filter>Game\GameObjects\Common\Transform</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Common\Minimap\Minimap.cpp" />
     <ClCompile Include="Library\MyLib\DirectXMyToolKit\OffscreenRendering\OffscreenRendering.cpp">
       <Filter>Library\MyLib\DirectX\DirectXMyToolKit\OffscreenRendering</Filter>
     </ClCompile>
@@ -1254,6 +1313,36 @@
     </ClCompile>
     <ClCompile Include="Library\MyLib\NlohmannUtils\NlohmannUtils.cpp">
       <Filter>Library\MyLib\NlohmannUtils</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Common\Behaviour\SteeringBehavior\SteeringBehavior.cpp">
+      <Filter>Game\Common\Behaviour</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Common\Behaviour\SteeringBehavior\SteeringParameters.cpp">
+      <Filter>Game\Common\Behaviour</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Manager\BuildingManager\BuildingManager.cpp">
+      <Filter>Game\Common\GameObjectManager\BuildingManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Common\Minimap\Minimap.cpp">
+      <Filter>Game\Common\Minimap</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\GameObjects\RopeObject\XPBDSimulator\Constraint\SteeringConstraint\SteeringConstraint.cpp">
+      <Filter>Game\GameObjects\RopeObject\XPBDSimulator\Constraint\SteeringConstraint</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\GameObjects\RopeObject\XPBDSimulator\Constraint\SteeringConstraint\SteeringConstraintFactory.cpp">
+      <Filter>Game\GameObjects\RopeObject\XPBDSimulator\Constraint\Factory</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Common\Collision\CollisionMatrix\CollisionMatrix.cpp">
+      <Filter>Game\Common\Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Common\Factory\CollisionMatrixFactory\CollisionMatrixFactory.cpp">
+      <Filter>Game\Common\Factory\CollisionMatrixFactory</Filter>
+    </ClCompile>
+    <ClCompile Include="Library\MyLib\FrameTimer\FrameTimer.cpp">
+      <Filter>Library\MyLib\FrameTimer</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Common\TransitionMask\TransitionMask.cpp">
+      <Filter>Game\Common\TransitionMask</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1311,6 +1400,18 @@
     </FxCompile>
     <FxCompile Include="Shaders\SimpleShape2D\SimpleRectangle\SimpleRectangle_PS.hlsl">
       <Filter>Resources\Shaders\SimpleShape2D\SimpleRectangle</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\FrustumCulling\FrustumCullingCS.hlsl">
+      <Filter>Resources\Shaders\FrustumCulling</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\SceneFade\PS_Fade.hlsl">
+      <Filter>Resources\Shaders\SceneFade</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\Minimap\Minimap_PS.hlsl">
+      <Filter>Resources\Shaders\Minimap</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders\SimpleShape2D\SimpleTriangle\SimpleTriangle_PS.hlsl">
+      <Filter>Resources\Shaders\SimpleShape2D\SimpleTriangle</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

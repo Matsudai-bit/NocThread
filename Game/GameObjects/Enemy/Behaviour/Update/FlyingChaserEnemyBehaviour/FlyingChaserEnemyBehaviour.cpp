@@ -10,6 +10,7 @@
 #include "pch.h"
 #include "FlyingChaserEnemyBehaviour.h"
 
+
 #include "Game/GameObjects/Enemy/Enemy.h"
 #include "Game/GameObjects/Player/Player.h"
 #include "Game/Common/GameObjectRegistry/GameObjectRegistry.h"
@@ -27,6 +28,7 @@ using namespace DirectX;
  * @param[in] ‚È‚µ
  */
 FlyingChaserEnemyBehaviour::FlyingChaserEnemyBehaviour()
+	: m_steeringBehavior{ 18.0f, 0.000000001f}
 {
 	m_playerTargetTimeCounter.Reset();
 
@@ -67,24 +69,28 @@ void FlyingChaserEnemyBehaviour::Update(Enemy* pEnemy, float deltaTime, const Co
 	UNREFERENCED_PARAMETER(deltaTime);
 	using namespace SimpleMath;
 
-	m_playerTargetTimeCounter.UpperTime(deltaTime);
-
-	if (m_playerTargetTimeCounter.GetElapsedTime() >= 1.0f)
+	
+	// ˆê•bŒo‰ß‚·‚é‚Ü‚Å‘Ò‚Â
+	if (m_playerTargetTimeCounter.GetElapsedTime() < 1.0f) 
 	{
-		const GameObject* pPlayerObject = GameObjectRegistry::GetInstance()->GetGameObject(GameObjectTag::PLAYER);
-		if (pPlayerObject == nullptr) {
-			return;
-		}
-
-		Vector3 playerPosition = pPlayerObject->GetTransform()->GetPosition();
-
-		m_targetDirection = playerPosition - pEnemy->GetTransform()->GetPosition();
-
-		// YŽ²•ûŒü‚Ìî•ñ‚ðÁ‚·
-		m_targetDirection.Normalize();
-		m_playerTargetTimeCounter.Reset();
-
+		m_playerTargetTimeCounter.UpperTime(deltaTime);
+		return;
 	}
+	
+	const GameObject* pPlayerObject = GameObjectRegistry::GetInstance()->GetGameObject(GameObjectTag::PLAYER);
+	if (pPlayerObject == nullptr) {
+		return;
+	}
+
+	Vector3 playerPosition = pPlayerObject->GetTransform()->GetPosition();
+
+	m_steeringBehavior.SetTargetPosition(playerPosition);
+	m_targetDirection = playerPosition - pEnemy->GetTransform()->GetPosition();
+
+	// YŽ²•ûŒü‚Ìî•ñ‚ðÁ‚·
+	m_targetDirection.Normalize();
+
+
 
 
 	// …•½•ûŒü
@@ -122,7 +128,8 @@ void FlyingChaserEnemyBehaviour::Update(Enemy* pEnemy, float deltaTime, const Co
 	pEnemy->AddForceToVelocity(flyingVelocity);
 
 
-	
+	DirectX::SimpleMath::Vector3 steeringForce = m_steeringBehavior.Calculate(pEnemy->GetTransform()->GetPosition(), pEnemy->GetVelocity());
+	pEnemy->AddForceToVelocity(steeringForce);
 }
 
 

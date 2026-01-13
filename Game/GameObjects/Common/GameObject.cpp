@@ -33,6 +33,7 @@ GameObject::GameObject()
 	
 	// ‰Šú’l‚ð1.0f‚Æ‚·‚é
 	m_transform->SetScale(1.0f);
+
 }
 
 

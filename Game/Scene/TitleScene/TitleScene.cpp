@@ -30,7 +30,7 @@
 #include "Game/Common/SoundManager/SoundPaths.h"
 
 #include "Game/UI/TutorialWindow/TutorialWindow.h"
-
+#include "Game/Common/TransitionMask/TransitionMask.h"
 
 #include "Library/DebugHelper.h"
 #include <string>
@@ -46,6 +46,7 @@ TitleScene::TitleScene()
 	: m_bgmSoundID{}
 	, m_isDisplayingTutorialWindow{ false }
 	, m_isPrevConnectedGamepad{ false }
+	, m_isQuit{false}
 {
 
 }
@@ -57,7 +58,7 @@ TitleScene::TitleScene()
  */
 TitleScene::~TitleScene()
 {
-
+	OutputDebugStringA("--- TitleScene Destructor Called ---\n");
 }
 
 
@@ -134,6 +135,7 @@ void TitleScene::Initialize()
 
 	m_isPrevConnectedGamepad = false;
 
+	GetCommonResources()->GetTransitionMask()->Open();
 }
 
 
@@ -168,8 +170,12 @@ void TitleScene::Update(float deltaTime)
 
 	if (m_isDisplayingTutorialWindow == false)
 	{
-		// タイトルメニューの更新処理
-		m_titleMenu->Update(deltaTime);
+		if (GetCommonResources()->GetTransitionMask()->IsEnd())
+		{
+			// タイトルメニューの更新処理
+			m_titleMenu->Update(deltaTime);
+
+		}
 	}
 	else
 	{
@@ -195,6 +201,11 @@ void TitleScene::Update(float deltaTime)
  */
 void TitleScene::Render()
 {
+	if (m_isQuit && GetCommonResources()->GetTransitionMask()->IsEnd())
+	{
+		return;
+	}
+
 	m_canvas->DrawContents();
 
 	if (m_isDisplayingTutorialWindow == false)
@@ -251,26 +262,36 @@ DirectX::SimpleMath::Vector2 TitleScene::CalcCenterOrigin(ID3D11ShaderResourceVi
  * * @param[in] menuItem　押されたアイテム
  */
 void TitleScene::OnPushMenuItem(TitleMenu::MenuItem menuItem)
-{
+{ 
 	switch (menuItem)
 	{
 	case TitleMenu::MenuItem::PLAY:
-	{
+	{// SEの再生
+		SoundManager::GetInstance()->Play(SoundPaths::SE_BUTTON_CLICK_GAMESTART, false, 1.0f);
 		std::string newStateName = "Change GameplayScene";
 		OutputDebugString(L"%ls\n", std::wstring(newStateName.begin(), newStateName.end()).c_str());
 
-		ChangeScene<GameplayScene, LoadingScreen>();
+
+		GetCommonResources()->GetTransitionMask()->Close([&]() {ChangeScene<GameplayScene, LoadingScreen>(); });
 	}
 	break;
 	case TitleMenu::MenuItem::TUTORIAL:
+	
+		// SEの再生
+		SoundManager::GetInstance()->Play(SoundPaths::SE_DECIDE, false, 1.0f);
 		// キャンバスに追加
 		m_canvas->AddSprite(m_tutorialWindow.get());
 		m_isDisplayingTutorialWindow = true;
 		break;
 	case TitleMenu::MenuItem::SETTING:
+		
 		break;
 	case TitleMenu::MenuItem::QUIT:
-		PostQuitMessage(0);
+		// SEの再生
+		SoundManager::GetInstance()->Play(SoundPaths::SE_DECIDE, false, 1.0f);
+		m_isQuit = true;
+		GetCommonResources()->GetTransitionMask()->Close([&]() {PostQuitMessage(0);; });
+
 		break;
 	default:
 		break;

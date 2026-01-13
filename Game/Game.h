@@ -14,11 +14,15 @@
 // ライブラリ
 #include "Library/MyLib/DirectXMyToolKit/DebugFont/DebugFont.h" // デバックフォント
 #include "Library/DirectXFramework/RenderTexture.h"             // レンダーテクスチャ
+#include "Library/MyLib/FrameTimer/FrameTimer.h"
+
 
 // システム
 #include "Game/Common/CommonResources/CommonResources.h"    // 共通リソース
 #include "Game/Common/ResourceManager/ResourceManager.h"    // リソース管理
 #include "Game/Manager/SceneManager/SceneManager.h"         // シーン管理
+#include "Game/Common/TransitionMask/TransitionMask.h"      // トランジションマスク
+
 
 // A basic game implementation that creates a D3D11 device and
 // provides a game loop.
@@ -26,6 +30,11 @@ class Game final : public DX::IDeviceNotify
 {
 // 追加データメンバ
 private:
+    // Device resources.
+    std::unique_ptr<DX::DeviceResources>    m_deviceResources;
+
+    // Rendering loop timer.
+    DX::StepTimer                           m_timer;
     // 射影行列
     DirectX::SimpleMath::Matrix m_proj;
 
@@ -37,7 +46,6 @@ private:
 
     // リソース
     std::unique_ptr<CommonResources> m_commonResources;     ///< 共通リソース
-    std::unique_ptr<MyLib::SceneManager<CommonResources>>       m_sceneManager;     ///< シーン管理
     std::unique_ptr<ResourceManager>    m_resourceManager;  ///< リソース管理
     std::unique_ptr<DirectX::AudioEngine>                       m_audioEngine;          ///< オーディオエンジン
 
@@ -48,6 +56,10 @@ private:
 
     // その他
     std::unique_ptr<DX::RenderTexture>  m_copyRenderTexture;
+    std::unique_ptr<MyLib::FrameTimer>  m_frameTimer;
+    std::unique_ptr<TransitionMask>     m_transitionMask;   ///< トランジションマスク
+    std::unique_ptr<MyLib::SceneManager<CommonResources>>  m_sceneManager;     ///< シーン管理
+
 
 public:
 
@@ -98,11 +110,7 @@ private:
     void CreateDeviceDependentResources();
     void CreateWindowSizeDependentResources();
 
-    // Device resources.
-    std::unique_ptr<DX::DeviceResources>    m_deviceResources;
 
-    // Rendering loop timer.
-    DX::StepTimer                           m_timer;
 
 
 

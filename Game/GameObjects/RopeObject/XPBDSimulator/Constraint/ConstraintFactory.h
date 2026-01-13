@@ -1,5 +1,5 @@
 /*****************************************************************//**
- * @file    ConstraintFactory.h
+ * @file    ConstraintFactoryBase.h
  * @brief   制約のに関するヘッダーファイル
  *
  * @author  松下大暉
@@ -26,7 +26,7 @@ class SimParticle;
 /**
  * @brief 制約の生成
  */
-class ConstraintFactory
+class ConstraintFactoryBase
 {
 // クラス定数の宣言 -------------------------------------------------
 public:
@@ -42,20 +42,22 @@ private:
 // コンストラクタ/デストラクタ
 public:
 	// コンストラクタ
-	ConstraintFactory(bool isDynamic);
+	ConstraintFactoryBase(bool isDynamic);
 
 	// デストラクタ
-	virtual ~ConstraintFactory() = default;
+	virtual ~ConstraintFactoryBase() = default;
 
 	// 制約の作成
-	virtual std::vector<std::unique_ptr<IConstraint>> CreateConstraint(std::vector<XPBDSimulator::Particle>* pParticles) = 0;
+	virtual std::vector<std::unique_ptr<IConstraint>> CreateConstraint(std::vector<XPBDSimulator::Particle>* pParticles, XPBDSimulator::Parameter paramater)  = 0;
 
+	// リセット
+	virtual void Reset() {};
 
 
 // 取得/設定
 public:
 
-	bool IsDynamic() { return m_isDynamic; };
+	bool IsDynamic() const { return m_isDynamic; };
 
 
 };

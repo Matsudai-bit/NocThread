@@ -32,7 +32,7 @@ public:
 // データメンバの宣言 -----------------------------------------------
 private:
 
-
+	bool m_isPlaying; // 再生中かどうか
 
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
@@ -50,13 +50,13 @@ public:
 	// 再生
 	virtual void Play() = 0;
 	// 更新処理
-	virtual void Update(float deltaTime) = 0;
+	virtual void Update(float deltaTime, const float& isEnd) = 0;
 	// 描画処理
 	virtual void Draw(const Camera& camera) = 0;
 
 	// 再生してるかどうか
-	virtual bool IsPlaying() const = 0;
-
+	bool IsPlaying() const override {return m_isPlaying;}
+	void SetIsPlaying(bool isPlaying) { m_isPlaying = isPlaying; }
 
 // 取得/設定
 public:

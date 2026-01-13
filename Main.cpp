@@ -11,7 +11,7 @@
 
 using namespace DirectX;
 
-//#define GAME_MODE
+#define GAME_MODE
 
 #ifdef __clang__
 #pragma clang diagnostic ignored "-Wcovered-switch-default"
@@ -61,9 +61,9 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 #else 
     // ウィンドウの表示
     // フルスクリーンにするかどうか
-    //if (MessageBox(NULL, L"フルスクリーンにしますか？", L"画面モード設定", MB_YESNO) == IDYES)
-    //    s_fullscreen = true;
-    //else
+    if (MessageBox(NULL, L"フルスクリーンにしますか？", L"画面モード設定", MB_YESNO) == IDYES)
+        s_fullscreen = true;
+    else
         s_fullscreen = false;
 #endif 
 
@@ -153,6 +153,17 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
     }
 
     g_game.reset();
+
+    #ifdef GAME_MODE
+    #else 
+     //--- すべてが空になった状態でチェック ---
+	 //メモリリークの報告
+    IDXGIDebug* debugDev;
+    if (SUCCEEDED(DXGIGetDebugInterface1(0, IID_PPV_ARGS(&debugDev)))) {
+        debugDev->ReportLiveObjects(DXGI_DEBUG_ALL, DXGI_DEBUG_RLO_ALL);
+        debugDev->Release();
+    }
+    #endif
 
     CoUninitialize();
 

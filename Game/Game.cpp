@@ -90,8 +90,18 @@ Game::~Game()
     m_sceneManager->Finalize();
 
 
-    // DirectXリソースの解放 (ComPtr を使っていれば自動)
-    // ...
+    // 3. 全ての unique_ptr を明示的に破棄する（宣言の逆順が望ましい）
+    m_sceneManager.reset();    // シーンを消す（TitleSceneなどもここで消える）
+    m_transitionMask.reset();
+    m_copyRenderTexture.reset();
+    m_commonResources.reset();
+    m_resourceManager.reset();
+    m_debugFont.reset();       // SpriteFontなどがここで解放される
+    m_states.reset();          // CommonStatesがここで解放される
+    m_audioEngine.reset();
+
+
+    OutputDebugStringA("--- Game Destructor Called ---\n");
 }
 
 // Initialize the Direct3D resources required to run.
@@ -125,7 +135,7 @@ void Game::Initialize(HWND window, int width, int height)
    // **** 生成 ****
    
    // シーンの生成
-    m_sceneManager = std::make_unique<MyLib::SceneManager<CommonResources>>();
+   m_sceneManager = std::make_unique<MyLib::SceneManager<CommonResources>>();
 
     // トラッカーの作成
     m_keyboardStateTracker  = std::make_unique<Keyboard::KeyboardStateTracker>();
@@ -142,7 +152,8 @@ void Game::Initialize(HWND window, int width, int height)
         m_keyboardStateTracker.get(),
         m_mouseStateTracker.get(),
         m_gamePadStateTracker.get(),
-        m_copyRenderTexture.get()
+        m_copyRenderTexture.get(),
+        m_transitionMask.get()
     );
 
     // **** 初期化処理 ****
@@ -154,6 +165,7 @@ void Game::Initialize(HWND window, int width, int height)
     m_sceneManager->RequestSceneChange<TitleScene, LoadingScreen>();
 
     context->ClearRenderTargetView(m_deviceResources->GetRenderTargetView(), Colors::Black);
+
 
     // ***** ImGuiの初期設定 *****
     //  バージョンの確認
@@ -172,22 +184,26 @@ void Game::Initialize(HWND window, int width, int height)
 
     // TODO: Change the timer settings if you want something other than the default variable timestep mode.
     // e.g. for 60 FPS fixed timestep update logic, call:
-    /*
     m_timer.SetFixedTimeStep(true);
     m_timer.SetTargetElapsedSeconds(1.0 / 60);
-    */
+
+    
 }
 
 #pragma region Frame Update
 // Executes the basic game loop.
 void Game::Tick()
-{
+{    
+    // **** ImGuiの更新処理 ****
+//  新フレームの開始
+    ImGui_ImplDX11_NewFrame();
+    ImGui_ImplWin32_NewFrame();
+    ImGui::NewFrame();
+
     m_timer.Tick([&]()
     {
         Update(m_timer);
     });
-
-
 
     Render();
 }
@@ -195,15 +211,6 @@ void Game::Tick()
 // Updates the world.
 void Game::Update(DX::StepTimer const& timer)
 {
-    // **** ImGuiの更新処理 ****
-    //  新フレームの開始
-    ImGui_ImplDX11_NewFrame();
-    ImGui_ImplWin32_NewFrame();
-    ImGui::NewFrame();
-
-    //  デモウィンドウの描画
-    ImGui::ShowDemoWindow();
-
     float deltaTime = float(timer.GetElapsedSeconds());
 
     // キーボードトラッカーの更新処理
@@ -217,6 +224,9 @@ void Game::Update(DX::StepTimer const& timer)
     // ゲームパッドトラッカーの更新処理
     auto gamePad = GamePad::Get().GetState(0);
     m_gamePadStateTracker->Update(gamePad);
+
+    // トランジションマスクの更新処理
+    m_transitionMask->Update(deltaTime);
 
     // シーン管理の更新処理
     m_sceneManager->Update(deltaTime);
@@ -263,17 +273,24 @@ void Game::Render()
 
         m_commonResources->SetCopyScreenRequest(false);
     }
+    if (!m_transitionMask->IsEnd())
+    {
+        m_transitionMask->Draw(context, m_states.get(), m_copyRenderTexture->GetShaderResourceView(), m_deviceResources->GetOutputSize());
 
+    }
     // FPSを取得する
-   // uint32_t fps = m_timer.GetFramesPerSecond();
+    uint32_t fps = m_timer.GetFramesPerSecond();
 
-    // FPSの表示
+    //// FPSの表示
     //m_debugFont->AddString(0, 0, Colors::White, L"FPS=%d", fps);
 
-    // デバッグフォントの描画
-    m_debugFont->Render(m_states.get());
+    //// デバッグフォントの描画
+    //m_debugFont->Render(m_states.get());
 
        // ****  ImGuiの描画処理 ****
+
+        //  デモウィンドウの描画
+    ImGui::ShowDemoWindow();
     ImGui::Render();
     //ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 
@@ -405,6 +422,10 @@ void Game::CreateDeviceDependentResources()
     // デバイスの設定
     m_copyRenderTexture->SetDevice(device);
 
+    // トランジションマスクの作成
+    m_transitionMask = std::make_unique<TransitionMask>(device, context, 1.0f);
+
+
 }
 
 // Allocate all memory resources that change on a window SizeChanged event.
@@ -422,11 +443,14 @@ void Game::CreateWindowSizeDependentResources()
         , 0.1f, 100.0f);
 
     m_copyRenderTexture->SetWindow(rect);
+
+
 }
 
 void Game::OnDeviceLost()
 {
     // TODO: Add Direct3D resource cleanup here.
+
 }
 
 void Game::OnDeviceRestored()

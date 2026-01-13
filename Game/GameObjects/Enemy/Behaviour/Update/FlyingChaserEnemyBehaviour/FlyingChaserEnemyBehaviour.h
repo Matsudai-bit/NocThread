@@ -14,6 +14,7 @@
 
 // ヘッダファイルの読み込み ===================================================
 #include "Game/GameObjects/Enemy/Behaviour/Update/IEnemyUpdateBehaviour.h"
+#include "Game/Common/Behaviour/SteeringBehavior/SteeringBehavior.h"
 
 #include "Game/Common/ElapsedTimeCounter/ElapsedTimeCounter.h"
 
@@ -38,6 +39,8 @@ private:
 	ElapsedTimeCounter m_playerTargetTimeCounter; ///< プレイヤーを補足するクールタイムの加算器
 
 	DirectX::SimpleMath::Vector3 m_targetDirection; ///< 目標方向
+
+	SteeringBehavior m_steeringBehavior;
 
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ

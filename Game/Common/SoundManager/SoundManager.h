@@ -57,9 +57,9 @@ public:
 public:
 
 	// Ä¶
-	int Play(const std::string& filePath, bool isLoop = false);
+	int Play(const std::string& filePath, bool isLoop = false, float volume = 0.3f);
 	// Šù‘¶‚ÌID‚ÅÄ¶‚·‚éê‡
-	int Play(int id,  bool isLoop = false);
+	int Play(int id,  bool isLoop, float volume);
 
 	// íœ
 	bool Remove(int id);
