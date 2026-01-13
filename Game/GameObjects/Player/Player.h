@@ -28,7 +28,7 @@
 #include "Game/Common/Input/InputActionType/InputActionType.h"
 #include "Game/Common/Input/InputSystem/InputSystem.h"
 #include "Game/Common/SoundManager/SoundManager.h"
-#include "Game/Common/SoundManager/SoundPaths.h"
+#include "Game/Common/Database/SoundDatabase.h"
 #include "Library/DirectXFramework/Animation.h"
 
 // ƒNƒ‰ƒX‚Ì‘O•ûéŒ¾ ===================================================

@@ -35,7 +35,7 @@
 #include "Game/Manager/StageManager/StageManager.h"
 #include "Game/Common/GameEffect/GameEffectController.h"
 #include "Game/Common/Camera/MainCamera/MainCamera.h"
-#include <Game\Common\SoundManager\SoundPaths.h>
+#include "Game/Common/Database/SoundDatabase.h"
 #include <Game\Common\SoundManager\SoundManager.h>
 
 using namespace DirectX;
@@ -254,12 +254,14 @@ void PauseGameplayState::OnPushMenuItem(PauseMenu::MenuItem menuItem)
 	{
 	case PauseMenu::MenuItem::CONTINUE:
 		// SE‚ÌÄ¶
-		SoundManager::GetInstance()->Play(SoundPaths::SE_CANCEL, false, 0.4f);
+		SoundManager::GetInstance()->Play(SoundDatabase::SOUND_CLIP_MAP.at(SoundDatabase::SE_CANCEL), false);
+
 		ContinueGame();
 		break;
 	case PauseMenu::MenuItem::TUTORIAL:
 		// SE‚ÌÄ¶
-		SoundManager::GetInstance()->Play(SoundPaths::SE_DECIDE, false, 1.0f);
+		SoundManager::GetInstance()->Play(SoundDatabase::SOUND_CLIP_MAP.at(SoundDatabase::SE_DECIDE), false);
+
 		m_isDisplayingTutorialWindow = true;
 		m_canvas->AddSprite(m_tutorialWindow.get());
 		break;
@@ -267,7 +269,7 @@ void PauseGameplayState::OnPushMenuItem(PauseMenu::MenuItem menuItem)
 		break;
 	case PauseMenu::MenuItem::RETURN_TITLE:
 		// SE‚ÌÄ¶
-		SoundManager::GetInstance()->Play(SoundPaths::SE_DECIDE, false, 1.0f);
+		SoundManager::GetInstance()->Play(SoundDatabase::SOUND_CLIP_MAP.at(SoundDatabase::SE_DECIDE), false);
 		if (GetOwner()->GetCommonResources()->GetTransitionMask()->IsEnd())
 		{
 			// ƒV[ƒ“‚ğØ‚è‘Ö‚¦‚é

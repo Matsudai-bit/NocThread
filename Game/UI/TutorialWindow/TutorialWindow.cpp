@@ -16,7 +16,7 @@
 
 #include "Game/Common/Input/InputBindingFactory/InputBindingFactory.h"
 #include <Game\Common\SoundManager\SoundManager.h>
-#include <Game\Common\SoundManager\SoundPaths.h>
+#include "Game/Common/Database/SoundDatabase.h"
 
 using namespace DirectX;
 
@@ -112,13 +112,13 @@ void TutorialWindow::Update(
 	if (CanMoveRight())
 	{
 		// SE‚ÌÄ¶
-		SoundManager::GetInstance()->Play(SoundPaths::SE_CURSOR_MOVING, false, 1.0f);
+		SoundManager::GetInstance()->Play(SoundDatabase::SOUND_CLIP_MAP.at(SoundDatabase::SE_CURSOR_MOVING), false);	
 		m_currentTutorialSpriteIndex++;
 	}
 	if (CanMoveLeft())
 	{
 		// SE‚ÌÄ¶
-		SoundManager::GetInstance()->Play(SoundPaths::SE_CURSOR_MOVING, false, 1.0f);
+		SoundManager::GetInstance()->Play(SoundDatabase::SOUND_CLIP_MAP.at(SoundDatabase::SE_CURSOR_MOVING), false);
 		m_currentTutorialSpriteIndex--;
 	}
 
@@ -131,7 +131,7 @@ void TutorialWindow::Update(
 		m_uiInput->IsInput(InputActionType::UIActionID::CANCEL, InputSystem<InputActionType::UIActionID>::InputOption::PRESSED))
 	{
 		// SE‚ÌÄ¶
-		SoundManager::GetInstance()->Play(SoundPaths::SE_CANCEL, false, 0.4f);
+		SoundManager::GetInstance()->Play(SoundDatabase::SOUND_CLIP_MAP.at(SoundDatabase::SE_CANCEL), false);		
 		m_closeWindow();
 	}
 }

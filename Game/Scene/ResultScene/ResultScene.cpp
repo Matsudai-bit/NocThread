@@ -27,7 +27,7 @@
 #include "Game/Common/UserInterfaceTool/Canvas/Canvas.h"
 
 #include "Game/Common/SoundManager/SoundManager.h"
-#include "Game/Common/SoundManager/SoundPaths.h"
+#include "Game/Common/Database/SoundDatabase.h"
 
 #include "Game/Common/ResultData/ResultData.h"
 
@@ -111,8 +111,7 @@ void ResultScene::Initialize()
 	m_backgroundSprite->SetScale(1.0f * Screen::Get()->GetScreenScale() );
 	m_backgroundAlphaFilterSprite->SetScale(1.60f * Screen::Get()->GetScreenScale());
 
-	SoundManager::GetInstance()->Play(SoundPaths::BGM_RESULT);
-
+	SoundManager::GetInstance()->Play(SoundDatabase::SOUND_CLIP_MAP.at(SoundDatabase::BGM_RESULT), true);
 	// “ü—ÍƒVƒXƒeƒ€‚Ìì¬
 	m_inputSystem = InputBindingFactory::CreateUIInput();
 }

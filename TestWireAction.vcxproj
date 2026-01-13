@@ -191,6 +191,8 @@
     <ClInclude Include="Game\Common\Collision\ICollider.h" />
     <ClInclude Include="Game\Common\Collision\ICollision.h" />
     <ClInclude Include="Game\Common\CommonResources\CommonResources.h" />
+    <ClInclude Include="Game\Common\Database\SoundDatabase.h" />
+    <ClInclude Include="Game\Common\Database\TextureDatabase.h" />
     <ClInclude Include="Game\Common\ElapsedTimeCounter\ElapsedTimeCounter.h" />
     <ClInclude Include="Game\Common\EntityManager\EntityManager.h" />
     <ClInclude Include="Game\Common\EntityManager\IEntity.h" />
@@ -231,7 +233,6 @@
     <ClInclude Include="Game\Common\Shadow\CircularShadow\CircularShadow.h" />
     <ClInclude Include="Game\Common\SimpleModel\SimpleModel.h" />
     <ClInclude Include="Game\Common\SoundManager\SoundManager.h" />
-    <ClInclude Include="Game\Common\SoundManager\SoundPaths.h" />
     <ClInclude Include="Game\Common\SpawnManager\SpawnManager.h" />
     <ClInclude Include="Game\Common\StateMachine\StateBase\StateBase.h" />
     <ClInclude Include="Game\Common\StateMachine\StateMachine.h" />

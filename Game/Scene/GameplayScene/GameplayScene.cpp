@@ -33,7 +33,7 @@
 #include "Game/Common/Collision/CollisionManager/CollisionManager.h"
 #include "Game/Common/Collision/CollisionMatrix/CollisionMatrix.h"
 #include "Game/Common/SoundManager/SoundManager.h"
-#include "Game/Common/SoundManager/SoundPaths.h"
+#include "Game/Common/Database/SoundDatabase.h"
 #include "Game/Scene/Loading/LoadingScreen.h"
 #include "Game/Common/GameEffect/GameEffectController.h"
 #include "Game/Common/SpawnManager/SpawnManager.h"
@@ -333,9 +333,10 @@ void GameplayScene::StartGame()
 	m_stateMachine->ChangeState<NormalGameplayState>();
 	// **** BGMを鳴らす ****
 	SoundManager::GetInstance()->RemoveAll();
-	SoundManager::GetInstance()->Play(SoundPaths::BGM_INGAME, true);
+	SoundManager::GetInstance()->Play(SoundDatabase::SOUND_CLIP_MAP.at(SoundDatabase::BGM_INGAME), true);
 
 
 	// ***** ゲーム開始通知 *****
 	GameFlowMessenger::GetInstance()->Notify(GameFlowEventID::GAME_START);
+
 }

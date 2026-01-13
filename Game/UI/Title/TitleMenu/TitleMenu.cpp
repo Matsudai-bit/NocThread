@@ -21,7 +21,7 @@
 
 #include "Library/MyLib/EasingKit/EasingKit.h"
 #include <Game\Common\SoundManager\SoundManager.h>
-#include <Game\Common\SoundManager\SoundPaths.h>
+#include "Game/Common/Database/SoundDatabase.h"
 
 using namespace DirectX;
 
@@ -144,7 +144,7 @@ void TitleMenu::Update(float deltaTime)
 	if (CanMoveDownSelector())
 	{
 		// SE‚ÌÄ¶
-		SoundManager::GetInstance()->Play(SoundPaths::SE_CURSOR_MOVING, false, 1.0f);
+		SoundManager::GetInstance()->Play(SoundDatabase::SOUND_CLIP_MAP.at(SoundDatabase::SE_CURSOR_MOVING), false);
 
 		
 
@@ -155,7 +155,7 @@ void TitleMenu::Update(float deltaTime)
 	if (CanMoveUpSelector())
 	{		
 		// SE‚ÌÄ¶
-		SoundManager::GetInstance()->Play(SoundPaths::SE_CURSOR_MOVING, false, 1.0f);
+		SoundManager::GetInstance()->Play(SoundDatabase::SOUND_CLIP_MAP.at(SoundDatabase::SE_CURSOR_MOVING), false);
 		// ‰ÁŽZ‚·‚é
 		m_currentSelectItemForInt--;
 	}

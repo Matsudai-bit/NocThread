@@ -485,6 +485,9 @@
     <Filter Include="Resources\Shaders\SimpleShape2D\SimpleTriangle">
       <UniqueIdentifier>{59d69dbb-551e-40d7-8b65-c1f95944b592}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\Common\Database">
+      <UniqueIdentifier>{99cb4a00-241a-49ee-a9aa-067150fa99ec}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -744,9 +747,6 @@
     <ClInclude Include="Game\Common\SoundManager\SoundManager.h">
       <Filter>Game\Common\SoundManager</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Common\SoundManager\SoundPaths.h">
-      <Filter>Game\Common\SoundManager</Filter>
-    </ClInclude>
     <ClInclude Include="Game\Scene\ResultScene\State\SuccessResultState\SuccessResultState.h">
       <Filter>Game\Scene\ResultScene\State\SuccessResultState</Filter>
     </ClInclude>
@@ -945,6 +945,12 @@
     </ClInclude>
     <ClInclude Include="Game\Common\TransitionMask\TransitionMask.h">
       <Filter>Game\Common\TransitionMask</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Common\Database\SoundDatabase.h">
+      <Filter>Game\Common\Database</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Common\Database\TextureDatabase.h">
+      <Filter>Game\Common\Database</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1369,6 +1375,7 @@
     <None Include="Shaders\SimpleShape2D\SimpleShape2D.hlsli">
       <Filter>Resources\Shaders\SimpleShape2D</Filter>
     </None>
+    <None Include="Shaders\MinimapInstansing\SimpleShape2DInstansing.hlsli" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shaders\CircleShadow_GS.hlsl">
@@ -1413,5 +1420,8 @@
     <FxCompile Include="Shaders\SimpleShape2D\SimpleTriangle\SimpleTriangle_PS.hlsl">
       <Filter>Resources\Shaders\SimpleShape2D\SimpleTriangle</Filter>
     </FxCompile>
+    <FxCompile Include="Shaders\MinimapInstansing\SimpleRectangle\SimpleRectangleInstansing_PS.hlsl" />
+    <FxCompile Include="Shaders\MinimapInstansing\SimpleShape2DInstansing_GS.hlsl" />
+    <FxCompile Include="Shaders\MinimapInstansing\SimpleShape2DInstansing_VS.hlsl" />
   </ItemGroup>
 </Project>

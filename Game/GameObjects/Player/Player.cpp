@@ -364,7 +364,7 @@ void Player::OnCollision(const CollisionInfo& info)
 	if (info.pOtherObject->GetTag() == GameObjectTag::CHECKPOINT)
 	{
 		// SE‚ÌÄ¶
-		SoundManager::GetInstance()->Play(SoundPaths::SE_PLAYER_PASSING, false, 1.5f);
+		SoundManager::GetInstance()->Play(SoundDatabase::SOUND_CLIP_MAP.at(SoundDatabase::SE_PLAYER_PASSING), false);
 	}
 
 }
@@ -892,7 +892,7 @@ void Player::ResolvePushOutAndBounce(DirectX::SimpleMath::Vector3 overlap, const
 void Player::Jump(float deltaTime)
 {
 	// SE‚ÌÄ¶
-	SoundManager::GetInstance()->Play(SoundPaths::SE_PLAYER_JUMP, false, 0.4f);
+	SoundManager::GetInstance()->Play(SoundDatabase::SOUND_CLIP_MAP.at(SoundDatabase::SE_PLAYER_JUMP), false);
 
 
 	AddForceToVelocityY(JUMPING_POWER * deltaTime);
