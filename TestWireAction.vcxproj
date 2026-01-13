@@ -191,6 +191,7 @@
     <ClInclude Include="Game\Common\Collision\ICollider.h" />
     <ClInclude Include="Game\Common\Collision\ICollision.h" />
     <ClInclude Include="Game\Common\CommonResources\CommonResources.h" />
+    <ClInclude Include="Game\Common\Database\PlayerParameter.h" />
     <ClInclude Include="Game\Common\Database\SoundDatabase.h" />
     <ClInclude Include="Game\Common\Database\TextureDatabase.h" />
     <ClInclude Include="Game\Common\ElapsedTimeCounter\ElapsedTimeCounter.h" />

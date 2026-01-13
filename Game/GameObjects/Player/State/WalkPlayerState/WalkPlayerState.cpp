@@ -16,6 +16,9 @@
 #include "Game/Common/CommonResources/CommonResources.h"
 #include "Library/MyLib/DirectXMyToolKit/DebugFont/DebugFont.h"
 
+// パラメータ
+#include "Game/Common/Database/PlayerParameter.h"
+
 using namespace DirectX;
 
 // メンバ関数の定義 ===========================================================
@@ -45,7 +48,7 @@ WalkPlayerState::~WalkPlayerState()
 void WalkPlayerState::OnStartState()
 {
 	// アニメーションを変更
-	GetOwner()->ChangeAnimation(Player::ANIM_WALKING);
+	GetOwner()->ChangeAnimation(PlayerParameter::ANIM_WALKING);
 }
 
 /**

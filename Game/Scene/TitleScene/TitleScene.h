@@ -52,13 +52,6 @@ public:
     static constexpr float LOGO_SCALE		= 0.68f;	///< ロゴスプライトの基本スケール
     static constexpr float MANUAL_SCALE		= 0.17f;	///< マニュアルスプライトの基本スケール
 
-	// --- ファイルパス関連 ---
-	static constexpr const char* TEXTURE_PATH_BG			= "Title/title_back.dds";			///< 背景テクスチャのファイルパス
-	static constexpr const char* TEXTURE_PATH_ALPHA			= "Title/title_alpha.dds";			///< アルファマスクテクスチャのファイルパス
-	static constexpr const char* TEXTURE_PATH_LOGO			= "Title/title_logo.dds";			///< タイトルロゴテクスチャのファイルパス
-	static constexpr const char* TEXTURE_PATH_MANUAL_PC		= "Manual/ui_manual_pc.dds";		///< マニュアルUI (PC) のテクスチャファイルパス
-	static constexpr const char* TEXTURE_PATH_MANUAL_GAMEPAD = "Manual/ui_manual_gamepad.dds";  ///< マニュアルUI (ゲームパッド) のテクスチャファイルパス
-
 // データメンバの宣言 -----------------------------------------------
 private:
 	// システム関連

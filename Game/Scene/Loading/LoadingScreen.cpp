@@ -23,6 +23,7 @@
 #include "Game/Common/UserInterfaceTool/Canvas/Canvas.h"
 
 #include "Game/Common/Screen.h"
+#include "Game/Common/Database/TextureDatabase.h"
 using namespace DirectX;
 
 
@@ -66,23 +67,23 @@ void LoadingScreen::Initialize()
 	m_loadingSprite		= std::make_unique<Sprite>();
 	m_loadingFontSprite = std::make_unique<Sprite>();
 
+	using namespace TextureDatabase;
 	// スプライトの初期化処理
-
-	m_backgroundSprite->Initialize(GetCommonResources()->GetResourceManager()->CreateTexture("back_loading.dds"));
+	m_backgroundSprite->Initialize(GetCommonResources()->GetResourceManager()->CreateTexture(TEXTURE_PATH_MAP.at(TextureID::BACKGROUND_LOADING)));
 
 	Sprite::Region region;
 	region.topLeftX = 0;
 	region.topLeftY = 0;
 	region.width = 64;
 	region.height = 64;
-	m_loadingSprite->Initialize(GetCommonResources()->GetResourceManager()->CreateTexture("spyware.dds"), region);
+	m_loadingSprite->Initialize(GetCommonResources()->GetResourceManager()->CreateTexture(TEXTURE_PATH_MAP.at(TextureID::UI_ANIMATION_CHARACTER)), region);
 
 	Sprite::Region fontRegion;
 	fontRegion.topLeftX = 0;
 	fontRegion.topLeftY = 0;
 	fontRegion.width = 320;
 	fontRegion.height = 128;
-	m_loadingFontSprite->Initialize(GetCommonResources()->GetResourceManager()->CreateTexture("loading_font.dds"), fontRegion);
+	m_loadingFontSprite->Initialize(GetCommonResources()->GetResourceManager()->CreateTexture(TEXTURE_PATH_MAP.at(TextureID::UI_FONT_LOADING)), fontRegion);
 
 
 

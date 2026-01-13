@@ -37,6 +37,7 @@
 #include "Game/Scene/ResultScene/State/SuccessResultState/SuccessResultState.h"
 #include "Game/Scene/ResultScene/State/FailureResultState/FailureResultState.h"
 
+#include "Game/Common/Database/TextureDatabase.h"
 
 using namespace DirectX;
 
@@ -93,8 +94,9 @@ void ResultScene::Initialize()
 	m_backgroundSprite				= std::make_unique<Sprite>();
 	m_backgroundAlphaFilterSprite	= std::make_unique<Sprite>();
 
-	m_backgroundSprite->Initialize(GetCommonResources()->GetResourceManager()->CreateTexture("Result/result_back.dds"));
-	m_backgroundAlphaFilterSprite->Initialize(GetCommonResources()->GetResourceManager()->CreateTexture("Result/result_alpha.dds"));
+	auto pResourceManager = GetCommonResources()->GetResourceManager();
+	m_backgroundSprite				->Initialize(pResourceManager->CreateTexture(TextureDatabase::TEXTURE_PATH_MAP.at(TextureDatabase::TextureID::BACKGROUND_RESULT)));
+	m_backgroundAlphaFilterSprite	->Initialize(pResourceManager->CreateTexture(TextureDatabase::TEXTURE_PATH_MAP.at(TextureDatabase::TextureID::BACKGROUND_RESULT_ALPHA_MASK)));
 
 	// ƒLƒƒƒ“ƒoƒX‚Ìì¬
 	m_canvas = std::make_unique<Canvas>(context, states);

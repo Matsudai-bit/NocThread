@@ -23,7 +23,6 @@
 #include "Game/Common/Collision/CollisionManager/CollisionManager.h"
 #include "Game/Common/Collision/Collision.h"
 #include "Game/Common/SoundManager/SoundManager.h"
-#include "Game/Common/SoundManager/SoundPaths.h"
 #include "Game/Scene/Loading/LoadingScreen.h"
 
 #include "Game/Common/Shadow/CircularShadow/CircularShadow.h"

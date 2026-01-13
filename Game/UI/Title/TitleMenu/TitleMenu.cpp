@@ -21,7 +21,10 @@
 
 #include "Library/MyLib/EasingKit/EasingKit.h"
 #include <Game\Common\SoundManager\SoundManager.h>
+
+// データベース関連
 #include "Game/Common/Database/SoundDatabase.h"
+#include "Game/Common/Database/TextureDatabase.h"
 
 using namespace DirectX;
 
@@ -66,11 +69,12 @@ void TitleMenu::Initialize(Canvas* pCanvas, const CommonResources* pCommonResour
 		{sprite = std::make_unique<Sprite>(); }
 	);
 
+	using namespace TextureDatabase;
 	// フォント類
-	m_titleFontSprites[0]->Initialize(pCommonResources->GetResourceManager()->CreateTexture(TEXTURE_PATH_PLAY));
-	m_titleFontSprites[1]->Initialize(pCommonResources->GetResourceManager()->CreateTexture(TEXTURE_PATH_TUTORIAL));
-	m_titleFontSprites[2]->Initialize(pCommonResources->GetResourceManager()->CreateTexture(TEXTURE_PATH_SETTING));
-	m_titleFontSprites[3]->Initialize(pCommonResources->GetResourceManager()->CreateTexture(TEXTURE_PATH_QUIT));
+	m_titleFontSprites[0]->Initialize(pCommonResources->GetResourceManager()->CreateTexture(TEXTURE_PATH_MAP.at(TextureID::UI_TITLE_FONT_PLAY)));
+	m_titleFontSprites[1]->Initialize(pCommonResources->GetResourceManager()->CreateTexture(TEXTURE_PATH_MAP.at(TextureID::UI_TITLE_FONT_TUTORIAL)));
+	m_titleFontSprites[2]->Initialize(pCommonResources->GetResourceManager()->CreateTexture(TEXTURE_PATH_MAP.at(TextureID::UI_TITLE_FONT_SETTING)));
+	m_titleFontSprites[3]->Initialize(pCommonResources->GetResourceManager()->CreateTexture(TEXTURE_PATH_MAP.at(TextureID::UI_TITLE_FONT_QUIT)));
 
 	// キャンバスにスプライトの登録
 	std::for_each(m_titleFontSprites.begin(), m_titleFontSprites.end(), [&](std::unique_ptr<Sprite>& sprite) {pCanvas->AddSprite(sprite.get()); });

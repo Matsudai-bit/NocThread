@@ -18,6 +18,9 @@
 
 #include "Game/Common/CommonResources/CommonResources.h"
 
+// パラメータ
+#include "Game/Common/Database/PlayerParameter.h"
+
 using namespace DirectX;
 
 
@@ -49,12 +52,12 @@ IdlePlayerState::~IdlePlayerState()
 void IdlePlayerState::OnStartState()
 {
 	// アニメーションを変更
-	GetOwner()->ChangeAnimation(Player::ANIM_IDLENG);
+	GetOwner()->ChangeAnimation(PlayerParameter::ANIM_IDLENG);
 }
 
 /**
  * @brief 更新処理
- * 
+ *
  * @param[in] deltaTime　経過時間
  */
 void IdlePlayerState::OnUpdate(float deltaTime)

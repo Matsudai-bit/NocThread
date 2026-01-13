@@ -21,7 +21,10 @@
 
 #include "Library/MyLib/EasingKit/EasingKit.h"
 #include <Game\Common\SoundManager\SoundManager.h>
+
+// データベース関連
 #include "Game/Common/Database/SoundDatabase.h"
+#include "Game/Common/Database/TextureDatabase.h"
 
 using namespace DirectX;
 
@@ -59,7 +62,7 @@ PauseMenu::~PauseMenu()
  */
 void PauseMenu::Initialize(Canvas* pCanvas, const CommonResources* pCommonResources, std::function<void(MenuItem)> pushButtonFunc)
 {
-
+	using namespace TextureDatabase;
 	auto screen = Screen::Get();
 
 	m_pauseFontSprites.resize(static_cast<int>(MenuItem::NUM));
@@ -68,10 +71,11 @@ void PauseMenu::Initialize(Canvas* pCanvas, const CommonResources* pCommonResour
 	);
 
 	// フォント類
-	m_pauseFontSprites[0]->Initialize(pCommonResources->GetResourceManager()->CreateTexture(TEXTURE_PATH_CONTINUE));
-	m_pauseFontSprites[1]->Initialize(pCommonResources->GetResourceManager()->CreateTexture(TEXTURE_PATH_TUTORIAL));
-	m_pauseFontSprites[2]->Initialize(pCommonResources->GetResourceManager()->CreateTexture(TEXTURE_PATH_SETTING));
-	m_pauseFontSprites[3]->Initialize(pCommonResources->GetResourceManager()->CreateTexture(TEXTURE_PATH_RETURN_TITLE));
+	auto pResourceManager = pCommonResources->GetResourceManager();
+	m_pauseFontSprites[0]->Initialize(pResourceManager->CreateTexture(TEXTURE_PATH_MAP.at(TextureID::UI_PAUSE_FONT_CONTINUE)));
+	m_pauseFontSprites[1]->Initialize(pResourceManager->CreateTexture(TEXTURE_PATH_MAP.at(TextureID::UI_PAUSE_FONT_TUTORIAL)));
+	m_pauseFontSprites[2]->Initialize(pResourceManager->CreateTexture(TEXTURE_PATH_MAP.at(TextureID::UI_PAUSE_FONT_SETTING)));
+	m_pauseFontSprites[3]->Initialize(pResourceManager->CreateTexture(TEXTURE_PATH_MAP.at(TextureID::UI_PAUSE_FONT_RETURNTILTE)));
 
 	// キャンバスにスプライトの登録
 	std::for_each(m_pauseFontSprites.begin(), m_pauseFontSprites.end(), [&](std::unique_ptr<Sprite>& sprite) {pCanvas->AddSprite(sprite.get()); });

@@ -51,6 +51,9 @@
 #include "Library/MyLib/DirectXMyToolKit/DirectXUtils.h"
 #include "Library/MyLib/Ray/Ray.h"
 
+// パラメータ
+#include "Game/Common/Database/PlayerParameter.h"
+
 using namespace DirectX;
 
 
@@ -70,7 +73,7 @@ Player::Player()
 	, m_state{ State::IDLE }
 	, m_pPlayerInput{ nullptr }
 {
-	m_cursorPos = DirectX::SimpleMath::Vector2(Screen::Get()->GetCenterXF(), Screen::Get()->GetCenterYF() -  CURSOR_Y_OFFSET_SCALE * Screen::Get()->GetScreenScale());
+	m_cursorPos = DirectX::SimpleMath::Vector2(Screen::Get()->GetCenterXF(), Screen::Get()->GetCenterYF() -  PlayerParameter::CURSOR_Y_OFFSET_SCALE * Screen::Get()->GetScreenScale());
 	// メッセージへの登録
 	GameFlowMessenger::GetInstance()->RegistryObserver(this);
 }
@@ -106,15 +109,15 @@ void Player::Initialize(const CommonResources* pCommonResources, CollisionManage
 	m_pCollisionManager = pCollisionManager;
 
 	// モデルの取得
-	m_model = GetCommonResources()->GetResourceManager()->CreateModel(PLAYER_MODEL_FILE_NAME);
+	m_model = GetCommonResources()->GetResourceManager()->CreateModel(PlayerParameter::PLAYER_MODEL_FILE_NAME);
 	auto context = GetCommonResources()->GetDeviceResources()->GetD3DDeviceContext();
 	auto device = GetCommonResources()->GetDeviceResources()->GetD3DDevice();
 
-	GetTransform()->SetPosition(SimpleMath::Vector3(0.0f, INITIAL_POS_Y, 0.0f));
-	GetTransform()->SetScale(DEFAULT_MODEL_SCALE);
+	GetTransform()->SetPosition(SimpleMath::Vector3(0.0f, PlayerParameter::INITIAL_POS_Y, 0.0f));
+	GetTransform()->SetScale(PlayerParameter::DEFAULT_MODEL_SCALE);
 
 	// コライダの作成
-	m_collider = std::make_unique<Sphere>(GetTransform()->GetPosition(), GetTransform()->GetScale().x * DEFAULT_COLLIDER_RADIUS_FACTOR);
+	m_collider = std::make_unique<Sphere>(GetTransform()->GetPosition(), GetTransform()->GetScale().x * PlayerParameter::DEFAULT_COLLIDER_RADIUS_FACTOR);
 
 	pCollisionManager->AddCollisionData(CollisionData(this, m_collider.get()));
 
@@ -141,15 +144,15 @@ void Player::Initialize(const CommonResources* pCommonResources, CollisionManage
 	// 【ローカル定数化】XPBDの重力係数
 	const float GRAVITY_DIVISOR = 2.f;
 	param.gravity = Vector3(0.0f, -9.8f / GRAVITY_DIVISOR, 0.0f);
-	param.iterations = WIRE_SIMULATION_ITERATIONS;
+	param.iterations = PlayerParameter::WIRE_SIMULATION_ITERATIONS;
 
 	// ワイヤーの初期化処理　
 	// ワイヤーの長さは余裕をもつため1.5倍までとする
-	m_wire->Initialize(pCommonResources, pCollisionManager, param, WIRE_LENGTH  * 1.5f, this, this, this, m_wireSystemSubject.get());
+	m_wire->Initialize(pCommonResources, pCollisionManager, param, PlayerParameter::WIRE_LENGTH  * 1.5f, this, this, this, m_wireSystemSubject.get());
 
 
 	// デフォルト回転の初期化
-	GetTransform()->SetInitialRotation(Quaternion::CreateFromYawPitchRoll(XMConvertToRadians(DEFAULT_ROTATION_Y_DEGREE), 0, 0.0f));
+	GetTransform()->SetInitialRotation(Quaternion::CreateFromYawPitchRoll(XMConvertToRadians(PlayerParameter::DEFAULT_ROTATION_Y_DEGREE), 0, 0.0f));
 
 	// 回転
 	GetTransform()->SetRotation(Quaternion::CreateFromYawPitchRoll(0.0f, 0.0f, 0.0f));
@@ -175,7 +178,7 @@ void Player::Initialize(const CommonResources* pCommonResources, CollisionManage
 		});
 
 	// アニメーション関連の設定
-	ChangeAnimation(ANIM_IDLENG);
+	ChangeAnimation(PlayerParameter::ANIM_IDLENG);
 }
 
 
@@ -217,7 +220,7 @@ void Player::Update(float deltaTime)
 	}
 
 	// ワイヤー照準検出器の設定
-	m_wireTargetFinder->SetSearchParameters(GetWireShootingRay().direction, WIRE_LENGTH, 0.5f);
+	m_wireTargetFinder->SetSearchParameters(GetWireShootingRay().direction, PlayerParameter::WIRE_LENGTH, 0.5f);
 	m_wireTargetFinder->Update();
 		
 }
@@ -250,12 +253,12 @@ void Player::Draw(const Camera& camera)
 
 	Matrix defaultRotation = Matrix::CreateFromQuaternion(transform->GetInitialRotation());
 
-	Matrix defaultTransform = Matrix::CreateTranslation(Vector3(0.0f, MODEL_DEFAULT_OFFSET_Y * transform->GetScale().y, 0.0f));
+	Matrix defaultTransform = Matrix::CreateTranslation(Vector3(0.0f, PlayerParameter::MODEL_DEFAULT_OFFSET_Y * transform->GetScale().y, 0.0f));
 
 	// ワイヤーアクション中の場合はモデルの位置を調整する
 	if (m_state == State::WIRE_ACTION)
 	{
-		defaultTransform *= Matrix::CreateTranslation(Vector3(WIRE_ACTION_OFFSET_X, Player::WIRE_ACTION_OFFSET_Y, 0.0f));
+		defaultTransform *= Matrix::CreateTranslation(Vector3(PlayerParameter::WIRE_ACTION_OFFSET_X, PlayerParameter::WIRE_ACTION_OFFSET_Y, 0.0f));
 		// プレイヤーのY軸回転を
 	}
 
@@ -413,7 +416,7 @@ void Player::OnCollisionWithWall(GameObject* pHitObject, ICollider* pHitCollider
 	// 押し出し方向ベクトル（累積方向 + 今回の方向）
 	SimpleMath::Vector3 combinedDirection = totalOverlapNormal + overlapDir;
 
-	if (combinedDirection.LengthSquared() < SQUARED_ZERO_THRESHOLD)
+	if (combinedDirection.LengthSquared() < PlayerParameter::SQUARED_ZERO_THRESHOLD)
 		return;
 
 	combinedDirection.Normalize();
@@ -461,7 +464,7 @@ void Player::OnCollisionWithBuilding(GameObject* pHitObject, ICollider* pHitColl
 	// 押し出し方向ベクトル（累積方向 + 今回の方向）
 	SimpleMath::Vector3 combinedDirection = totalOverlapNormal + overlapDir;
 
-	if (combinedDirection.LengthSquared() < SQUARED_ZERO_THRESHOLD)
+	if (combinedDirection.LengthSquared() < PlayerParameter::SQUARED_ZERO_THRESHOLD)
 		return;
 
 	combinedDirection.Normalize();
@@ -486,7 +489,7 @@ void Player::PreCollision()
  */
 void Player::PostCollision()
 {
-	if (std::abs(m_overlapTotal.LengthSquared()) > SQUARED_ZERO_THRESHOLD) 
+	if (std::abs(m_overlapTotal.LengthSquared()) > PlayerParameter::SQUARED_ZERO_THRESHOLD)
 	{
 		SimpleMath::Vector3 overlap = m_overlapTotal;
 
@@ -510,7 +513,7 @@ void Player::OnWireGrabbed(GameObject* pGrabGameObject)
 {
 	UNREFERENCED_PARAMETER(pGrabGameObject);
 
-	RequestChangeState(Player::State::WIRE_GRABBING);
+	//RequestChangeState(Player::State::WIRE_GRABBING);
 
 
 }
@@ -645,7 +648,7 @@ void Player::ApplyPhysic(const float& deltaTime)
 void Player::ApplyFriction(float deltaTime)
 {
 	// 摩擦を加える
-	SimpleMath::Vector3 velocity = PhysicsHelper::CalculateFrictionVelocity(GetVelocity(), deltaTime, FRICTION, GameObject::GRAVITY_ACCELERATION.Length());
+	SimpleMath::Vector3 velocity = PhysicsHelper::CalculateFrictionVelocity(GetVelocity(), deltaTime, PlayerParameter::FRICTION, GameObject::GRAVITY_ACCELERATION.Length());
 
 	SetVelocity(velocity);
 }
@@ -656,7 +659,7 @@ void Player::ApplyFriction(float deltaTime)
 void Player::ApplyDrag(float deltaTime)
 {
 	// 適用
-	auto velocity = PhysicsHelper::CalculateDragVelocity(GetVelocity(), deltaTime, AIR_RESISTANCE);
+	auto velocity = PhysicsHelper::CalculateDragVelocity(GetVelocity(), deltaTime, PlayerParameter::AIR_RESISTANCE);
 
 	SetVelocity(velocity);
 }
@@ -717,7 +720,7 @@ void Player::RotateForMoveDirection(const float& deltaTime)
 		GetTransform()->GetRotation(),
 		GetTransform()->GetForward(),
 		GetVelocity(),
-		ROTATE_SPEED_FACTOR));
+		PlayerParameter::ROTATE_SPEED_FACTOR));
 }
 
 /**
@@ -726,7 +729,7 @@ void Player::RotateForMoveDirection(const float& deltaTime)
 void Player::ReleaseWire()
 {
 	if (m_wire->IsActive())
-		SetVelocity(m_wire->GetStartVelocity() * WIRE_RELEASE_VELOCITY_MULTIPLIER);
+		SetVelocity(m_wire->GetStartVelocity() * PlayerParameter::WIRE_RELEASE_VELOCITY_MULTIPLIER);
 	m_wire->Reset();
 	
 }
@@ -756,9 +759,15 @@ void Player::ApplyMoveInput(const float& deltaTime)
 
 	using namespace SimpleMath;
 
-	float maxMoveSpeed = (IsGround()) ? MAX_MOVE_SPEED : MAX_FLYING_MOVE_SPEED;
-	
-	auto newVelocity = MovementHelper::ClampedMovement(GetVelocity() *Vector3(1.0f, 0.0f, 1.0f), m_requestedMove, deltaTime, ACCELERATION, DECELERATION, maxMoveSpeed);
+	float maxMoveSpeed = (IsGround()) ? PlayerParameter::MAX_MOVE_SPEED : PlayerParameter::MAX_FLYING_MOVE_SPEED;
+	// XZ平面の速度をクランプした移動要求に基づいて更新
+	auto newVelocity = MovementHelper::ClampedMovement(
+								GetVelocity() * Vector3(1.0f, 0.0f, 1.0f),
+								m_requestedMove,
+								deltaTime,
+								PlayerParameter::ACCELERATION, 
+								PlayerParameter::DECELERATION,
+								maxMoveSpeed);
 	// Y軸の速度はそのまま保持
 	AddForceToVelocity(newVelocity);
 
@@ -771,7 +780,7 @@ DirectX::SimpleMath::Vector3 Player::CalcGrabbingPosition() const
 {
 
 	using namespace SimpleMath;
-	float length = GRABBING_DISTANCE;
+	float length = PlayerParameter::GRABBING_DISTANCE;
 
 
 	return GetTransform()->GetPosition() + -GetTransform()->GetForward() * length;
@@ -849,14 +858,13 @@ void Player::ShootWire()
 		Screen::Get()->GetWidthF(), Screen::Get()->GetHeightF(),
 		GetCamera()->GetEye(), GetCamera()->GetViewMatrix(), GetCamera()->GetProjectionMatrix(),
 		&ray.direction, &ray.origin);
-	Vector3 maxPos = ray.origin + ray.direction * MAX_TARGETING_RAY_DISTANCE;
+	Vector3 maxPos = ray.origin + ray.direction * PlayerParameter::MAX_TARGETING_RAY_DISTANCE;
 
 	//Vector3 wireLaunchDirection = maxPos - GetPosition();
 	Vector3 wireLaunchDirection = m_wireTargetFinder->GetTargetPosition() - GetTransform()->GetPosition();
 	wireLaunchDirection.Normalize();
 
-	//m_wire->ShootWire(GetPosition(), wireLaunchDirection * SHOOT_WIRE_INITIAL_SPEED);
-	m_wire->ShootWireToTarget(GetTransform()->GetPosition(), m_wireTargetFinder->GetTargetPosition(), SHOOT_WIRE_INITIAL_SPEED);
+	m_wire->ShootWireToTarget(GetTransform()->GetPosition(), m_wireTargetFinder->GetTargetPosition(), PlayerParameter::SHOOT_WIRE_INITIAL_SPEED);
 
 }
 
@@ -895,7 +903,7 @@ void Player::Jump(float deltaTime)
 	SoundManager::GetInstance()->Play(SoundDatabase::SOUND_CLIP_MAP.at(SoundDatabase::SE_PLAYER_JUMP), false);
 
 
-	AddForceToVelocityY(JUMPING_POWER * deltaTime);
+	AddForceToVelocityY(PlayerParameter::JUMPING_POWER * deltaTime);
 }
 
 /**
@@ -963,7 +971,7 @@ MyLib::Ray Player::GetWireShootingRay() const
 		&ray.direction, &ray.origin);
 
 
-	SimpleMath::Vector3 maxPos = ray.origin + ray.direction * MAX_TARGETING_RAY_DISTANCE;
+	SimpleMath::Vector3 maxPos = ray.origin + ray.direction * PlayerParameter::MAX_TARGETING_RAY_DISTANCE;
 
 	SimpleMath::Vector3 wireLaunchDirection = maxPos - GetTransform()->GetPosition();
 	wireLaunchDirection.Normalize();

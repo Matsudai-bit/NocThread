@@ -952,6 +952,9 @@
     <ClInclude Include="Game\Common\Database\TextureDatabase.h">
       <Filter>Game\Common\Database</Filter>
     </ClInclude>
+    <ClInclude Include="Game\Common\Database\PlayerParameter.h">
+      <Filter>Game\Common\Database</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />

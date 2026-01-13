@@ -32,6 +32,9 @@
 #include "Game/UI/TutorialWindow/TutorialWindow.h"
 #include "Game/Common/TransitionMask/TransitionMask.h"
 
+// データベース関連
+#include "Game/Common/Database/TextureDatabase.h"
+
 #include "Library/DebugHelper.h"
 #include <string>
 #include <typeinfo>
@@ -91,11 +94,15 @@ void TitleScene::Initialize()
 	// 処理用変数
 	auto pResourceManager = GetCommonResources()->GetResourceManager();
 
-	m_backgroundSprite->Initialize(pResourceManager->CreateTexture(TEXTURE_PATH_BG));
-	m_alphaSprite->		Initialize(pResourceManager->CreateTexture(TEXTURE_PATH_ALPHA));
-	m_logoSprite->		Initialize(pResourceManager->CreateTexture(TEXTURE_PATH_LOGO));
-	m_manualSprite->	Initialize(pResourceManager->CreateTexture(TEXTURE_PATH_MANUAL_PC));
-
+	using namespace TextureDatabase;
+	{
+		
+		m_backgroundSprite->Initialize(pResourceManager->CreateTexture(TEXTURE_PATH_MAP.at(TextureID::BACKGROUND_TITLE)));
+		m_alphaSprite->		Initialize(pResourceManager->CreateTexture(TEXTURE_PATH_MAP.at(TextureID::BACKGROUND_TITLE_ALPHA_MASK)));
+		m_logoSprite->		Initialize(pResourceManager->CreateTexture(TEXTURE_PATH_MAP.at(TextureID::BACKGROUND_TITLE_LOGO)));
+		m_manualSprite->	Initialize(pResourceManager->CreateTexture(TEXTURE_PATH_MAP.at(TextureID::UI_GUIDE_UI_KEYBOARD)));
+	}
+	
 	// キャンバスの作成
 	m_canvas = std::make_unique<Canvas>(context, states);
 
@@ -343,12 +350,12 @@ bool TitleScene::TryChangeCurrentGuideUI()
 
 		if (changePC)
 		{
-			filePath = "Manual/ui_manual_pc.dds";
+			filePath = TextureDatabase::TEXTURE_PATH_MAP.at(TextureDatabase::TextureID::UI_GUIDE_UI_KEYBOARD);
 		}
 
 		else
 		{
-			filePath = "Manual/ui_manual_gamepad.dds";
+			filePath = TextureDatabase::TEXTURE_PATH_MAP.at(TextureDatabase::TextureID::UI_GUIDE_UI_GAMEPAD);
 		}
 
 		// 拡大率と座標を保持する
