@@ -108,12 +108,16 @@ void ShootingWirePlayerState::OnDraw()
  */
 void ShootingWirePlayerState::OnCollisionWire(const GameObject* pHitObject)
 {
-	if (pHitObject->GetTag() == GameObjectTag::WALL ||
-	pHitObject->GetTag() == GameObjectTag::BUILDING ||
-	pHitObject->GetTag() == GameObjectTag::ESCAPE_HELICOPTER)
-	{
-		GetOwner()->RequestChangeState(Player::State::WIRE_ACTION);
-	}
+	UNREFERENCED_PARAMETER(pHitObject);
+
+	GetOwner()->RequestChangeState(Player::State::WIRE_ACTION);
+
+	//if (pHitObject->GetTag() == GameObjectTag::WALL ||
+	//pHitObject->GetTag() == GameObjectTag::BUILDING ||
+	//pHitObject->GetTag() == GameObjectTag::ESCAPE_HELICOPTER)
+	//{
+	//	GetOwner()->RequestChangeState(Player::State::WIRE_ACTION);
+	//}
 }
 
 /**

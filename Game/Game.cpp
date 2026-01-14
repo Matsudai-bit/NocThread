@@ -279,7 +279,7 @@ void Game::Render()
 
     }
     // FPS‚ðŽæ“¾‚·‚é
-    uint32_t fps = m_timer.GetFramesPerSecond();
+    //uint32_t fps = m_timer.GetFramesPerSecond();
 
     //// FPS‚Ì•\Ž¦
     //m_debugFont->AddString(0, 0, Colors::White, L"FPS=%d", fps);

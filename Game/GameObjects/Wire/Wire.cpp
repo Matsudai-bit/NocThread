@@ -49,6 +49,8 @@ Wire::Wire()
 	, m_wireSystemSubject{ nullptr }
 	, m_owner{}
 	, m_length {}
+	, m_wireSpeed{ 0.f }
+	, m_isExtention{ false }
 {
 
 }
@@ -137,36 +139,41 @@ void Wire::Initialize(
  */
 void Wire::Update(float deltaTime)
 {
+	using namespace DirectX::SimpleMath;
 
 	if (m_isExtention)
 	{
-		// 方向を求める
-		SimpleMath::Vector3 direction = m_wireTargetPosition - m_extentionRay.origin;
-		direction.Normalize();
 
-		// 方向に速さの加えて速度を決める
-		SimpleMath::Vector3 wireVelocity = m_wireSpeed * direction;
-
-		// 最後尾（飛んでいる）のパーティクルを取得する
+		//// 最後尾（飛んでいる）のパーティクルを取得する
 		auto particle = m_ropeObject->GetParticles()->back();
-		// パーティクルの座標を更新する
-		SimpleMath::Vector3 pos = particle->GetPosition() + wireVelocity * deltaTime;
+
+		// lerpTimeの更新
+		m_totalLerpTime += m_lerpSpeed * deltaTime;
 
 
-		// 距離が指定された以上になった場合終了する
-		float lengthSqr = SimpleMath::Vector3::DistanceSquared(m_owner.pGameObject->GetTransform()->GetPosition(), pos);
-		if (lengthSqr >= m_length * m_length)
-		{
-			Reset();
-			m_isExtention = false;
-			return;
-		}
-
+		m_totalLerpTime = std::min(m_totalLerpTime, 1.0f);
+	
+		auto pos = Vector3::Lerp(m_owner.pGameObject->GetTransform()->GetPosition(), m_wireTargetPosition, m_totalLerpTime);
 
 		particle->SetPosition(pos);
 		m_ropeObject->GetParticles()->front()->SetPosition(m_owner.pGameObject->GetTransform()->GetPosition());
 		m_collider->Set(m_owner.pGameObject->GetTransform()->GetPosition(), pos,true);
 
+		if (m_totalLerpTime >= 1.0f)
+		{
+
+
+			// **** ワイヤーの作成 *****
+			if (CreateRope(m_owner.pGameObject->GetTransform()->GetPosition(), m_wireTargetPosition, m_simulationParam, 0.8f))
+			{
+
+				m_owner.pHolderInterface->OnCollisionWire(nullptr);
+				m_isExtention = false;
+			}
+			m_isExtention = false;
+//			Reset();
+
+		}
 
 	}
 
@@ -259,6 +266,10 @@ void Wire::Reset()
 	m_isExtention = false;
 
 	m_isActive = false;
+
+	m_lerpSpeed = 0.0f;
+	m_totalLerpTime = 0.0f;
+
 }
 
 /**
@@ -335,6 +346,12 @@ void Wire::ShootWireToTarget(const DirectX::SimpleMath::Vector3& origin, const D
 	m_particleObjects.emplace_back(std::make_unique<ParticleObject>());
 	m_particleObjects.back()->SetPosition(origin);
 	m_ropeObject->AddParticle(m_particleObjects.back().get());
+
+	Vector3 endPosition = m_wireTargetPosition;
+	Vector3 startPosition = m_owner.pGameObject->GetTransform()->GetPosition();
+
+	m_lerpSpeed = m_wireSpeed / SimpleMath::Vector3::Distance(startPosition, endPosition);
+	m_totalLerpTime = 0.0f;
 }
 
 /**
@@ -441,74 +458,8 @@ bool Wire::CreateRope(const DirectX::SimpleMath::Vector3& origin, const DirectX:
  */
 void Wire::OnCollision(const CollisionInfo& info)
 {
-
-	if (m_isExtention)
-	{
-		SimpleMath::Vector3 intersectionPos;
-
-		//矩形の場合
-		if (info.pOtherCollider->GetColliderType() == ColliderType::BOX2D)
-		{
-			if (const Box2D* pBox = dynamic_cast<const Box2D*>(info.pOtherCollider))
-			{
-				if (GetIntersectionPoint(&intersectionPos, *pBox, *m_collider) == false) return;
-
-			}
-
-		}
-		// 球の場合
-		else if (info.pOtherCollider->GetColliderType() == ColliderType::Sphere)
-		{
-			if (const Sphere* pSphere = dynamic_cast<const Sphere*>(info.pOtherCollider))
-			{
-				if (GetIntersectionPoint(&intersectionPos, *pSphere, *m_collider) == false) return;
-
-			}
-		}
-		else if (info.pOtherCollider->GetColliderType() == ColliderType::AABB)
-		{
-			if (const AABB* pAABB = dynamic_cast<const AABB*>(info.pOtherCollider))
-			{
-				if (GetIntersectionPoint(&intersectionPos, *pAABB, *m_collider) == false) return;
-
-			}
-		}
-
+	UNREFERENCED_PARAMETER(info);
 	
-
-		if (info.pOtherObject->GetTag() == GameObjectTag::WALL ||
-			info.pOtherObject->GetTag() == GameObjectTag::BUILDING ||
-			info.pOtherObject->GetTag() == GameObjectTag::ESCAPE_HELICOPTER)
-		{
-
-
-			// **** ワイヤーの作成 *****
-			if (CreateRope(m_owner.pGameObject->GetTransform()->GetPosition(), intersectionPos, m_simulationParam, 0.8f))
-			{
-
-				m_owner.pHolderInterface->OnCollisionWire(info.pOtherObject);
-				m_isExtention = false;
-			}
-		}
-
-
-
-		else if (auto observer = info.pOtherObject->CastTo<IWireEventObserver>())
-		{
-			if (m_wireSystemSubject)
-			m_wireSystemSubject->AddObserver(observer);
-			
-			m_owner.pHolderInterface->OnWireGrabbed(info.pOtherObject);
-
-			// **** ワイヤーの作成 *****
-			//CreateRope(m_owner.pGameObject->GetPosition(), intersectionPos, m_simulationParam, 0.3f);
-
-
-			m_pCollisionManager->RemoveCollisionObjectData(this, m_collider.get());
-			m_isExtention = false;
-
-		}
-	}
 }
 
 /**

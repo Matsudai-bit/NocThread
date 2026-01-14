@@ -353,7 +353,6 @@ bool PauseGameplayState::TryChangeCurrentGuideUI()
 		std::string manualFilePath;
 		std::string operatingFilePath; // std::string ‚©‚ç const char* ‚ÉŒ^‚ð•ÏX
 
-		auto pResourceManager = GetOwner()->GetCommonResources()->GetResourceManager();
 		if (changePC)
 		{
 			manualFilePath		= TEXTURE_PATH_MAP.at(TextureID::UI_GUIDE_UI_KEYBOARD);

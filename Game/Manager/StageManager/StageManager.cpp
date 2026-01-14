@@ -238,7 +238,7 @@ void StageManager::DrawInGameObjects(const Camera& camera)
 
 void StageManager::OnGameFlowEvent(GameFlowEventID eventID)
 {
-	
+	UNREFERENCED_PARAMETER(eventID);
 }
 
 // ƒV[ƒ“‚ÌI—¹
