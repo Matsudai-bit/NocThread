@@ -42,15 +42,6 @@ class PauseGameplayState
 // クラス定数の宣言 -------------------------------------------------
 public:
 
-	// --- ファイルパス関連 ---
-	static constexpr const char* TEXTURE_PATH_ALPHA				= "Pose/pose_alpha.dds";				///< 背景アルファテクスチャのファイルパス
-	static constexpr const char* TEXTURE_PATH_FONT_POSE			= "Pose/pose_font_pose.dds";			///< 「POSE」フォントテクスチャのファイルパス
-	static constexpr const char* TEXTURE_PATH_FONT_OPERATING	= "Pose/pose_font_operating.dds";		///< 「操作説明」フォントテクスチャのファイルパス
-	static constexpr const char* TEXTURE_PATH_OPERATING_PC		= "Pose/pose_operating_pc.dds";			///< 操作説明UI (PC) のテクスチャファイルパス
-	static constexpr const char* TEXTURE_PATH_OPERATING_GAMEPAD = "Pose/pose_operating_gamepad.dds";	///< 操作説明UI (ゲームパッド) のテクスチャファイルパス
-	static constexpr const char* TEXTURE_PATH_MANUAL_PC			= "Manual/ui_manual_pc.dds";			///< マニュアルUI (PC) のテクスチャファイルパス
-	static constexpr const char* TEXTURE_PATH_MANUAL_GAMEPAD	= "Manual/ui_manual_gamepad.dds";		///< マニュアルUI (ゲームパッド) のテクスチャファイルパス
-
 
 	// --- 座標オフセット関連 ---
 	static constexpr float FONT_POSE_POS_X_OFFSET		= 160.0f;	///< 「POSE」フォントの左端からのX座標オフセット

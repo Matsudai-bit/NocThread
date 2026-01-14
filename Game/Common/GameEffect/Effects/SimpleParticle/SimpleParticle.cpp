@@ -123,6 +123,14 @@ void SimpleParticle::Play()
  */
 void SimpleParticle::Update(float deltaTime, const float& isEnd)
 {
+	if (isEnd)
+	{
+		// エフェクトの終了を通知
+		SetIsPlaying(false);
+
+
+	}
+
 	// 時間のカウント
 	m_timeCounter.UpperTime(deltaTime);
 
@@ -155,22 +163,7 @@ void SimpleParticle::Update(float deltaTime, const float& isEnd)
 
 
 
-	if (isEnd)
-	{
-		auto activeParticleIt = std::find_if(m_particles.begin(), m_particles.end(),
-			[](const Particle& particle)
-			{
-				return particle.isActive == true;
-			});
-
-		if (activeParticleIt == m_particles.end())
-		{
-			// エフェクトの終了を通知
-			SetIsPlaying(false);
-		}
-
 	
-	}
 }
 
 /**

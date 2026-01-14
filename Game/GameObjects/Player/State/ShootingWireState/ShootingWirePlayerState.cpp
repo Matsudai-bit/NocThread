@@ -60,7 +60,8 @@ void ShootingWirePlayerState::OnStartState()
 	//GetOwner()->ResetVelocityY();
 
 	// SE‚ÌÄ¶
-	SoundManager::GetInstance()->Play(SoundPaths::SE_PLAYER_SHOOTINGWIRE, false, 1.0f);
+	SoundManager::GetInstance()->Play(SoundDatabase::SOUND_CLIP_MAP.at(SoundDatabase::SE_PLAYER_SHOOTINGWIRE), false);
+
 }
 
 /**
@@ -107,12 +108,16 @@ void ShootingWirePlayerState::OnDraw()
  */
 void ShootingWirePlayerState::OnCollisionWire(const GameObject* pHitObject)
 {
-	if (pHitObject->GetTag() == GameObjectTag::WALL ||
-	pHitObject->GetTag() == GameObjectTag::BUILDING ||
-	pHitObject->GetTag() == GameObjectTag::ESCAPE_HELICOPTER)
-	{
-		GetOwner()->RequestChangeState(Player::State::WIRE_ACTION);
-	}
+	UNREFERENCED_PARAMETER(pHitObject);
+
+	GetOwner()->RequestChangeState(Player::State::WIRE_ACTION);
+
+	//if (pHitObject->GetTag() == GameObjectTag::WALL ||
+	//pHitObject->GetTag() == GameObjectTag::BUILDING ||
+	//pHitObject->GetTag() == GameObjectTag::ESCAPE_HELICOPTER)
+	//{
+	//	GetOwner()->RequestChangeState(Player::State::WIRE_ACTION);
+	//}
 }
 
 /**

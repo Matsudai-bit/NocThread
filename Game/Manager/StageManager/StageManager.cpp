@@ -23,7 +23,6 @@
 #include "Game/Common/Collision/CollisionManager/CollisionManager.h"
 #include "Game/Common/Collision/Collision.h"
 #include "Game/Common/SoundManager/SoundManager.h"
-#include "Game/Common/SoundManager/SoundPaths.h"
 #include "Game/Scene/Loading/LoadingScreen.h"
 
 #include "Game/Common/Shadow/CircularShadow/CircularShadow.h"
@@ -78,7 +77,7 @@ StageManager::StageManager(const CommonResources* pCommonResources)
 	, m_isStoppingUpdate{ false }
 	, m_pSpawnManager	{ nullptr }
 {
-
+	GameFlowMessenger::GetInstance()->RegistryObserver(this);
 }
 
 
@@ -237,6 +236,11 @@ void StageManager::DrawInGameObjects(const Camera& camera)
 	m_skySphere.Draw(m_pCommonResources->GetDeviceResources()->GetD3DDeviceContext(), *m_pCommonResources->GetCommonStates(), world, camera.GetViewMatrix(), camera.GetProjectionMatrix());
 }
 
+void StageManager::OnGameFlowEvent(GameFlowEventID eventID)
+{
+	UNREFERENCED_PARAMETER(eventID);
+}
+
 // シーンの終了
 void StageManager::OnEndScene()
 {
@@ -314,6 +318,32 @@ void StageManager::AddTask(TaskManager* pTaskManager)
 		// 親の設定
 		task->ChangeParent(this);
 	}
+
+}
+
+void StageManager::RemoveTask(TaskManager* pTaskManager)
+{
+	// 削除するタスク
+	std::vector<Task*> removeTasks =
+	{
+		m_floor.get(),
+		m_playerManager.get(),
+		m_buildingManager.get(),
+		m_enemyManager.get(),
+		m_treasure.get(),
+		m_checkpointManager.get()
+	};
+	for (auto& helicopter : m_escapeHelicopter)
+	{
+		removeTasks.push_back(helicopter.get());
+	}
+	// 追加
+	for (auto& task : removeTasks)
+	{
+		if (task == nullptr) { continue; }
+		pTaskManager->DeleteTask(task);
+	}
+	
 }
 
 /**
@@ -323,6 +353,7 @@ void StageManager::StopUpdating()
 {
 	m_isStoppingUpdate = true;
 	DisableTask();
+	
 }
 
 /**

@@ -17,6 +17,10 @@
 #include "Library/MyLib/DirectXMyToolKit/DebugFont/DebugFont.h"
 
 #include "Game/GameObjects/Wire/Wire.h"
+
+// ƒpƒ‰ƒ[ƒ^
+#include "Game/Common/Database/PlayerParameter.h"
+
 using namespace DirectX;
 
 
@@ -47,7 +51,7 @@ WireActionPlayerState::~WireActionPlayerState()
  */
 void WireActionPlayerState::OnStartState()
 {
-	GetOwner()->ChangeAnimation(Player::ANIM_WIREACTION);
+	GetOwner()->ChangeAnimation(PlayerParameter::ANIM_WIREACTION);
 }
 
 /**

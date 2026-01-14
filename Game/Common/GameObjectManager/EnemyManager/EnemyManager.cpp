@@ -12,6 +12,7 @@
 
 #include "Game/GameObjects/Enemy/IEnemy.h"
 
+#include "Game/Common/Event/Messenger/GameFlowMessenger/GameFlowMessenger.h"
 
 // メンバ関数の定義 ===========================================================
 /**
@@ -21,7 +22,7 @@
  */
 EnemyManager::EnemyManager()
 {
-
+	GameFlowMessenger::GetInstance()->RegistryObserver(this);
 }
 
 
@@ -79,6 +80,7 @@ bool EnemyManager::UpdateTask(float deltaTime)
  */
 void EnemyManager::DrawTask(const Camera& camera)
 {
+	if (m_isStoppingUpdate || m_enemies.empty()) { return; }
 	for (auto& enemy : m_enemies)
 	{
 		enemy->Draw(camera);
@@ -107,4 +109,24 @@ void EnemyManager::Finalize()
 void EnemyManager::AddEnemy(IEnemy* enemy)
 {
 	m_enemies.push_back(enemy);
+}
+
+/**
+ * @brief ゲームフローイベントの受信
+ * 
+ * @param[in] eventID
+ */
+void EnemyManager::OnGameFlowEvent(GameFlowEventID eventID)
+{
+	switch (eventID)
+	{
+
+	case GameFlowEventID::GAME_TRANSITION_FADING_START:
+		m_isStoppingUpdate = true;
+		break;
+	case GameFlowEventID::GAME_TRANSITION_FADING_FINISH:
+		m_isStoppingUpdate = false;
+		break;
+
+	}
 }

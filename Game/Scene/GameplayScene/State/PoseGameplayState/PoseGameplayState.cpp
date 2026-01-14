@@ -35,8 +35,11 @@
 #include "Game/Manager/StageManager/StageManager.h"
 #include "Game/Common/GameEffect/GameEffectController.h"
 #include "Game/Common/Camera/MainCamera/MainCamera.h"
-#include <Game\Common\SoundManager\SoundPaths.h>
+#include "Game/Common/Database/SoundDatabase.h"
 #include <Game\Common\SoundManager\SoundManager.h>
+
+// データベース関連
+#include "Game/Common/Database/TextureDatabase.h"
 
 using namespace DirectX;
 
@@ -94,13 +97,13 @@ void PauseGameplayState::OnStartState()
 	m_canvas->AddSprite(m_operatingSprite.get());
 	m_canvas->AddSprite(m_manualSprite.get());
 
-
+	using namespace TextureDatabase;
 	// スプライトのテクスチャ設定
-	m_backgroundAlphaSprite	->Initialize(resourceManager->CreateTexture(TEXTURE_PATH_ALPHA));
-	m_pauseFontSprite		->Initialize(resourceManager->CreateTexture(TEXTURE_PATH_FONT_POSE));
-	m_operatingFontSprite	->Initialize(resourceManager->CreateTexture(TEXTURE_PATH_FONT_OPERATING));
-	m_operatingSprite		->Initialize(resourceManager->CreateTexture(TEXTURE_PATH_OPERATING_PC));
-	m_manualSprite			->Initialize(resourceManager->CreateTexture(TEXTURE_PATH_MANUAL_PC));
+	m_backgroundAlphaSprite	->Initialize(resourceManager->CreateTexture(TEXTURE_PATH_MAP.at(TextureID::BACKGROUND_PAUSE_ALPHA_MASK)));
+	m_pauseFontSprite		->Initialize(resourceManager->CreateTexture(TEXTURE_PATH_MAP.at(TextureID::UI_PAUSE_FONT_PAUSE)));
+	m_operatingFontSprite	->Initialize(resourceManager->CreateTexture(TEXTURE_PATH_MAP.at(TextureID::UI_PAUSE_FONT_OPERATING)));
+	m_operatingSprite		->Initialize(resourceManager->CreateTexture(TEXTURE_PATH_MAP.at(TextureID::UI_GUIDE_GAME_OPERATING_KEYBOARD)));
+	m_manualSprite			->Initialize(resourceManager->CreateTexture(TEXTURE_PATH_MAP.at(TextureID::UI_GUIDE_UI_KEYBOARD)));
 
 
 	// スプライトの座標設定
@@ -163,6 +166,9 @@ void PauseGameplayState::OnStartState()
 
 	// ステージ管理の更新を停止する
 	GetOwner()->GetStageManager()->StopUpdating();
+
+	// 効果音
+	SoundManager::GetInstance()->Play(SoundDatabase::SOUND_CLIP_MAP.at(SoundDatabase::SE_PAUSE_OPEN), false);
 }
 
 /**
@@ -205,6 +211,9 @@ void PauseGameplayState::OnUpdate(float deltaTime)
 
 	// ガイドUI変更を試みる
 	TryChangeCurrentGuideUI();
+
+
+
 }
 
 
@@ -253,13 +262,14 @@ void PauseGameplayState::OnPushMenuItem(PauseMenu::MenuItem menuItem)
 	switch (menuItem)
 	{
 	case PauseMenu::MenuItem::CONTINUE:
-		// SEの再生
-		SoundManager::GetInstance()->Play(SoundPaths::SE_CANCEL, false, 0.4f);
+
+
 		ContinueGame();
 		break;
 	case PauseMenu::MenuItem::TUTORIAL:
 		// SEの再生
-		SoundManager::GetInstance()->Play(SoundPaths::SE_DECIDE, false, 1.0f);
+		SoundManager::GetInstance()->Play(SoundDatabase::SOUND_CLIP_MAP.at(SoundDatabase::SE_DECIDE), false);
+
 		m_isDisplayingTutorialWindow = true;
 		m_canvas->AddSprite(m_tutorialWindow.get());
 		break;
@@ -267,7 +277,7 @@ void PauseGameplayState::OnPushMenuItem(PauseMenu::MenuItem menuItem)
 		break;
 	case PauseMenu::MenuItem::RETURN_TITLE:
 		// SEの再生
-		SoundManager::GetInstance()->Play(SoundPaths::SE_DECIDE, false, 1.0f);
+		SoundManager::GetInstance()->Play(SoundDatabase::SOUND_CLIP_MAP.at(SoundDatabase::SE_DECIDE), false);
 		if (GetOwner()->GetCommonResources()->GetTransitionMask()->IsEnd())
 		{
 			// シーンを切り替える
@@ -291,6 +301,8 @@ void PauseGameplayState::OnPushMenuItem(PauseMenu::MenuItem menuItem)
  * */
 void PauseGameplayState::ContinueGame()
 {
+	// SEの再生
+	SoundManager::GetInstance()->Play(SoundDatabase::SOUND_CLIP_MAP.at(SoundDatabase::SE_CANCEL), false);
 	GetStateMachine()->ChangeState<NormalGameplayState>();
 }
 
@@ -314,6 +326,7 @@ void PauseGameplayState::OnCloseTutorialWindow()
  */
 bool PauseGameplayState::TryChangeCurrentGuideUI()
 {
+	using namespace TextureDatabase;
 
 	bool requestChange = false;
 	bool changePC = true;;
@@ -337,19 +350,20 @@ bool PauseGameplayState::TryChangeCurrentGuideUI()
 
 	if (requestChange)
 	{
-		const char* manualFilePath;
-		const char* operatingFilePath; // std::string から const char* に型を変更
+		std::string manualFilePath;
+		std::string operatingFilePath; // std::string から const char* に型を変更
 
 		if (changePC)
 		{
-			manualFilePath = TEXTURE_PATH_MANUAL_PC;
-			operatingFilePath = TEXTURE_PATH_OPERATING_PC;
+			manualFilePath		= TEXTURE_PATH_MAP.at(TextureID::UI_GUIDE_UI_KEYBOARD);
+			operatingFilePath	= TEXTURE_PATH_MAP.at(TextureID::UI_GUIDE_GAME_OPERATING_KEYBOARD);
+
 		}
 
 		else
 		{
-			manualFilePath = TEXTURE_PATH_MANUAL_GAMEPAD;
-			operatingFilePath = TEXTURE_PATH_OPERATING_GAMEPAD;
+			manualFilePath		= TEXTURE_PATH_MAP.at(TextureID::UI_GUIDE_UI_GAMEPAD);
+			operatingFilePath	= TEXTURE_PATH_MAP.at(TextureID::UI_GUIDE_GAME_OPERATING_GAMEPAD);
 
 		}
 

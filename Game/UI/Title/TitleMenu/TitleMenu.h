@@ -35,11 +35,7 @@ class TitleMenu
 {
 // クラス定数の宣言 -------------------------------------------------
 public:
-	// --- ファイルパス関連 ---
-	static constexpr const char* TEXTURE_PATH_PLAY		= "Title/title_font_play.dds";		///< 「PLAY」フォントテクスチャのファイルパス
-	static constexpr const char* TEXTURE_PATH_TUTORIAL	= "Title/title_font_tutorial.dds";	///< 「TUTORIAL」フォントテクスチャのファイルパス
-	static constexpr const char* TEXTURE_PATH_SETTING	= "Title/title_font_setting.dds";	///< 「SETTING」フォントテクスチャのファイルパス
-	static constexpr const char* TEXTURE_PATH_QUIT		= "Title/title_font_quit.dds";		///< 「QUIT」フォントテクスチャのファイルパス
+
 
 	// --- スプライトスケール関連 ---
 	static constexpr float FONT_SPRITE_SCALE = 0.35f;	///< メニューフォントの基本スケール

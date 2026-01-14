@@ -27,10 +27,13 @@
 #include "Game/Common/UserInterfaceTool/Canvas/Canvas.h"
 
 #include "Game/Common/SoundManager/SoundManager.h"
-#include "Game/Common/SoundManager/SoundPaths.h"
+#include "Game/Common/Database/SoundDatabase.h"
 
 #include "Game/UI/TutorialWindow/TutorialWindow.h"
 #include "Game/Common/TransitionMask/TransitionMask.h"
+
+// データベース関連
+#include "Game/Common/Database/TextureDatabase.h"
 
 #include "Library/DebugHelper.h"
 #include <string>
@@ -91,11 +94,15 @@ void TitleScene::Initialize()
 	// 処理用変数
 	auto pResourceManager = GetCommonResources()->GetResourceManager();
 
-	m_backgroundSprite->Initialize(pResourceManager->CreateTexture(TEXTURE_PATH_BG));
-	m_alphaSprite->		Initialize(pResourceManager->CreateTexture(TEXTURE_PATH_ALPHA));
-	m_logoSprite->		Initialize(pResourceManager->CreateTexture(TEXTURE_PATH_LOGO));
-	m_manualSprite->	Initialize(pResourceManager->CreateTexture(TEXTURE_PATH_MANUAL_PC));
-
+	using namespace TextureDatabase;
+	{
+		
+		m_backgroundSprite->Initialize(pResourceManager->CreateTexture(TEXTURE_PATH_MAP.at(TextureID::BACKGROUND_TITLE)));
+		m_alphaSprite->		Initialize(pResourceManager->CreateTexture(TEXTURE_PATH_MAP.at(TextureID::BACKGROUND_TITLE_ALPHA_MASK)));
+		m_logoSprite->		Initialize(pResourceManager->CreateTexture(TEXTURE_PATH_MAP.at(TextureID::BACKGROUND_TITLE_LOGO)));
+		m_manualSprite->	Initialize(pResourceManager->CreateTexture(TEXTURE_PATH_MAP.at(TextureID::UI_GUIDE_UI_KEYBOARD)));
+	}
+	
 	// キャンバスの作成
 	m_canvas = std::make_unique<Canvas>(context, states);
 
@@ -128,7 +135,7 @@ void TitleScene::Initialize()
 	m_ElapsedTimeCounter.Reset();
 
 	SoundManager::GetInstance()->RemoveAll();
-	m_bgmSoundID = SoundManager::GetInstance()->Play(SoundPaths::BGM_TITLE, true);
+	m_bgmSoundID = SoundManager::GetInstance()->Play(SoundDatabase::SOUND_CLIP_MAP.at(SoundDatabase::BGM_TITLE), true);
 	//m_bgmSound->Play(true);
 
 	//m_bgmSound->SetVolume(0.5f);
@@ -267,7 +274,7 @@ void TitleScene::OnPushMenuItem(TitleMenu::MenuItem menuItem)
 	{
 	case TitleMenu::MenuItem::PLAY:
 	{// SEの再生
-		SoundManager::GetInstance()->Play(SoundPaths::SE_BUTTON_CLICK_GAMESTART, false, 1.0f);
+		SoundManager::GetInstance()->Play(SoundDatabase::SOUND_CLIP_MAP.at(SoundDatabase::SE_BUTTON_CLICK_GAMESTART), false);
 		std::string newStateName = "Change GameplayScene";
 		OutputDebugString(L"%ls\n", std::wstring(newStateName.begin(), newStateName.end()).c_str());
 
@@ -278,7 +285,7 @@ void TitleScene::OnPushMenuItem(TitleMenu::MenuItem menuItem)
 	case TitleMenu::MenuItem::TUTORIAL:
 	
 		// SEの再生
-		SoundManager::GetInstance()->Play(SoundPaths::SE_DECIDE, false, 1.0f);
+		SoundManager::GetInstance()->Play(SoundDatabase::SOUND_CLIP_MAP.at(SoundDatabase::SE_DECIDE), false);
 		// キャンバスに追加
 		m_canvas->AddSprite(m_tutorialWindow.get());
 		m_isDisplayingTutorialWindow = true;
@@ -288,7 +295,7 @@ void TitleScene::OnPushMenuItem(TitleMenu::MenuItem menuItem)
 		break;
 	case TitleMenu::MenuItem::QUIT:
 		// SEの再生
-		SoundManager::GetInstance()->Play(SoundPaths::SE_DECIDE, false, 1.0f);
+		SoundManager::GetInstance()->Play(SoundDatabase::SOUND_CLIP_MAP.at(SoundDatabase::SE_DECIDE), false);
 		m_isQuit = true;
 		GetCommonResources()->GetTransitionMask()->Close([&]() {PostQuitMessage(0);; });
 
@@ -343,12 +350,12 @@ bool TitleScene::TryChangeCurrentGuideUI()
 
 		if (changePC)
 		{
-			filePath = "Manual/ui_manual_pc.dds";
+			filePath = TextureDatabase::TEXTURE_PATH_MAP.at(TextureDatabase::TextureID::UI_GUIDE_UI_KEYBOARD);
 		}
 
 		else
 		{
-			filePath = "Manual/ui_manual_gamepad.dds";
+			filePath = TextureDatabase::TEXTURE_PATH_MAP.at(TextureDatabase::TextureID::UI_GUIDE_UI_GAMEPAD);
 		}
 
 		// 拡大率と座標を保持する

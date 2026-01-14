@@ -14,6 +14,8 @@
 
 #include "Game/Common/Event/Messenger/GameFlowMessenger/GameFlowMessenger.h"	// ゲームフローの監視者ようインターフェース
 
+#include "Game/Common/CommonResources/CommonResources.h"
+#include "Game/Common/TransitionMask/TransitionMask.h"
 
 // メンバ関数の定義 ===========================================================
 /**
@@ -22,6 +24,8 @@
  * @param[in] なし
  */
 GameDirector::GameDirector()
+	: m_pCommonResources{ nullptr }
+	, m_isFadeOutInProgress{ false }
 {
 	// 自身の登録
 	GameFlowMessenger::GetInstance()->RegistryObserver(this);
@@ -43,9 +47,12 @@ GameDirector::~GameDirector()
 /**
  * @brief 初期化処理
  */
-void GameDirector::Initialize()
+void GameDirector::Initialize(const CommonResources* pCommonResources)
 {
+	m_pCommonResources = pCommonResources;
+
 	m_gameProgressDataManager->ResetData();
+	SetUpEventFlowMap();
 }
 
 /**
@@ -59,6 +66,17 @@ void GameDirector::Initialize()
 bool GameDirector::UpdateTask(float deltaTime)
 {
 	UNREFERENCED_PARAMETER(deltaTime);
+
+	if (m_isFadeOutInProgress)
+	{
+		if (m_pCommonResources->GetTransitionMask()->IsEnd())
+		{
+			// フェードアウト完了後の処理
+			GameFlowMessenger::GetInstance()->Notify(GameFlowEventID::GAME_TRANSITION_FADING_FINISH);
+		}	
+	}
+	
+
 	ResolveGameFlowEvent();
 
 	return true;
@@ -83,6 +101,8 @@ void GameDirector::OnGameFlowEvent(GameFlowEventID eventID)
  */
 void GameDirector::ResolveGameFlowEvent()
 {
+	auto resolveStack = m_gameFlowEventStack;
+
 	// イベントを一気に解消する
 	while (!m_gameFlowEventStack.empty())
 	{
@@ -110,9 +130,53 @@ void GameDirector::ResolveGameFlowEvent()
 			break;
 		case GameFlowEventID::ESCAPE_SUCCESS:
 			break;
+		case GameFlowEventID::GAME_TRANSITION_FADING_START:
+			// フェードアウト開始
+			m_isFadeOutInProgress = true;
+			break;
+		case GameFlowEventID::GAME_TRANSITION_FADING_FINISH:
+			// フェードアウト完了
+			m_isFadeOutInProgress = false;
+			break;
 		default:
 			break;
 		}
+
 	}
+
+	// 次のイベントが予約されているか確認する　
+	while (!resolveStack.empty())
+	{		
+		// 要素の取得
+		auto eventID = resolveStack.top();
+		// 要素の削除
+		resolveStack.pop();
+		if (m_eventFlowMap.find(eventID) != m_eventFlowMap.end())
+		{
+			// 次のイベントをスタックに追加する
+			GameFlowMessenger::GetInstance()->Notify(m_eventFlowMap[eventID]);
+		}
+	}
+
+
+}
+
+/**
+ * @brief イベントの流れを管理するマップの設定
+ * 
+ */
+void GameDirector::SetUpEventFlowMap()
+{
+	// イベントの流れを設定する
+
+	// **** ゲーム開始 ****
+	m_eventFlowMap[GameFlowEventID::GAME_SETUP_FINISH] = GameFlowEventID::GAME_START;
+	m_eventFlowMap[GameFlowEventID::GAME_START] = GameFlowEventID::GAME_TRANSITION_FADING_START;
+
+	// **** ゲーム終了 ****
+	m_eventFlowMap[GameFlowEventID::ESCAPE_SUCCESS] = GameFlowEventID::GAME_TRANSITION_FADING_START;
+
+	m_eventFlowMap[GameFlowEventID::PLAYER_DIE] = GameFlowEventID::GAME_TRANSITION_FADING_START;
+	
 }
 

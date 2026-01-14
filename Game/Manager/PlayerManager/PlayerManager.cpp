@@ -17,6 +17,7 @@
 
 #include "Game/Common/Input/InputBindingFactory/InputBindingFactory.h"
 
+#include "Game/Common/Event/Messenger/GameFlowMessenger/GameFlowMessenger.h"
 
 // メンバ関数の定義 ===========================================================
 /**
@@ -27,7 +28,7 @@
 PlayerManager::PlayerManager()
 	: m_pCommonResources{ nullptr }
 {
-
+	GameFlowMessenger::GetInstance()->RegistryObserver(this);
 }
 
 
@@ -77,7 +78,7 @@ void PlayerManager::Initialize(const CommonResources* pCommonResources, const Pl
  */
 bool PlayerManager::UpdateTask(float deltaTime)
 {
-	if (m_player.get() == nullptr) { return true; }
+	if (m_isStoppingUpdate || m_player.get() == nullptr) { return true; }
 
 	// プレイヤーの入力
 	m_playerInput->Update(m_pCommonResources->GetKeyboardTracker(), m_pCommonResources->GetMouseTracker(), m_pCommonResources->GetGamePadTracker());
@@ -121,6 +122,21 @@ void PlayerManager::DrawTask(const Camera& camera)
 void PlayerManager::Finalize()
 {
 
+}
+
+void PlayerManager::OnGameFlowEvent(GameFlowEventID eventID)
+{
+	switch (eventID)
+	{
+	case GameFlowEventID::GAME_TRANSITION_FADING_START:
+		// プレイヤーのアクティブ化
+		m_isStoppingUpdate = true;
+		break;
+	case GameFlowEventID::GAME_TRANSITION_FADING_FINISH:
+		// プレイヤーのアクティブ化
+		m_isStoppingUpdate = false;
+		break;
+	}
 }
 
 /**

@@ -20,6 +20,7 @@
 
 // クラスの前方宣言 ===================================================
 class GameProgressDataManager; // ゲーム進捗データ管理
+class CommonResources;		// 共通リソース
 
 // クラスの定義 ===============================================================
 /**
@@ -40,6 +41,10 @@ private:
 
 	std::stack<GameFlowEventID> m_gameFlowEventStack;					///< ゲームフローに関するイベントスタック
 
+	std::unordered_map<GameFlowEventID, GameFlowEventID> m_eventFlowMap;	///< イベントの流れを管理するマップ (キー: イベントID、値: 次のイベントID)
+
+	const CommonResources* m_pCommonResources;			///< 共通リソース
+	bool m_isFadeOutInProgress;			///< フェードが進行中かどうか
 
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
@@ -55,7 +60,7 @@ public:
 public:
 	
 	// 初期化処理
-	void Initialize();
+	void Initialize(const CommonResources* pCommonResources);
 
 	// タスクの更新処理
 	bool UpdateTask(float deltaTime);
@@ -73,5 +78,6 @@ private:
 	// ゲームフローイベントの解消
 	void ResolveGameFlowEvent();
 
-
+	// イベントフローマップの設定
+	void SetUpEventFlowMap();
 };

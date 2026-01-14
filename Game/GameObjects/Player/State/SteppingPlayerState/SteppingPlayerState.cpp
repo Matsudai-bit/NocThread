@@ -20,6 +20,8 @@
 #include "Library/MyLib/DirectXMyToolKit/DebugFont/DebugFont.h"
 #include "Library/MyLib/DirectXMyToolKit/DirectXUtils.h"
 
+#include "Game/Common/Database/SoundDatabase.h"
+#include "Game/Common/SoundManager/SoundManager.h"
 
 using namespace DirectX;
 
@@ -60,6 +62,10 @@ void SteppingPlayerState::OnStartState()
 	m_startPosition = GetOwner()->GetTransform()->GetPosition();
 	GetOwner()->ResetVelocity();
 	m_targetPosition = GetOwner()->GetTransform()->GetPosition() + m_impulseDirection * 9.0f;
+
+	// ƒTƒEƒ“ƒhÄ¶
+	SoundManager::GetInstance()->Play(SoundDatabase::SOUND_CLIP_MAP.at(SoundDatabase::SE_PLAYER_STEPPING));
+
 }
 
 /**

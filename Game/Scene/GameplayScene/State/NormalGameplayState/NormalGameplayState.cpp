@@ -25,6 +25,12 @@
 #include "Library/DirectXFramework/DeviceResources.h"
 #include "Game/Common/Camera/MainCamera/MainCamera.h"
 #include "Game/Common/GameEffect/GameEffectController.h"
+
+#include "Game/Common/TransitionMask/TransitionMask.h"
+
+// データベース関連
+#include "Game/Common/Database/TextureDatabase.h"
+
 using namespace DirectX;
 
 // メンバ関数の定義 ===========================================================
@@ -65,7 +71,8 @@ void NormalGameplayState::OnStartState()
 	m_canvas->SetOt(0);  // 一番手前にする
 
 	// スプライトのテクスチャ設定
-	m_manualSprite->Initialize(GetOwner()->GetCommonResources()->GetResourceManager()->CreateTexture("Manual/ui_manual._ingame_pc.dds"));
+	m_manualSprite->Initialize(GetOwner()->GetCommonResources()->GetResourceManager()->CreateTexture(
+		TextureDatabase::TEXTURE_PATH_MAP.at(TextureDatabase::TextureID::UI_GUIDE_INGAME_KEYBOARD)));
 
 
 	// スプライトの座標設定
@@ -97,6 +104,7 @@ void NormalGameplayState::OnExitState()
 
 void NormalGameplayState::OnUpdate(float deltaTime)
 {
+	
 	// 入力の更新処理
 	m_systemInput->Update(
 	GetOwner()->GetCommonResources()->GetKeyboardTracker(), 
@@ -169,12 +177,12 @@ bool NormalGameplayState::TryChangeCurrentGuideUI()
 
 		if (changePC)
 		{
-			filePath = "Manual/ui_manual._ingame_pc.dds";
+			filePath = TextureDatabase::TEXTURE_PATH_MAP.at(TextureDatabase::TextureID::UI_GUIDE_INGAME_KEYBOARD);
 		}
 
 		else 
 		{
-			filePath = "Manual/ui_manual._ingame_gamepad.dds";
+			filePath = TextureDatabase::TEXTURE_PATH_MAP.at(TextureDatabase::TextureID::UI_GUIDE_INGAME_GAMEPAD);
 		}
 
 		// 拡大率と座標を保持する

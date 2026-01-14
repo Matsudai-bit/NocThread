@@ -16,6 +16,9 @@
 
 #include "Game/Common/Camera/Camera.h"
 
+#include "Game/Common/Database/TextureDatabase.h"
+#include "Game/Common/ResourceManager/ResourceManager.h"
+
 using namespace DirectX;
 
 
@@ -59,11 +62,7 @@ void Floor::Initialize(const DirectX::SimpleMath::Vector3& pos, const CommonReso
     auto device     = pCommonResources->GetDeviceResources()->GetD3DDevice();
     auto context    = pCommonResources->GetDeviceResources()->GetD3DDeviceContext();
 
-    //  DDSƒtƒ@ƒCƒ‹‚Ì“Ç‚Ýž‚Ý
-    DX::ThrowIfFailed(
-        CreateDDSTextureFromFile(
-            device, L"Resources\\Textures\\floor.dds", nullptr, m_texture.ReleaseAndGetAddressOf())
-    );
+	m_texture = GetCommonResources()->GetResourceManager()->CreateTexture(TextureDatabase::TEXTURE_PATH_MAP.at(TextureDatabase::TextureID::TEXTURE_FLOOR));
 
     float halfWidth = WIDTH / 2.0f;
 

@@ -37,11 +37,7 @@ class PauseMenu
 // クラス定数の宣言 -------------------------------------------------
 public:
 
-	// --- ファイルパス関連 ---
-	static constexpr const char* TEXTURE_PATH_CONTINUE		= "Pose/pose_font_continue.dds";	///< 「CONTINUE」フォントテクスチャのファイルパス
-	static constexpr const char* TEXTURE_PATH_TUTORIAL		= "Pose/pose_font_tutorial.dds";	///< 「TUTORIAL」フォントテクスチャのファイルパス
-	static constexpr const char* TEXTURE_PATH_SETTING		= "Pose/pose_font_setting.dds";		///< 「SETTING」フォントテクスチャのファイルパス
-	static constexpr const char* TEXTURE_PATH_RETURN_TITLE	= "Pose/pose_font_returnTitle.dds"; ///< 「RETURN_TITLE」フォントテクスチャのファイルパス
+	
 
 	// --- スプライトスケール関連 ---
 	static constexpr float FONT_SPRITE_SCALE = 0.30f;	///< メニューフォントの基本スケール

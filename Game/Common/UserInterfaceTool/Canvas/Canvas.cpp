@@ -63,6 +63,7 @@ void Canvas::DrawContents()
 	// •`‰æˆ—
 	for (auto sprite : m_sprites)
 	{
+		if (sprite == nullptr){	continue;	}
 		sprite->DrawSprite(m_spriteBatch.get());
 	}
 

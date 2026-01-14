@@ -15,6 +15,8 @@
 
 #include "Game/Common/Helper/PhysicsHelper/PhysicsHelper.h"
 
+#include "Game/Common/Event/Messenger/GameFlowMessenger/IGameFlowObserver.h"
+
 class Player;
 class CollisionManager;
 
@@ -22,6 +24,7 @@ class CollisionManager;
 class PlayerCamera 
 	: public Camera
 	, public MovableObject
+	, public IGameFlowObserver
 
 {
 // 定数
@@ -95,6 +98,9 @@ private:
 	DirectX::SimpleMath::Vector3 m_overlapTotal;
 	DirectX::SimpleMath::Vector3 m_nextCameraTargetPosition;
 
+	bool m_isStoppingUpdate;
+	bool m_isFirstFrameUpdate; // 最初のフレーム更新フラグ
+
 private:
 
 
@@ -125,6 +131,9 @@ public:
 	void PostCollision() override;
 	void PreCollision() override;
 
+	// イベントメッセージを受け取る
+	void OnGameFlowEvent(GameFlowEventID eventID) override;
+
 	// 取得/設定
 public:
 
@@ -146,8 +155,15 @@ private:
 		const DirectX::SimpleMath::Vector3& playerPos,
 		const DirectX::SimpleMath::Vector3& prevNextCameraTargetPosition);
 
+	// カメラの注視点の算出
+	static DirectX::SimpleMath::Vector3 CalculateCameraTarget(
+		const DirectX::SimpleMath::Vector3& playerPosition,
+		const DirectX::SimpleMath::Vector3& cameraEye);// カメラ座標からプレイヤーを見た方向を算出
+
+
 	// カメラの位置の更新処理
 	void UpdateCameraPosition(float deltaTime, const DirectX::SimpleMath::Vector3& targetCameraPosition);
+
 
 	// 建物との衝突判定処理
 	void OnCollisionWithBuilding(GameObject* pHitObject, ICollider* pHitCollider);

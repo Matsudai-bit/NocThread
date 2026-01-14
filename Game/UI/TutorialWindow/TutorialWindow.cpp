@@ -15,9 +15,11 @@
 #include "Game/Common/UserInterfaceTool/Sprite/Sprite.h"
 
 #include "Game/Common/Input/InputBindingFactory/InputBindingFactory.h"
-#include <Game\Common\SoundManager\SoundManager.h>
-#include <Game\Common\SoundManager\SoundPaths.h>
+#include <Game/Common/SoundManager/SoundManager.h>
 
+// データベース関連
+#include "Game/Common/Database/SoundDatabase.h"
+#include "Game/Common/Database/TextureDatabase.h"
 using namespace DirectX;
 
 
@@ -56,37 +58,39 @@ void TutorialWindow::Initialize(ResourceManager* pResourceManager, std::function
 {
 	using namespace SimpleMath;
 
+	const int TUTORIAL_WINDOW_COUNT = 8;
+
 	// 閉じるときに実行するもの
 	m_closeWindow = closeWindow;
 
 	// スプライトの作成
 	m_backgroundAlpha	= std::make_unique<Sprite>();
 	m_arrowSprite		= std::make_unique<Sprite>();
+	using namespace TextureDatabase;
 
-	m_tutorialSprites.resize(6);
+	TextureID tutorialTextures[TUTORIAL_WINDOW_COUNT] = {
+		TextureID::UI_TUTORIAL_WINDOW_1,
+		TextureID::UI_TUTORIAL_WINDOW_2,
+		TextureID::UI_TUTORIAL_WINDOW_3,
+		TextureID::UI_TUTORIAL_WINDOW_4,
+		TextureID::UI_TUTORIAL_WINDOW_5,
+		TextureID::UI_TUTORIAL_WINDOW_6,
+		TextureID::UI_TUTORIAL_WINDOW_7,
+		TextureID::UI_TUTORIAL_WINDOW_8,
+	};
+
+	m_tutorialSprites.resize(TUTORIAL_WINDOW_COUNT);
+	auto screen = Screen::Get();
 	for (int i = 0; i < m_tutorialSprites.size(); i++)
 	{
 		m_tutorialSprites[i] = std::make_unique<Sprite>();
+
+		m_tutorialSprites[i]->Initialize(pResourceManager->CreateTexture(TEXTURE_PATH_MAP.at(tutorialTextures[i])));
+		m_tutorialSprites[i]->SetScale(0.45f * screen->GetScreenScale());
 	}
 
-	m_backgroundAlpha	->Initialize(pResourceManager->CreateTexture("Tutorial/tutorial_alpha.dds"));
-	m_arrowSprite		->Initialize(pResourceManager->CreateTexture("Tutorial/tutorial_arrow.dds"));
-
-	m_tutorialSprites[0]->Initialize(pResourceManager->CreateTexture("Tutorial/tutorial_gameFlow_1.dds"));
-	m_tutorialSprites[1]->Initialize(pResourceManager->CreateTexture("Tutorial/tutorial_gameFlow_2.dds"));
-	m_tutorialSprites[2]->Initialize(pResourceManager->CreateTexture("Tutorial/tutorial_gameFlow_3.dds"));
-	m_tutorialSprites[3]->Initialize(pResourceManager->CreateTexture("Tutorial/tutorial_gameFlow_4.dds"));
-
-	m_tutorialSprites[4]->Initialize(pResourceManager->CreateTexture("Tutorial/tutorial_point_1.dds"));
-	m_tutorialSprites[5]->Initialize(pResourceManager->CreateTexture("Tutorial/tutorial_point_2.dds"));
-	auto screen = Screen::Get();
-
-	m_tutorialSprites[0]->SetScale(0.4f * screen->GetScreenScale());
-	m_tutorialSprites[1]->SetScale(0.4f * screen->GetScreenScale());
-	m_tutorialSprites[2]->SetScale(0.4f * screen->GetScreenScale());
-	m_tutorialSprites[3]->SetScale(0.4f * screen->GetScreenScale());
-	m_tutorialSprites[4]->SetScale(1.0f * screen->GetScreenScale());
-	m_tutorialSprites[5]->SetScale(1.0f * screen->GetScreenScale());
+	m_backgroundAlpha	->Initialize(pResourceManager->CreateTexture(TEXTURE_PATH_MAP.at(TextureID::BACKGROUND_ALPHA_MASK)));
+	m_arrowSprite		->Initialize(pResourceManager->CreateTexture(TEXTURE_PATH_MAP.at(TextureID::UI_TUTORIAL_ARROW)));
 
 	// UI入力の作成
 	m_uiInput = InputBindingFactory::CreateUIInput();
@@ -112,13 +116,13 @@ void TutorialWindow::Update(
 	if (CanMoveRight())
 	{
 		// SEの再生
-		SoundManager::GetInstance()->Play(SoundPaths::SE_CURSOR_MOVING, false, 1.0f);
+		SoundManager::GetInstance()->Play(SoundDatabase::SOUND_CLIP_MAP.at(SoundDatabase::SE_CURSOR_MOVING), false);	
 		m_currentTutorialSpriteIndex++;
 	}
 	if (CanMoveLeft())
 	{
 		// SEの再生
-		SoundManager::GetInstance()->Play(SoundPaths::SE_CURSOR_MOVING, false, 1.0f);
+		SoundManager::GetInstance()->Play(SoundDatabase::SOUND_CLIP_MAP.at(SoundDatabase::SE_CURSOR_MOVING), false);
 		m_currentTutorialSpriteIndex--;
 	}
 
@@ -131,7 +135,7 @@ void TutorialWindow::Update(
 		m_uiInput->IsInput(InputActionType::UIActionID::CANCEL, InputSystem<InputActionType::UIActionID>::InputOption::PRESSED))
 	{
 		// SEの再生
-		SoundManager::GetInstance()->Play(SoundPaths::SE_CANCEL, false, 0.4f);
+		SoundManager::GetInstance()->Play(SoundDatabase::SOUND_CLIP_MAP.at(SoundDatabase::SE_CANCEL), false);		
 		m_closeWindow();
 	}
 }

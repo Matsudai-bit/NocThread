@@ -33,7 +33,7 @@
 #include "Game/Common/Collision/CollisionManager/CollisionManager.h"
 #include "Game/Common/Collision/CollisionMatrix/CollisionMatrix.h"
 #include "Game/Common/SoundManager/SoundManager.h"
-#include "Game/Common/SoundManager/SoundPaths.h"
+#include "Game/Common/Database/SoundDatabase.h"
 #include "Game/Scene/Loading/LoadingScreen.h"
 #include "Game/Common/GameEffect/GameEffectController.h"
 #include "Game/Common/SpawnManager/SpawnManager.h"
@@ -190,9 +190,19 @@ void GameplayScene::OnGameFlowEvent(GameFlowEventID eventID)
 		break;
 	case GameFlowEventID::ESCAPE_SUCCESS:
 		m_eventStack.emplace_back([&]() {
-			OnEndScene();
-			ResultData::GetInstance()->SetResultData(m_gamePlayingTimeCounter.GetElapsedTime(), true);
-			ChangeScene<ResultScene, LoadingScreen>();
+
+			if (GetCommonResources()->GetTransitionMask()->IsEnd())
+			{
+				ResultData::GetInstance()->SetResultData(m_gamePlayingTimeCounter.GetElapsedTime(), true);
+				// シーンを切り替える
+				GetCommonResources()->GetTransitionMask()->Close([&]()
+					{
+						OnEndScene();
+						ChangeScene<ResultScene, LoadingScreen>();
+
+					});
+			}
+		
 			});
 		break;
 	default:
@@ -287,7 +297,7 @@ void GameplayScene::SetupPlatform()
 	m_collisionManager->SetCollisionMatrix(m_collisionMatrix.get());
 
 	// ゲームディレクターの初期化処理
-	m_gameDirector->Initialize();
+	m_gameDirector->Initialize(GetCommonResources());
 
 	// 現在使用するエフェクト管理の取得
 	GameEffectController::GetInstance()->SetGameEffectManager(m_gameEffectManager.get());
@@ -333,9 +343,10 @@ void GameplayScene::StartGame()
 	m_stateMachine->ChangeState<NormalGameplayState>();
 	// **** BGMを鳴らす ****
 	SoundManager::GetInstance()->RemoveAll();
-	SoundManager::GetInstance()->Play(SoundPaths::BGM_INGAME, true);
+	SoundManager::GetInstance()->Play(SoundDatabase::SOUND_CLIP_MAP.at(SoundDatabase::BGM_INGAME), true);
 
 
 	// ***** ゲーム開始通知 *****
-	GameFlowMessenger::GetInstance()->Notify(GameFlowEventID::GAME_START);
+	GameFlowMessenger::GetInstance()->Notify(GameFlowEventID::GAME_SETUP_FINISH);
+
 }

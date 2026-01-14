@@ -19,6 +19,7 @@
 
 #include "Game/Common/TaskManager/TaskManager.h"
 
+#include "Game/Common/Event/Messenger/GameFlowMessenger/IGameFlowObserver.h"
 
 // クラスの前方宣言 ===================================================
 class CommonResources;	// 共通リソース
@@ -32,6 +33,7 @@ class PlayerController;	// プレイヤーコントローラ
  */
 class PlayerManager
 	: public Task
+	, public IGameFlowObserver
 {
 // クラス定数の宣言 -------------------------------------------------
 public:
@@ -48,6 +50,8 @@ private:
 	std::unique_ptr< CircularShadow> m_playerShadow; ///< プレイヤーの影
 
 	const CommonResources* m_pCommonResources; ///< 共通リソース
+
+	bool m_isStoppingUpdate;					///< 更新処理を停止するかどうか
 
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
@@ -72,6 +76,9 @@ public:
 
 	// 終了処理
 	void Finalize();
+
+	// イベントメッセージを受け取る
+	void OnGameFlowEvent(GameFlowEventID eventID) override;
 
 
 // 取得/設定

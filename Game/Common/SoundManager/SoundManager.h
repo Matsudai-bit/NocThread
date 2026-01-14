@@ -26,6 +26,20 @@ class ResourceManager;
  */
 class SoundManager final
 {
+// 構造体の宣言
+public:
+	enum class SoundType
+	{
+		SE,	// 効果音
+		BGM	// BGM
+	};
+	struct SoundClip
+	{
+		SoundType	type;		// サウンドタイプ
+		std::string filePath;	// ファイルパス
+		float		volume;		// 音量
+	};
+
 // クラス定数の宣言 -------------------------------------------------
 public:
 
@@ -57,7 +71,7 @@ public:
 public:
 
 	// 再生
-	int Play(const std::string& filePath, bool isLoop = false, float volume = 0.3f);
+	int Play(const SoundClip& clip, bool isLoop = false);
 	// 既存のIDで再生する場合
 	int Play(int id,  bool isLoop, float volume);
 

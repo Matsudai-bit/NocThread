@@ -23,6 +23,7 @@
 
 #include "Game/Common/ResultData/ResultData.h"
 
+#include "Game/Common/Database/TextureDatabase.h"
 
 
 using namespace DirectX;
@@ -51,8 +52,9 @@ SuccessResultState::~SuccessResultState()
 void SuccessResultState::OnStartState()
 {
 	using namespace SimpleMath;
+	using namespace TextureDatabase;
 
-	auto resourceManager = GetOwner()->GetCommonResources()->GetResourceManager();
+	auto pResourceManager = GetOwner()->GetCommonResources()->GetResourceManager();
 	auto screen = Screen::Get();
 
 	// スプライトの作成
@@ -61,10 +63,10 @@ void SuccessResultState::OnStartState()
 	m_clearTimeFontSprite	= std::make_unique<Sprite>();
 	m_destroyedNumFontSprite= std::make_unique<Sprite>();
 
-	m_successFontSprite		->Initialize(resourceManager->CreateTexture("Result/result_font_success.dds"));
-	m_resultFontSprite		->Initialize(resourceManager->CreateTexture("Result/result_font_success_result.dds"));
-	m_clearTimeFontSprite	->Initialize(resourceManager->CreateTexture("Result/result_font_success_clearTime.dds"));
-	m_destroyedNumFontSprite->Initialize(resourceManager->CreateTexture("Result/result_font_destroyedNum.dds"));
+	m_successFontSprite		->Initialize(pResourceManager->CreateTexture(TEXTURE_PATH_MAP.at(TextureID::UI_FONT_SUCCESS_JAPANESE)));
+	m_resultFontSprite		->Initialize(pResourceManager->CreateTexture(TEXTURE_PATH_MAP.at(TextureID::UI_FONT_SUCCESS_ENGLISH)));
+	m_clearTimeFontSprite	->Initialize(pResourceManager->CreateTexture(TEXTURE_PATH_MAP.at(TextureID::UI_FONT_SUCCESS_CLEAR_TIME)));
+	m_destroyedNumFontSprite->Initialize(pResourceManager->CreateTexture(TEXTURE_PATH_MAP.at(TextureID::UI_FONT_DESTROYED_ENEMIES)));
 
 	// クリア時間UIの作成
 	Sprite::Region region ;
@@ -75,12 +77,12 @@ void SuccessResultState::OnStartState()
 	m_clearTime = std::make_unique<TimeUI>();
 	m_clearTime->Initialize(
 		region, 
-		resourceManager->CreateTexture("Number/number_thorn.dds"), 
-		resourceManager->CreateTexture("Number/number_thorn_punc.dds"));
+		pResourceManager->CreateTexture(TEXTURE_PATH_MAP.at(TextureID::UI_NUMBER_THORN)),
+		pResourceManager->CreateTexture(TEXTURE_PATH_MAP.at(TextureID::UI_NUMBER_THORN_PUNCH)));
 
 	// 撃破数の数字スプライトの作成
 	m_destroyedNumSprite = std::make_unique<SpriteNumber>();
-	m_destroyedNumSprite->Initialize(resourceManager->CreateTexture("Number/number_thorn.dds"));
+	m_destroyedNumSprite->Initialize(pResourceManager->CreateTexture(TEXTURE_PATH_MAP.at(TextureID::UI_NUMBER_THORN)));
 	m_destroyedNumSprite->SetHeight(region.height);
 	m_destroyedNumSprite->SetLeftTopY(0);
 

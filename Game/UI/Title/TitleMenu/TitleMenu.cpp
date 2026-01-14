@@ -21,7 +21,10 @@
 
 #include "Library/MyLib/EasingKit/EasingKit.h"
 #include <Game\Common\SoundManager\SoundManager.h>
-#include <Game\Common\SoundManager\SoundPaths.h>
+
+// データベース関連
+#include "Game/Common/Database/SoundDatabase.h"
+#include "Game/Common/Database/TextureDatabase.h"
 
 using namespace DirectX;
 
@@ -66,11 +69,12 @@ void TitleMenu::Initialize(Canvas* pCanvas, const CommonResources* pCommonResour
 		{sprite = std::make_unique<Sprite>(); }
 	);
 
+	using namespace TextureDatabase;
 	// フォント類
-	m_titleFontSprites[0]->Initialize(pCommonResources->GetResourceManager()->CreateTexture(TEXTURE_PATH_PLAY));
-	m_titleFontSprites[1]->Initialize(pCommonResources->GetResourceManager()->CreateTexture(TEXTURE_PATH_TUTORIAL));
-	m_titleFontSprites[2]->Initialize(pCommonResources->GetResourceManager()->CreateTexture(TEXTURE_PATH_SETTING));
-	m_titleFontSprites[3]->Initialize(pCommonResources->GetResourceManager()->CreateTexture(TEXTURE_PATH_QUIT));
+	m_titleFontSprites[0]->Initialize(pCommonResources->GetResourceManager()->CreateTexture(TEXTURE_PATH_MAP.at(TextureID::UI_TITLE_FONT_PLAY)));
+	m_titleFontSprites[1]->Initialize(pCommonResources->GetResourceManager()->CreateTexture(TEXTURE_PATH_MAP.at(TextureID::UI_TITLE_FONT_TUTORIAL)));
+	m_titleFontSprites[2]->Initialize(pCommonResources->GetResourceManager()->CreateTexture(TEXTURE_PATH_MAP.at(TextureID::UI_TITLE_FONT_SETTING)));
+	m_titleFontSprites[3]->Initialize(pCommonResources->GetResourceManager()->CreateTexture(TEXTURE_PATH_MAP.at(TextureID::UI_TITLE_FONT_QUIT)));
 
 	// キャンバスにスプライトの登録
 	std::for_each(m_titleFontSprites.begin(), m_titleFontSprites.end(), [&](std::unique_ptr<Sprite>& sprite) {pCanvas->AddSprite(sprite.get()); });
@@ -144,7 +148,7 @@ void TitleMenu::Update(float deltaTime)
 	if (CanMoveDownSelector())
 	{
 		// SEの再生
-		SoundManager::GetInstance()->Play(SoundPaths::SE_CURSOR_MOVING, false, 1.0f);
+		SoundManager::GetInstance()->Play(SoundDatabase::SOUND_CLIP_MAP.at(SoundDatabase::SE_CURSOR_MOVING), false);
 
 		
 
@@ -155,7 +159,7 @@ void TitleMenu::Update(float deltaTime)
 	if (CanMoveUpSelector())
 	{		
 		// SEの再生
-		SoundManager::GetInstance()->Play(SoundPaths::SE_CURSOR_MOVING, false, 1.0f);
+		SoundManager::GetInstance()->Play(SoundDatabase::SOUND_CLIP_MAP.at(SoundDatabase::SE_CURSOR_MOVING), false);
 		// 加算する
 		m_currentSelectItemForInt--;
 	}

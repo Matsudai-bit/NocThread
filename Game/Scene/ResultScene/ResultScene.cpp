@@ -27,7 +27,7 @@
 #include "Game/Common/UserInterfaceTool/Canvas/Canvas.h"
 
 #include "Game/Common/SoundManager/SoundManager.h"
-#include "Game/Common/SoundManager/SoundPaths.h"
+#include "Game/Common/Database/SoundDatabase.h"
 
 #include "Game/Common/ResultData/ResultData.h"
 
@@ -37,6 +37,7 @@
 #include "Game/Scene/ResultScene/State/SuccessResultState/SuccessResultState.h"
 #include "Game/Scene/ResultScene/State/FailureResultState/FailureResultState.h"
 
+#include "Game/Common/Database/TextureDatabase.h"
 
 using namespace DirectX;
 
@@ -93,8 +94,9 @@ void ResultScene::Initialize()
 	m_backgroundSprite				= std::make_unique<Sprite>();
 	m_backgroundAlphaFilterSprite	= std::make_unique<Sprite>();
 
-	m_backgroundSprite->Initialize(GetCommonResources()->GetResourceManager()->CreateTexture("Result/result_back.dds"));
-	m_backgroundAlphaFilterSprite->Initialize(GetCommonResources()->GetResourceManager()->CreateTexture("Result/result_alpha.dds"));
+	auto pResourceManager = GetCommonResources()->GetResourceManager();
+	m_backgroundSprite				->Initialize(pResourceManager->CreateTexture(TextureDatabase::TEXTURE_PATH_MAP.at(TextureDatabase::TextureID::BACKGROUND_RESULT)));
+	m_backgroundAlphaFilterSprite	->Initialize(pResourceManager->CreateTexture(TextureDatabase::TEXTURE_PATH_MAP.at(TextureDatabase::TextureID::BACKGROUND_RESULT_ALPHA_MASK)));
 
 	// キャンバスの作成
 	m_canvas = std::make_unique<Canvas>(context, states);
@@ -111,8 +113,7 @@ void ResultScene::Initialize()
 	m_backgroundSprite->SetScale(1.0f * Screen::Get()->GetScreenScale() );
 	m_backgroundAlphaFilterSprite->SetScale(1.60f * Screen::Get()->GetScreenScale());
 
-	SoundManager::GetInstance()->Play(SoundPaths::BGM_RESULT);
-
+	SoundManager::GetInstance()->Play(SoundDatabase::SOUND_CLIP_MAP.at(SoundDatabase::BGM_RESULT), true);
 	// 入力システムの作成
 	m_inputSystem = InputBindingFactory::CreateUIInput();
 }

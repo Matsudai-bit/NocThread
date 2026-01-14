@@ -26,6 +26,9 @@
 
 #include "Game/Common/GameObjectRegistry/GameObjectRegistry.h"
 
+// データベース関連
+#include "Game/Common/Database/TextureDatabase.h"
+
 using namespace DirectX;
 
 ///	<summary>
@@ -449,7 +452,7 @@ void Minimap::Initialize()
 	m_minimapSprite = std::make_unique<Sprite>();
 	m_playerMarkSprite = std::make_unique<Sprite>();
 
-	m_playerMarkSprite->Initialize(m_pCommonResources->GetResourceManager()->CreateTexture("Minimap/mark_player.dds"));
+	m_playerMarkSprite->Initialize(m_pCommonResources->GetResourceManager()->CreateTexture(TextureDatabase::TEXTURE_PATH_MAP.at(TextureDatabase::TextureID::UI_INGAME_MINIMAP_PLAYER_ICON)));
 }
 
 /**
