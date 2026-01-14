@@ -75,6 +75,7 @@ class SpawnManager;		// 出現管理
  */
 class StageManager
 	: public Task
+	, public IGameFlowObserver
 {
 	// クラス定数の宣言 -------------------------------------------------
 public:
@@ -186,6 +187,8 @@ public:
 
 	// タスクの追加
 	void AddTask(TaskManager* pTaskManager);
+	// タスクの削除
+	void RemoveTask(TaskManager* pTaskManager);
 
 	// 更新処理を止める
 	void StopUpdating();
@@ -202,7 +205,8 @@ private:
 
 	// 通知関連
 public:
-
+	// イベントメッセージを受け取る
+	void OnGameFlowEvent(GameFlowEventID eventID) override;
 
 
 	// 取得/設定

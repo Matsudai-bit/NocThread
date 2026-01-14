@@ -23,6 +23,8 @@
 #include "Game/Common/CommonResources/CommonResources.h"
 #include "Library/MyLib/DirectXMyToolKit/DebugFont/DebugFont.h"
 
+#include "Game/Common/Event/Messenger/GameFlowMessenger/GameFlowMessenger.h"
+
 using namespace DirectX;
 
 
@@ -42,6 +44,8 @@ PlayerCamera::PlayerCamera(int windowWidth, int windowHeight,  DirectX::Mouse::B
 	, m_pPlayer{ nullptr }
 	, m_isStartUpdating{ true }
 	, m_pMouseTracker{ pMouseTracker }
+	, m_isStoppingUpdate{ false }
+	, m_isFirstFrameUpdate{ true }
 {
 	SetWindowSize(windowWidth, windowHeight);
 	SetUp(SimpleMath::Vector3::Up);  ///< 上方向ベクトルをY軸に設定
@@ -54,6 +58,8 @@ PlayerCamera::PlayerCamera(int windowWidth, int windowHeight,  DirectX::Mouse::B
 	Mouse::Get().SetMode(Mouse::MODE_RELATIVE);
 
 	m_rotate = DirectX::SimpleMath::Quaternion::CreateFromYawPitchRoll(XMConvertToRadians(0.0f), 0.0f, 0.0f);
+
+	GameFlowMessenger::GetInstance()->RegistryObserver(this);
 
 
 }
@@ -77,6 +83,9 @@ void PlayerCamera::Initialize(const CommonResources* pCommonResources, Collision
 
 	m_nextCameraTargetPosition = SimpleMath::Vector3::Zero;
 
+	
+
+	m_isFirstFrameUpdate = true;
 }
 
 /**
@@ -87,6 +96,12 @@ void PlayerCamera::Initialize(const CommonResources* pCommonResources, Collision
  */
 bool PlayerCamera::UpdateTask(float deltaTime)
 {
+	if ( m_pPlayer == nullptr)
+	{
+		return true;
+	}
+
+
 
 	int mouseX = 0;
 	int mouseY = 0;
@@ -102,13 +117,18 @@ bool PlayerCamera::UpdateTask(float deltaTime)
 	{
 		auto state = m_pMouseTracker->GetLastState();
 
-		// 相対モードでばない（カメラFPS視点など）場合は処理をスキップ
-		if (state.positionMode != Mouse::MODE_RELATIVE) return true;
+		//// 相対モードでばない（カメラFPS視点など）場合は処理をスキップ
+		//if (state.positionMode != Mouse::MODE_RELATIVE) 
+		//	return true;
 
 		mouseX = state.x;
 		mouseY = state.y;
 	}
-
+	if (m_isStoppingUpdate)
+	{
+		mouseX = 0;
+		mouseY = 0;
+	}
 
 	// 回転の更新
 	UpdateRotation(mouseX, mouseY);
@@ -211,6 +231,26 @@ void PlayerCamera::PreCollision()
 }
 
 /**
+ * @brief イベントメッセージを受け取る
+ * 
+ * @param[in] eventID 　イベントID
+ */
+void PlayerCamera::OnGameFlowEvent(GameFlowEventID eventID)
+{
+	switch (eventID)
+	{
+
+	case GameFlowEventID::GAME_TRANSITION_FADING_START:
+		m_isStoppingUpdate = true;
+		break;
+	case GameFlowEventID::GAME_TRANSITION_FADING_FINISH:
+		m_isStoppingUpdate = false;
+		break;
+	
+	}
+}
+
+/**
  * @brief 回転の更新処理
  *
  * @param[in] mouseX　マウス座標X
@@ -264,6 +304,22 @@ DirectX::SimpleMath::Vector3 PlayerCamera::CalculateCameraTargetPosition(
 		nextPosition = nextPositionTmp;
 	}
 	return nextPosition;
+}
+/**
+ * @brief 注視点の算出
+ *
+ * @param[in] playerPosition	プレイヤー座標
+ * @param[in] cameraEye		カメラ座標
+ * @return 注視点座標
+ */
+DirectX::SimpleMath::Vector3 PlayerCamera::CalculateCameraTarget(const DirectX::SimpleMath::Vector3& playerPosition, const DirectX::SimpleMath::Vector3& cameraEye)
+{
+	using namespace SimpleMath;
+	Vector3 lookPlayerDirection = playerPosition - cameraEye;
+	lookPlayerDirection.Normalize();
+	// 注視点の算出
+	Vector3 target = playerPosition + lookPlayerDirection * LOOK_TARGET_DISTANCE;
+	return target;
 }
 
 /**

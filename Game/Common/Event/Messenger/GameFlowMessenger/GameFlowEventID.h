@@ -14,6 +14,10 @@
  */
 enum class GameFlowEventID
 {
+
+	GAME_SETUP_FINISH,	// ゲーム準備完了
+	GAME_TRANSITION_FADING_START, // フェード中
+	GAME_TRANSITION_FADING_FINISH ,		// 無し
 	GAME_START,			// ゲーム開始
 
 	STOLE_TREASURE,		// 宝物を盗んだ

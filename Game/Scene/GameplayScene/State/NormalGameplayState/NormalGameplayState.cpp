@@ -26,6 +26,8 @@
 #include "Game/Common/Camera/MainCamera/MainCamera.h"
 #include "Game/Common/GameEffect/GameEffectController.h"
 
+#include "Game/Common/TransitionMask/TransitionMask.h"
+
 // データベース関連
 #include "Game/Common/Database/TextureDatabase.h"
 
@@ -102,6 +104,7 @@ void NormalGameplayState::OnExitState()
 
 void NormalGameplayState::OnUpdate(float deltaTime)
 {
+	
 	// 入力の更新処理
 	m_systemInput->Update(
 	GetOwner()->GetCommonResources()->GetKeyboardTracker(), 

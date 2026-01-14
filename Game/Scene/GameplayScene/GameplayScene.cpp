@@ -190,9 +190,19 @@ void GameplayScene::OnGameFlowEvent(GameFlowEventID eventID)
 		break;
 	case GameFlowEventID::ESCAPE_SUCCESS:
 		m_eventStack.emplace_back([&]() {
-			OnEndScene();
-			ResultData::GetInstance()->SetResultData(m_gamePlayingTimeCounter.GetElapsedTime(), true);
-			ChangeScene<ResultScene, LoadingScreen>();
+
+			if (GetCommonResources()->GetTransitionMask()->IsEnd())
+			{
+				ResultData::GetInstance()->SetResultData(m_gamePlayingTimeCounter.GetElapsedTime(), true);
+				// シーンを切り替える
+				GetCommonResources()->GetTransitionMask()->Close([&]()
+					{
+						OnEndScene();
+						ChangeScene<ResultScene, LoadingScreen>();
+
+					});
+			}
+		
 			});
 		break;
 	default:
@@ -287,7 +297,7 @@ void GameplayScene::SetupPlatform()
 	m_collisionManager->SetCollisionMatrix(m_collisionMatrix.get());
 
 	// ゲームディレクターの初期化処理
-	m_gameDirector->Initialize();
+	m_gameDirector->Initialize(GetCommonResources());
 
 	// 現在使用するエフェクト管理の取得
 	GameEffectController::GetInstance()->SetGameEffectManager(m_gameEffectManager.get());
@@ -337,6 +347,6 @@ void GameplayScene::StartGame()
 
 
 	// ***** ゲーム開始通知 *****
-	GameFlowMessenger::GetInstance()->Notify(GameFlowEventID::GAME_START);
+	GameFlowMessenger::GetInstance()->Notify(GameFlowEventID::GAME_SETUP_FINISH);
 
 }

@@ -159,6 +159,10 @@ public:
 	// 終了処理
 	void Finalize();
 
+	// 取得/設定
+public:
+	void SetActive(bool isActive) { m_isActive = isActive; }
+
 // 動作要求関連
 public:
 	// 移動要求

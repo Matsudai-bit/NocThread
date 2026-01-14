@@ -87,6 +87,9 @@ private:
 	// 仮
 	bool m_isExtention = false;
 
+	float m_speed = 0.0f;
+	float m_totalLerpTime = 0.0f;
+
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
 public:

@@ -14,7 +14,7 @@
 
 // ヘッダファイルの読み込み ===================================================
 #include "Game/Common/TaskManager/TaskManager.h"
-
+#include "Game/Common/Event/Messenger/GameFlowMessenger/IGameFlowObserver.h"
 // クラスの前方宣言 ===================================================
 class IEnemy; // 敵のインターフェース
 class Camera; // カメラ
@@ -25,6 +25,7 @@ class Camera; // カメラ
  */
 class EnemyManager
 	: public Task
+	, public IGameFlowObserver
 {
 // クラス定数の宣言 -------------------------------------------------
 public:
@@ -34,7 +35,8 @@ public:
 // データメンバの宣言 -----------------------------------------------
 private:
 	std::vector<IEnemy*> m_enemies; ///< 管理している敵
-
+	
+	bool m_isStoppingUpdate;	///< 更新処理を停止するかどうか
 
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
@@ -62,7 +64,8 @@ public:
 
 	void AddEnemy(IEnemy* enemy);
 
-
+	// イベントメッセージを受け取る
+	void OnGameFlowEvent(GameFlowEventID eventID) override;
 // 取得/設定
 public:
 
