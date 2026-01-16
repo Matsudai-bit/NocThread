@@ -26,8 +26,9 @@ using namespace DirectX;
  * @param[in] なし
  */
 EscapeHelicopter::EscapeHelicopter()
+	: m_isGameEnd{ false }
 {
-
+	GameFlowMessenger::GetInstance()->RegistryObserver(this);
 }
 
 
@@ -147,8 +148,23 @@ void EscapeHelicopter::OnCollision(const CollisionInfo& info)
 	UNREFERENCED_PARAMETER(info);
 
 
-	if (info.pOtherObject->GetTag() == GameObjectTag::PLAYER)
+	if (info.pOtherObject->GetTag() == GameObjectTag::PLAYER && !m_isGameEnd)
 	{
 		GameFlowMessenger::GetInstance()->Notify(GameFlowEventID::ESCAPE_SUCCESS);
+	}
+}
+
+/**
+ * @brief メッセージを受け取る
+ * 
+ * @param[in] eventID イベントID
+ */
+void EscapeHelicopter::OnGameFlowEvent(GameFlowEventID eventID)
+{
+	switch (eventID)
+	{
+	case GameFlowEventID::GAME_END:
+		m_isGameEnd = true;
+		break;
 	}
 }

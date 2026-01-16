@@ -102,7 +102,6 @@ bool PlayerCamera::UpdateTask(float deltaTime)
 	}
 
 
-
 	int mouseX = 0;
 	int mouseY = 0;
 
@@ -185,6 +184,8 @@ void PlayerCamera::GetWindowSize(int& windowWidth, int& windowHeight)
 void PlayerCamera::SetPlayer(const Player* pPlayer)
 {
 	m_pPlayer = pPlayer;
+
+	LookAtPlayerForward();
 }
 
 /**
@@ -248,6 +249,35 @@ void PlayerCamera::OnGameFlowEvent(GameFlowEventID eventID)
 		break;
 	
 	}
+}
+
+/**
+ * @brief プレイヤーの向いている方向をみる
+ * 
+ */
+void PlayerCamera::LookAtPlayerForward()
+{
+	if (m_pPlayer == nullptr)
+	{
+		return;
+	}
+	using namespace SimpleMath;
+	// プレイヤーの向いている方向を取得
+	Quaternion playerRotate = m_pPlayer->GetTransform()->GetRotation();
+	Matrix rot = Matrix::CreateFromQuaternion(playerRotate);
+	Vector3 localForward = Vector3(0.0f, LOCAL_FORWARD_Y, LOCAL_FORWARD_Z); // 単位ベクトル (-1.0f)
+	localForward.Normalize();
+	Vector3 forward = Vector3::TransformNormal(localForward, rot);
+	// カメラの向きをプレイヤーの向きに合わせる
+	Vector3 lookDirection = forward;
+	lookDirection.Normalize();
+	// カメラの注視点を更新
+	Vector3 cameraEye = GetEye();
+	Vector3 target = cameraEye + lookDirection * LOOK_TARGET_DISTANCE;
+	SetTarget(target);
+
+	// カメラの回転を更新
+	m_rotate = DirectX::SimpleMath::Quaternion::CreateFromRotationMatrix(DirectX::SimpleMath::Matrix::CreateLookAt(target, cameraEye, SimpleMath::Vector3::Up));
 }
 
 /**

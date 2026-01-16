@@ -155,7 +155,7 @@ void Player::Initialize(const CommonResources* pCommonResources, CollisionManage
 	GetTransform()->SetInitialRotation(Quaternion::CreateFromYawPitchRoll(XMConvertToRadians(PlayerParameter::DEFAULT_ROTATION_Y_DEGREE), 0, 0.0f));
 
 	// 回転
-	GetTransform()->SetRotation(Quaternion::CreateFromYawPitchRoll(0.0f, 0.0f, 0.0f));
+	GetTransform()->SetRotation(Quaternion::CreateFromYawPitchRoll(XMConvertToRadians(-90.0f), 0.0f, 0.0f));
 
 	// ステートマシーンの作成
 	m_stateMachine = std::make_unique<StateMachine<Player>>(this);

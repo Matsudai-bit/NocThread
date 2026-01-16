@@ -133,6 +133,22 @@ void CollisionManager::AddCollisionData(const CollisionData& collisionData)
 	m_collisionData.push_back(collisionData);
 }
 
+void CollisionManager::AddCollisionData(const CollisionData& collisionData, ICollider* parent)
+{
+	if (parent)
+	{
+		auto it = std::find_if(m_collisionData.begin(), m_collisionData.end(), [parent](const CollisionData& data)
+			{
+				return data.pCollider == parent;
+			});
+
+		if (it != m_collisionData.end())
+		{
+			it->children.push_back(collisionData);
+		}
+	}
+}
+
 /**
  * @brief íœ
  * 

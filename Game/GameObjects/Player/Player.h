@@ -249,27 +249,27 @@ public:
 	bool IsMovingRequested();
 
 	// 活動しているかどうか
-	bool IsActive() const override {return m_isActive;}
+	bool IsActive() const override					{ return m_isActive; }
 
 	// カメラの取得
-	const PlayerCamera* GetCamera() const { return m_pPlayerCamera; }
+	const PlayerCamera* GetCamera() const			{ return m_pPlayerCamera; }
 
 	// 射影行列の取得
-	DirectX::SimpleMath::Matrix GetProjection() const { return m_projection; }
+	DirectX::SimpleMath::Matrix GetProjection() const{ return m_projection; }
 
 	// ワイヤーシステムの取得
-	WireSystemSubject* GetWireSystem() { return m_wireSystemSubject.get(); }
+	WireSystemSubject* GetWireSystem()		{ return m_wireSystemSubject.get(); }
 	
 	// ゲームオブジェクトタグの取得
-	GameObjectTag GetTag() const override { return GameObjectTag::PLAYER; }
+	GameObjectTag GetTag() const override	{ return GameObjectTag::PLAYER; }
 
 	// ワイヤーの取得
-	Wire* GetWire() const { return m_wire.get(); }
+	Wire* GetWire() const					{ return m_wire.get(); }
 
+	const Sphere* GetCollider() const		{ return m_collider.get(); }
 	// 掴む位置
 	DirectX::SimpleMath::Vector3 CalcGrabbingPosition() const;
 
-	const Sphere* GetCollider() const { return m_collider.get(); }
 
 	// ワイヤーを発射できるかどうか
 	bool CanShootWire() const;

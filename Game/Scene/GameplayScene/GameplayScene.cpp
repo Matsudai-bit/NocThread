@@ -161,12 +161,14 @@ void GameplayScene::Finalize()
  */
 void GameplayScene::ResolveEvents()
 {
+	auto copy = m_eventStack;
+
+	m_eventStack.clear();
 	// イベントスタックの解消(仮実装)
-	for (auto& event : m_eventStack)
+	for (auto& event : copy)
 	{
 		event();
 	}
-	m_eventStack.clear();
 }
 
 
@@ -183,28 +185,35 @@ void GameplayScene::OnGameFlowEvent(GameFlowEventID eventID)
 		break;
 	case GameFlowEventID::PLAYER_DIE:
 		m_eventStack.emplace_back([&]() {
-			OnEndScene();
+
 			ResultData::GetInstance()->SetResultData(m_gamePlayingTimeCounter.GetElapsedTime(), false);
-			ChangeScene<ResultScene, LoadingScreen>();
-			});
+			GameFlowMessenger::GetInstance()->Notify(GameFlowEventID::GAME_END);
+
+		});
+	
 		break;
 	case GameFlowEventID::ESCAPE_SUCCESS:
 		m_eventStack.emplace_back([&]() {
-
-			if (GetCommonResources()->GetTransitionMask()->IsEnd())
-			{
-				ResultData::GetInstance()->SetResultData(m_gamePlayingTimeCounter.GetElapsedTime(), true);
-				// シーンを切り替える
-				GetCommonResources()->GetTransitionMask()->Close([&]()
-					{
-						OnEndScene();
-						ChangeScene<ResultScene, LoadingScreen>();
-
-					});
-			}
-		
-			});
+				
+			ResultData::GetInstance()->SetResultData(m_gamePlayingTimeCounter.GetElapsedTime(), true);
+			GameFlowMessenger::GetInstance()->Notify(GameFlowEventID::GAME_END);
+				
+		});
 		break;
+	case GameFlowEventID::GAME_END:
+		// シーンを切り替える
+		m_eventStack.emplace_back([&]()
+		{
+
+			GetCommonResources()->GetTransitionMask()->Close([&]()
+				{
+					OnEndScene();
+					ChangeScene<ResultScene, LoadingScreen>();
+
+				});
+		});
+		break;
+
 	default:
 		break;
 	}

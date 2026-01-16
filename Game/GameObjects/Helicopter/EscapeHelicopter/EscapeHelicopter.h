@@ -14,6 +14,7 @@
 
 // ヘッダファイルの読み込み ===================================================
 #include "Game/GameObjects/Common/GameObject.h"
+#include "Game/Common/Event/Messenger/GameFlowMessenger/IGameFlowObserver.h"
 #include "Game/GameObjects/Common/MovableObject/MovableObject.h"
 
 #include "Game/Common/Collision/Collision.h"
@@ -28,6 +29,7 @@ class CollisionManager;	// 衝突管理
  */
 class EscapeHelicopter
 	: public MovableObject
+	, public IGameFlowObserver
 {
 // クラス定数の宣言 -------------------------------------------------
 public:
@@ -40,6 +42,8 @@ private:
 	DirectX::Model m_helicopterModel;	///< ヘリコプターのモデル
 
 	std::unique_ptr<AABB> m_collider; ///< AABBのコライダ
+
+	bool m_isGameEnd;
 
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
@@ -80,6 +84,9 @@ public:
 
 	// 衝突時に呼ばれる
 	void OnCollision(const CollisionInfo& info ) override;
+
+	// イベントメッセージを受け取る
+	void OnGameFlowEvent(GameFlowEventID eventID) override;
 
 // 内部実装
 private:

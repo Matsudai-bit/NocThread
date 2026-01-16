@@ -39,6 +39,8 @@
 
 #include "Game/Common/Database/TextureDatabase.h"
 
+#include "Game/Common/TransitionMask/TransitionMask.h"
+
 using namespace DirectX;
 
 
@@ -130,6 +132,12 @@ void ResultScene::Initialize()
 void ResultScene::Update(float deltaTime)
 {
 	UNREFERENCED_PARAMETER(deltaTime);
+
+	// I—¹‚µ‚Ä‚¢‚È‚¯‚ê‚Î‹­§‘Þ”ð
+	if (!GetCommonResources()->GetTransitionMask()->IsEnd())
+	{
+		return;
+	}
 
 	m_inputSystem->Update(GetCommonResources()->GetKeyboardTracker(), GetCommonResources()->GetMouseTracker(), GetCommonResources()->GetGamePadTracker());
 

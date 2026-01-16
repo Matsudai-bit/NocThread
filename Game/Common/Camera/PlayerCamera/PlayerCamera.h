@@ -134,6 +134,9 @@ public:
 	// イベントメッセージを受け取る
 	void OnGameFlowEvent(GameFlowEventID eventID) override;
 
+	// プレイヤーの向いている方向をみる
+	void LookAtPlayerForward();
+
 	// 取得/設定
 public:
 
