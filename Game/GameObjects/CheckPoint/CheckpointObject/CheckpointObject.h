@@ -83,6 +83,10 @@ private:
 	DirectX::SimpleMath::Quaternion m_targetHeadRotation;
 	float m_lerpT;
 
+	std::unique_ptr<DirectX::BasicEffect> m_basicEffect;
+
+	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_inputLayout;
+
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
 public:
@@ -96,7 +100,7 @@ public:
 // 操作
 public:
 	// 初期化処理
-	void Initialize(ResourceManager* pResourceManager);
+	void Initialize(ResourceManager* pResourceManager, ID3D11Device* device);
 
 	// 更新処理
 	void Update(float deltaTime);

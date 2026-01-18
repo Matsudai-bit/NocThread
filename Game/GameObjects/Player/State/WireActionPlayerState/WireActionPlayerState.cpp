@@ -55,10 +55,14 @@ void WireActionPlayerState::OnStartState()
 {
 	GetOwner()->ChangeAnimation(PlayerParameter::ANIM_WIREACTION);
 
+	// エフェクトの作成
 	auto concentrationLines = std::make_unique<ConcentrationLines>(GetOwner()->GetCommonResources()->GetDeviceResources(), 0.24f, 0.3f);
 	m_pConcentrationLines = concentrationLines.get();
+
+	// クリップの作成
 	auto clip = GameEffectManager::EffectClip(true);
 
+	// エフェクトの再生
 	m_effectId = GameEffectController::GetInstance()->PlayEffect(std::move(concentrationLines), clip);
 
 	// 状態を設定
