@@ -89,7 +89,7 @@ private:
 			m_nextID++;
 
 			// ÉvÅ[ÉãÇ…í«â¡
-			m_freeIDs.emplace_back(newID);
+			//m_freeIDs.emplace_back(newID);
 
 			return newID;
 		}
