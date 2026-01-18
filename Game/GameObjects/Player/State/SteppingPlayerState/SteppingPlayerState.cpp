@@ -66,6 +66,8 @@ void SteppingPlayerState::OnStartState()
 	// ƒTƒEƒ“ƒhÄ¶
 	SoundManager::GetInstance()->Play(SoundDatabase::SOUND_CLIP_MAP.at(SoundDatabase::SE_PLAYER_STEPPING));
 
+	// ó‘Ô‚ðÝ’è
+	GetOwner()->SetState(Player::State::STTEPPING);
 }
 
 /**
@@ -93,7 +95,7 @@ void SteppingPlayerState::OnUpdate(float deltaTime)
 	if (m_targetCounter.GetElapsedTime() >= STEP_TIME)
 	{
 		GetOwner()->GetTransform()->SetPosition(m_targetPosition);
-		GetOwner()->RequestChangeState(Player::State::IDLE);
+		GetOwner()->GetStateMachine()->ChangeState<IdlePlayerState>();
 	}
 
 }

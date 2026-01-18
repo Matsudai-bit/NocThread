@@ -52,6 +52,10 @@ WireActionPlayerState::~WireActionPlayerState()
 void WireActionPlayerState::OnStartState()
 {
 	GetOwner()->ChangeAnimation(PlayerParameter::ANIM_WIREACTION);
+
+
+	// ó‘Ô‚ðÝ’è
+	GetOwner()->SetState(Player::State::WIRE_ACTION);
 }
 
 /**
@@ -80,7 +84,7 @@ void WireActionPlayerState::OnUpdate(float deltaTime)
 	if (GetOwner()->GetPlayerInput()->IsInput(InputActionType::PlyayerActionID::RELEASE_WIRE, InputSystem< InputActionType::PlyayerActionID>::InputOption::RELEASED))
 	{
 		//GetOwner()->GetWire()->Reset();
-		GetOwner()->RequestChangeState(Player::State::WALKING);
+		GetOwner()->GetStateMachine()->ChangeState<WalkPlayerState>();
 
 	}
 	//GetOwner()->GetCommonResources()->GetDebugFont()->AddString(10, 90, Colors::White, L"WireAction");

@@ -53,6 +53,10 @@ WireGrabbingPlayerState::~WireGrabbingPlayerState()
  */
 void WireGrabbingPlayerState::OnStartState()
 {
+
+	// 状態を設定
+	GetOwner()->SetState(Player::State::WIRE_GRABBING);
+
 	WireEventData eventData;
 	eventData.grabPos = GetOwner()->CalcGrabbingPosition();
 	eventData.pOwner = GetOwner();
@@ -95,51 +99,11 @@ void WireGrabbingPlayerState::OnUpdate(float deltaTime)
 
 	GetOwner()->RotateForMoveDirection(deltaTime);
 
-	//// テスト **************************************:::
-
-	//using namespace SimpleMath;
-	//const float EPSILON = 0.0001f;
-
-
-	//// カレントとターゲットの方向をXZ平面に投影
-	//Vector3 currentForward = GetOwner()->GetForward();
-	//currentForward.y = 0.0f;
-	//using namespace SimpleMath;
-	//// 飛ばすスクリーン座標
-	//float screenX = Screen::Get()->GetCenterXF();
-	//float screenY = Screen::Get()->GetCenterYF();
-	//MyLib::Ray ray = GetOwner()->CalcScreenToWorldRay(screenX, screenY, *GetOwner()->GetCamera(), GetOwner()->GetProj());
-
-	//Vector3 moveDir = ray.direction;
-	//moveDir.y = 0.0f;
-
-	//currentForward.Normalize();
-	//moveDir.Normalize();
-
-	//// ほぼ同じならスキップ
-	//if ((moveDir - currentForward).LengthSquared() >= EPSILON)
-	//{
-	//	// クォータニオンで向きを補間
-	//	Quaternion currentRotation = GetOwner()->GetRotate();
-	//	Quaternion targetRotation = Quaternion::CreateFromRotationMatrix(Matrix::CreateWorld(Vector3::Zero, moveDir, Vector3::Up));
-
-
-	//	//float t = deltaTime / Player::ROTATION_SPEED;
-	//	Quaternion result = Quaternion::Slerp(currentRotation, targetRotation, 1.0f); // 補間率を調整
-	//	GetOwner()->SetRotate(result);
-
-
-	//}
-	
-
-
-	// *******************************************::
-
 	// マウスを離したら
 	if (mouseTrack->leftButton == Mouse::ButtonStateTracker::RELEASED)
 	{
 		//GetOwner()->ReleaseWire();
-		GetOwner()->RequestChangeState(Player::State::WIRE_THROWING);
+		GetOwner()->GetStateMachine()->ChangeState<WireThrowingPlayerState>();
 	}
 
 	//GetOwner()->GetCommonResources()->GetDebugFont()->AddString(10, 90, Colors::White, L"WireGrabbing");

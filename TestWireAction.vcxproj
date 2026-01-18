@@ -215,6 +215,7 @@
     <ClInclude Include="Game\Common\GameDirector\GameDirector.h" />
     <ClInclude Include="Game\Common\GameEffect\Base\GameEffectBase.h" />
     <ClInclude Include="Game\Common\GameEffect\Base\IGameEffect.h" />
+    <ClInclude Include="Game\Common\GameEffect\Effects\ConcentrationLines\ConcentrationLines.h" />
     <ClInclude Include="Game\Common\GameEffect\Effects\SimpleParticle\SimpleParticle.h" />
     <ClInclude Include="Game\Common\GameEffect\GameEffectController.h" />
     <ClInclude Include="Game\Common\GameEffect\GameEffectManager.h" />
@@ -365,6 +366,7 @@
     <ClCompile Include="Game\Common\GameDirector\GameDirector.cpp" />
     <ClCompile Include="Game\Common\GameEffect\Base\GameEffectBase.cpp" />
     <ClCompile Include="Game\Common\GameEffect\Base\IGameEffect.cpp" />
+    <ClCompile Include="Game\Common\GameEffect\Effects\ConcentrationLines\ConcentrationLines.cpp" />
     <ClCompile Include="Game\Common\GameEffect\Effects\SimpleParticle\SimpleParticle.cpp" />
     <ClCompile Include="Game\Common\GameEffect\GameEffectController.cpp" />
     <ClCompile Include="Game\Common\GameEffect\GameEffectManager.cpp" />
@@ -516,6 +518,7 @@
   <ItemGroup>
     <None Include="packages.config" />
     <None Include="Shaders\CircleShadow.hlsli" />
+    <None Include="Shaders\ConcentrationLines\ConcentrationLines.hlsli" />
     <None Include="Shaders\MinimapInstansing\SimpleShape2DInstansing.hlsli" />
     <None Include="Shaders\SimpleParticle\SimpleParticle.hlsli" />
     <None Include="Shaders\SimpleShape2D\SimpleShape2D.hlsli" />
@@ -545,6 +548,30 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4.0</ShaderModel>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Resources/Shaders/%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
+    <FxCompile Include="Shaders\ConcentrationLines\ConcentrationLines_GS.hlsl">
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4.0</ShaderModel>
+      <AssemblerOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources/Shaders/%(Filename).cso</AssemblerOutputFile>
+      <AssemblerOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Resources/Shaders/%(Filename).cso</AssemblerOutputFile>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Geometry</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Geometry</ShaderType>
+    </FxCompile>
+    <FxCompile Include="Shaders\ConcentrationLines\ConcentrationLines_PS.hlsl">
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4.0</ShaderModel>
+      <AssemblerOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources/Shaders/%(Filename).cso</AssemblerOutputFile>
+      <AssemblerOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Resources/Shaders/%(Filename).cso</AssemblerOutputFile>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="Shaders\ConcentrationLines\ConcentrationLines_VS.hlsl">
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4.0</ShaderModel>
+      <AssemblerOutputFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Resources/Shaders/%(Filename).cso</AssemblerOutputFile>
+      <AssemblerOutputFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Resources/Shaders/%(Filename).cso</AssemblerOutputFile>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
     </FxCompile>
     <FxCompile Include="Shaders\FrustumCulling\FrustumCullingCS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>

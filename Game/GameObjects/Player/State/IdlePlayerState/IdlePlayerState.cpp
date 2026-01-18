@@ -14,9 +14,12 @@
 
 #include "Game/GameObjects/Player/State/WalkPlayerState/WalkPlayerState.h"
 #include "Game/GameObjects/Player/State/WireActionPlayerState/WireActionPlayerState.h"
+#include "Game/GameObjects/Player/State/ShootingWireState/ShootingWirePlayerState.h"
 #include "Library/MyLib/DirectXMyToolKit/DebugFont/DebugFont.h"
 
 #include "Game/Common/CommonResources/CommonResources.h"
+#include "Game/GameObjects/Wire/Wire.h"
+#include "Game/Common/WireTargetFinder/WireTargetFinder.h"
 
 // パラメータ
 #include "Game/Common/Database/PlayerParameter.h"
@@ -53,6 +56,9 @@ void IdlePlayerState::OnStartState()
 {
 	// アニメーションを変更
 	GetOwner()->ChangeAnimation(PlayerParameter::ANIM_IDLENG);
+
+	// 状態を設定
+	GetOwner()->SetState(Player::State::IDLE);
 }
 
 /**
@@ -68,7 +74,7 @@ void IdlePlayerState::OnUpdate(float deltaTime)
 	// 移動入力されているかどうか
 	if (GetOwner()->IsMovingRequested())
 	{
-		GetOwner()->RequestChangeState(Player::State::WALKING);
+		GetOwner()->GetStateMachine()->ChangeState<WalkPlayerState>();
 	}
 
 	// プレイヤーの入力機構の取得
@@ -81,7 +87,7 @@ void IdlePlayerState::OnUpdate(float deltaTime)
 		if (!GetOwner()->IsGround() && GetOwner()->CanShootWire())
 		{
 			// ワイヤー発射状態にする
-			GetOwner()->RequestChangeState(Player::State::WIRE_SHOOTING);
+			GetOwner()->GetStateMachine()->ChangeState<ShootingWirePlayerState>(GetOwner()->GetWireTargetFinder()->GetTargetPosition());
 		}
 	}
 

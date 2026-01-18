@@ -28,8 +28,9 @@ using namespace DirectX;
  *
  * @param[in] ‚È‚µ
  */
-ShootingWirePlayerState::ShootingWirePlayerState()
-	: m_isJumping{ false }
+ShootingWirePlayerState::ShootingWirePlayerState(const DirectX::SimpleMath::Vector3& targetPosition)
+	: m_isJumping		{ false }
+	, m_targetPosition	{ targetPosition }
 {
 
 }
@@ -50,8 +51,11 @@ ShootingWirePlayerState::~ShootingWirePlayerState()
  */
 void ShootingWirePlayerState::OnStartState()
 {
+	// ó‘Ô‚ðÝ’è
+	GetOwner()->SetState(Player::State::WIRE_SHOOTING);
+
 	// ƒƒCƒ„[‚ð”ò‚Î‚·
-	GetOwner()->ShootWire();
+	GetOwner()->ShootWire(m_targetPosition);
 
 	// ƒƒCƒ„[Õ“ËŽž‚ÉŒÄ‚Î‚ê‚éŠÖ”‚Ì“o˜^
 	GetOwner()->SetWireCollisionFunction([this](const GameObject* pHitObject) { OnCollisionWire(pHitObject); });
@@ -78,7 +82,7 @@ void ShootingWirePlayerState::OnUpdate(float deltaTime)
 	{
 		GetOwner()->GetWire()->Reset();
 
-		GetOwner()->RequestChangeState(Player::State::IDLE);
+		GetOwner()->GetStateMachine()->ChangeState<IdlePlayerState>();
 	}
 
 
@@ -110,7 +114,7 @@ void ShootingWirePlayerState::OnCollisionWire(const GameObject* pHitObject)
 {
 	UNREFERENCED_PARAMETER(pHitObject);
 
-	GetOwner()->RequestChangeState(Player::State::WIRE_ACTION);
+	GetOwner()->GetStateMachine()->ChangeState<WireActionPlayerState>();
 
 	//if (pHitObject->GetTag() == GameObjectTag::WALL ||
 	//pHitObject->GetTag() == GameObjectTag::BUILDING ||
