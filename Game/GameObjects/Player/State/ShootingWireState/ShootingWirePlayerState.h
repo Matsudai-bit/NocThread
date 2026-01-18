@@ -35,12 +35,13 @@ public:
 private:
 
 	bool m_isJumping;
+	DirectX::SimpleMath::Vector3 m_targetPosition;
 
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
 public:
 	// コンストラクタ
-	ShootingWirePlayerState();
+	ShootingWirePlayerState(const DirectX::SimpleMath::Vector3& targetPosition);
 
 	// デストラクタ
 	~ShootingWirePlayerState();

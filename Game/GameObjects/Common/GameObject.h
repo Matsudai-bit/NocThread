@@ -34,19 +34,20 @@ class CollisionInfo;	// 衝突情報
  */
 enum class GameObjectTag :	uint32_t
 {
-	PLAYER				= 1 << 0,		// プレイヤー
-	FLOOR				= 1 << 1,	// 床
-	WIRE				= 1 << 2,	// ワイヤー
-	WALL				= 1 << 3,	// 壁
-	BALL				= 1 << 4,	// ボール
-	STAGE_OBJECT		= 1 << 5,	// ステージ上のオブジェクト
-	ENEMY				= 1 << 6,	// 敵
-	TREASURE			= 1 << 7,	// 宝
-	BUILDING			= 1 << 8,	// 建物
-	ESCAPE_HELICOPTER	= 1 << 9,	// 脱出用ヘリコプター
-	WIRE_GRAPPING_AREA	= 1 << 10,	// ワイヤー照準範囲
-	CAMERA				= 1 << 11,	// カメラ
-	CHECKPOINT			= 1 << 12,	// チェックポイントオブジェクト
+	DEFAULT				= 1 << 0,
+	PLAYER				= 1 << 1,		// プレイヤー
+	FLOOR				= 1 << 2,	// 床
+	WIRE				= 1 << 3,	// ワイヤー
+	WALL				= 1 << 4,	// 壁
+	BALL				= 1 << 5,	// ボール
+	STAGE_OBJECT		= 1 << 6,	// ステージ上のオブジェクト
+	ENEMY				= 1 << 7,	// 敵
+	TREASURE			= 1 << 8,	// 宝
+	BUILDING			= 1 << 9,	// 建物
+	ESCAPE_HELICOPTER	= 1 << 10,	// 脱出用ヘリコプター
+	WIRE_GRAPPING_AREA	= 1 << 11,	// ワイヤー照準範囲
+	CAMERA				= 1 << 12,	// カメラ
+	CHECKPOINT			= 1 << 13,	// チェックポイントオブジェクト
 
 };
 
@@ -141,10 +142,10 @@ public:
 	virtual bool IsActive() const = 0;
 
 	// ゲームオブジェクトタグの取得
-	virtual GameObjectTag GetTag() const = 0;
+	virtual GameObjectTag GetTag() const	{ return GameObjectTag::DEFAULT; };
 
 	// トランスフォームの取得
-	Transform* GetTransform() const { return m_transform.get(); }
+	Transform* GetTransform() const			{ return m_transform.get(); }
 
 	// 共通リソースの取得
 	const CommonResources* GetCommonResources() const {	return m_pCommonResources;}

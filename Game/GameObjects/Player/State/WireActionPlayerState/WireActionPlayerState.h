@@ -14,7 +14,8 @@
 
 // ヘッダファイルの読み込み ===================================================
 #include "Game/Common/StateMachine/StateBase/StateBase.h"
-
+#include "Game/Common/GameEffect/GameEffectController.h"
+#include "Game/Common/GameEffect/Effects/ConcentrationLines/ConcentrationLines.h"
 
 // クラスの前方宣言 ===================================================
 class Player;
@@ -33,7 +34,8 @@ public:
 // データメンバの宣言 -----------------------------------------------
 private:
 
-
+	int m_effectId; ///< エフェクトID
+	ConcentrationLines* m_pConcentrationLines; ///< 集中線エフェクト	
 
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ

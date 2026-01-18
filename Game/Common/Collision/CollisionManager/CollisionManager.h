@@ -152,6 +152,7 @@ public:
 	// 衝突判定をするオブジェクトの追加
 	//void AddCollisionObjectData(GameObject* pAddGameObject, ICollider* pCollider, ICollider* pBroadCollider = nullptr);
 	void AddCollisionData(const CollisionData& collisionData);
+	void AddCollisionData(const CollisionData& collisionData, ICollider* parent);
 	// 削除
 	void RemoveCollisionObjectData(GameObject* pAddGameObject, ICollider* pCollider);
 

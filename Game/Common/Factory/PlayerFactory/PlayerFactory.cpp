@@ -23,11 +23,14 @@ using namespace DirectX;
  */
 void PlayerFactory::StagePlayer::Assemble(Player* instance, const PlayerDesk& desc)
 {
+	// ‰Šú‰»ˆ—
 	instance->Initialize(&desc.commonResources, desc.pCollisionManager, desc.pPlayerCamera, desc.pPlayerInput);
 
+	// oŒ»ˆÊ’u‚ÌŒš•¨‚ðŽæ“¾‚·‚é
 	const Building* tileBuilding = nullptr;
 	if (desc.buildingManager.FindBuilding(desc.tileNumber, tileBuilding))
 	{
+		// Œš•¨‚Ìã‚É—§‚Â‚æ‚¤‚ÉÚ’n
 		instance->GetTransform()->SetPosition(tileBuilding->GetTransform()->GetPosition() + SimpleMath::Vector3(0.0f, 80.0f, 0.0f));
 	}
 }

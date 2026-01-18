@@ -16,6 +16,10 @@
 
 #include "Game/Common/CommonResources/CommonResources.h"
 #include "Game/Common/TransitionMask/TransitionMask.h"
+#include "Game/Common/ResultData/ResultData.h"
+
+#include "Game/Scene/ResultScene/ResultScene.h"
+#include "Game/Scene/Loading/LoadingScreen.h"
 
 // メンバ関数の定義 ===========================================================
 /**
@@ -24,8 +28,8 @@
  * @param[in] なし
  */
 GameDirector::GameDirector()
-	: m_pCommonResources{ nullptr }
-	, m_isFadeOutInProgress{ false }
+	: m_pCommonResources	{ nullptr }
+	, m_isFadeOutInProgress	{ false }
 {
 	// 自身の登録
 	GameFlowMessenger::GetInstance()->RegistryObserver(this);
@@ -138,6 +142,7 @@ void GameDirector::ResolveGameFlowEvent()
 			// フェードアウト完了
 			m_isFadeOutInProgress = false;
 			break;
+		case GameFlowEventID::GAME_END:
 		default:
 			break;
 		}

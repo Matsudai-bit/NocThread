@@ -57,6 +57,9 @@ WireThrowingPlayerState::~WireThrowingPlayerState()
  */
 void WireThrowingPlayerState::OnStartState()
 {
+
+	// ó‘Ô‚ðÝ’è
+	GetOwner()->SetState(Player::State::WIRE_THROWING);
 }
 
 /**
@@ -88,7 +91,7 @@ void WireThrowingPlayerState::OnUpdate(float deltaTime)
 	GetOwner()->GetWireSystem()->AllRemoveObserver();
 
 	// ó‘Ô‚ð‘Ò‹@ó‘Ô‚É•ÏX
-	GetOwner()->RequestChangeState(Player::State::IDLE);
+	GetOwner()->GetStateMachine()->ChangeState<IdlePlayerState>();
 
 	//GetOwner()->GetCommonResources()->GetDebugFont()->AddString(10, 90, Colors::White, L"WireThrowing");
 

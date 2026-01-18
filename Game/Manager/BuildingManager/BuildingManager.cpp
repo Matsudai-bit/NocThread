@@ -121,16 +121,16 @@ void BuildingManager::DrawTask(const Camera& camera)
 {
 	using namespace SimpleMath;
 	
-	// 1. 開始時刻の記録
+	//// 1. 開始時刻の記録
 	//auto start = std::chrono::high_resolution_clock::now();
 
-	DrawDefault(camera);
+	DrawFrustumCulling(camera);
 
-	// 3. 終了時刻の記録
+	//// 3. 終了時刻の記録
 	//auto end = std::chrono::high_resolution_clock::now();
 
-	// 4. 処理時間の計算と表示
-	// duration_cast で希望の単位に変換（ここではマイクロ秒 ?s）
+	//// 4. 処理時間の計算と表示
+	//// duration_cast で希望の単位に変換（ここではマイクロ秒 ?s）
 	//auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
 
 	//m_pCommonResources->GetDebugFont()->AddString(100, 100, Colors::Red, L"duration(?s) = %d", duration.count());
@@ -193,7 +193,7 @@ void BuildingManager::DrawDefault(const Camera& camera)
 
 void BuildingManager::DrawFrustumCulling(const Camera& camera)
 {
-	const auto cameraFrustum = camera.CalcFrustum();
+	const auto& cameraFrustum = camera.CalcFrustum();
 
 	// 建物の描画処理
 	for (auto& building : m_buildings)
@@ -222,12 +222,12 @@ void BuildingManager::DrawFrustumCullingCS(const Camera& camera)
 
 	UINT buildingCount = static_cast<UINT>(m_buildings.size());
 
-	const auto cameraFrustum = camera.CalcFrustum();
+	const auto& cameraFrustum = camera.CalcFrustum();
 	const int PLANE_NUM = 6;
 
 	// 1. 定数バッファの更新 (平面情報 + 最大数)
 	{
-		DirectX::XMVECTOR planesM[PLANE_NUM];
+		DirectX::XMVECTOR planesM[PLANE_NUM]{};
 		cameraFrustum.GetPlanes(&planesM[0], &planesM[1], &planesM[2], &planesM[3], &planesM[4], &planesM[5]);
 
 		CameraFrustumConstantBuffer constantData{};

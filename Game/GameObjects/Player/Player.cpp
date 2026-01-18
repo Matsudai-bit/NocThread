@@ -155,13 +155,13 @@ void Player::Initialize(const CommonResources* pCommonResources, CollisionManage
 	GetTransform()->SetInitialRotation(Quaternion::CreateFromYawPitchRoll(XMConvertToRadians(PlayerParameter::DEFAULT_ROTATION_Y_DEGREE), 0, 0.0f));
 
 	// 回転
-	GetTransform()->SetRotation(Quaternion::CreateFromYawPitchRoll(0.0f, 0.0f, 0.0f));
+	GetTransform()->SetRotation(Quaternion::CreateFromYawPitchRoll(XMConvertToRadians(-90.0f), 0.0f, 0.0f));
 
 	// ステートマシーンの作成
 	m_stateMachine = std::make_unique<StateMachine<Player>>(this);
 	// ステートマシーンの作成
 	m_stateMachine = std::make_unique<StateMachine<Player>>(this);
-	RequestChangeState(State::IDLE);
+	m_stateMachine->ChangeState<IdlePlayerState>();
 
 	m_isActive = true;
 
@@ -443,7 +443,7 @@ void Player::OnCollisionWithBuilding(GameObject* pHitObject, ICollider* pHitColl
 	UNREFERENCED_PARAMETER(pHitObject);
 	if (State::STTEPPING == m_state /*|| State::WIRE_ACTION == m_state*/)
 	{
-		RequestChangeState(State::IDLE);
+		m_stateMachine->ChangeState<IdlePlayerState>();
 	}
 	// 矩形にキャスト
 	const AABB* pHitBox = dynamic_cast<const AABB*>(pHitCollider);
@@ -664,46 +664,6 @@ void Player::ApplyDrag(float deltaTime)
 	SetVelocity(velocity);
 }
 
-/**
- * @brief 状態の変更要求
- * 
- * @param[in] state
- */
-void Player::RequestChangeState(State state)
-{
-	switch (state
-)
-	{
-	case Player::State::IDLE:
-		m_stateMachine->ChangeState<IdlePlayerState>();
-		break;
-	case Player::State::WALKING:
-		m_stateMachine->ChangeState<WalkPlayerState>();
-		break;
-	case Player::State::JUMPING:
-		m_stateMachine->ChangeState<JumpingPlayerState>();
-		break;
-	case Player::State::STTEPPING:
-		m_stateMachine->ChangeState<SteppingPlayerState>();
-		break;
-	case Player::State::WIRE_ACTION:
-		m_stateMachine->ChangeState<WireActionPlayerState>();
-		break;
-	case Player::State::WIRE_GRABBING:
-		m_stateMachine->ChangeState<WireGrabbingPlayerState>();
-		break;
-	case Player::State::WIRE_THROWING:
-		m_stateMachine->ChangeState<WireThrowingPlayerState>();
-		break;
-	case Player::State::WIRE_SHOOTING:
-		m_stateMachine->ChangeState<ShootingWirePlayerState>();
-		break;
-	default:
-		break;
-	}
-
-	m_state = state;
-}
 
 
 /**
@@ -843,7 +803,7 @@ void Player::BehaviourWireAction(const float& deltaTime, const float& speed)
  * @brief ワイヤーを飛ばす
  *
  */
-void Player::ShootWire()
+void Player::ShootWire(const DirectX::SimpleMath::Vector3& targetPosition)
 {	
 	auto eyePos = m_pPlayerCamera->GetEye();
 
@@ -861,7 +821,7 @@ void Player::ShootWire()
 	Vector3 maxPos = ray.origin + ray.direction * PlayerParameter::MAX_TARGETING_RAY_DISTANCE;
 
 	//Vector3 wireLaunchDirection = maxPos - GetPosition();
-	Vector3 wireLaunchDirection = m_wireTargetFinder->GetTargetPosition() - GetTransform()->GetPosition();
+	Vector3 wireLaunchDirection = targetPosition - GetTransform()->GetPosition();
 	wireLaunchDirection.Normalize();
 
 	m_wire->ShootWireToTarget(GetTransform()->GetPosition(), m_wireTargetFinder->GetTargetPosition(), PlayerParameter::SHOOT_WIRE_INITIAL_SPEED);
@@ -921,7 +881,7 @@ bool Player::RequestJump()
 		m_state == State::JUMPING)
 	{ return false; }
 
-	RequestChangeState(State::JUMPING);
+	m_stateMachine->ChangeState<JumpingPlayerState>();
 	return true;
 
 }
@@ -933,7 +893,7 @@ bool Player::RequestStep()
 {
 	if (m_canStep && !m_isGround )
 	{
-		RequestChangeState(State::STTEPPING);
+		m_stateMachine->ChangeState<SteppingPlayerState>();
 		m_canStep = false;
 		return true;
 	}

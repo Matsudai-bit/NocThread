@@ -31,6 +31,8 @@ using namespace DirectX;
  * @param[in] なし
  */
 WireActionPlayerState::WireActionPlayerState()
+	: m_effectId{ -1 }
+	, m_pConcentrationLines{ nullptr }
 {
 
 }
@@ -52,6 +54,19 @@ WireActionPlayerState::~WireActionPlayerState()
 void WireActionPlayerState::OnStartState()
 {
 	GetOwner()->ChangeAnimation(PlayerParameter::ANIM_WIREACTION);
+
+	// エフェクトの作成
+	auto concentrationLines = std::make_unique<ConcentrationLines>(GetOwner()->GetCommonResources()->GetDeviceResources(), 0.24f, 0.3f);
+	m_pConcentrationLines = concentrationLines.get();
+
+	// クリップの作成
+	auto clip = GameEffectManager::EffectClip(true);
+
+	// エフェクトの再生
+	m_effectId = GameEffectController::GetInstance()->PlayEffect(std::move(concentrationLines), clip);
+
+	// 状態を設定
+	GetOwner()->SetState(Player::State::WIRE_ACTION);
 }
 
 /**
@@ -72,6 +87,7 @@ void WireActionPlayerState::OnUpdate(float deltaTime)
 	//GetOwner()->ApplyMoveInput(deltaTime);
 
 	GetOwner()->RotateForMoveDirection(deltaTime);
+	m_pConcentrationLines->SetLineLengthRate(GetOwner()->GetVelocity().LengthSquared()/ 3100.f);
 	GetOwner()->ResetVelocity();
 
 	// 移動
@@ -80,7 +96,7 @@ void WireActionPlayerState::OnUpdate(float deltaTime)
 	if (GetOwner()->GetPlayerInput()->IsInput(InputActionType::PlyayerActionID::RELEASE_WIRE, InputSystem< InputActionType::PlyayerActionID>::InputOption::RELEASED))
 	{
 		//GetOwner()->GetWire()->Reset();
-		GetOwner()->RequestChangeState(Player::State::WALKING);
+		GetOwner()->GetStateMachine()->ChangeState<WalkPlayerState>();
 
 	}
 	//GetOwner()->GetCommonResources()->GetDebugFont()->AddString(10, 90, Colors::White, L"WireAction");
@@ -90,6 +106,8 @@ void WireActionPlayerState::OnUpdate(float deltaTime)
 void WireActionPlayerState::OnExitState()
 {
 	GetOwner()->ReleaseWire();
+
+	GameEffectController::GetInstance()->StopEffect(m_effectId);
 }
 
 

@@ -48,8 +48,9 @@ CheckpointObjectController::~CheckpointObjectController()
  *
  * @return なし
  */
-void CheckpointObjectController::Initialize(ResourceManager* pResourceManager)
+void CheckpointObjectController::Initialize(ResourceManager* pResourceManager, ID3D11Device* device)
 {
+	
 	// イベントの追加
 	AddListener(CheckpointControllEventID::LOOK_AT_HELICOPTER, [this]() { LookAtHelicopter(); }, 0);
 
@@ -82,6 +83,24 @@ void CheckpointObjectController::Initialize(ResourceManager* pResourceManager)
 
 
 	m_modelParts[ModelPartID::ROOT]->SetupMatrix();
+
+
+	m_basicEffect = std::make_unique<BasicEffect>(device);
+	m_basicEffect->SetLightingEnabled(false);
+	m_basicEffect->SetLightEnabled(0, false);
+	m_basicEffect->SetLightEnabled(1, false);
+	m_basicEffect->SetLightEnabled(2, false);
+
+	// --- 2. 色を明示的に指定（例：真っ赤） ---
+	m_basicEffect->SetDiffuseColor	(Colors::Yellow);
+	m_basicEffect->SetEmissiveColor	(SimpleMath::Vector3(0.0f, 0.0f, 0.0f)); // 発光色をゼロにする
+	m_basicEffect->SetAmbientLightColor(SimpleMath::Vector3(0.0f, 0.0f, 0.0f)); // 環境光をゼロにする
+	m_basicEffect->SetAlpha(0.5f); // 不透明にする
+
+	m_basicEffect->SetTextureEnabled(false);	
+	m_basicEffect->SetVertexColorEnabled(false);
+
+	CreateInputLayoutFromEffect<VertexPositionColor>(device, m_basicEffect.get(), m_inputLayout.ReleaseAndGetAddressOf());
 }
 
 
@@ -128,6 +147,8 @@ void CheckpointObjectController::Draw(ID3D11DeviceContext1* context, DirectX::Co
 {
 	using namespace SimpleMath;
 
+
+
 	// 行列の作成
 	Matrix transMat	= Matrix::CreateTranslation		(m_transform.GetPosition());
 	Matrix rotateMat= Matrix::CreateFromQuaternion	(m_transform.GetRotation());
@@ -155,8 +176,13 @@ void CheckpointObjectController::Draw(ID3D11DeviceContext1* context, DirectX::Co
 		// 目印
 		auto cylinder = DirectX::GeometricPrimitive::CreateCylinder(context, length, 0.8f);
 
+		auto world = SimpleMath::Matrix::CreateTranslation(0.0f, length / 2.0f, 0.0f) * m_modelParts[ModelPartID::HEAD]->GetWorldMatrix();
+		m_basicEffect->Apply(context);
+		m_basicEffect->SetWorld(world);
+		m_basicEffect->SetView(camera.GetViewMatrix());
+		m_basicEffect->SetProjection(camera.GetProjectionMatrix());
 
-		cylinder->Draw(SimpleMath::Matrix::CreateTranslation(0.0f, length / 2.0f, 0.0f) * m_modelParts[ModelPartID::HEAD]->GetWorldMatrix(), camera.GetViewMatrix(), camera.GetProjectionMatrix(), Colors::Yellow);
+		cylinder->Draw(m_basicEffect.get(), m_inputLayout.Get(), true, false);
 
 	}
 

@@ -278,7 +278,7 @@ void Game::Render()
         m_transitionMask->Draw(context, m_states.get(), m_copyRenderTexture->GetShaderResourceView(), m_deviceResources->GetOutputSize());
 
     }
-    // FPS‚ðŽæ“¾‚·‚é
+    //// FPS‚ðŽæ“¾‚·‚é
     //uint32_t fps = m_timer.GetFramesPerSecond();
 
     //// FPS‚Ì•\Ž¦

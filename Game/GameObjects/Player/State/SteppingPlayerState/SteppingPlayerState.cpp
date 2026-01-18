@@ -33,6 +33,9 @@ using namespace DirectX;
  */
 SteppingPlayerState::SteppingPlayerState()
 	: m_currentLerpValue{}
+	, m_targetPosition{}
+	, m_pConcentrationLines{ nullptr }
+	, m_effectId{ -1 }
 {
 
 }
@@ -66,6 +69,13 @@ void SteppingPlayerState::OnStartState()
 	// サウンド再生
 	SoundManager::GetInstance()->Play(SoundDatabase::SOUND_CLIP_MAP.at(SoundDatabase::SE_PLAYER_STEPPING));
 
+	// 状態を設定
+	GetOwner()->SetState(Player::State::STTEPPING);
+
+	auto concentrationLines = std::make_unique<ConcentrationLines>(GetOwner()->GetCommonResources()->GetDeviceResources(), 0.24f, 0.7f);
+	m_pConcentrationLines = concentrationLines.get();
+	auto clip = GameEffectManager::EffectClip(true);
+	m_effectId = GameEffectController::GetInstance()->PlayEffect(std::move(concentrationLines), clip);
 }
 
 /**
@@ -93,7 +103,7 @@ void SteppingPlayerState::OnUpdate(float deltaTime)
 	if (m_targetCounter.GetElapsedTime() >= STEP_TIME)
 	{
 		GetOwner()->GetTransform()->SetPosition(m_targetPosition);
-		GetOwner()->RequestChangeState(Player::State::IDLE);
+		GetOwner()->GetStateMachine()->ChangeState<IdlePlayerState>();
 	}
 
 }
@@ -104,5 +114,11 @@ void SteppingPlayerState::OnUpdate(float deltaTime)
  */
 void SteppingPlayerState::OnDraw()
 {
+}
+
+void SteppingPlayerState::OnExitState()
+{
+	// エフェクトの停止
+	GameEffectController::GetInstance()->StopEffect(m_effectId);
 }
 

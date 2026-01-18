@@ -34,16 +34,19 @@ void CollisionMatrixFactory::StageCollisionMatrix::Assemble(CollisionMatrix* ins
 	instance->RegisterDetectionTarget(GameObjectTag::PLAYER, GameObjectTag::TREASURE);
 	instance->RegisterDetectionTarget(GameObjectTag::PLAYER, GameObjectTag::STAGE_OBJECT);
 	instance->RegisterDetectionTarget(GameObjectTag::PLAYER, GameObjectTag::FLOOR);
+	instance->RegisterDetectionTarget(GameObjectTag::PLAYER, GameObjectTag::DEFAULT);
 
 	instance->RegisterDetectionTarget(GameObjectTag::ENEMY, GameObjectTag::FLOOR);
 	instance->RegisterDetectionTarget(GameObjectTag::ENEMY, GameObjectTag::PLAYER);
 	instance->RegisterDetectionTarget(GameObjectTag::ENEMY, GameObjectTag::BUILDING);
 	instance->RegisterDetectionTarget(GameObjectTag::ENEMY, GameObjectTag::CHECKPOINT);
 	instance->RegisterDetectionTarget(GameObjectTag::ENEMY, GameObjectTag::ESCAPE_HELICOPTER);
+	instance->RegisterDetectionTarget(GameObjectTag::ENEMY, GameObjectTag::DEFAULT);
 
 	instance->RegisterDetectionTarget(GameObjectTag::WIRE_GRAPPING_AREA, GameObjectTag::ESCAPE_HELICOPTER);
 	instance->RegisterDetectionTarget(GameObjectTag::WIRE_GRAPPING_AREA, GameObjectTag::BUILDING);
 	instance->RegisterDetectionTarget(GameObjectTag::WIRE_GRAPPING_AREA, GameObjectTag::ENEMY);
+	instance->RegisterDetectionTarget(GameObjectTag::WIRE_GRAPPING_AREA, GameObjectTag::DEFAULT);
 
 	instance->RegisterDetectionTarget(GameObjectTag::WIRE, GameObjectTag::ESCAPE_HELICOPTER);
 	instance->RegisterDetectionTarget(GameObjectTag::WIRE, GameObjectTag::BUILDING);
@@ -51,4 +54,5 @@ void CollisionMatrixFactory::StageCollisionMatrix::Assemble(CollisionMatrix* ins
 
 	instance->RegisterDetectionTarget(GameObjectTag::CAMERA, GameObjectTag::BUILDING);
 	instance->RegisterDetectionTarget(GameObjectTag::CAMERA, GameObjectTag::ESCAPE_HELICOPTER);
+	instance->RegisterDetectionTarget(GameObjectTag::CAMERA, GameObjectTag::DEFAULT);
 }

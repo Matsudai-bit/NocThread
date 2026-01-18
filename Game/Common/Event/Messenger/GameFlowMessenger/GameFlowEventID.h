@@ -17,14 +17,15 @@ enum class GameFlowEventID
 
 	GAME_SETUP_FINISH,	// ゲーム準備完了
 	GAME_TRANSITION_FADING_START, // フェード中
-	GAME_TRANSITION_FADING_FINISH ,		// 無し
+	GAME_TRANSITION_FADING_FINISH,		// 無し
 	GAME_START,			// ゲーム開始
+	GAME_END,			// ゲーム終了
 
 	STOLE_TREASURE,		// 宝物を盗んだ
 	SPAWN_HELICOPTER,	// ヘリコプターの出現
-	PLAYER_DIE,			// プレイヤーの志望
 	CHECKPOINT_PASSED,	// チェックポイントを通過した
 	
+	PLAYER_DIE,			// プレイヤーの死亡
 	ESCAPE_SUCCESS,		// 脱出成功
 };
 

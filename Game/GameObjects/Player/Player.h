@@ -26,6 +26,7 @@
 #include "Game/GameObjects/Wire/IWireHolder/IWireHolder.h"
 #include "Game/Common/Event/Messenger/GameFlowMessenger/IGameFlowObserver.h"
 #include "Game/Common/Input/InputActionType/InputActionType.h"
+
 #include "Game/Common/Input/InputSystem/InputSystem.h"
 #include "Game/Common/SoundManager/SoundManager.h"
 #include "Game/Common/Database/SoundDatabase.h"
@@ -161,7 +162,16 @@ public:
 
 	// 取得/設定
 public:
+	// 活動状態の設定
 	void SetActive(bool isActive) { m_isActive = isActive; }
+
+	// ステートマシーンの取得
+	StateMachine<Player>* GetStateMachine() { return m_stateMachine.get(); }
+
+	// 現在の状態の取得
+	State GetState() const { return m_state; }
+	// 状態の設定
+	void SetState(State state) { m_state = state; }
 
 // 動作要求関連
 public:
@@ -198,7 +208,7 @@ public:
 
 
 	// ワイヤーを飛ばす
-	void ShootWire();
+	void ShootWire(const DirectX::SimpleMath::Vector3& targetPosition);
 
 	void ResolvePushOutAndBounce(DirectX::SimpleMath::Vector3 overlap, const float& restitution);
 
@@ -235,10 +245,6 @@ public:
 	// イベントメッセージを受け取る
 	void OnGameFlowEvent(GameFlowEventID eventID) override;
 
-
-	// 状態の変更要求
-	void RequestChangeState(State state);
-
 	// 地面にいるかどうか
 	bool IsGround() const { return m_isGround; }
 
@@ -249,27 +255,28 @@ public:
 	bool IsMovingRequested();
 
 	// 活動しているかどうか
-	bool IsActive() const override {return m_isActive;}
+	bool IsActive() const override					{ return m_isActive; }
 
 	// カメラの取得
-	const PlayerCamera* GetCamera() const { return m_pPlayerCamera; }
+	const PlayerCamera* GetCamera() const			{ return m_pPlayerCamera; }
 
 	// 射影行列の取得
-	DirectX::SimpleMath::Matrix GetProjection() const { return m_projection; }
+	DirectX::SimpleMath::Matrix GetProjection() const{ return m_projection; }
 
 	// ワイヤーシステムの取得
-	WireSystemSubject* GetWireSystem() { return m_wireSystemSubject.get(); }
+	WireSystemSubject* GetWireSystem()		{ return m_wireSystemSubject.get(); }
 	
 	// ゲームオブジェクトタグの取得
-	GameObjectTag GetTag() const override { return GameObjectTag::PLAYER; }
+	GameObjectTag GetTag() const override	{ return GameObjectTag::PLAYER; }
 
 	// ワイヤーの取得
-	Wire* GetWire() const { return m_wire.get(); }
+	Wire* GetWire() const					{ return m_wire.get(); }
+	WireTargetFinder* GetWireTargetFinder() { return m_wireTargetFinder.get(); }
 
+	const Sphere* GetCollider() const		{ return m_collider.get(); }
 	// 掴む位置
 	DirectX::SimpleMath::Vector3 CalcGrabbingPosition() const;
 
-	const Sphere* GetCollider() const { return m_collider.get(); }
 
 	// ワイヤーを発射できるかどうか
 	bool CanShootWire() const;
