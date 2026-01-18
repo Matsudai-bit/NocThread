@@ -33,6 +33,9 @@ using namespace DirectX;
  */
 SteppingPlayerState::SteppingPlayerState()
 	: m_currentLerpValue{}
+	, m_targetPosition{}
+	, m_pConcentrationLines{ nullptr }
+	, m_effectId{ -1 }
 {
 
 }
@@ -68,6 +71,11 @@ void SteppingPlayerState::OnStartState()
 
 	// 状態を設定
 	GetOwner()->SetState(Player::State::STTEPPING);
+
+	auto concentrationLines = std::make_unique<ConcentrationLines>(GetOwner()->GetCommonResources()->GetDeviceResources(), 0.24f, 0.7f);
+	m_pConcentrationLines = concentrationLines.get();
+	auto clip = GameEffectManager::EffectClip(true);
+	m_effectId = GameEffectController::GetInstance()->PlayEffect(std::move(concentrationLines), clip);
 }
 
 /**
@@ -106,5 +114,11 @@ void SteppingPlayerState::OnUpdate(float deltaTime)
  */
 void SteppingPlayerState::OnDraw()
 {
+}
+
+void SteppingPlayerState::OnExitState()
+{
+	// エフェクトの停止
+	GameEffectController::GetInstance()->StopEffect(m_effectId);
 }
 

@@ -339,6 +339,7 @@ void GameplayScene::CreateTask()
 	m_taskManager->AddTask(m_miniMap.get());			// Minimap
 }
 
+#include "Game/Common/GameEffect/Effects/ConcentrationLines/ConcentrationLines.h"
 /**
  * @brief ゲームを開始する
  */
@@ -353,7 +354,6 @@ void GameplayScene::StartGame()
 	// **** BGMを鳴らす ****
 	SoundManager::GetInstance()->RemoveAll();
 	SoundManager::GetInstance()->Play(SoundDatabase::SOUND_CLIP_MAP.at(SoundDatabase::BGM_INGAME), true);
-
 
 	// ***** ゲーム開始通知 *****
 	GameFlowMessenger::GetInstance()->Notify(GameFlowEventID::GAME_SETUP_FINISH);

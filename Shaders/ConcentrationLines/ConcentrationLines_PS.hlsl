@@ -37,8 +37,9 @@ float2 ToPolar(float2 xy)
 
 float4 main(PS_INPUT input) : SV_TARGET
 {
+    //return float4(1.0f, 0.f, 0.f, 1.f);
     float2 uv = ToPolar(input.Tex - uvOffset);
-    float length = uv.r;
+    float length = uv.r * lineRate;
     float rad = (uv.g / (3.1415926535) + 1.0f) / 2.0f;
 
     float noise = GradientNoiseScale(
@@ -50,6 +51,6 @@ float4 main(PS_INPUT input) : SV_TARGET
 
     float3 color = float3(1.f, 1.f, 1.f);
     color = lerp(lineColor, color, region.r);
-    return float4(color, 1.0f);
+    return float4(color,  1.f - region.r);
     
 }

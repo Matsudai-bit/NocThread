@@ -6,6 +6,7 @@ cbuffer ConstBuffer	: register(b0)
     float   noiseScale  : packoffset(c1.y);
     float2  uvOffset    : packoffset(c1.z);
     float   lineRegion  : packoffset(c2);
+    float   lineRate    : packoffset(c2.y);
 };
 
 struct VS_INPUT

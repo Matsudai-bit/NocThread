@@ -62,7 +62,8 @@ public:
 		float noiseScale;
 		DirectX::SimpleMath::Vector2 uvOffset;
 		float lineRegion;
-		float padding[3];
+		float lineRate;
+		float padding[2];
 	};
 
 	// クラス定数の宣言 -------------------------------------------------
@@ -90,12 +91,16 @@ private:
 
 	ElapsedTimeCounter m_elapsedTimeCounter; ///< 経過時間計測
 
+	// パラメータ
+	float m_lineLengthRate ;	///< 線の長さ
+	float m_speed ;			///< 線の流れる速さ
+
 
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
 public:
 	// コンストラクタ
-	ConcentrationLines(DX::DeviceResources* pDeviceResources);
+	ConcentrationLines(DX::DeviceResources* pDeviceResources, const float& speed, const float& lineLengthRate);
 
 	// デストラクタ
 	~ConcentrationLines();
@@ -112,8 +117,11 @@ public:
 
 // 取得/設定
 public:
-
 	
+	// 線の長さの倍率設定
+	void SetLineLengthRate(float lineLengthRate) { m_lineLengthRate = lineLengthRate; }
+	// 速度設定
+	void SetSpeed(float speed) { m_speed = speed; }
 
 // 内部実装
 private:

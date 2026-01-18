@@ -31,6 +31,8 @@ using namespace DirectX;
  * @param[in] ‚È‚µ
  */
 WireActionPlayerState::WireActionPlayerState()
+	: m_effectId{ -1 }
+	, m_pConcentrationLines{ nullptr }
 {
 
 }
@@ -53,6 +55,11 @@ void WireActionPlayerState::OnStartState()
 {
 	GetOwner()->ChangeAnimation(PlayerParameter::ANIM_WIREACTION);
 
+	auto concentrationLines = std::make_unique<ConcentrationLines>(GetOwner()->GetCommonResources()->GetDeviceResources(), 0.24f, 0.3f);
+	m_pConcentrationLines = concentrationLines.get();
+	auto clip = GameEffectManager::EffectClip(true);
+
+	m_effectId = GameEffectController::GetInstance()->PlayEffect(std::move(concentrationLines), clip);
 
 	// ó‘Ô‚ðÝ’è
 	GetOwner()->SetState(Player::State::WIRE_ACTION);
@@ -76,6 +83,7 @@ void WireActionPlayerState::OnUpdate(float deltaTime)
 	//GetOwner()->ApplyMoveInput(deltaTime);
 
 	GetOwner()->RotateForMoveDirection(deltaTime);
+	m_pConcentrationLines->SetLineLengthRate(GetOwner()->GetVelocity().LengthSquared()/ 3100.f);
 	GetOwner()->ResetVelocity();
 
 	// ˆÚ“®
@@ -94,6 +102,8 @@ void WireActionPlayerState::OnUpdate(float deltaTime)
 void WireActionPlayerState::OnExitState()
 {
 	GetOwner()->ReleaseWire();
+
+	GameEffectController::GetInstance()->StopEffect(m_effectId);
 }
 
 

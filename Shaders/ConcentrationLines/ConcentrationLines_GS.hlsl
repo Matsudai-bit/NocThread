@@ -24,7 +24,7 @@ void main(
 
 		float4 res = offset_array[i];
 
-        element.Pos = offset_array[i];
+        element.Pos = input[0].Pos + offset_array[i];
 
 		element.Color = input[0].Color;
 		element.Tex.x =  offset_array[i].x + 1.0f;

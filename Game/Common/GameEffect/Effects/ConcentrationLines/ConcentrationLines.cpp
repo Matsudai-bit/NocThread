@@ -21,10 +21,9 @@ using namespace DirectX;
 ///	</summary>
 const std::vector<D3D11_INPUT_ELEMENT_DESC> ConcentrationLines::INPUT_LAYOUT =
 {
-	{ "POSITION",	0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	{ "COLOR",	0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, sizeof(SimpleMath::Vector3), D3D11_INPUT_PER_VERTEX_DATA, 0 },
-	{ "TEXCOORD",	0, DXGI_FORMAT_R32G32_FLOAT, 0, sizeof(SimpleMath::Vector3), D3D11_INPUT_PER_VERTEX_DATA, 0 },
-
+	{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT,    0, 0,                             D3D11_INPUT_PER_VERTEX_DATA, 0 },
+	{ "COLOR",    0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+	{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT,       0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 };
 
 // メンバ関数の定義 ===========================================================
@@ -33,9 +32,12 @@ const std::vector<D3D11_INPUT_ELEMENT_DESC> ConcentrationLines::INPUT_LAYOUT =
  *
  * @param[in] なし
  */
-ConcentrationLines::ConcentrationLines(DX::DeviceResources* pDeviceResources)
+ConcentrationLines::ConcentrationLines(DX::DeviceResources* pDeviceResources, const float& speed, const float& lineLengthRate)
 	: m_commonStates{pDeviceResources->GetD3DDevice()}
 	, m_pDeviceResources{ pDeviceResources }
+	, m_elapsedTimeCounter{}
+	, m_speed{ speed }
+	, m_lineLengthRate{ lineLengthRate }
 {
 	auto device = pDeviceResources->GetD3DDevice();
 	auto context = pDeviceResources->GetD3DDeviceContext();
@@ -44,21 +46,21 @@ ConcentrationLines::ConcentrationLines(DX::DeviceResources* pDeviceResources)
 
 	// プリミティブバッチの作成
 	m_primitiveBatch = std::make_unique<PrimitiveBatch<VertexPositionColorTexture>>(context);
-
+	
 	// ピクセルシェーダの作成
-	std::vector<uint8_t> ps = DX::ReadData(L"Resources/Shaders/SimpleParticle_PS.cso");
+	std::vector<uint8_t> ps = DX::ReadData(L"Resources/Shaders/ConcentrationLines_PS.cso");
 	DX::ThrowIfFailed(
 		device->CreatePixelShader(ps.data(), ps.size(), nullptr, m_ps.ReleaseAndGetAddressOf())
 	);
 
 	// ジオメトリシェーダの作成
-	std::vector<uint8_t> gs = DX::ReadData(L"Resources/Shaders/SimpleParticle_GS.cso");
+	std::vector<uint8_t> gs = DX::ReadData(L"Resources/Shaders/ConcentrationLines_GS.cso");
 	DX::ThrowIfFailed(
 		device->CreateGeometryShader(gs.data(), gs.size(), nullptr, m_gs.ReleaseAndGetAddressOf())
 	);
 
 	// バーテックスの作成
-	std::vector<uint8_t> vs = DX::ReadData(L"Resources/Shaders/SimpleParticle_VS.cso");
+	std::vector<uint8_t> vs = DX::ReadData(L"Resources/Shaders/ConcentrationLines_VS.cso");
 	DX::ThrowIfFailed(
 		device->CreateVertexShader(vs.data(), vs.size(), nullptr, m_vs.ReleaseAndGetAddressOf())
 	);
@@ -148,10 +150,11 @@ void ConcentrationLines::Draw(const Camera& camera)
 	ConstantBuffer cb = {};
 	cb.lineColor = Vector3(1.0f, 1.0f, 1.0f);
 	cb.time = static_cast<float>(m_elapsedTimeCounter.GetElapsedTime());
-	cb.speed = 2.0f;
-	cb.noiseScale = 1.0f;
-	//cb.uvOffset = Vector2(0.0f, cb.time * 0.5f);
-	cb.lineRegion = 0.0f;
+	cb.speed = m_speed;
+	cb.noiseScale = 80.0f;
+	cb.uvOffset = Vector2(0.5f, 0.5f);
+	cb.lineRegion = 0.25f;
+	cb.lineRate = m_lineLengthRate;
 
 	//	受け渡し用バッファの内容更新(ConstBufferからID3D11Bufferへの変換）
 	context->UpdateSubresource(m_constantBuffer.Get(), 0, NULL, &cb, 0, 0);
@@ -178,7 +181,7 @@ void ConcentrationLines::Draw(const Camera& camera)
 	context->OMSetDepthStencilState(m_commonStates.DepthRead(), 0);
 
 	//	カリングはなし
-	context->RSSetState(m_commonStates.CullClockwise());
+	context->RSSetState(m_commonStates.CullCounterClockwise());
 
 	//m_basicEffect->Apply(context);
 	context->IASetInputLayout(m_inputLayout.Get());
