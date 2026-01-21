@@ -111,7 +111,11 @@ private:
     void CreateWindowSizeDependentResources();
 
 
+// 追加
+private:
 
+	// スクリーンコピーを試みる
+	bool TryCopyScreen(ID3D11DeviceContext1* context);
 
 
 };

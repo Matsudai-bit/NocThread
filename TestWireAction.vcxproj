@@ -117,6 +117,7 @@
       <FloatingPointModel>Fast</FloatingPointModel>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalOptions>/Zc:__cplusplus %(AdditionalOptions)</AdditionalOptions>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -302,13 +303,13 @@
     <ClInclude Include="Game\Manager\StageManager\StageManager.h" />
     <ClInclude Include="Game\Scene\GameplayScene\GameplayScene.h" />
     <ClInclude Include="Game\Scene\GameplayScene\State\NormalGameplayState\NormalGameplayState.h" />
-    <ClInclude Include="Game\Scene\GameplayScene\State\PoseGameplayState\PoseGameplayState.h" />
+    <ClInclude Include="Game\Scene\GameplayScene\State\PoseGameplayState\PauseGameplayState.h" />
     <ClInclude Include="Game\Scene\Loading\LoadingScreen.h" />
     <ClInclude Include="Game\Scene\ResultScene\ResultScene.h" />
     <ClInclude Include="Game\Scene\ResultScene\State\FailureResultState\FailureResultState.h" />
     <ClInclude Include="Game\Scene\ResultScene\State\SuccessResultState\SuccessResultState.h" />
     <ClInclude Include="Game\Scene\TitleScene\TitleScene.h" />
-    <ClInclude Include="Game\UI\Pose\PoseMenu\PoseMenu.h" />
+    <ClInclude Include="Game\UI\Pose\PoseMenu\PauseMenu.h" />
     <ClInclude Include="Game\UI\Title\TitleMenu\TitleMenu.h" />
     <ClInclude Include="Game\UI\TutorialWindow\TutorialWindow.h" />
     <ClInclude Include="Library\DebugHelper.h" />
@@ -334,7 +335,6 @@
     <ClInclude Include="Library\MyLib\DirectXMyToolKit\ModelPart\ModelPart.h" />
     <ClInclude Include="Library\MyLib\DirectXMyToolKit\OffscreenRendering\OffscreenRendering.h" />
     <ClInclude Include="Library\MyLib\EasingKit\EasingKit.h" />
-    <ClInclude Include="Library\MyLib\FrameTimer\FrameTimer.h" />
     <ClInclude Include="Library\MyLib\MathUtils\MathUtils.h" />
     <ClInclude Include="Library\MyLib\NlohmannUtils\NlohmannUtils.h" />
     <ClInclude Include="Library\MyLib\Ray\Ray.h" />
@@ -446,13 +446,13 @@
     <ClCompile Include="Game\Manager\StageManager\StageManager.cpp" />
     <ClCompile Include="Game\Scene\GameplayScene\GameplayScene.cpp" />
     <ClCompile Include="Game\Scene\GameplayScene\State\NormalGameplayState\NormalGameplayState.cpp" />
-    <ClCompile Include="Game\Scene\GameplayScene\State\PoseGameplayState\PoseGameplayState.cpp" />
+    <ClCompile Include="Game\Scene\GameplayScene\State\PoseGameplayState\PauseGameplayState.cpp" />
     <ClCompile Include="Game\Scene\Loading\LoadingScreen.cpp" />
     <ClCompile Include="Game\Scene\ResultScene\ResultScene.cpp" />
     <ClCompile Include="Game\Scene\ResultScene\State\FailureResultState\FailureResultState.cpp" />
     <ClCompile Include="Game\Scene\ResultScene\State\SuccessResultState\SuccessResultState.cpp" />
     <ClCompile Include="Game\Scene\TitleScene\TitleScene.cpp" />
-    <ClCompile Include="Game\UI\Pose\PoseMenu\PoseMenu.cpp" />
+    <ClCompile Include="Game\UI\Pose\PoseMenu\PauseMenu.cpp" />
     <ClCompile Include="Game\UI\Title\TitleMenu\TitleMenu.cpp" />
     <ClCompile Include="Game\UI\TutorialWindow\TutorialWindow.cpp" />
     <ClCompile Include="Library\DirectXFramework\Animation.cpp" />
@@ -487,14 +487,12 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="Library\MyLib\DirectXMathUtils\DirectXMathUtils.cpp" />
     <ClCompile Include="Library\MyLib\DirectXMyToolKit\DebugCamera\DebugCamera.cpp" />
     <ClCompile Include="Library\MyLib\DirectXMyToolKit\DebugFont\DebugFont.cpp" />
     <ClCompile Include="Library\MyLib\DirectXMyToolKit\DepthStencil\DepthStencil.cpp" />
     <ClCompile Include="Library\MyLib\DirectXMyToolKit\DirectXUtils.cpp" />
     <ClCompile Include="Library\MyLib\DirectXMyToolKit\GridFloor\GridFloor.cpp" />
     <ClCompile Include="Library\MyLib\DirectXMyToolKit\OffscreenRendering\OffscreenRendering.cpp" />
-    <ClCompile Include="Library\MyLib\FrameTimer\FrameTimer.cpp" />
     <ClCompile Include="Library\MyLib\MathUtils\MathUtils.cpp" />
     <ClCompile Include="Library\MyLib\NlohmannUtils\NlohmannUtils.cpp" />
     <ClCompile Include="Library\MyLib\Ray\Ray.cpp" />

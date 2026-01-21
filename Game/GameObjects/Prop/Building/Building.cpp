@@ -73,7 +73,7 @@ void Building::Initialize(const CommonResources* pCommonResources, CollisionMana
 	InitializeMeshColliders(totalScale);
 
 	// 3. 手動設定の追加コライダ (アンテナや装飾部分など)
-	AddManualColliders(totalScale);
+	AddManualColliders();
 
 	// 4. カリング用球体の設定 (最初のコライダを基準にする)
 	if (!m_collider.empty())
@@ -192,10 +192,8 @@ void Building::InitializeMeshColliders(const SimpleMath::Vector3& totalScale)
 
 /**
  * @brief 手動コライダの追加
- *
- * @param[in] totalScale 総合スケール
  */
-void Building::AddManualColliders(const SimpleMath::Vector3& totalScale)
+void Building::AddManualColliders()
 {
 	struct ManualColliderDef { SimpleMath::Vector3 offset; SimpleMath::Vector3 size; };
 	const ManualColliderDef extraParts[] = {

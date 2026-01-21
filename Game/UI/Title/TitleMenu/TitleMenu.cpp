@@ -109,7 +109,7 @@ void TitleMenu::Initialize(Canvas* pCanvas, const CommonResources* pCommonResour
 	m_ElapsedTimeCounter.Reset();
 
 	// UI“ü—ÍƒVƒXƒeƒ€‚Ìì¬
-	m_uiInput = InputBindingFactory::CreateUIInput();
+	m_uiInput = InputBindingFactory::UIInputFactory().Create(DefaultSpawnDesc());
 }
 
 

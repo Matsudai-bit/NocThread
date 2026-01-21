@@ -14,145 +14,122 @@ using namespace DirectX;
 
 
 // メンバ関数の定義 ===========================================================
-/**
- * @brief コンストラクタ
- *
- * @param[in] なし
- */
-InputBindingFactory::InputBindingFactory()
-{
-
-}
-
 
 
 /**
- * @brief デストラクタ
+ * @brief 組み立てる
+ * 
+ * @param[in] instance インスタンスのポインタ
+ * @param[in] desc 　　生成設定データ
  */
-InputBindingFactory::~InputBindingFactory()
+void InputBindingFactory::PlayerInputFactory::Assemble(InputSystem<InputActionType::PlyayerActionID>* instance, const DefaultSpawnDesc& desc)
 {
+	UNREFERENCED_PARAMETER(instance);
+	UNREFERENCED_PARAMETER(desc);
 
-}
-
-std::unique_ptr<InputSystem<InputActionType::PlyayerActionID>> InputBindingFactory::CreatePlayerInput()
-{
 	// 動作の型
 	using ActionID = InputActionType::PlyayerActionID;
 
-	// 作成するインプットシステム
-	auto playerInput = std::make_unique<InputSystem<ActionID>>();
-
 	// *** 入力の登録 ****
 	// ステップ
-	playerInput->RegisterMouseInput(ActionID::STEPPING, InputSystem<ActionID>::MouseButtons::RIGHT_BUTTON);
-	playerInput->RegisterGamePadInput(ActionID::STEPPING, InputSystem<ActionID>::GamePadButtons::A);
+	instance->RegisterMouseInput(ActionID::STEPPING, InputSystem<ActionID>::MouseButtons::RIGHT_BUTTON);
+	instance->RegisterGamePadInput(ActionID::STEPPING, InputSystem<ActionID>::GamePadButtons::A);
 
 	// ワイヤー発射
-	playerInput->RegisterMouseInput(ActionID::WIRE_SHOOTING,InputSystem<ActionID>::MouseButtons::LEFT_BUTTON);
-	playerInput->RegisterGamePadInput(ActionID::WIRE_SHOOTING, InputSystem<ActionID>::GamePadButtons::RIGHT_TRIGGER);
+	instance->RegisterMouseInput(ActionID::WIRE_SHOOTING, InputSystem<ActionID>::MouseButtons::LEFT_BUTTON);
+	instance->RegisterGamePadInput(ActionID::WIRE_SHOOTING, InputSystem<ActionID>::GamePadButtons::RIGHT_TRIGGER);
 
 	// ワイヤー発射の終了
-	playerInput->RegisterMouseInput(ActionID::RELEASE_WIRE, InputSystem<ActionID>::MouseButtons::LEFT_BUTTON);
-	playerInput->RegisterGamePadInput(ActionID::RELEASE_WIRE, InputSystem<ActionID>::GamePadButtons::RIGHT_TRIGGER);
+	instance->RegisterMouseInput(ActionID::RELEASE_WIRE, InputSystem<ActionID>::MouseButtons::LEFT_BUTTON);
+	instance->RegisterGamePadInput(ActionID::RELEASE_WIRE, InputSystem<ActionID>::GamePadButtons::RIGHT_TRIGGER);
 
 	// ジャンプ
-	playerInput->RegisterKeyboardInput(ActionID::JUMPING, Keyboard::Space);
-	playerInput->RegisterGamePadInput(ActionID::JUMPING, InputSystem<ActionID>::GamePadButtons::A);
-	
+	instance->RegisterKeyboardInput(ActionID::JUMPING, Keyboard::Space);
+	instance->RegisterGamePadInput(ActionID::JUMPING, InputSystem<ActionID>::GamePadButtons::A);
+
 
 	// 左移動
-	playerInput->RegisterKeyboardInput(ActionID::LEFT_MOVE, Keyboard::Left);
-	playerInput->RegisterKeyboardInput(ActionID::LEFT_MOVE, Keyboard::A);
-	playerInput->RegisterGamePadInput(ActionID::LEFT_MOVE, InputSystem<ActionID>::GamePadButtons::LEFT_STICK_LEFT);
+	instance->RegisterKeyboardInput(ActionID::LEFT_MOVE, Keyboard::Left);
+	instance->RegisterKeyboardInput(ActionID::LEFT_MOVE, Keyboard::A);
+	instance->RegisterGamePadInput(ActionID::LEFT_MOVE, InputSystem<ActionID>::GamePadButtons::LEFT_STICK_LEFT);
 
 	// 右移動
-	playerInput->RegisterKeyboardInput(ActionID::RIGHT_MOVE, Keyboard::Right);
-	playerInput->RegisterKeyboardInput(ActionID::RIGHT_MOVE, Keyboard::D);
-	playerInput->RegisterGamePadInput(ActionID::RIGHT_MOVE, InputSystem<ActionID>::GamePadButtons::LEFT_STICK_RIGHT);
+	instance->RegisterKeyboardInput(ActionID::RIGHT_MOVE, Keyboard::Right);
+	instance->RegisterKeyboardInput(ActionID::RIGHT_MOVE, Keyboard::D);
+	instance->RegisterGamePadInput(ActionID::RIGHT_MOVE, InputSystem<ActionID>::GamePadButtons::LEFT_STICK_RIGHT);
 
 	// 正面移動
-	playerInput->RegisterKeyboardInput(ActionID::FRONT_MOVE, Keyboard::Up);
-	playerInput->RegisterKeyboardInput(ActionID::FRONT_MOVE, Keyboard::W);
-	playerInput->RegisterGamePadInput(ActionID::FRONT_MOVE, InputSystem<ActionID>::GamePadButtons::LEFT_STICK_UP);
+	instance->RegisterKeyboardInput(ActionID::FRONT_MOVE, Keyboard::Up);
+	instance->RegisterKeyboardInput(ActionID::FRONT_MOVE, Keyboard::W);
+	instance->RegisterGamePadInput(ActionID::FRONT_MOVE, InputSystem<ActionID>::GamePadButtons::LEFT_STICK_UP);
 
 
 	// 後ろに移動
-	playerInput->RegisterKeyboardInput(ActionID::BACK_MOVE, Keyboard::Back);
-	playerInput->RegisterKeyboardInput(ActionID::BACK_MOVE, Keyboard::S);
-	playerInput->RegisterGamePadInput(ActionID::BACK_MOVE, InputSystem<ActionID>::GamePadButtons::LEFT_STICK_DOWN);
-
-
-
-	return std::move(playerInput);
+	instance->RegisterKeyboardInput(ActionID::BACK_MOVE, Keyboard::Back);
+	instance->RegisterKeyboardInput(ActionID::BACK_MOVE, Keyboard::S);
+	instance->RegisterGamePadInput(ActionID::BACK_MOVE, InputSystem<ActionID>::GamePadButtons::LEFT_STICK_DOWN);
 }
 
-
-std::unique_ptr<InputSystem<InputActionType::UIActionID>> InputBindingFactory::CreateUIInput()
+/**
+ * @brief 組み立てる
+ *
+ * @param[in] instance インスタンスのポインタ
+ * @param[in] desc 　　生成設定データ
+ */
+void InputBindingFactory::UIInputFactory::Assemble(InputSystem<InputActionType::UIActionID>* instance, const DefaultSpawnDesc& desc)
 {
+	UNREFERENCED_PARAMETER(instance);
+	UNREFERENCED_PARAMETER(desc);
 	// 動作の型
 	using ActionID = InputActionType::UIActionID;
-
-	// 作成するインプットシステム
-	auto uiInput = std::make_unique<InputSystem<ActionID>>();
-
 	// *** 入力の登録 ****
-	
 	// 決定
-	uiInput->RegisterKeyboardInput(ActionID::CONFIRM, Keyboard::Keys::Space);
-	uiInput->RegisterKeyboardInput(ActionID::CONFIRM, Keyboard::Keys::Enter);
-	uiInput->RegisterGamePadInput(ActionID::CONFIRM, InputSystem<ActionID>::GamePadButtons::A);
-
+	instance->RegisterKeyboardInput	(ActionID::CONFIRM, Keyboard::Keys::Space);
+	instance->RegisterKeyboardInput	(ActionID::CONFIRM, Keyboard::Keys::Enter);
+	instance->RegisterGamePadInput	(ActionID::CONFIRM, InputSystem<ActionID>::GamePadButtons::A);
+	instance->RegisterMouseInput	(ActionID::CONFIRM, InputSystem<ActionID>::MouseButtons::LEFT_BUTTON);
 	// キャンセル
-	uiInput->RegisterKeyboardInput(ActionID::CANCEL, Keyboard::Keys::Escape);
-	uiInput->RegisterGamePadInput(ActionID::CANCEL, InputSystem<ActionID>::GamePadButtons::B);
-
+	instance->RegisterKeyboardInput(ActionID::CANCEL, Keyboard::Keys::Escape);
+	instance->RegisterKeyboardInput(ActionID::CANCEL, Keyboard::Keys::C);
+	instance->RegisterGamePadInput(ActionID::CANCEL, InputSystem<ActionID>::GamePadButtons::B);
 	// 左移動
-	uiInput->RegisterKeyboardInput(ActionID::LEFT_MOVE	, Keyboard::Keys::Left);
-	uiInput->RegisterKeyboardInput(ActionID::LEFT_MOVE	, Keyboard::Keys::A);
-	uiInput->RegisterGamePadInput(ActionID::LEFT_MOVE	, InputSystem<ActionID>::GamePadButtons::LEFT_STICK_LEFT);
-	uiInput->RegisterGamePadInput(ActionID::LEFT_MOVE	, InputSystem<ActionID>::GamePadButtons::D_PAD_LEFT);
-
+	instance->RegisterKeyboardInput(ActionID::LEFT_MOVE, Keyboard::Keys::Left);
+	instance->RegisterKeyboardInput(ActionID::LEFT_MOVE, Keyboard::Keys::A);
+	instance->RegisterGamePadInput(ActionID::LEFT_MOVE, InputSystem<ActionID>::GamePadButtons::LEFT_STICK_LEFT);
+	instance->RegisterGamePadInput(ActionID::LEFT_MOVE, InputSystem<ActionID>::GamePadButtons::D_PAD_LEFT);
 	// 右移動
-	uiInput->RegisterKeyboardInput(ActionID::RIGHT_MOVE, Keyboard::Keys::Right);
-	uiInput->RegisterKeyboardInput(ActionID::RIGHT_MOVE, Keyboard::Keys::D);
-	uiInput->RegisterGamePadInput(ActionID::RIGHT_MOVE, InputSystem<ActionID>::GamePadButtons::LEFT_STICK_RIGHT);
-	uiInput->RegisterGamePadInput(ActionID::RIGHT_MOVE, InputSystem<ActionID>::GamePadButtons::D_PAD_RIGHT);
-
-
+	instance->RegisterKeyboardInput(ActionID::RIGHT_MOVE, Keyboard::Keys::Right);
+	instance->RegisterKeyboardInput(ActionID::RIGHT_MOVE, Keyboard::Keys::D);
+	instance->RegisterGamePadInput(ActionID::RIGHT_MOVE, InputSystem<ActionID>::GamePadButtons::LEFT_STICK_RIGHT);
+	instance->RegisterGamePadInput(ActionID::RIGHT_MOVE, InputSystem<ActionID>::GamePadButtons::D_PAD_RIGHT);
 	// 上移動
-	uiInput->RegisterKeyboardInput(ActionID::UP_MOVE, Keyboard::Keys::Up);
-	uiInput->RegisterKeyboardInput(ActionID::UP_MOVE, Keyboard::Keys::W);
-	uiInput->RegisterGamePadInput(ActionID::UP_MOVE, InputSystem<ActionID>::GamePadButtons::LEFT_STICK_UP);
-	uiInput->RegisterGamePadInput(ActionID::UP_MOVE, InputSystem<ActionID>::GamePadButtons::D_PAD_UP);
-
-
+	instance->RegisterKeyboardInput(ActionID::UP_MOVE, Keyboard::Keys::Up);
+	instance->RegisterKeyboardInput(ActionID::UP_MOVE, Keyboard::Keys::W);
+	instance->RegisterGamePadInput(ActionID::UP_MOVE, InputSystem<ActionID>::GamePadButtons::LEFT_STICK_UP);
+	instance->RegisterGamePadInput(ActionID::UP_MOVE, InputSystem<ActionID>::GamePadButtons::D_PAD_UP);
 	// 下移動
-	uiInput->RegisterKeyboardInput(ActionID::DOWN_MOVE, Keyboard::Keys::Down);
-	uiInput->RegisterKeyboardInput(ActionID::DOWN_MOVE, Keyboard::Keys::S);
-	uiInput->RegisterGamePadInput(ActionID::DOWN_MOVE, InputSystem<ActionID>::GamePadButtons::LEFT_STICK_DOWN);
-	uiInput->RegisterGamePadInput(ActionID::DOWN_MOVE, InputSystem<ActionID>::GamePadButtons::D_PAD_DOWN);
+	instance->RegisterKeyboardInput(ActionID::DOWN_MOVE, Keyboard::Keys::Down);
+	instance->RegisterKeyboardInput(ActionID::DOWN_MOVE, Keyboard::Keys::S);
+	instance->RegisterGamePadInput(ActionID::DOWN_MOVE, InputSystem<ActionID>::GamePadButtons::LEFT_STICK_DOWN);
+	instance->RegisterGamePadInput(ActionID::DOWN_MOVE, InputSystem<ActionID>::GamePadButtons::D_PAD_DOWN);
 
-
-	return std::move(uiInput);
 }
 
-
-std::unique_ptr<InputSystem<InputActionType::SystemActionID>> InputBindingFactory::CreateSystemInput()
+/**
+ * @brief 組み立てる
+ *
+ * @param[in] instance インスタンスのポインタ
+ * @param[in] desc 　　生成設定データ
+ */
+void InputBindingFactory::SystemInputFactory::Assemble(InputSystem<InputActionType::SystemActionID>* instance, const DefaultSpawnDesc& desc)
 {
+	UNREFERENCED_PARAMETER(instance);
+	UNREFERENCED_PARAMETER(desc);
 	// 動作の型
 	using ActionID = InputActionType::SystemActionID;
 
-	// 作成するインプットシステム
-	auto systemInput = std::make_unique<InputSystem<ActionID>>();
-
 	// ポーズ画面
-	systemInput->RegisterKeyboardInput(ActionID::PAUSE, Keyboard::Keys::Escape);
-	systemInput->RegisterGamePadInput(ActionID::PAUSE, InputSystem<ActionID>::GamePadButtons::START);
+	instance->RegisterKeyboardInput(ActionID::PAUSE, Keyboard::Keys::Escape);
+	instance->RegisterGamePadInput(ActionID::PAUSE, InputSystem<ActionID>::GamePadButtons::START);
 
-	// デバック
-	// まだ未設定
-
-	return systemInput;
 }
-
-

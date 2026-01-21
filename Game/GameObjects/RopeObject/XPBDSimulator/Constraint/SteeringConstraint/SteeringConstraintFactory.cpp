@@ -39,7 +39,7 @@ SteeringConstraintFactory::SteeringConstraintFactory(const CommonResources* pCom
     , m_pCommonResources{ pCommonResources }
     , m_elapsedTimeCounter{}
 {
-	m_playerInput = InputBindingFactory::CreatePlayerInput();
+	m_playerInput = InputBindingFactory::PlayerInputFactory().Create(DefaultSpawnDesc());
 }
 
 

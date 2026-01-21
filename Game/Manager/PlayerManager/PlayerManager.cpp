@@ -27,6 +27,7 @@
  */
 PlayerManager::PlayerManager()
 	: m_pCommonResources{ nullptr }
+	, m_isStoppingUpdate{ false }
 {
 	GameFlowMessenger::GetInstance()->RegistryObserver(this);
 }
@@ -55,7 +56,7 @@ void PlayerManager::Initialize(const CommonResources* pCommonResources, const Pl
 	m_pCommonResources = pCommonResources;
 
 	// プレイヤーインプットの作成
-	m_playerInput = InputBindingFactory::CreatePlayerInput();
+	m_playerInput = InputBindingFactory::PlayerInputFactory().Create(DefaultSpawnDesc());
 
 	// プレイヤーの影の作成
 	m_playerShadow = std::make_unique<CircularShadow>();

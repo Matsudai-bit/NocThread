@@ -25,6 +25,8 @@ using namespace DirectX;
  * @param[in] ‚È‚µ
  */
 PlayerController::PlayerController()
+	: m_pCamera{ nullptr }
+	, m_playerInput{ nullptr }
 {
 }
 
@@ -51,7 +53,8 @@ void PlayerController::Initialize(const Camera* pCamera)
 {
 	m_pCamera = pCamera;
 
-	m_playerInput = InputBindingFactory::CreatePlayerInput();
+	// ƒvƒŒƒCƒ„[“ü—Í‚Ìì¬
+	m_playerInput = InputBindingFactory::PlayerInputFactory().Create(DefaultSpawnDesc());
 
 }
 

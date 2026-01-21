@@ -117,7 +117,7 @@ void ResultScene::Initialize()
 
 	SoundManager::GetInstance()->Play(SoundDatabase::SOUND_CLIP_MAP.at(SoundDatabase::BGM_RESULT), true);
 	// “ü—ÍƒVƒXƒeƒ€‚Ìì¬
-	m_inputSystem = InputBindingFactory::CreateUIInput();
+	m_inputSystem = InputBindingFactory::UIInputFactory().Create(DefaultSpawnDesc());
 }
 
 

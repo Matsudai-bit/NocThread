@@ -12,7 +12,7 @@
 
 
 #include "Game/Scene/GameplayScene/GameplayScene.h"
-#include "Game/Scene/GameplayScene/State/PoseGameplayState/PoseGameplayState.h"
+#include "Game/Scene/GameplayScene/State/PoseGameplayState/PauseGameplayState.h"
 #include "Game/Common/CommonResources/CommonResources.h"
 #include "Game/Common/Input/InputBindingFactory/InputBindingFactory.h"
 
@@ -59,7 +59,7 @@ void NormalGameplayState::OnStartState()
 	auto context = GetOwner()->GetCommonResources()->GetDeviceResources()->GetD3DDeviceContext();
 
 	// “ü—Í‚Ìì¬
-	m_systemInput = InputBindingFactory::CreateSystemInput();
+	m_systemInput = InputBindingFactory::SystemInputFactory().Create(DefaultSpawnDesc());
 
 	m_manualSprite = std::make_unique<Sprite>();
 

@@ -16,43 +16,61 @@
 #include <memory>
 #include "Game/Common/Input/InputSystem/InputSystem.h"
 #include "Game/Common/Input/InputActionType/InputActionType.h"
+#include "Game/Common/Factory/FactoryBase.h"
 
 // クラスの前方宣言 ===================================================
 
-// クラスの定義 ===============================================================
 /**
- * @brief 入力と動作の紐づけを作成するファクトリー
+ * @brief 入力と動作の紐づけを作成するファクトリー群
  */
-class InputBindingFactory
+namespace InputBindingFactory
 {
-// クラス定数の宣言 -------------------------------------------------
-public:
+	/**
+	 * @brief プレイヤー入力と動作の紐づけを作成するファクトリー
+	 */
+	class PlayerInputFactory :
+		public FactoryBase<InputSystem<InputActionType::PlyayerActionID>>
+	{
+	public:
 
+		// コンストラクタ/デストラクタ
+		PlayerInputFactory() = default;
+		~PlayerInputFactory() = default;
 
+		// 組み立てる
+		void Assemble(InputSystem<InputActionType::PlyayerActionID>* instance, const DefaultSpawnDesc& desc ) override;
+	};
 
-// データメンバの宣言 -----------------------------------------------
-private:
+	/**
+	 * @brief UI入力と動作の紐づけを作成するファクトリー
+	 */
+	class UIInputFactory :
+		public FactoryBase<InputSystem<InputActionType::UIActionID>>
+	{
+	public:
 
+		// コンストラクタ/デストラクタ
+		UIInputFactory() = default;
+		~UIInputFactory() = default;
 
+		// 組み立てる
+		void Assemble(InputSystem<InputActionType::UIActionID>* instance, const DefaultSpawnDesc& desc) override;
+	};
 
-// メンバ関数の宣言 -------------------------------------------------
-// コンストラクタ/デストラクタ
-public:
-	// コンストラクタ
-	InputBindingFactory();
+	/**
+	 * @brief システム入力と動作の紐づけを作成するファクトリー
+	 */
+	class SystemInputFactory :
+		public FactoryBase<InputSystem<InputActionType::SystemActionID>>
+	{
+	public:
 
-	// デストラクタ
-	~InputBindingFactory();
+		// コンストラクタ/デストラクタ
+		SystemInputFactory() = default;
+		~SystemInputFactory() = default;
 
+		// 組み立てる
+		void Assemble(InputSystem<InputActionType::SystemActionID>* instance, const DefaultSpawnDesc& desc) override;
+	};
 
-// 操作
-public:
-
-  static std::unique_ptr<InputSystem<InputActionType::PlyayerActionID>> CreatePlayerInput();
-
-  static std::unique_ptr<InputSystem<InputActionType::UIActionID>> CreateUIInput();
-
-  static std::unique_ptr<InputSystem<InputActionType::SystemActionID>> CreateSystemInput();
-	
-
-};
+}

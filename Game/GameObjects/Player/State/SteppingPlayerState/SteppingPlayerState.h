@@ -47,7 +47,7 @@ private:
 	DirectX::SimpleMath::Vector3	m_startPosition; ///< 開始座標
 
 	ConcentrationLines* m_pConcentrationLines; ///< 集中線エフェクト
-	float m_effectId; ///< エフェクトID
+	int m_effectId; ///< エフェクトID
 
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ

@@ -48,7 +48,7 @@
 
 // 状態
 #include "Game/Scene/GameplayScene/State/NormalGameplayState/NormalGameplayState.h"
-#include "Game/Scene/GameplayScene/State/PoseGameplayState/PoseGameplayState.h"
+#include "Game/Scene/GameplayScene/State/PoseGameplayState/PauseGameplayState.h"
 // シーン
 #include "Game/Scene/ResultScene/ResultScene.h"
 #include "Game/Common/TransitionMask/TransitionMask.h"

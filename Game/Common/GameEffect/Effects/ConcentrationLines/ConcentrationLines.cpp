@@ -139,6 +139,8 @@ void ConcentrationLines::Draw(const Camera& camera)
 {
 	using namespace SimpleMath;
 
+	UNREFERENCED_PARAMETER(camera);
+
 	auto context = m_pDeviceResources->GetD3DDeviceContext();
 	
 	

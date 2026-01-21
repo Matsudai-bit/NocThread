@@ -8,7 +8,7 @@
 
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
-#include "PoseGameplayState.h"
+#include "PauseGameplayState.h"
 
 
 #include "Game/Scene/GameplayScene/GameplayScene.h"
@@ -108,7 +108,7 @@ void PauseGameplayState::OnStartState()
 
 	// スプライトの座標設定
 	m_backgroundAlphaSprite	->SetPosition(Vector2(screen->GetCenterXF(), screen->GetCenterYF()));
-	m_pauseFontSprite		->SetPosition(Vector2(screen->GetLeftF() + FONT_POSE_POS_X_OFFSET * screen->GetScreenScale(),			screen->GetBottomF() - FONT_POSE_POS_Y_OFFSET * screen->GetScreenScale()));
+	m_pauseFontSprite		->SetPosition(Vector2(screen->GetLeftF() + FONT_PAUSE_POS_X_OFFSET * screen->GetScreenScale(),			screen->GetBottomF() - FONT_PAUSE_POS_Y_OFFSET * screen->GetScreenScale()));
 	m_operatingFontSprite	->SetPosition(Vector2(screen->GetRightF() - FONT_OPERATING_POS_X_OFFSET * screen->GetScreenScale(),		screen->GetTopF() + FONT_OPERATING_POS_Y_OFFSET * screen->GetScreenScale()));
 	m_operatingSprite		->SetPosition(Vector2(screen->GetRightF() - OPERATING_UI_POS_X_OFFSET * screen->GetScreenScale(),		screen->GetCenterYF() + OPERATING_UI_POS_Y_OFFSET * screen->GetScreenScale()));
 	m_manualSprite			->SetPosition(SimpleMath::Vector2(screen->GetLeftF() + MANUAL_UI_POS_X_OFFSET * screen->GetScreenScale(),screen->GetBottomF() - MANUAL_UI_POS_Y_OFFSET * screen->GetScreenScale()));
@@ -153,7 +153,7 @@ void PauseGameplayState::OnStartState()
 	m_tutorialWindow->Initialize(resourceManager, [this]() {OnCloseTutorialWindow(); });
 
 	// 入力の作成 **********************************************
-	m_systemInput = InputBindingFactory::CreateSystemInput();
+	m_systemInput = InputBindingFactory::SystemInputFactory().Create(DefaultSpawnDesc());
 
 	m_isPrevConnectedGamepad = false;
 

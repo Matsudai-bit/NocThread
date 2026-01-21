@@ -8,7 +8,7 @@
 
  // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
-#include "PoseMenu.h"
+#include "PauseMenu.h"
 
 
 #include "Library/MyLib/MathUtils/MathUtils.h"
@@ -113,7 +113,7 @@ void PauseMenu::Initialize(Canvas* pCanvas, const CommonResources* pCommonResour
 	m_ElapsedTimeCounter.Reset();
 
 	// 入力の作成
-	m_uiInput = InputBindingFactory::CreateUIInput();
+	m_uiInput = InputBindingFactory::UIInputFactory().Create(DefaultSpawnDesc());
 }
 
 

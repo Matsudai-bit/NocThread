@@ -115,7 +115,7 @@ private:
 	// メッシュコライダの初期化
 	void InitializeMeshColliders(const DirectX::SimpleMath::Vector3& totalScale);
 	// 手動コライダの追加
-	void AddManualColliders(const DirectX::SimpleMath::Vector3& totalScale);
+	void AddManualColliders();
 
 	// 衝突管理への登録
 	void RegisterToCollisionManager(CollisionManager* pCollisionManager);

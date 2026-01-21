@@ -26,47 +26,11 @@
     <Filter Include="Game\Scene">
       <UniqueIdentifier>{2212f73c-f28e-4929-bd0d-0661fd526f27}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Game\Common\Collision">
-      <UniqueIdentifier>{94bc4c09-8a59-43dc-93c8-822efbfd3909}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\Common\ElapsedTimeCounter">
-      <UniqueIdentifier>{57745ffd-4666-4009-932e-e33438e6017b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\Common\ExitController">
-      <UniqueIdentifier>{f5d2ab48-831a-401b-8320-0706aa8113e7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\Common\ResourceManager">
-      <UniqueIdentifier>{b190d457-4f9f-49ba-b20c-050bf86bb5da}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\Common\CommonResources">
-      <UniqueIdentifier>{3cda07fa-605a-46ab-b132-5b8454faeb7c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\Common\SimpleModel">
-      <UniqueIdentifier>{0a0ffa62-2736-49ca-8d8a-cc55d851fc0e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\Common\Camera">
-      <UniqueIdentifier>{92763380-9cc3-4a8d-b399-ca343a8b4bb9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\Common\Camera\PlayerCamera">
-      <UniqueIdentifier>{a69c482d-dff2-4093-b10c-460ba420f595}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\Common\StateMachine">
-      <UniqueIdentifier>{e9b2cadc-68a2-4716-9b92-956e63848f4b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\Common\StateMachine\StateBase">
-      <UniqueIdentifier>{bfbaaa9e-2583-414b-b99f-c088c88c46c9}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Game\Wire">
       <UniqueIdentifier>{c0f01db9-594c-4bde-951e-a62b901355e5}</UniqueIdentifier>
     </Filter>
     <Filter Include="Game\Wire\IWireHolder">
       <UniqueIdentifier>{ca4d4ec7-42d3-45b1-a552-0a0f594117fa}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\Common\EventSystem">
-      <UniqueIdentifier>{7533c48b-9a29-43c7-b1a1-82b3398826f3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\Common\EventSystem\EventData">
-      <UniqueIdentifier>{fb697ac8-aca1-4962-9a78-f52d0b9c13ce}</UniqueIdentifier>
     </Filter>
     <Filter Include="Game\Scene\LoadingScreen">
       <UniqueIdentifier>{996c5df4-0ff4-4ada-8b80-84bc8acfec29}</UniqueIdentifier>
@@ -83,24 +47,6 @@
     <Filter Include="Library\MyLib\EasingKit">
       <UniqueIdentifier>{309c2895-dce8-4223-ae54-d3107f09ac16}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Game\Common\Helper">
-      <UniqueIdentifier>{6b0f68cb-4f13-44bc-9f9e-64514dce8b2c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\Common\Helper\MovementHelper">
-      <UniqueIdentifier>{91f966ad-66da-4e8d-af51-f4e3dd8a311c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\Common\Event">
-      <UniqueIdentifier>{8fe2de6b-a963-4152-bfd7-fce6672825dc}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\Common\Event\Messenger">
-      <UniqueIdentifier>{c7a05560-188c-4312-a673-028fd922ba03}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\Common\Event\Messenger\GameFlowMessenger">
-      <UniqueIdentifier>{f6ce8e01-c388-48d0-83fc-83ec6de84fc2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\Common\Event\WireSystemObserver">
-      <UniqueIdentifier>{d350735a-9131-4ede-b52a-4bef2e6db252}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Game\Common\UserInterfaceTool">
       <UniqueIdentifier>{2dda6c3c-a5a0-43dc-b15c-9e0793a65fce}</UniqueIdentifier>
     </Filter>
@@ -113,26 +59,11 @@
     <Filter Include="Game\Common\UserInterfaceTool\Canvas">
       <UniqueIdentifier>{c0f0330c-9ac6-4efe-a4b5-f6f9d5c2bdcd}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Game\Common\GameObjectManager">
-      <UniqueIdentifier>{e22ff40d-a8d0-43fd-9abe-e979fde922d5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\Common\GameObjectManager\EnemyManager">
-      <UniqueIdentifier>{17f18377-7943-4f50-9b8d-f0805a6e5406}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Game\Common\Factory">
       <UniqueIdentifier>{17eb953a-ad76-48dd-991a-74522409ed20}</UniqueIdentifier>
     </Filter>
     <Filter Include="Game\Common\Factory\EnemyFactory">
       <UniqueIdentifier>{60952417-db2f-40d7-94f0-4829257f6124}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\Common\SpawnManager">
-      <UniqueIdentifier>{3b993bdf-c799-4b74-b635-ebb1f79f9413}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\Common\GameObjectRigstry">
-      <UniqueIdentifier>{ac2ce316-9bf9-4d47-a92c-332d816c47e4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\Common\Helper\PhysicsHelper">
-      <UniqueIdentifier>{24d9f605-a139-4464-bbc9-ffacc742029a}</UniqueIdentifier>
     </Filter>
     <Filter Include="Game\GameObjects">
       <UniqueIdentifier>{c9c3a9ac-609e-46a2-9648-d4ceda332441}</UniqueIdentifier>
@@ -260,9 +191,6 @@
     <Filter Include="Library\MyLib\DirectX\DirectXMathUtils">
       <UniqueIdentifier>{07a44b2b-5cb9-4a70-a8dd-4278a85fe18c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Game\Common\WireTargetFinder">
-      <UniqueIdentifier>{11eb867a-005c-47f8-b03a-83d0841f7c54}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Game\GameObjects\Player\State\Step">
       <UniqueIdentifier>{e047a666-a0d0-4d19-ba5c-8f84f9706bfb}</UniqueIdentifier>
     </Filter>
@@ -284,14 +212,8 @@
     <Filter Include="Game\UI\Title\TitleMenu">
       <UniqueIdentifier>{f28c437f-3ee2-4f36-9b67-01999b97a1a6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Game\Common\Line2D">
-      <UniqueIdentifier>{6a75d583-f749-4f93-b3d0-65c284ba35c5}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Resources\Shaders">
       <UniqueIdentifier>{281720a2-2be9-45b8-8e48-88646fbfa438}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\Common\SoundManager">
-      <UniqueIdentifier>{0fbdd8a4-dfce-49e9-8d0c-a4f82b5a35bd}</UniqueIdentifier>
     </Filter>
     <Filter Include="Game\Scene\ResultScene\State">
       <UniqueIdentifier>{51daa942-91f6-474e-acd2-5e86603a7cd2}</UniqueIdentifier>
@@ -317,18 +239,6 @@
     <Filter Include="Game\Scene\GameplayScene\State\Normal">
       <UniqueIdentifier>{e1f4c18a-8431-4113-97d5-03f7acea9d26}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Game\Scene\GameplayScene\State\Pose">
-      <UniqueIdentifier>{ffc0fc77-e56d-457f-aecd-0e36faaafdab}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\UI\Pose">
-      <UniqueIdentifier>{b51c0a58-97dc-4f59-9a23-25b0ff53f2f0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\UI\Pose\PoseMenu">
-      <UniqueIdentifier>{290bf7b7-fde3-4df5-9174-ecb5fe3f350c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\Common\ResultData">
-      <UniqueIdentifier>{6cb8f038-3210-4c03-80d7-7d397b98cee4}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Game\UI\Tutorial">
       <UniqueIdentifier>{37d69c62-8554-4820-83fc-477dad86986a}</UniqueIdentifier>
     </Filter>
@@ -337,12 +247,6 @@
     </Filter>
     <Filter Include="Game\Scene\TitleScene">
       <UniqueIdentifier>{f2285815-6ae4-4258-bde3-5a9d8f68fbc0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\Common\Shadow">
-      <UniqueIdentifier>{6c1af544-1094-4b6b-af8f-a4785893eb97}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\Common\Shadow\CircularShadow">
-      <UniqueIdentifier>{06d463d4-0450-4e70-867f-62fc965f9ae9}</UniqueIdentifier>
     </Filter>
     <Filter Include="Library\ImGui">
       <UniqueIdentifier>{5cd5f309-cc15-4981-bccc-ac9937f9266c}</UniqueIdentifier>
@@ -356,32 +260,14 @@
     <Filter Include="Game\GameObjects\RopeObject\XPBDSimulator\Constraint\Factory\Base">
       <UniqueIdentifier>{57c15223-3cf6-4f1e-b2df-9ecf4f644136}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Game\Common\GameEffect">
-      <UniqueIdentifier>{20ad6956-f2ab-4d5f-9db1-5e8c2d91efb2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\Common\GameEffect\Base">
-      <UniqueIdentifier>{b3c07baa-e5b0-4219-ac00-46a047379b59}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\Common\GameEffect\Effects">
-      <UniqueIdentifier>{81b7ddaf-d91e-44b2-a797-922dfdf9e832}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Resources\Shaders\CircleShadow">
       <UniqueIdentifier>{c4d188cf-1282-453a-8db1-edfa827b6884}</UniqueIdentifier>
     </Filter>
     <Filter Include="Resources\Shaders\SimpleParticle">
       <UniqueIdentifier>{a17b6d63-9cc2-4e67-ad16-c6acbb66495f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Game\Common\EntityManager">
-      <UniqueIdentifier>{ec7f0dc5-f908-4e5e-990a-af05d5c2c7b0}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Game\GameObjects\Player\State\ShootingWire">
       <UniqueIdentifier>{ad123bb5-e8eb-4e96-ae11-9f3244d7e934}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\Common\StageManager">
-      <UniqueIdentifier>{14387b5c-ae5b-480c-8151-48ce7309d821}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\Common\TaskManager">
-      <UniqueIdentifier>{ccb36434-55c4-46dc-8ddc-eb73595021b6}</UniqueIdentifier>
     </Filter>
     <Filter Include="Library\DirectXFramework\RenderTexture">
       <UniqueIdentifier>{bc3bbe25-a5bc-4c62-8045-e592aea70f44}</UniqueIdentifier>
@@ -425,18 +311,6 @@
     <Filter Include="Game\GameObjects\Checkpoint">
       <UniqueIdentifier>{8ae1e161-6d74-4f3b-a42e-d2cbbf33833b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Game\Common\GameObjectManager\PlayerManager">
-      <UniqueIdentifier>{e9529cf0-0b6d-473b-aa18-73b512d7b270}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\Common\GameObjectManager\CheckpointManager">
-      <UniqueIdentifier>{9d53c497-ad9e-4ead-ad33-eddbaae131a4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\Common\GameProgressData">
-      <UniqueIdentifier>{d4180116-d967-4e68-af8e-8b0e33d5ef8b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\Common\GameDirector">
-      <UniqueIdentifier>{bb3178ef-78d9-4c1e-b37f-f5e1b405c2ad}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Library\MyLib\DirectX\DirectXMyToolKit\ModelPart">
       <UniqueIdentifier>{d3679e01-201b-4271-ba86-575ed2764fcb}</UniqueIdentifier>
     </Filter>
@@ -452,12 +326,6 @@
     <Filter Include="Library\MyLib\NlohmannUtils">
       <UniqueIdentifier>{2e8cf36b-3e0a-46ff-8c3e-a1a3fe40ccfe}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Game\Common\Behaviour">
-      <UniqueIdentifier>{3b2469f0-bc4c-44c0-91b6-f4d57868b62e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\Common\GameObjectManager\BuildingManager">
-      <UniqueIdentifier>{f6e53160-7af8-4ef5-9feb-56261af68b54}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Game\Common\Minimap">
       <UniqueIdentifier>{5b126132-1180-4e61-8614-23a99c9a404e}</UniqueIdentifier>
     </Filter>
@@ -470,12 +338,6 @@
     <Filter Include="Game\Common\Factory\CollisionMatrixFactory">
       <UniqueIdentifier>{35d9625c-8468-465f-a430-18ddd1ebab63}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Library\MyLib\FrameTimer">
-      <UniqueIdentifier>{d4406896-bbc7-407b-8abf-a9fd166f94d7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\Common\TransitionMask">
-      <UniqueIdentifier>{1b63ac83-b748-4d29-b9db-e109526e4308}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Resources\Shaders\SceneFade">
       <UniqueIdentifier>{6f88e755-6a32-4c07-b984-1bc9f47b1f98}</UniqueIdentifier>
     </Filter>
@@ -485,17 +347,173 @@
     <Filter Include="Resources\Shaders\SimpleShape2D\SimpleTriangle">
       <UniqueIdentifier>{59d69dbb-551e-40d7-8b65-c1f95944b592}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Game\Common\Database">
-      <UniqueIdentifier>{99cb4a00-241a-49ee-a9aa-067150fa99ec}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Resources\Shaders\ConcentrationLines">
       <UniqueIdentifier>{d030dff0-5e1f-4508-afff-b4a4a559e215}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Game\Common\GameEffect\Effects\2D">
+    <Filter Include="Game\Common\Framework">
+      <UniqueIdentifier>{57ddb608-c144-4dfd-b713-c308145c1579}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Common\Framework\CommonResources">
+      <UniqueIdentifier>{3cda07fa-605a-46ab-b132-5b8454faeb7c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Common\Framework\EntityManager">
+      <UniqueIdentifier>{ec7f0dc5-f908-4e5e-990a-af05d5c2c7b0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Common\Framework\Input">
+      <UniqueIdentifier>{7b1f3ae4-9dd5-4b84-93ab-a51b114a6e22}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Common\Gameplay">
+      <UniqueIdentifier>{e1641f2a-80f6-4643-b5d5-a973a03530c3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Common\Gameplay\Behaviour">
+      <UniqueIdentifier>{3b2469f0-bc4c-44c0-91b6-f4d57868b62e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Common\Gameplay\GameDirector">
+      <UniqueIdentifier>{bb3178ef-78d9-4c1e-b37f-f5e1b405c2ad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Common\Gameplay\SpawnManager">
+      <UniqueIdentifier>{3b993bdf-c799-4b74-b635-ebb1f79f9413}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Common\Gameplay\GameProgressData">
+      <UniqueIdentifier>{d4180116-d967-4e68-af8e-8b0e33d5ef8b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Common\Gameplay\StageManager">
+      <UniqueIdentifier>{14387b5c-ae5b-480c-8151-48ce7309d821}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Common\Gameplay\WireTargetFinder">
+      <UniqueIdentifier>{11eb867a-005c-47f8-b03a-83d0841f7c54}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Common\Gameplay\ExitController">
+      <UniqueIdentifier>{f5d2ab48-831a-401b-8320-0706aa8113e7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Common\Gameplay\ResultData">
+      <UniqueIdentifier>{6cb8f038-3210-4c03-80d7-7d397b98cee4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Common\Framework\TaskManager">
+      <UniqueIdentifier>{ccb36434-55c4-46dc-8ddc-eb73595021b6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Common\Framework\StateMachine">
+      <UniqueIdentifier>{e9b2cadc-68a2-4716-9b92-956e63848f4b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Common\Framework\StateMachine\StateBase">
+      <UniqueIdentifier>{bfbaaa9e-2583-414b-b99f-c088c88c46c9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Common\Framework\GameObjectManager">
+      <UniqueIdentifier>{e22ff40d-a8d0-43fd-9abe-e979fde922d5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Common\Framework\GameObjectManager\EnemyManager">
+      <UniqueIdentifier>{17f18377-7943-4f50-9b8d-f0805a6e5406}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Common\Framework\GameObjectManager\PlayerManager">
+      <UniqueIdentifier>{e9529cf0-0b6d-473b-aa18-73b512d7b270}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Common\Framework\GameObjectManager\CheckpointManager">
+      <UniqueIdentifier>{9d53c497-ad9e-4ead-ad33-eddbaae131a4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Common\Framework\GameObjectManager\BuildingManager">
+      <UniqueIdentifier>{f6e53160-7af8-4ef5-9feb-56261af68b54}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Common\Framework\GameObjectRigstry">
+      <UniqueIdentifier>{ac2ce316-9bf9-4d47-a92c-332d816c47e4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Common\Utillities">
+      <UniqueIdentifier>{03db082b-6251-4fef-b561-cc63fb87c50e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Common\Utillities\ElapsedTimeCounter">
+      <UniqueIdentifier>{57745ffd-4666-4009-932e-e33438e6017b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Common\Utillities\Collision">
+      <UniqueIdentifier>{94bc4c09-8a59-43dc-93c8-822efbfd3909}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Common\Utillities\Helper">
+      <UniqueIdentifier>{6b0f68cb-4f13-44bc-9f9e-64514dce8b2c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Common\Utillities\Helper\MovementHelper">
+      <UniqueIdentifier>{91f966ad-66da-4e8d-af51-f4e3dd8a311c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Common\Utillities\Helper\PhysicsHelper">
+      <UniqueIdentifier>{24d9f605-a139-4464-bbc9-ffacc742029a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Common\Framework\EventSystem">
+      <UniqueIdentifier>{7533c48b-9a29-43c7-b1a1-82b3398826f3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Common\Framework\EventSystem\EventData">
+      <UniqueIdentifier>{fb697ac8-aca1-4962-9a78-f52d0b9c13ce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Common\Framework\Event">
+      <UniqueIdentifier>{8fe2de6b-a963-4152-bfd7-fce6672825dc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Common\Framework\Event\Messenger">
+      <UniqueIdentifier>{c7a05560-188c-4312-a673-028fd922ba03}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Common\Framework\Event\Messenger\GameFlowMessenger">
+      <UniqueIdentifier>{f6ce8e01-c388-48d0-83fc-83ec6de84fc2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Common\Framework\Event\WireSystemObserver">
+      <UniqueIdentifier>{d350735a-9131-4ede-b52a-4bef2e6db252}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Common\Framework\ResourceManager">
+      <UniqueIdentifier>{b190d457-4f9f-49ba-b20c-050bf86bb5da}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Common\Framework\SoundManager">
+      <UniqueIdentifier>{0fbdd8a4-dfce-49e9-8d0c-a4f82b5a35bd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Common\Factory\InputFactory">
+      <UniqueIdentifier>{5d28ac96-061f-4128-b6f8-0db75ae3297c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Common\Database">
+      <UniqueIdentifier>{99cb4a00-241a-49ee-a9aa-067150fa99ec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Common\Graphics">
+      <UniqueIdentifier>{cde69518-efab-4979-a05d-63e3d4426a79}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Common\Graphics\SimpleModel">
+      <UniqueIdentifier>{0a0ffa62-2736-49ca-8d8a-cc55d851fc0e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Common\Graphics\Camera">
+      <UniqueIdentifier>{92763380-9cc3-4a8d-b399-ca343a8b4bb9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Common\Graphics\Camera\PlayerCamera">
+      <UniqueIdentifier>{a69c482d-dff2-4093-b10c-460ba420f595}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Common\Graphics\Camera\MainCamera">
+      <UniqueIdentifier>{9cd33b05-336a-4591-9ae6-074cd3bc2a78}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Common\Graphics\GameEffect">
+      <UniqueIdentifier>{20ad6956-f2ab-4d5f-9db1-5e8c2d91efb2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Common\Graphics\GameEffect\Base">
+      <UniqueIdentifier>{b3c07baa-e5b0-4219-ac00-46a047379b59}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Common\Graphics\GameEffect\Effects">
+      <UniqueIdentifier>{81b7ddaf-d91e-44b2-a797-922dfdf9e832}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Common\Graphics\GameEffect\Effects\2D">
       <UniqueIdentifier>{1e3805e4-cb52-4054-94be-e5f5e80e27b2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Game\Common\GameEffect\Effects\3D">
+    <Filter Include="Game\Common\Graphics\GameEffect\Effects\3D">
       <UniqueIdentifier>{df33d24a-4ea0-4cd8-a17a-23586ef28ad5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Common\Graphics\Line2D">
+      <UniqueIdentifier>{6a75d583-f749-4f93-b3d0-65c284ba35c5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Common\Graphics\TransitionMask">
+      <UniqueIdentifier>{1b63ac83-b748-4d29-b9db-e109526e4308}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Common\Graphics\Shadow">
+      <UniqueIdentifier>{6c1af544-1094-4b6b-af8f-a4785893eb97}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Common\Graphics\Shadow\CircularShadow">
+      <UniqueIdentifier>{06d463d4-0450-4e70-867f-62fc965f9ae9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\UI\Pause">
+      <UniqueIdentifier>{b51c0a58-97dc-4f59-9a23-25b0ff53f2f0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\UI\Pause\PauseMenu">
+      <UniqueIdentifier>{290bf7b7-fde3-4df5-9174-ecb5fe3f350c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Scene\GameplayScene\State\Pause">
+      <UniqueIdentifier>{ffc0fc77-e56d-457f-aecd-0e36faaafdab}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -505,25 +523,25 @@
       <Filter>Game</Filter>
     </ClInclude>
     <ClInclude Include="Game\Common\Collision\Collision.h">
-      <Filter>Game\Common\Collision</Filter>
+      <Filter>Game\Common\Utillities\Collision</Filter>
     </ClInclude>
     <ClInclude Include="Game\Common\Collision\CollisionManager\CollisionManager.h">
-      <Filter>Game\Common\Collision</Filter>
+      <Filter>Game\Common\Utillities\Collision</Filter>
     </ClInclude>
     <ClInclude Include="Game\Common\CommonResources\CommonResources.h">
-      <Filter>Game\Common\CommonResources</Filter>
+      <Filter>Game\Common\Framework\CommonResources</Filter>
     </ClInclude>
     <ClInclude Include="Game\Common\ElapsedTimeCounter\ElapsedTimeCounter.h">
-      <Filter>Game\Common\ElapsedTimeCounter</Filter>
+      <Filter>Game\Common\Utillities\ElapsedTimeCounter</Filter>
     </ClInclude>
     <ClInclude Include="Game\Common\ExitController\ExitController.h">
-      <Filter>Game\Common\ExitController</Filter>
+      <Filter>Game\Common\Gameplay\ExitController</Filter>
     </ClInclude>
     <ClInclude Include="Game\Common\Collision\ICollider.h">
-      <Filter>Game\Common\Collision</Filter>
+      <Filter>Game\Common\Utillities\Collision</Filter>
     </ClInclude>
     <ClInclude Include="Game\Common\Collision\ICollision.h">
-      <Filter>Game\Common\Collision</Filter>
+      <Filter>Game\Common\Utillities\Collision</Filter>
     </ClInclude>
     <ClInclude Include="Game\GameObjects\Common\GameObject.h">
       <Filter>Game\GameObjects\Common\GameObject</Filter>
@@ -532,7 +550,7 @@
       <Filter>Game\GameObjects\Common\MovableObject</Filter>
     </ClInclude>
     <ClInclude Include="Game\Common\ResourceManager\ResourceManager.h">
-      <Filter>Game\Common\ResourceManager</Filter>
+      <Filter>Game\Common\Framework\ResourceManager</Filter>
     </ClInclude>
     <ClInclude Include="Game\GameObjects\RopeObject\ParticleObject\ParticleObject.h">
       <Filter>Game\GameObjects\RopeObject\ParticleObject</Filter>
@@ -556,13 +574,13 @@
       <Filter>Game\GameObjects\Player</Filter>
     </ClInclude>
     <ClInclude Include="Game\Common\SimpleModel\SimpleModel.h">
-      <Filter>Game\Common\SimpleModel</Filter>
+      <Filter>Game\Common\Graphics\SimpleModel</Filter>
     </ClInclude>
     <ClInclude Include="Game\Common\Camera\Camera.h">
-      <Filter>Game\Common\Camera</Filter>
+      <Filter>Game\Common\Graphics\Camera</Filter>
     </ClInclude>
     <ClInclude Include="Game\Common\Camera\PlayerCamera\PlayerCamera.h">
-      <Filter>Game\Common\Camera\PlayerCamera</Filter>
+      <Filter>Game\Common\Graphics\Camera\PlayerCamera</Filter>
     </ClInclude>
     <ClInclude Include="Game\GameObjects\Player\PlayerController\PlayerController.h">
       <Filter>Game\GameObjects\Player\PlayerController</Filter>
@@ -571,10 +589,10 @@
       <Filter>Game\Common</Filter>
     </ClInclude>
     <ClInclude Include="Game\Common\StateMachine\StateMachine.h">
-      <Filter>Game\Common\StateMachine</Filter>
+      <Filter>Game\Common\Framework\StateMachine</Filter>
     </ClInclude>
     <ClInclude Include="Game\Common\StateMachine\StateBase\StateBase.h">
-      <Filter>Game\Common\StateMachine\StateBase</Filter>
+      <Filter>Game\Common\Framework\StateMachine\StateBase</Filter>
     </ClInclude>
     <ClInclude Include="Game\GameObjects\Player\State\IdlePlayerState\IdlePlayerState.h">
       <Filter>Game\GameObjects\Player\State\Idle</Filter>
@@ -610,10 +628,10 @@
       <Filter>Game\GameObjects\StageObject\state\Thrown</Filter>
     </ClInclude>
     <ClInclude Include="Game\Common\EventSystem\EventSystem.h">
-      <Filter>Game\Common\EventSystem</Filter>
+      <Filter>Game\Common\Framework\EventSystem</Filter>
     </ClInclude>
     <ClInclude Include="Game\Common\EventSystem\EventData\EventData.h">
-      <Filter>Game\Common\EventSystem\EventData</Filter>
+      <Filter>Game\Common\Framework\EventSystem\EventData</Filter>
     </ClInclude>
     <ClInclude Include="Game\GameObjects\Common\GameObjectEvent\GameObjectEvent.h">
       <Filter>Game\GameObjects\Common\GameObject\GameObjectEvent</Filter>
@@ -664,28 +682,28 @@
       <Filter>Game\GameObjects\Enemy\Behaviour\EnemyUpdateBehaviour\TrackingEnemyBehaviour</Filter>
     </ClInclude>
     <ClInclude Include="Game\Common\Helper\MovementHelper\MovementHelper.h">
-      <Filter>Game\Common\Helper\MovementHelper</Filter>
+      <Filter>Game\Common\Utillities\Helper\MovementHelper</Filter>
     </ClInclude>
     <ClInclude Include="Game\Common\Event\Messenger\GameFlowMessenger\GameFlowEventID.h">
-      <Filter>Game\Common\Event\Messenger\GameFlowMessenger</Filter>
+      <Filter>Game\Common\Framework\Event\Messenger\GameFlowMessenger</Filter>
     </ClInclude>
     <ClInclude Include="Game\Common\Event\Messenger\GameFlowMessenger\IGameFlowObserver.h">
-      <Filter>Game\Common\Event\Messenger\GameFlowMessenger</Filter>
+      <Filter>Game\Common\Framework\Event\Messenger\GameFlowMessenger</Filter>
     </ClInclude>
     <ClInclude Include="Game\Common\Event\Messenger\GameFlowMessenger\GameFlowMessenger.h">
-      <Filter>Game\Common\Event\Messenger\GameFlowMessenger</Filter>
+      <Filter>Game\Common\Framework\Event\Messenger\GameFlowMessenger</Filter>
     </ClInclude>
     <ClInclude Include="Game\GameObjects\Treasure\Treasure.h">
       <Filter>Game\GameObjects\Treasure</Filter>
     </ClInclude>
     <ClInclude Include="Game\Common\Event\WireSystemObserver\IWireEventObserver.h">
-      <Filter>Game\Common\Event\WireSystemObserver</Filter>
+      <Filter>Game\Common\Framework\Event\WireSystemObserver</Filter>
     </ClInclude>
     <ClInclude Include="Game\Common\Event\WireSystemObserver\WireEventData.h">
-      <Filter>Game\Common\Event\WireSystemObserver</Filter>
+      <Filter>Game\Common\Framework\Event\WireSystemObserver</Filter>
     </ClInclude>
     <ClInclude Include="Game\Common\Event\WireSystemObserver\WireSystemSubject.h">
-      <Filter>Game\Common\Event\WireSystemObserver</Filter>
+      <Filter>Game\Common\Framework\Event\WireSystemObserver</Filter>
     </ClInclude>
     <ClInclude Include="Game\Common\UserInterfaceTool\Canvas\Canvas.h">
       <Filter>Game\Common\UserInterfaceTool\Canvas</Filter>
@@ -700,7 +718,7 @@
       <Filter>Game\Common\UserInterfaceTool\SpriteAnimator</Filter>
     </ClInclude>
     <ClInclude Include="Game\Common\GameObjectManager\EnemyManager\EnemyManager.h">
-      <Filter>Game\Common\GameObjectManager\EnemyManager</Filter>
+      <Filter>Game\Common\Framework\GameObjectManager\EnemyManager</Filter>
     </ClInclude>
     <ClInclude Include="Game\Common\Factory\EnemyFactory\IEnemyFactory\IEnemyFactory.h">
       <Filter>Game\Common\Factory\EnemyFactory</Filter>
@@ -709,10 +727,10 @@
       <Filter>Game\Common\Factory\EnemyFactory</Filter>
     </ClInclude>
     <ClInclude Include="Game\Common\SpawnManager\SpawnManager.h">
-      <Filter>Game\Common\SpawnManager</Filter>
+      <Filter>Game\Common\Gameplay\SpawnManager</Filter>
     </ClInclude>
     <ClInclude Include="Game\Common\GameObjectRegistry\GameObjectRegistry.h">
-      <Filter>Game\Common\GameObjectRigstry</Filter>
+      <Filter>Game\Common\Framework\GameObjectRigstry</Filter>
     </ClInclude>
     <ClInclude Include="Game\GameObjects\Prop\Base\IProp.h">
       <Filter>Game\GameObjects\Prop\Base</Filter>
@@ -724,7 +742,7 @@
       <Filter>Game\GameObjects\Prop\Buiding</Filter>
     </ClInclude>
     <ClInclude Include="Game\Common\Helper\PhysicsHelper\PhysicsHelper.h">
-      <Filter>Game\Common\Helper\PhysicsHelper</Filter>
+      <Filter>Game\Common\Utillities\Helper\PhysicsHelper</Filter>
     </ClInclude>
     <ClInclude Include="Game\GameObjects\Helicopter\EscapeHelicopter\EscapeHelicopter.h">
       <Filter>Game\GameObjects\Helicopter\EscapeHelicopter</Filter>
@@ -736,7 +754,7 @@
       <Filter>Library\MyLib\DirectX\DirectXMyToolKit</Filter>
     </ClInclude>
     <ClInclude Include="Game\Common\WireTargetFinder\WireTargetFinder.h">
-      <Filter>Game\Common\WireTargetFinder</Filter>
+      <Filter>Game\Common\Gameplay\WireTargetFinder</Filter>
     </ClInclude>
     <ClInclude Include="Game\GameObjects\Player\State\SteppingPlayerState\SteppingPlayerState.h">
       <Filter>Game\GameObjects\Player\State\Step</Filter>
@@ -751,10 +769,10 @@
       <Filter>Game\UI\Title\TitleMenu</Filter>
     </ClInclude>
     <ClInclude Include="Game\Common\Line2D\Line2D.h">
-      <Filter>Game\Common\Line2D</Filter>
+      <Filter>Game\Common\Graphics\Line2D</Filter>
     </ClInclude>
     <ClInclude Include="Game\Common\SoundManager\SoundManager.h">
-      <Filter>Game\Common\SoundManager</Filter>
+      <Filter>Game\Common\Framework\SoundManager</Filter>
     </ClInclude>
     <ClInclude Include="Game\Scene\ResultScene\State\SuccessResultState\SuccessResultState.h">
       <Filter>Game\Scene\ResultScene\State\SuccessResultState</Filter>
@@ -774,14 +792,14 @@
     <ClInclude Include="Game\Scene\GameplayScene\State\NormalGameplayState\NormalGameplayState.h">
       <Filter>Game\Scene\GameplayScene\State\Normal</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Scene\GameplayScene\State\PoseGameplayState\PoseGameplayState.h">
-      <Filter>Game\Scene\GameplayScene\State\Pose</Filter>
+    <ClInclude Include="Game\Scene\GameplayScene\State\PoseGameplayState\PauseGameplayState.h">
+      <Filter>Game\Scene\GameplayScene\State\Pause</Filter>
     </ClInclude>
-    <ClInclude Include="Game\UI\Pose\PoseMenu\PoseMenu.h">
-      <Filter>Game\UI\Pose\PoseMenu</Filter>
+    <ClInclude Include="Game\UI\Pose\PoseMenu\PauseMenu.h">
+      <Filter>Game\UI\Pause\PauseMenu</Filter>
     </ClInclude>
     <ClInclude Include="Game\Common\ResultData\ResultData.h">
-      <Filter>Game\Common\ResultData</Filter>
+      <Filter>Game\Common\Gameplay\ResultData</Filter>
     </ClInclude>
     <ClInclude Include="Game\UI\TutorialWindow\TutorialWindow.h">
       <Filter>Game\UI\Tutorial\TutorialWindow</Filter>
@@ -790,7 +808,7 @@
       <Filter>Game\Scene\TitleScene</Filter>
     </ClInclude>
     <ClInclude Include="Game\Common\Shadow\CircularShadow\CircularShadow.h">
-      <Filter>Game\Common\Shadow\CircularShadow</Filter>
+      <Filter>Game\Common\Graphics\Shadow\CircularShadow</Filter>
     </ClInclude>
     <ClInclude Include="Library\ImGui\imconfig.h">
       <Filter>Library\ImGui</Filter>
@@ -829,38 +847,34 @@
       <Filter>Game\GameObjects\RopeObject\XPBDSimulator\Constraint\Factory</Filter>
     </ClInclude>
     <ClInclude Include="Game\Common\GameEffect\Base\GameEffectBase.h">
-      <Filter>Game\Common\GameEffect\Base</Filter>
+      <Filter>Game\Common\Graphics\GameEffect\Base</Filter>
     </ClInclude>
     <ClInclude Include="Game\Common\GameEffect\Base\IGameEffect.h">
-      <Filter>Game\Common\GameEffect\Base</Filter>
+      <Filter>Game\Common\Graphics\GameEffect\Base</Filter>
     </ClInclude>
     <ClInclude Include="Game\Common\GameEffect\GameEffectManager.h">
-      <Filter>Game\Common\GameEffect</Filter>
+      <Filter>Game\Common\Graphics\GameEffect</Filter>
     </ClInclude>
     <ClInclude Include="Game\Common\GameEffect\GameEffectController.h">
-      <Filter>Game\Common\GameEffect</Filter>
+      <Filter>Game\Common\Graphics\GameEffect</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Common\Camera\MainCamera\MainCamera.h" />
     <ClInclude Include="Game\Common\EntityManager\EntityManager.h">
-      <Filter>Game\Common\EntityManager</Filter>
+      <Filter>Game\Common\Framework\EntityManager</Filter>
     </ClInclude>
     <ClInclude Include="Game\Common\EntityManager\IEntity.h">
-      <Filter>Game\Common\EntityManager</Filter>
+      <Filter>Game\Common\Framework\EntityManager</Filter>
     </ClInclude>
     <ClInclude Include="Game\Manager\PlayerManager\PlayerManager.h">
-      <Filter>Game\Common\GameObjectManager\PlayerManager</Filter>
+      <Filter>Game\Common\Framework\GameObjectManager\PlayerManager</Filter>
     </ClInclude>
     <ClInclude Include="Game\GameObjects\Player\State\ShootingWireState\ShootingWirePlayerState.h">
       <Filter>Game\GameObjects\Player\State\ShootingWire</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Common\Input\InputActionType\InputActionType.h" />
-    <ClInclude Include="Game\Common\Input\InputBindingFactory\InputBindingFactory.h" />
-    <ClInclude Include="Game\Common\Input\InputSystem\InputSystem.h" />
     <ClInclude Include="Game\Manager\StageManager\StageManager.h">
-      <Filter>Game\Common\StageManager</Filter>
+      <Filter>Game\Common\Gameplay\StageManager</Filter>
     </ClInclude>
     <ClInclude Include="Game\Common\TaskManager\TaskManager.h">
-      <Filter>Game\Common\TaskManager</Filter>
+      <Filter>Game\Common\Framework\TaskManager</Filter>
     </ClInclude>
     <ClInclude Include="Library\DirectXFramework\RenderTexture.h">
       <Filter>Library\DirectXFramework\RenderTexture</Filter>
@@ -896,13 +910,13 @@
       <Filter>Game\GameObjects\Checkpoint</Filter>
     </ClInclude>
     <ClInclude Include="Game\Manager\CheckpointManager\CheckpointManager.h">
-      <Filter>Game\Common\GameObjectManager\CheckpointManager</Filter>
+      <Filter>Game\Common\Framework\GameObjectManager\CheckpointManager</Filter>
     </ClInclude>
     <ClInclude Include="Game\Common\GameProgressData\GameProgressData.h">
-      <Filter>Game\Common\GameProgressData</Filter>
+      <Filter>Game\Common\Gameplay\GameProgressData</Filter>
     </ClInclude>
     <ClInclude Include="Game\Common\GameDirector\GameDirector.h">
-      <Filter>Game\Common\GameDirector</Filter>
+      <Filter>Game\Common\Gameplay\GameDirector</Filter>
     </ClInclude>
     <ClInclude Include="Library\MyLib\DirectXMyToolKit\ModelPart\ModelPart.h">
       <Filter>Library\MyLib\DirectX\DirectXMyToolKit\ModelPart</Filter>
@@ -923,13 +937,13 @@
       <Filter>Library\MyLib\NlohmannUtils</Filter>
     </ClInclude>
     <ClInclude Include="Game\Common\Behaviour\SteeringBehavior\SteeringBehavior.h">
-      <Filter>Game\Common\Behaviour</Filter>
+      <Filter>Game\Common\Gameplay\Behaviour</Filter>
     </ClInclude>
     <ClInclude Include="Game\Common\Behaviour\SteeringBehavior\SteeringParameters.h">
-      <Filter>Game\Common\Behaviour</Filter>
+      <Filter>Game\Common\Gameplay\Behaviour</Filter>
     </ClInclude>
     <ClInclude Include="Game\Manager\BuildingManager\BuildingManager.h">
-      <Filter>Game\Common\GameObjectManager\BuildingManager</Filter>
+      <Filter>Game\Common\Framework\GameObjectManager\BuildingManager</Filter>
     </ClInclude>
     <ClInclude Include="Game\Common\Minimap\Minimap.h">
       <Filter>Game\Common\Minimap</Filter>
@@ -941,16 +955,13 @@
       <Filter>Game\GameObjects\RopeObject\XPBDSimulator\Constraint\Factory</Filter>
     </ClInclude>
     <ClInclude Include="Game\Common\Collision\CollisionMatrix\CollisionMatrix.h">
-      <Filter>Game\Common\Collision</Filter>
+      <Filter>Game\Common\Utillities\Collision</Filter>
     </ClInclude>
     <ClInclude Include="Game\Common\Factory\CollisionMatrixFactory\CollisionMatrixFactory.h">
       <Filter>Game\Common\Factory\CollisionMatrixFactory</Filter>
     </ClInclude>
-    <ClInclude Include="Library\MyLib\FrameTimer\FrameTimer.h">
-      <Filter>Library\MyLib\FrameTimer</Filter>
-    </ClInclude>
     <ClInclude Include="Game\Common\TransitionMask\TransitionMask.h">
-      <Filter>Game\Common\TransitionMask</Filter>
+      <Filter>Game\Common\Graphics\TransitionMask</Filter>
     </ClInclude>
     <ClInclude Include="Game\Common\Database\SoundDatabase.h">
       <Filter>Game\Common\Database</Filter>
@@ -962,10 +973,22 @@
       <Filter>Game\Common\Database</Filter>
     </ClInclude>
     <ClInclude Include="Game\Common\GameEffect\Effects\SimpleParticle\SimpleParticle.h">
-      <Filter>Game\Common\GameEffect\Effects\3D</Filter>
+      <Filter>Game\Common\Graphics\GameEffect\Effects\3D</Filter>
     </ClInclude>
     <ClInclude Include="Game\Common\GameEffect\Effects\ConcentrationLines\ConcentrationLines.h">
-      <Filter>Game\Common\GameEffect\Effects\2D</Filter>
+      <Filter>Game\Common\Graphics\GameEffect\Effects\2D</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Common\Input\InputActionType\InputActionType.h">
+      <Filter>Game\Common\Framework\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Common\Input\InputSystem\InputSystem.h">
+      <Filter>Game\Common\Framework\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Common\Camera\MainCamera\MainCamera.h">
+      <Filter>Game\Common\Graphics\Camera\MainCamera</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Common\Input\InputBindingFactory\InputBindingFactory.h">
+      <Filter>Game\Common\Factory\InputFactory</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -975,19 +998,19 @@
       <Filter>Game</Filter>
     </ClCompile>
     <ClCompile Include="Game\Common\Collision\Collision.cpp">
-      <Filter>Game\Common\Collision</Filter>
+      <Filter>Game\Common\Utillities\Collision</Filter>
     </ClCompile>
     <ClCompile Include="Game\Common\Collision\CollisionManager\CollisionManager.cpp">
-      <Filter>Game\Common\Collision</Filter>
+      <Filter>Game\Common\Utillities\Collision</Filter>
     </ClCompile>
     <ClCompile Include="Game\Common\CommonResources\CommonResources.cpp">
-      <Filter>Game\Common\CommonResources</Filter>
+      <Filter>Game\Common\Framework\CommonResources</Filter>
     </ClCompile>
     <ClCompile Include="Game\Common\ElapsedTimeCounter\ElapsedTimeCounter.cpp">
-      <Filter>Game\Common\ElapsedTimeCounter</Filter>
+      <Filter>Game\Common\Utillities\ElapsedTimeCounter</Filter>
     </ClCompile>
     <ClCompile Include="Game\Common\ExitController\ExitController.cpp">
-      <Filter>Game\Common\ExitController</Filter>
+      <Filter>Game\Common\Gameplay\ExitController</Filter>
     </ClCompile>
     <ClCompile Include="Game\GameObjects\Common\GameObject.cpp">
       <Filter>Game\GameObjects\Common\GameObject</Filter>
@@ -996,7 +1019,7 @@
       <Filter>Game\GameObjects\Common\MovableObject</Filter>
     </ClCompile>
     <ClCompile Include="Game\Common\ResourceManager\ResourceManager.cpp">
-      <Filter>Game\Common\ResourceManager</Filter>
+      <Filter>Game\Common\Framework\ResourceManager</Filter>
     </ClCompile>
     <ClCompile Include="Game\GameObjects\RopeObject\ParticleObject\ParticleObject.cpp">
       <Filter>Game\GameObjects\RopeObject\ParticleObject</Filter>
@@ -1020,22 +1043,22 @@
       <Filter>Game\GameObjects\Player</Filter>
     </ClCompile>
     <ClCompile Include="Game\Common\SimpleModel\SimpleModel.cpp">
-      <Filter>Game\Common\SimpleModel</Filter>
+      <Filter>Game\Common\Graphics\SimpleModel</Filter>
     </ClCompile>
     <ClCompile Include="Game\Common\Camera\Camera.cpp">
-      <Filter>Game\Common\Camera</Filter>
+      <Filter>Game\Common\Graphics\Camera</Filter>
     </ClCompile>
     <ClCompile Include="Game\Common\Camera\PlayerCamera\PlayerCamera.cpp">
-      <Filter>Game\Common\Camera\PlayerCamera</Filter>
+      <Filter>Game\Common\Graphics\Camera\PlayerCamera</Filter>
     </ClCompile>
     <ClCompile Include="Game\GameObjects\Player\PlayerController\PlayerController.cpp">
       <Filter>Game\GameObjects\Player\PlayerController</Filter>
     </ClCompile>
     <ClCompile Include="Game\Common\StateMachine\StateMachine.cpp">
-      <Filter>Game\Common\StateMachine</Filter>
+      <Filter>Game\Common\Framework\StateMachine</Filter>
     </ClCompile>
     <ClCompile Include="Game\Common\StateMachine\StateBase\StateBase.cpp">
-      <Filter>Game\Common\StateMachine\StateBase</Filter>
+      <Filter>Game\Common\Framework\StateMachine\StateBase</Filter>
     </ClCompile>
     <ClCompile Include="Game\GameObjects\Player\State\IdlePlayerState\IdlePlayerState.cpp">
       <Filter>Game\GameObjects\Player\State\Idle</Filter>
@@ -1065,10 +1088,10 @@
       <Filter>Game\GameObjects\StageObject\state\Thrown</Filter>
     </ClCompile>
     <ClCompile Include="Game\Common\EventSystem\EventData\EventData.cpp">
-      <Filter>Game\Common\EventSystem\EventData</Filter>
+      <Filter>Game\Common\Framework\EventSystem\EventData</Filter>
     </ClCompile>
     <ClCompile Include="Game\Common\EventSystem\EventSystem.cpp">
-      <Filter>Game\Common\EventSystem</Filter>
+      <Filter>Game\Common\Framework\EventSystem</Filter>
     </ClCompile>
     <ClCompile Include="Game\GameObjects\RopeObject\XPBDSimulator\Constraint\IConstraint.cpp">
       <Filter>Game\GameObjects\RopeObject\XPBDSimulator\Constraint</Filter>
@@ -1088,9 +1111,6 @@
     <ClCompile Include="Game\Scene\Loading\LoadingScreen.cpp">
       <Filter>Game\Scene\LoadingScreen</Filter>
     </ClCompile>
-    <ClCompile Include="Library\MyLib\DirectXMathUtils\DirectXMathUtils.cpp">
-      <Filter>Library\MyLib\DirectX\DirectXMathUtils</Filter>
-    </ClCompile>
     <ClCompile Include="Library\MyLib\MathUtils\MathUtils.cpp">
       <Filter>Library\MyLib\MathUtils</Filter>
     </ClCompile>
@@ -1104,16 +1124,16 @@
       <Filter>Game\GameObjects\Enemy\Behaviour\EnemyUpdateBehaviour\TrackingEnemyBehaviour</Filter>
     </ClCompile>
     <ClCompile Include="Game\Common\Helper\MovementHelper\MovementHelper.cpp">
-      <Filter>Game\Common\Helper\MovementHelper</Filter>
+      <Filter>Game\Common\Utillities\Helper\MovementHelper</Filter>
     </ClCompile>
     <ClCompile Include="Game\Common\Event\Messenger\GameFlowMessenger\GameFlowMessenger.cpp">
-      <Filter>Game\Common\Event\Messenger\GameFlowMessenger</Filter>
+      <Filter>Game\Common\Framework\Event\Messenger\GameFlowMessenger</Filter>
     </ClCompile>
     <ClCompile Include="Game\GameObjects\Treasure\Treasure.cpp">
       <Filter>Game\GameObjects\Treasure</Filter>
     </ClCompile>
     <ClCompile Include="Game\Common\Event\WireSystemObserver\WireSystemSubject.cpp">
-      <Filter>Game\Common\Event\WireSystemObserver</Filter>
+      <Filter>Game\Common\Framework\Event\WireSystemObserver</Filter>
     </ClCompile>
     <ClCompile Include="Game\Common\UserInterfaceTool\Canvas\Canvas.cpp">
       <Filter>Game\Common\UserInterfaceTool\Canvas</Filter>
@@ -1125,16 +1145,16 @@
       <Filter>Game\Common\UserInterfaceTool\SpriteAnimator</Filter>
     </ClCompile>
     <ClCompile Include="Game\Common\GameObjectManager\EnemyManager\EnemyManager.cpp">
-      <Filter>Game\Common\GameObjectManager\EnemyManager</Filter>
+      <Filter>Game\Common\Framework\GameObjectManager\EnemyManager</Filter>
     </ClCompile>
     <ClCompile Include="Game\Common\Factory\EnemyFactory\EnemyFactory.cpp">
       <Filter>Game\Common\Factory\EnemyFactory</Filter>
     </ClCompile>
     <ClCompile Include="Game\Common\SpawnManager\SpawnManager.cpp">
-      <Filter>Game\Common\SpawnManager</Filter>
+      <Filter>Game\Common\Gameplay\SpawnManager</Filter>
     </ClCompile>
     <ClCompile Include="Game\Common\GameObjectRegistry\GameObjectRegistry.cpp">
-      <Filter>Game\Common\GameObjectRigstry</Filter>
+      <Filter>Game\Common\Framework\GameObjectRigstry</Filter>
     </ClCompile>
     <ClCompile Include="Game\GameObjects\Prop\Base\IProp.cpp">
       <Filter>Game\GameObjects\Prop\Base</Filter>
@@ -1146,7 +1166,7 @@
       <Filter>Game\GameObjects\Prop\Buiding</Filter>
     </ClCompile>
     <ClCompile Include="Game\Common\Helper\PhysicsHelper\PhysicsHelper.cpp">
-      <Filter>Game\Common\Helper\PhysicsHelper</Filter>
+      <Filter>Game\Common\Utillities\Helper\PhysicsHelper</Filter>
     </ClCompile>
     <ClCompile Include="Game\GameObjects\Helicopter\EscapeHelicopter\EscapeHelicopter.cpp">
       <Filter>Game\GameObjects\Helicopter\EscapeHelicopter</Filter>
@@ -1158,7 +1178,7 @@
       <Filter>Library\MyLib\DirectX\DirectXMyToolKit</Filter>
     </ClCompile>
     <ClCompile Include="Game\Common\WireTargetFinder\WireTargetFinder.cpp">
-      <Filter>Game\Common\WireTargetFinder</Filter>
+      <Filter>Game\Common\Gameplay\WireTargetFinder</Filter>
     </ClCompile>
     <ClCompile Include="Game\GameObjects\Player\State\SteppingPlayerState\SteppingPlayerState.cpp">
       <Filter>Game\GameObjects\Player\State\Step</Filter>
@@ -1173,10 +1193,10 @@
       <Filter>Game\UI\Title\TitleMenu</Filter>
     </ClCompile>
     <ClCompile Include="Game\Common\Line2D\Line2D.cpp">
-      <Filter>Game\Common\Line2D</Filter>
+      <Filter>Game\Common\Graphics\Line2D</Filter>
     </ClCompile>
     <ClCompile Include="Game\Common\SoundManager\SoundManager.cpp">
-      <Filter>Game\Common\SoundManager</Filter>
+      <Filter>Game\Common\Framework\SoundManager</Filter>
     </ClCompile>
     <ClCompile Include="Game\Scene\ResultScene\State\SuccessResultState\SuccessResultState.cpp">
       <Filter>Game\Scene\ResultScene\State\SuccessResultState</Filter>
@@ -1196,14 +1216,14 @@
     <ClCompile Include="Game\Scene\GameplayScene\State\NormalGameplayState\NormalGameplayState.cpp">
       <Filter>Game\Scene\GameplayScene\State\Normal</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Scene\GameplayScene\State\PoseGameplayState\PoseGameplayState.cpp">
-      <Filter>Game\Scene\GameplayScene\State\Pose</Filter>
+    <ClCompile Include="Game\Scene\GameplayScene\State\PoseGameplayState\PauseGameplayState.cpp">
+      <Filter>Game\Scene\GameplayScene\State\Pause</Filter>
     </ClCompile>
-    <ClCompile Include="Game\UI\Pose\PoseMenu\PoseMenu.cpp">
-      <Filter>Game\UI\Pose\PoseMenu</Filter>
+    <ClCompile Include="Game\UI\Pose\PoseMenu\PauseMenu.cpp">
+      <Filter>Game\UI\Pause\PauseMenu</Filter>
     </ClCompile>
     <ClCompile Include="Game\Common\ResultData\ResultData.cpp">
-      <Filter>Game\Common\ResultData</Filter>
+      <Filter>Game\Common\Gameplay\ResultData</Filter>
     </ClCompile>
     <ClCompile Include="Game\UI\TutorialWindow\TutorialWindow.cpp">
       <Filter>Game\UI\Tutorial\TutorialWindow</Filter>
@@ -1212,7 +1232,7 @@
       <Filter>Game\Scene\TitleScene</Filter>
     </ClCompile>
     <ClCompile Include="Game\Common\Shadow\CircularShadow\CircularShadow.cpp">
-      <Filter>Game\Common\Shadow\CircularShadow</Filter>
+      <Filter>Game\Common\Graphics\Shadow\CircularShadow</Filter>
     </ClCompile>
     <ClCompile Include="Library\ImGui\imgui.cpp">
       <Filter>Library\ImGui</Filter>
@@ -1248,38 +1268,34 @@
       <Filter>Game\GameObjects\RopeObject\XPBDSimulator\Constraint\Factory</Filter>
     </ClCompile>
     <ClCompile Include="Game\Common\GameEffect\Base\GameEffectBase.cpp">
-      <Filter>Game\Common\GameEffect\Base</Filter>
+      <Filter>Game\Common\Graphics\GameEffect\Base</Filter>
     </ClCompile>
     <ClCompile Include="Game\Common\GameEffect\Base\IGameEffect.cpp">
-      <Filter>Game\Common\GameEffect\Base</Filter>
+      <Filter>Game\Common\Graphics\GameEffect\Base</Filter>
     </ClCompile>
     <ClCompile Include="Game\Common\GameEffect\GameEffectManager.cpp">
-      <Filter>Game\Common\GameEffect</Filter>
+      <Filter>Game\Common\Graphics\GameEffect</Filter>
     </ClCompile>
     <ClCompile Include="Game\Common\GameEffect\GameEffectController.cpp">
-      <Filter>Game\Common\GameEffect</Filter>
+      <Filter>Game\Common\Graphics\GameEffect</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Common\Camera\MainCamera\MainCamera.cpp" />
     <ClCompile Include="Game\Common\EntityManager\EntityManager.cpp">
-      <Filter>Game\Common\EntityManager</Filter>
+      <Filter>Game\Common\Framework\EntityManager</Filter>
     </ClCompile>
     <ClCompile Include="Game\Common\EntityManager\IEntity.cpp">
-      <Filter>Game\Common\EntityManager</Filter>
+      <Filter>Game\Common\Framework\EntityManager</Filter>
     </ClCompile>
     <ClCompile Include="Game\Manager\PlayerManager\PlayerManager.cpp">
-      <Filter>Game\Common\GameObjectManager\PlayerManager</Filter>
+      <Filter>Game\Common\Framework\GameObjectManager\PlayerManager</Filter>
     </ClCompile>
     <ClCompile Include="Game\GameObjects\Player\State\ShootingWireState\ShootingWirePlayerState.cpp">
       <Filter>Game\GameObjects\Player\State\ShootingWire</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Common\Input\InputActionType\InputActionType.cpp" />
-    <ClCompile Include="Game\Common\Input\InputBindingFactory\InputBindingFactory.cpp" />
-    <ClCompile Include="Game\Common\Input\InputSystem\InputSystem.cpp" />
     <ClCompile Include="Game\Manager\StageManager\StageManager.cpp">
-      <Filter>Game\Common\StageManager</Filter>
+      <Filter>Game\Common\Gameplay\StageManager</Filter>
     </ClCompile>
     <ClCompile Include="Game\Common\TaskManager\TaskManager.cpp">
-      <Filter>Game\Common\TaskManager</Filter>
+      <Filter>Game\Common\Framework\TaskManager</Filter>
     </ClCompile>
     <ClCompile Include="Library\DirectXFramework\RenderTexture.cpp">
       <Filter>Library\DirectXFramework\RenderTexture</Filter>
@@ -1312,13 +1328,13 @@
       <Filter>Game\GameObjects\Checkpoint</Filter>
     </ClCompile>
     <ClCompile Include="Game\Manager\CheckpointManager\CheckpointManager.cpp">
-      <Filter>Game\Common\GameObjectManager\CheckpointManager</Filter>
+      <Filter>Game\Common\Framework\GameObjectManager\CheckpointManager</Filter>
     </ClCompile>
     <ClCompile Include="Game\Common\GameProgressData\GameProgressData.cpp">
-      <Filter>Game\Common\GameProgressData</Filter>
+      <Filter>Game\Common\Gameplay\GameProgressData</Filter>
     </ClCompile>
     <ClCompile Include="Game\Common\GameDirector\GameDirector.cpp">
-      <Filter>Game\Common\GameDirector</Filter>
+      <Filter>Game\Common\Gameplay\GameDirector</Filter>
     </ClCompile>
     <ClCompile Include="Game\GameObjects\CheckPoint\CheckpointObject\CheckpointObject.cpp">
       <Filter>Game\GameObjects\Checkpoint\CheckpointObject</Filter>
@@ -1333,13 +1349,13 @@
       <Filter>Library\MyLib\NlohmannUtils</Filter>
     </ClCompile>
     <ClCompile Include="Game\Common\Behaviour\SteeringBehavior\SteeringBehavior.cpp">
-      <Filter>Game\Common\Behaviour</Filter>
+      <Filter>Game\Common\Gameplay\Behaviour</Filter>
     </ClCompile>
     <ClCompile Include="Game\Common\Behaviour\SteeringBehavior\SteeringParameters.cpp">
-      <Filter>Game\Common\Behaviour</Filter>
+      <Filter>Game\Common\Gameplay\Behaviour</Filter>
     </ClCompile>
     <ClCompile Include="Game\Manager\BuildingManager\BuildingManager.cpp">
-      <Filter>Game\Common\GameObjectManager\BuildingManager</Filter>
+      <Filter>Game\Common\Framework\GameObjectManager\BuildingManager</Filter>
     </ClCompile>
     <ClCompile Include="Game\Common\Minimap\Minimap.cpp">
       <Filter>Game\Common\Minimap</Filter>
@@ -1351,22 +1367,31 @@
       <Filter>Game\GameObjects\RopeObject\XPBDSimulator\Constraint\Factory</Filter>
     </ClCompile>
     <ClCompile Include="Game\Common\Collision\CollisionMatrix\CollisionMatrix.cpp">
-      <Filter>Game\Common\Collision</Filter>
+      <Filter>Game\Common\Utillities\Collision</Filter>
     </ClCompile>
     <ClCompile Include="Game\Common\Factory\CollisionMatrixFactory\CollisionMatrixFactory.cpp">
       <Filter>Game\Common\Factory\CollisionMatrixFactory</Filter>
     </ClCompile>
-    <ClCompile Include="Library\MyLib\FrameTimer\FrameTimer.cpp">
-      <Filter>Library\MyLib\FrameTimer</Filter>
-    </ClCompile>
     <ClCompile Include="Game\Common\TransitionMask\TransitionMask.cpp">
-      <Filter>Game\Common\TransitionMask</Filter>
+      <Filter>Game\Common\Graphics\TransitionMask</Filter>
     </ClCompile>
     <ClCompile Include="Game\Common\GameEffect\Effects\SimpleParticle\SimpleParticle.cpp">
-      <Filter>Game\Common\GameEffect\Effects\3D</Filter>
+      <Filter>Game\Common\Graphics\GameEffect\Effects\3D</Filter>
     </ClCompile>
     <ClCompile Include="Game\Common\GameEffect\Effects\ConcentrationLines\ConcentrationLines.cpp">
-      <Filter>Game\Common\GameEffect\Effects\2D</Filter>
+      <Filter>Game\Common\Graphics\GameEffect\Effects\2D</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Common\Input\InputActionType\InputActionType.cpp">
+      <Filter>Game\Common\Framework\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Common\Input\InputSystem\InputSystem.cpp">
+      <Filter>Game\Common\Framework\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Common\Camera\MainCamera\MainCamera.cpp">
+      <Filter>Game\Common\Graphics\Camera\MainCamera</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Common\Input\InputBindingFactory\InputBindingFactory.cpp">
+      <Filter>Game\Common\Factory\InputFactory</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -47,15 +47,7 @@ Game::Game() noexcept(false)
 
 Game::~Game()
 {
-    //// 例：デバイスを取得している場合
-    //ID3D11Debug* d3dDebug = nullptr;
-    //HRESULT hr = m_deviceResources->GetD3DDevice()->QueryInterface(__uuidof(ID3D11Debug), (void**)&d3dDebug);
-    //if (SUCCEEDED(hr) && d3dDebug)
-    //{
-    //    // 以下のフラグを指定することで、より詳細な情報を出力できる
-    //    d3dDebug->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL | D3D11_RLDO_SUMMARY);
-    //    d3dDebug->Release();
-    //}
+
     // フルスクリーン状態であれば、ウィンドウモードに戻す
     if (m_fullscreen && m_deviceResources->GetSwapChain())
     {
@@ -157,13 +149,13 @@ void Game::Initialize(HWND window, int width, int height)
     );
 
     // **** 初期化処理 ****
-    
     // シーンの共通リソースの設定
     m_sceneManager->SetCommonResources(m_commonResources.get());
 
     // 開始シーンの設定
     m_sceneManager->RequestSceneChange<TitleScene, LoadingScreen>();
 
+	// 画面クリア
     context->ClearRenderTargetView(m_deviceResources->GetRenderTargetView(), Colors::Black);
 
 
@@ -266,18 +258,16 @@ void Game::Render()
     // シーン管理の描画処理
     m_sceneManager->Render();
 
-    if (m_commonResources->IsCopyScreenRequest())
-    {
-        auto renderTarget = m_deviceResources->GetRenderTarget();
-        context->CopyResource(m_copyRenderTexture->GetRenderTarget(), renderTarget);
+	// 画面コピー要求の処理
+    TryCopyScreen(context);
 
-        m_commonResources->SetCopyScreenRequest(false);
-    }
+    // 終了していない場合描画する
     if (!m_transitionMask->IsEnd())
     {
         m_transitionMask->Draw(context, m_states.get(), m_copyRenderTexture->GetShaderResourceView(), m_deviceResources->GetOutputSize());
 
     }
+
     //// FPSを取得する
     //uint32_t fps = m_timer.GetFramesPerSecond();
 
@@ -445,6 +435,24 @@ void Game::CreateWindowSizeDependentResources()
     m_copyRenderTexture->SetWindow(rect);
 
 
+}
+
+// 画面コピー要求がある場合、画面をコピーする
+bool Game::TryCopyScreen(ID3D11DeviceContext1* context)
+{
+
+    // 画面コピー要求がある場合、画面をコピーする
+    if (m_commonResources->IsCopyScreenRequest())
+    {
+        auto renderTarget = m_deviceResources->GetRenderTarget();
+        context->CopyResource(m_copyRenderTexture->GetRenderTarget(), renderTarget);
+
+        m_commonResources->SetCopyScreenRequest(false);
+
+		return true;
+    }
+
+	return false;
 }
 
 void Game::OnDeviceLost()

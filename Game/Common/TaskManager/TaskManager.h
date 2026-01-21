@@ -100,7 +100,7 @@ public:
 	void SetOt(int ot) { this->m_ot = ot; }
 
 	// 描画順の取得関数
-	int GetOt() { return m_ot; }
+	int GetOt() const { return m_ot; }
 
 	// 指定したタスクの子供にする変更する関数
 	void ChangeParent(Task* parent);
@@ -142,7 +142,7 @@ class TaskManager
 private:
 #pragma region
 	// 描画順序管理テーブルへの登録用比較関数（otの値が大きい物が先頭へ）
-	struct greater_ot : std::binary_function<Task*, Task*, bool>
+	struct greater_ot 
 	{
 		bool operator()(Task* a, Task* b) const
 		{

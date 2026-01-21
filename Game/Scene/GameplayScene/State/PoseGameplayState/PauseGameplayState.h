@@ -21,7 +21,7 @@
 
 #include "Game/Common/StateMachine/StateBase/StateBase.h"
 #include "Game/Common/Line2D/Line2D.h"
-#include "Game/UI/Pose/PoseMenu/PoseMenu.h"
+#include "Game/UI/Pose/PoseMenu/PauseMenu.h"
 #include "Game/Common/Input/InputSystem/InputSystem.h"
 #include "Game/Common/Input/InputActionType/InputActionType.h"
 
@@ -44,8 +44,8 @@ public:
 
 
 	// --- 座標オフセット関連 ---
-	static constexpr float FONT_POSE_POS_X_OFFSET		= 160.0f;	///< 「POSE」フォントの左端からのX座標オフセット
-	static constexpr float FONT_POSE_POS_Y_OFFSET		= 100.0f;	///< 「POSE」フォントの下端からのY座標オフセット
+	static constexpr float FONT_PAUSE_POS_X_OFFSET		= 160.0f;	///< 「PAUSE」フォントの左端からのX座標オフセット
+	static constexpr float FONT_PAUSE_POS_Y_OFFSET		= 100.0f;	///< 「PAUSE」フォントの下端からのY座標オフセット
 	static constexpr float FONT_OPERATING_POS_X_OFFSET	= 450.0f;	///< 「操作説明」フォントの右端からのX座標オフセット
 	static constexpr float FONT_OPERATING_POS_Y_OFFSET	= 80.0f;	///< 「操作説明」フォントの上端からのY座標オフセット
 	static constexpr float OPERATING_UI_POS_X_OFFSET	= 300.0f;	///< 操作説明UIの右端からのX座標オフセット

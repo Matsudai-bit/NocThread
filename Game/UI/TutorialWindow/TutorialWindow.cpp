@@ -93,7 +93,7 @@ void TutorialWindow::Initialize(ResourceManager* pResourceManager, std::function
 	m_arrowSprite		->Initialize(pResourceManager->CreateTexture(TEXTURE_PATH_MAP.at(TextureID::UI_TUTORIAL_ARROW)));
 
 	// UI“ü—Í‚Ìì¬
-	m_uiInput = InputBindingFactory::CreateUIInput();
+	m_uiInput = InputBindingFactory::UIInputFactory().Create(DefaultSpawnDesc());
 }
 
 /**
