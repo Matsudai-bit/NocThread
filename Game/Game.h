@@ -18,8 +18,8 @@
 
 
 // フレームワーク
-#include "Game/Common/CommonResources/CommonResources.h"    // 共通リソース
-#include "Game/Common/ResourceManager/ResourceManager.h"    // リソース管理
+#include "Game/Common/Framework/CommonResources/CommonResources.h"    // 共通リソース
+#include "Game/Common/Framework/ResourceManager/ResourceManager.h"    // リソース管理
 #include "Game/Manager/SceneManager/SceneManager.h"         // シーン管理
 #include "Game/Common/TransitionMask/TransitionMask.h"      // トランジションマスク
 

@@ -21,16 +21,16 @@
 #include "Library/DirectXFramework/DebugDraw.h"         // デバック描画
 #include "Library/MyLib/DirectXMyToolKit/GridFloor/GridFloor.h"         // デバック床
 
-#include "Game/Common/TaskManager/TaskManager.h"// タスク（基底クラス）
+#include "Game/Common/Framework/TaskManager/TaskManager.h"// タスク（基底クラス）
 #include "Game/Common/Screen.h"
 
 
 // システム
-#include "Game/Common/CommonResources/CommonResources.h"                // 共通リソース
-#include "Game/Common/EventSystem/EventData/EventData.h"
-#include "Game/Common/EventSystem/EventSystem.h"
-#include "Game/Common/Event/Messenger/GameFlowMessenger/IGameFlowObserver.h"
-#include "Game/Common/StateMachine/StateMachine.h"
+#include "Game/Common/Framework/CommonResources/CommonResources.h"                // 共通リソース
+#include "Game/Common/Framework/EventSystem/EventData/EventData.h"
+#include "Game/Common/Framework/EventSystem/EventSystem.h"
+#include "Game/Common/Framework/Event/Messenger/GameFlowMessenger/IGameFlowObserver.h"
+#include "Game/Common/Framework/StateMachine/StateMachine.h"
 #include "Game/Common/ElapsedTimeCounter/ElapsedTimeCounter.h"
 
 

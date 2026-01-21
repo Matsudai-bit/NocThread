@@ -31,7 +31,7 @@
 
 #include "Game/Common/ResultData/ResultData.h"
 
-#include "Game/Common/Input/InputBindingFactory/InputBindingFactory.h"
+#include "Game/Common/Factory/InputBindingFactory/InputBindingFactory.h"
 
 // èÛë‘
 #include "Game/Scene/ResultScene/State/SuccessResultState/SuccessResultState.h"

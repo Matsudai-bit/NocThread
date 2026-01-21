@@ -14,8 +14,8 @@
 
 // ヘッダファイルの読み込み ===================================================
 #include "Game/Common/UserInterfaceTool/Sprite/ISprite2D.h"
-#include "Game/Common/Input/InputSystem/InputSystem.h"
-#include "Game/Common/Input/InputActionType/InputActionType.h"
+#include "Game/Common/Framework/Input/InputSystem/InputSystem.h"
+#include "Game/Common/Framework/Input/InputActionType/InputActionType.h"
 
 #include <memory>
 #include <vector>

@@ -13,7 +13,7 @@
 
 
 // ヘッダファイルの読み込み ===================================================
-#include "Game/Common/StateMachine/StateBase/StateBase.h"
+#include "Game/Common/Framework/StateMachine/StateBase/StateBase.h"
 #include "Game/Common/GameEffect/GameEffectController.h"
 #include "Game/Common/GameEffect/Effects/ConcentrationLines/ConcentrationLines.h"
 

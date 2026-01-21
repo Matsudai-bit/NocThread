@@ -16,11 +16,12 @@
 #include <typeindex>
 #include <unordered_map>
 #include "Game/Common/Collision/ICollision.h"
-#include "Game/Common/EventSystem/EventSystem.h"
+#include "Game/Common/Framework/EventSystem/EventSystem.h"
 #include "Game/GameObjects/Common/GameObjectEvent/GameObjectEvent.h"
-#include "Game/Common/EntityManager/IEntity.h"
+#include "Game/Common/Framework/EntityManager/IEntity.h"
 
-#include "Game/Common/TaskManager/TaskManager.h"
+#include "Game/Common/Framework/TaskManager/TaskManager.h"
+
 #include "Game/GameObjects/Common/Transform/Transform.h"
 
 

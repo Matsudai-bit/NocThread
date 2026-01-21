@@ -20,10 +20,10 @@
 #include "Library/MyLib/DirectXMathUtils/DirectXMathUtils.h"
 #include "Library/MyLib/MathUtils/MathUtils.h"
 
-#include "Game/Common/CommonResources/CommonResources.h"
+#include "Game/Common/Framework/CommonResources/CommonResources.h"
 #include "Library/MyLib/DirectXMyToolKit/DebugFont/DebugFont.h"
 
-#include "Game/Common/Event/Messenger/GameFlowMessenger/GameFlowMessenger.h"
+#include "Game/Common/Framework/Event/Messenger/GameFlowMessenger/GameFlowMessenger.h"
 
 using namespace DirectX;
 

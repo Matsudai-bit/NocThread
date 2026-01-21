@@ -987,7 +987,7 @@
     <ClInclude Include="Game\Common\Camera\MainCamera\MainCamera.h">
       <Filter>Game\Common\Graphics\Camera\MainCamera</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Common\Input\InputBindingFactory\InputBindingFactory.h">
+    <ClInclude Include="Game\Common\Factory\InputBindingFactory\InputBindingFactory.h">
       <Filter>Game\Common\Factory\InputFactory</Filter>
     </ClInclude>
   </ItemGroup>
@@ -1390,7 +1390,7 @@
     <ClCompile Include="Game\Common\Camera\MainCamera\MainCamera.cpp">
       <Filter>Game\Common\Graphics\Camera\MainCamera</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Common\Input\InputBindingFactory\InputBindingFactory.cpp">
+    <ClCompile Include="Game\Common\Factory\InputBindingFactory\InputBindingFactory.cpp">
       <Filter>Game\Common\Factory\InputFactory</Filter>
     </ClCompile>
   </ItemGroup>

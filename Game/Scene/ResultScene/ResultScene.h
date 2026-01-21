@@ -16,10 +16,10 @@
 
 // ヘッダファイルの読み込み ===================================================
 #include "Game/Manager/SceneManager/SceneManager.h"
-#include "Game/Common/StateMachine/StateMachine.h"
+#include "Game/Common/Framework/StateMachine/StateMachine.h"
 
-#include "Game/Common/Input/InputSystem/InputSystem.h"
-#include "Game/Common/Input/InputActionType/InputActionType.h"
+#include "Game/Common/Framework/Input/InputSystem/InputSystem.h"
+#include "Game/Common/Framework/Input/InputActionType/InputActionType.h"
 
 // クラスの宣言 ===============================================================
 class CommonResources;  // 共通リソース

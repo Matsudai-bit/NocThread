@@ -16,10 +16,10 @@
 #include <vector>
 #include <memory>
 #include <functional>
-#include "Game/Common/Event/Messenger/GameFlowMessenger/IGameFlowObserver.h"
+#include "Game/Common/Framework/Event/Messenger/GameFlowMessenger/IGameFlowObserver.h"
 #include "Game/Common/ElapsedTimeCounter/ElapsedTimeCounter.h"
 
-#include "Game/Common/TaskManager/TaskManager.h"
+#include "Game/Common/Framework/TaskManager/TaskManager.h"
 
 // ƒNƒ‰ƒX‚Ì‘O•ûéŒ¾ ===================================================
 class EnemyManager;		// “GŠÇ—

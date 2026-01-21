@@ -13,7 +13,7 @@
 #include "Game/GameObjects/Player/Player.h"
 #include "Game/Common/Camera/Camera.h"
 
-#include "Game/Common/Input/InputBindingFactory/InputBindingFactory.h"
+#include "Game/Common/Factory/InputBindingFactory/InputBindingFactory.h"
 
 using namespace DirectX;
 

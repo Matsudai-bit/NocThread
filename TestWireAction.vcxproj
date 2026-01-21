@@ -213,6 +213,7 @@
     <ClInclude Include="Game\Common\Factory\EnemyFactory\EnemyFactory.h" />
     <ClInclude Include="Game\Common\Factory\EnemyFactory\IEnemyFactory\IEnemyFactory.h" />
     <ClInclude Include="Game\Common\Factory\FactoryBase.h" />
+    <ClInclude Include="Game\Common\Factory\InputBindingFactory\InputBindingFactory.h" />
     <ClInclude Include="Game\Common\Factory\PlayerFactory\PlayerFactory.h" />
     <ClInclude Include="Game\Common\GameDirector\GameDirector.h" />
     <ClInclude Include="Game\Common\GameEffect\Base\GameEffectBase.h" />
@@ -227,7 +228,6 @@
     <ClInclude Include="Game\Common\Helper\MovementHelper\MovementHelper.h" />
     <ClInclude Include="Game\Common\Helper\PhysicsHelper\PhysicsHelper.h" />
     <ClInclude Include="Game\Common\Input\InputActionType\InputActionType.h" />
-    <ClInclude Include="Game\Common\Input\InputBindingFactory\InputBindingFactory.h" />
     <ClInclude Include="Game\Common\Input\InputSystem\InputSystem.h" />
     <ClInclude Include="Game\Common\Line2D\Line2D.h" />
     <ClInclude Include="Game\Common\Minimap\Minimap.h" />
@@ -363,6 +363,7 @@
     <ClCompile Include="Game\Common\Factory\BuildingFactory\BuildingFactory.cpp" />
     <ClCompile Include="Game\Common\Factory\CollisionMatrixFactory\CollisionMatrixFactory.cpp" />
     <ClCompile Include="Game\Common\Factory\EnemyFactory\EnemyFactory.cpp" />
+    <ClCompile Include="Game\Common\Factory\InputBindingFactory\InputBindingFactory.cpp" />
     <ClCompile Include="Game\Common\Factory\PlayerFactory\PlayerFactory.cpp" />
     <ClCompile Include="Game\Common\GameDirector\GameDirector.cpp" />
     <ClCompile Include="Game\Common\GameEffect\Base\GameEffectBase.cpp" />
@@ -377,7 +378,6 @@
     <ClCompile Include="Game\Common\Helper\MovementHelper\MovementHelper.cpp" />
     <ClCompile Include="Game\Common\Helper\PhysicsHelper\PhysicsHelper.cpp" />
     <ClCompile Include="Game\Common\Input\InputActionType\InputActionType.cpp" />
-    <ClCompile Include="Game\Common\Input\InputBindingFactory\InputBindingFactory.cpp" />
     <ClCompile Include="Game\Common\Input\InputSystem\InputSystem.cpp" />
     <ClCompile Include="Game\Common\Line2D\Line2D.cpp" />
     <ClCompile Include="Game\Common\Minimap\Minimap.cpp" />

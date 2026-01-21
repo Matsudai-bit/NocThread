@@ -21,7 +21,7 @@
 #include "Game/Common/ElapsedTimeCounter/ElapsedTimeCounter.h"
 
 #include "Game/Common/Input/InputSystem/InputSystem.h"
-#include "Game/Common/Input/InputBindingFactory/InputBindingFactory.h"
+#include "Game/Common/Factory/InputBindingFactory/InputBindingFactory.h"
 
 // クラスの前方宣言 ===================================================
 class SimParticle; // シミュレーションのパーティクル

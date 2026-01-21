@@ -19,7 +19,7 @@
 #include "Game/Common/ResourceManager/ResourceManager.h"
 #include "Game/Common/Screen.h"
 #include "Library/DirectXFramework/DeviceResources.h"
-#include "Game/Common/Input/InputBindingFactory/InputBindingFactory.h"
+#include "Game/Common/Factory/InputBindingFactory/InputBindingFactory.h"
 
 
 #include "Game/UI/TutorialWindow/TutorialWindow.h"

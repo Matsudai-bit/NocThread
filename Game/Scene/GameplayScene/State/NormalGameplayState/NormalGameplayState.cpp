@@ -14,7 +14,7 @@
 #include "Game/Scene/GameplayScene/GameplayScene.h"
 #include "Game/Scene/GameplayScene/State/PoseGameplayState/PauseGameplayState.h"
 #include "Game/Common/CommonResources/CommonResources.h"
-#include "Game/Common/Input/InputBindingFactory/InputBindingFactory.h"
+#include "Game/Common/Factory/InputBindingFactory/InputBindingFactory.h"
 
 #include "Game/Common/UserInterfaceTool/Canvas/Canvas.h"
 #include "Game/Common/UserInterfaceTool/Sprite/Sprite.h"

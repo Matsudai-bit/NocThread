@@ -15,7 +15,7 @@
 
 #include "Game/Common/Helper/PhysicsHelper/PhysicsHelper.h"
 
-#include "Game/Common/Event/Messenger/GameFlowMessenger/IGameFlowObserver.h"
+#include "Game/Common/Framework/Event/Messenger/GameFlowMessenger/IGameFlowObserver.h"
 
 class Player;
 class CollisionManager;

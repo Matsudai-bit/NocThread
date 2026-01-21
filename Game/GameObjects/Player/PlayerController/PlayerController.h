@@ -14,8 +14,8 @@
 
 // ヘッダファイルの読み込み ===================================================
 #include <memory>
-#include "Game/Common/Input/InputSystem/InputSystem.h"
-#include "Game/Common/Input/InputActionType/InputActionType.h"
+#include "Game/Common/Framework/Input/InputSystem/InputSystem.h"
+#include "Game/Common/Framework/Input/InputActionType/InputActionType.h"
 
 // クラスの前方宣言 ===================================================
 class Player;	// プレイヤー

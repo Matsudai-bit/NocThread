@@ -18,7 +18,7 @@
 #include <algorithm>     // std::sort のために必要
 
 // EventData.h 
-#include "Game/Common/EventSystem/EventData/EventData.h"
+#include "Game/Common/Framework/EventSystem/EventData/EventData.h"
 
 // クラスの前方宣言 ===================================================
 // 必要に応じてここに前方宣言を追加

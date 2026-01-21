@@ -17,7 +17,7 @@
 #include "Game/Common/ResourceManager/ResourceManager.h"
 #include "Game/Common/UserInterfaceTool/Sprite/Sprite.h"
 #include "Game/Common/UserInterfaceTool/Canvas/Canvas.h"
-#include "Game/Common/Input/InputBindingFactory/InputBindingFactory.h"
+#include "Game/Common/Factory/InputBindingFactory/InputBindingFactory.h"
 
 #include "Library/MyLib/EasingKit/EasingKit.h"
 #include <Game\Common\SoundManager\SoundManager.h>
