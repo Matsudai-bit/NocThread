@@ -93,7 +93,7 @@ void PauseMenu::Initialize(Canvas* pCanvas, const CommonResources* pCommonResour
 
 	auto fixedMargin = SimpleMath::Vector2(FIXED_POS_X_OFFSET, FIXED_POS_Y_OFFSET) * screen->GetScreenScale();
 
-	// 座標の設定 (ループは簡潔に)
+	// 座標の設定
 	for (int i = 0; i < m_pauseFontSprites.size(); i++)
 	{
 		// 各スプライトのY座標を計算

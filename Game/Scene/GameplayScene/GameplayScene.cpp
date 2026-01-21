@@ -14,7 +14,6 @@
 #include "GameplayScene.h"
 
 // ライブラリ
-#include "Game/Common/TaskManager/TaskManager.h"
 // DirectX系
 #include "Library/DirectXFramework/DeviceResources.h"
 
@@ -37,6 +36,7 @@
 #include "Game/Scene/Loading/LoadingScreen.h"
 #include "Game/Common/GameEffect/GameEffectController.h"
 #include "Game/Common/SpawnManager/SpawnManager.h"
+#include "Game/Common/TaskManager/TaskManager.h"
 
 // ミニマップ
 #include "Game/Common/MiniMap/MiniMap.h"
@@ -161,7 +161,7 @@ void GameplayScene::Finalize()
  */
 void GameplayScene::ResolveEvents()
 {
-	auto copy = m_eventStack;
+	std::vector <std::function<void()>> copy = m_eventStack;
 
 	m_eventStack.clear();
 	// イベントスタックの解消(仮実装)

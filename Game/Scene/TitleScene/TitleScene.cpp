@@ -156,44 +156,20 @@ void TitleScene::Initialize()
  */
 void TitleScene::Update(float deltaTime)
 {
-	UNREFERENCED_PARAMETER(deltaTime);
+	// ロゴの演出更新
+	UpdateLogoOpacity(deltaTime);
 
-	// ロゴの透過イージング
-	float opacity = MyLib::EaseInOutQuint(m_ElapsedTimeCounter.GetElapsedTime() / LOGO_EASING_TIME);
-	if (m_ElapsedTimeCounter.GetElapsedTime() <= LOGO_EASING_TIME)
+	// メインコンテンツ（メニュー or チュートリアル）の更新
+	if (m_isDisplayingTutorialWindow)
 	{
-		m_ElapsedTimeCounter.UpperTime(deltaTime);
+		UpdateTutorialWindow(deltaTime);
 	}
 	else
 	{
-		opacity = 1.0f;
+		UpdateTitleMenu(deltaTime);
 	}
 
-	m_logoSprite->SetOpacity(opacity);
-
-	// 座標の算出
-	SimpleMath::Vector2 fontSpritePos = SimpleMath::Vector2::Zero;
-
-
-	if (m_isDisplayingTutorialWindow == false)
-	{
-		if (GetCommonResources()->GetTransitionMask()->IsEnd())
-		{
-			// タイトルメニューの更新処理
-			m_titleMenu->Update(deltaTime);
-
-		}
-	}
-	else
-	{
-		m_tutorialWindow->Update(
-			deltaTime,
-			GetCommonResources()->GetKeyboardTracker(),
-			GetCommonResources()->GetMouseTracker(),
-			GetCommonResources()->GetGamePadTracker());
-	}
-
-	// ガイドUIの変更を試みる
+	// ガイドUIの更新
 	TryChangeCurrentGuideUI();
 }
 
@@ -208,13 +184,16 @@ void TitleScene::Update(float deltaTime)
  */
 void TitleScene::Render()
 {
+	// 終了していなければ強制退避
 	if (m_isQuit && GetCommonResources()->GetTransitionMask()->IsEnd())
 	{
 		return;
 	}
 
+	// キャンバスの描画
 	m_canvas->DrawContents();
 
+	// メインコンテンツの描画
 	if (m_isDisplayingTutorialWindow == false)
 	{
 		m_titleMenu->Draw();
@@ -369,4 +348,59 @@ bool TitleScene::TryChangeCurrentGuideUI()
 	}
 
 	return false;
+}
+
+/**
+ * @brief ロゴの透過イージングの更新処理
+ *
+ * @param[in] deltaTime 経過時間
+ */
+void TitleScene::UpdateLogoOpacity(float deltaTime)
+{
+	float ratio = m_ElapsedTimeCounter.GetElapsedTime() / LOGO_EASING_TIME;
+	float opacity = MyLib::EaseInOutQuint(ratio);
+
+	if (m_ElapsedTimeCounter.GetElapsedTime() <= LOGO_EASING_TIME)
+	{
+		m_ElapsedTimeCounter.UpperTime(deltaTime);
+	}
+	else
+	{
+		opacity = 1.0f;
+	}
+
+	m_logoSprite->SetOpacity(opacity);
+}
+
+/**
+ * @brief タイトルメニューの更新処理
+ *
+ * @param[in] deltaTime 経過時間
+ */
+void TitleScene::UpdateTitleMenu(float deltaTime)
+{
+	// 画面遷移（フェードなど）が終わっているか確認
+	if (!GetCommonResources()->GetTransitionMask()->IsEnd())
+	{
+		return;
+	}
+
+	m_titleMenu->Update(deltaTime);
+}
+
+/**
+ * @brief チュートリアルウィンドウの更新処理
+ *
+ * @param[in] deltaTime 経過時間
+ */
+void TitleScene::UpdateTutorialWindow(float deltaTime)
+{
+	auto* common = GetCommonResources();
+
+	m_tutorialWindow->Update(
+		deltaTime,
+		common->GetKeyboardTracker(),
+		common->GetMouseTracker(),
+		common->GetGamePadTracker()
+	);
 }

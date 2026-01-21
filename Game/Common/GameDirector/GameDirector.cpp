@@ -71,16 +71,15 @@ bool GameDirector::UpdateTask(float deltaTime)
 {
 	UNREFERENCED_PARAMETER(deltaTime);
 
-	if (m_isFadeOutInProgress)
+	// フェードアウト中か確認する
+	if (m_isFadeOutInProgress && m_pCommonResources->GetTransitionMask()->IsEnd())
 	{
-		if (m_pCommonResources->GetTransitionMask()->IsEnd())
-		{
-			// フェードアウト完了後の処理
-			GameFlowMessenger::GetInstance()->Notify(GameFlowEventID::GAME_TRANSITION_FADING_FINISH);
-		}	
+		// フェードアウト完了後の処理
+		GameFlowMessenger::GetInstance()->Notify(GameFlowEventID::GAME_TRANSITION_FADING_FINISH);
+		
 	}
 	
-
+	// ゲームフローイベントの解消
 	ResolveGameFlowEvent();
 
 	return true;

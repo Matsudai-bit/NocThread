@@ -22,7 +22,7 @@
 #include "Game/GameObjects/RopeObject/RopeObject.h"						// ロープオブジェクト
 
 // ツール
-#include "Library/MyLib/Ray/Ray.h"
+#include "Library/MyLib/Ray/Ray.h"	// レイ
 
 // クラスの前方宣言 ===================================================
 class WireSystemSubject;	// ワイヤーオブザーバーの観察対象
@@ -84,8 +84,7 @@ private:
 
 	OwnerData m_owner;
 
-	// 仮
-	bool m_isExtention = false;
+	bool m_isExtending = false;	//< 伸長中フラグ
 
 	float m_lerpSpeed			= 0.0f;
 	float m_totalLerpTime	= 0.0f;
@@ -166,5 +165,9 @@ public:
 // 内部実装
 private:
 
+	// 伸長中の見た目（パーティクルとコライダ）を更新
+	void UpdateExtensionVisuals(const DirectX::SimpleMath::Vector3& start, const DirectX::SimpleMath::Vector3& tip);
 
+	// 伸長完了時の処理
+	void OnExtensionComplete(const DirectX::SimpleMath::Vector3& start);
 };

@@ -50,7 +50,7 @@ Wire::Wire()
 	, m_owner{}
 	, m_length {}
 	, m_wireSpeed{ 0.f }
-	, m_isExtention{ false }
+	, m_isExtending{ false }
 {
 
 }
@@ -78,20 +78,20 @@ Wire::~Wire()
  * @param[out] wireSystemSubject ワイヤーシステムの観察者
  */
 void Wire::Initialize(
-	const CommonResources*	pCommonResources,
-	CollisionManager*	pCollisionManager,
+	const CommonResources* pCommonResources,
+	CollisionManager* pCollisionManager,
 	const XPBDSimulator::Parameter& simulationParam,
 	const float& length,
-	const GameObject*	pOwnerGameObject,
+	const GameObject* pOwnerGameObject,
 	const MovableObject* pMovableObject,
-	IWireHolder*		pHolderInterface,
-	WireSystemSubject*	wireSystemSubject)
+	IWireHolder* pHolderInterface,
+	WireSystemSubject* wireSystemSubject)
 {
 	// リソース管理の設定
 	SetCommonResources(pCommonResources);
 
-	m_owner.pGameObject		= pOwnerGameObject;
-	m_owner.pMovableObject	= pMovableObject;
+	m_owner.pGameObject = pOwnerGameObject;
+	m_owner.pMovableObject = pMovableObject;
 	m_owner.pHolderInterface = pHolderInterface;
 
 	// ワイヤーシステムの観察対象を設定
@@ -111,19 +111,23 @@ void Wire::Initialize(
 	m_simulator = std::make_unique<XPBDSimulator>();
 	// **** 制約の追加 ****
 	// 操舵制約
-	m_simulator->AddConstraint(std::make_unique<SteeringConstraintFactory> (GetCommonResources()));	
+	m_simulator->AddConstraint(std::make_unique<SteeringConstraintFactory>(GetCommonResources()));
 	// 距離制約
-	m_simulator->AddConstraint(std::make_unique<DistanceConstraintFactory> ());						
+	m_simulator->AddConstraint(std::make_unique<DistanceConstraintFactory>());
 	// 衝突制約
-	m_simulator->AddConstraint(std::make_unique<CollisionConstraintFactory>(m_pCollisionManager));	
+	m_simulator->AddConstraint(std::make_unique<CollisionConstraintFactory>(m_pCollisionManager));
 
 
+	// 長さの設定
 	m_length = length;
 
+	// シミュレーションパラメータの設定
 	m_simulationParam = simulationParam;
 
+	// 初期状態は非アクティブ
 	m_isActive = false;
 
+	// 衝突管理者の設定
 	m_simulator->SetCollisionManager(pCollisionManager);
 
 }
@@ -140,41 +144,28 @@ void Wire::Initialize(
 void Wire::Update(float deltaTime)
 {
 	using namespace DirectX::SimpleMath;
+	// 伸長中（Extension）でなければ何もしない（早期リターン）
+	if (!m_isExtending) return;
 
-	if (m_isExtention)
+	using namespace DirectX::SimpleMath;
+
+	// 基本情報の取得と計算
+	const Vector3& ownerPos = m_owner.pGameObject->GetTransform()->GetPosition();
+
+	// 進捗（0.0 ~ 1.0）の更新
+	m_totalLerpTime += m_lerpSpeed * deltaTime;
+	m_totalLerpTime = std::min(m_totalLerpTime, 1.0f);
+
+	// 現在の先端座標を計算
+	Vector3 currentTipPos = Vector3::Lerp(ownerPos, m_wireTargetPosition, m_totalLerpTime);
+
+	// オブジェクトの更新（先端・根元・コライダ）
+	UpdateExtensionVisuals(ownerPos, currentTipPos);
+
+	// 完了判定
+	if (m_totalLerpTime >= 1.0f)
 	{
-
-		//// 最後尾（飛んでいる）のパーティクルを取得する
-		auto particle = m_ropeObject->GetParticles()->back();
-
-		// lerpTimeの更新
-		m_totalLerpTime += m_lerpSpeed * deltaTime;
-
-
-		m_totalLerpTime = std::min(m_totalLerpTime, 1.0f);
-	
-		auto pos = Vector3::Lerp(m_owner.pGameObject->GetTransform()->GetPosition(), m_wireTargetPosition, m_totalLerpTime);
-
-		particle->SetPosition(pos);
-		m_ropeObject->GetParticles()->front()->SetPosition(m_owner.pGameObject->GetTransform()->GetPosition());
-		m_collider->Set(m_owner.pGameObject->GetTransform()->GetPosition(), pos,true);
-
-		if (m_totalLerpTime >= 1.0f)
-		{
-
-
-			// **** ワイヤーの作成 *****
-			if (CreateRope(m_owner.pGameObject->GetTransform()->GetPosition(), m_wireTargetPosition, m_simulationParam, 0.8f))
-			{
-
-				m_owner.pHolderInterface->OnCollisionWire(nullptr);
-				m_isExtention = false;
-			}
-			m_isExtention = false;
-//			Reset();
-
-		}
-
+		OnExtensionComplete(ownerPos);
 	}
 
 }
@@ -201,7 +192,7 @@ void Wire::Draw(const Camera& camera)
 	static bool debug = false;
 	auto kb = GetCommonResources()->GetKeyboardTracker();
 
-	if (kb->IsKeyPressed( Keyboard::U)) debug = !debug;
+	if (kb->IsKeyPressed(Keyboard::U)) debug = !debug;
 
 	if (debug)
 	{
@@ -254,7 +245,7 @@ void Wire::Finalize()
 
 /**
  * @brief リセット
- * 
+ *
  */
 void Wire::Reset()
 {
@@ -263,7 +254,7 @@ void Wire::Reset()
 
 	m_particleObjects.clear();
 
-	m_isExtention = false;
+	m_isExtending = false;
 
 	m_isActive = false;
 
@@ -274,7 +265,7 @@ void Wire::Reset()
 
 /**
  * @brief シミュレータの適用
- * 
+ *
  * @param[in] deltaTime　経過時間
  */
 void Wire::ApplyWireSimulator(const float& deltaTime)
@@ -285,7 +276,7 @@ void Wire::ApplyWireSimulator(const float& deltaTime)
 
 /**
  * @brief ワイヤーの発射
- * 
+ *
  * @param[in] origin	   発射地点
  * @param[in] wireVelocity ワイヤー速度
  */
@@ -298,10 +289,10 @@ void Wire::ShootWire(const DirectX::SimpleMath::Vector3& origin, const DirectX::
 	m_extentionRay.direction.Normalize();
 
 	m_isActive = true;
-	m_isExtention = true;
+	m_isExtending = true;
 	m_wireVelocity = wireVelocity;
 
-	m_collider->Set(origin, origin,true);
+	m_collider->Set(origin, origin, true);
 
 	m_pCollisionManager->AddCollisionData(CollisionData(this, m_collider.get()));
 
@@ -332,7 +323,7 @@ void Wire::ShootWireToTarget(const DirectX::SimpleMath::Vector3& origin, const D
 	m_wireSpeed = speed;
 
 	m_isActive = true;
-	m_isExtention = true;
+	m_isExtending = true;
 	m_wireVelocity = direction;
 
 	m_collider->Set(origin, origin, true);
@@ -371,7 +362,7 @@ bool Wire::CreateRope(const DirectX::SimpleMath::Vector3& origin, const DirectX:
 
 	if (particleNum <= 0) { return true; }
 
-	int particleNumTmp = particleNum /2 ;
+	int particleNumTmp = particleNum / 2;
 
 	// 配列をリセット
 	m_particleObjects.clear();
@@ -392,7 +383,7 @@ bool Wire::CreateRope(const DirectX::SimpleMath::Vector3& origin, const DirectX:
 
 		float mass = (5.0f / particleNumTmp) * (1 + particleNumTmp - i);
 		m_particleObjects.back()->SetMass(5.0f + mass);
-		m_particleObjects.back()->SetVelocity(m_owner.pMovableObject->GetVelocity() * (static_cast<float>(i) + 1.0f )/ static_cast<float>(particleNumTmp));
+		m_particleObjects.back()->SetVelocity(m_owner.pMovableObject->GetVelocity() * (static_cast<float>(i) + 1.0f) / static_cast<float>(particleNumTmp));
 
 
 
@@ -413,7 +404,7 @@ bool Wire::CreateRope(const DirectX::SimpleMath::Vector3& origin, const DirectX:
 
 	}
 
-	
+
 
 	//m_collider->Set(origin, origin,true);
 
@@ -453,18 +444,18 @@ bool Wire::CreateRope(const DirectX::SimpleMath::Vector3& origin, const DirectX:
 
 /**
  * @brief 衝突処理
- * 
+ *
  * @param[in] info 衝突情報
  */
 void Wire::OnCollision(const CollisionInfo& info)
 {
 	UNREFERENCED_PARAMETER(info);
-	
+
 }
 
 /**
  * @brief ワイヤーの終端座標の取得
- * 
+ *
  * @return 終端座標
  */
 DirectX::SimpleMath::Vector3 Wire::GetEndPosition() const
@@ -472,16 +463,31 @@ DirectX::SimpleMath::Vector3 Wire::GetEndPosition() const
 	return m_ropeObject->GetParticles()->back()->GetPosition();
 }
 
+/**
+ * @brief ワイヤーの始端速度の取得
+ *
+ * @return 始端速度
+ */
 DirectX::SimpleMath::Vector3 Wire::GetStartVelocity() const
 {
 	return m_ropeObject->GetParticles()->back()->GetVelocity();
 }
 
+/**
+ * @brief ワイヤーの終端速度の取得
+ *
+ * @return 終端速度
+ */
 ParticleObject* Wire::GetBackPivot() const
 {
 	return m_ropeObject->GetParticles()->back();
 }
 
+/**
+ * @brief ワイヤーの始端速度の取得
+ *
+ * @return 始端速度
+ */
 ParticleObject* Wire::GetFrontPivot() const
 {
 	return m_ropeObject->GetParticles()->front();
@@ -489,11 +495,49 @@ ParticleObject* Wire::GetFrontPivot() const
 
 /**
  * @brief 原点座標の設定
- * 
+ *
  * @param[in] origin
  */
 void Wire::SetOriginPosition(const DirectX::SimpleMath::Vector3& origin)
 {
 	m_extentionRay.origin = origin;
+}
+
+/**
+ * @brief ワイヤー伸長中のビジュアル更新
+ *
+ * @param[in] start ワイヤー開始位置
+ * @param[in] tip   ワイヤー先端位置
+ */
+void Wire::UpdateExtensionVisuals(const DirectX::SimpleMath::Vector3& start, const DirectX::SimpleMath::Vector3& tip)
+{
+	// 先端（飛んでいるパーティクル）
+	if (auto particles = m_ropeObject->GetParticles(); !particles->empty())
+	{
+		particles->back()->SetPosition(tip);
+		particles->front()->SetPosition(start);
+	}
+
+	// コライダの更新
+	m_collider->Set(start, tip, true);
+}
+
+/**
+ * @brief ワイヤー伸長完了時の処理
+ *
+ * @param[in] start ワイヤー開始位置
+ */
+void Wire::OnExtensionComplete(const DirectX::SimpleMath::Vector3& start)
+{
+	// ロープの実体を作成
+	const float initialLength = 0.8f;
+	if (CreateRope(start, m_wireTargetPosition, m_simulationParam, initialLength))
+	{
+		// 衝突通知
+		m_owner.pHolderInterface->OnCollisionWire(nullptr);
+	}
+
+	// 伸長フラグをオフにする（失敗してもオフにする）
+	m_isExtending = false;
 }
 

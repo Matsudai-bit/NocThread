@@ -127,4 +127,12 @@ private:
 	// 現在のガイドUIの変更を試みる
 	bool TryChangeCurrentGuideUI();
 
+	// ロゴの不透明度を更新する
+	void UpdateLogoOpacity(float deltaTime);
+
+	// タイトルメニューの更新処理
+	void UpdateTitleMenu(float deltaTime);
+
+	// チュートリアルウィンドウの更新処理
+	void UpdateTutorialWindow(float deltaTime);
 };
