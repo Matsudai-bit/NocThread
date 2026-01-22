@@ -10,9 +10,12 @@
 #include "pch.h"
 #include "EnemyManager.h"
 
-#include "Game/GameObjects/Enemy/IEnemy.h"
 
-#include "Game/Common/Event/Messenger/GameFlowMessenger/GameFlowMessenger.h"
+// フレームワーク関連
+#include "Game/Common/Framework/Event/Messenger/GameFlowMessenger/GameFlowMessenger.h"
+
+// ゲームオブジェクト関連
+#include "Game/GameObjects/Enemy/IEnemy.h"
 
 // メンバ関数の定義 ===========================================================
 /**

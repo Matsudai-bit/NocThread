@@ -10,15 +10,24 @@
 #include "pch.h"
 #include "ShootingWirePlayerState.h"
 
+
+// ライブラリ関連
+#include "Library/MyLib/DirectXMyToolKit/DebugFont/DebugFont.h"
+
+// フレームワーク関連
+#include "Game/Common/Framework/Input/InputSystem/InputSystem.h"
+#include "Game/Common/Framework/Input/InputActionType/InputActionType.h"
+
+// ゲームオブジェクト関連
+#include "Game/GameObjects/Wire/Wire.h"
 #include "Game/GameObjects/Player/Player.h"
+
+// プレイヤー状態関連
 #include "Game/GameObjects/Player/State/IdlePlayerState/IdlePlayerState.h"
 #include "Game/GameObjects/Player/State/WireActionPlayerState/WireActionPlayerState.h"
-#include "Game/Common/CommonResources/CommonResources.h"
-#include "Library/MyLib/DirectXMyToolKit/DebugFont/DebugFont.h"
-#include "Game/Common/Input/InputSystem/InputSystem.h"
-#include "Game/Common/Input/InputActionType/InputActionType.h"
+#include "Game/Common/Framework/CommonResources/CommonResources.h"
 
-#include "Game/GameObjects/Wire/Wire.h"
+
 
 using namespace DirectX;
 

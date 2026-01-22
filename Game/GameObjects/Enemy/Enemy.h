@@ -19,7 +19,7 @@
 #include "Game/GameObjects/Common/MovableObject/MovableObject.h"
 #include "Game/GameObjects/Common/GameObject.h"
 #include "Game/GameObjects/Enemy/IEnemy.h"
-#include "Game/Common/Event/WireSystemObserver/IWireEventObserver.h"
+#include "Game/Common/Framework/Event/WireSystemObserver/IWireEventObserver.h"
 
 #include "Game/Common/Collision/Collision.h"
 

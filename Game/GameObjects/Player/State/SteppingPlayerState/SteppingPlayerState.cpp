@@ -10,18 +10,27 @@
 #include "pch.h"
 #include "SteppingPlayerState.h"
 
-#include "Game/GameObjects/Player/Player.h"
-#include "Game/GameObjects/Player/State/IdlePlayerState/IdlePlayerState.h"
-#include "Game/GameObjects/Player/State/WireActionPlayerState/WireActionPlayerState.h"
-#include "Game/Common/CommonResources/CommonResources.h"
 
-#include "Game/Common/Camera/PlayerCamera/PlayerCamera.h"
-
+// ライブラリ関連
 #include "Library/MyLib/DirectXMyToolKit/DebugFont/DebugFont.h"
 #include "Library/MyLib/DirectXMyToolKit/DirectXUtils.h"
 
+// データベース関連
 #include "Game/Common/Database/SoundDatabase.h"
-#include "Game/Common/SoundManager/SoundManager.h"
+
+// フレームワーク関連
+#include "Game/Common/Framework/CommonResources/CommonResources.h"
+#include "Game/Common/Framework/SoundManager/SoundManager.h"
+
+// グラフィック関連
+#include "Game/Common/Camera/PlayerCamera/PlayerCamera.h"
+
+// ゲームオブジェクト関連
+#include "Game/GameObjects/Player/Player.h"
+
+// プレイヤーの状態関連
+#include "Game/GameObjects/Player/State/WireActionPlayerState/WireActionPlayerState.h"
+#include "Game/GameObjects/Player/State/IdlePlayerState/IdlePlayerState.h"
 
 using namespace DirectX;
 

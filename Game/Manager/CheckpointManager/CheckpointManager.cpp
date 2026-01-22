@@ -10,8 +10,13 @@
 #include "pch.h"
 #include "CheckpointManager.h"
 
+
+// フレームワーク関連
+#include "Game/Common/Framework/CommonResources/CommonResources.h"
+
+// ゲームオブジェクト関連
 #include "Game/GameObjects/CheckPoint/Checkpoint.h"
-#include "Game/Common/CommonResources/CommonResources.h"
+
 // メンバ関数の定義 ===========================================================
 /**
  * @brief コンストラクタ

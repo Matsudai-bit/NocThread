@@ -10,19 +10,28 @@
 #include "pch.h"
 #include "WireGrabbingPlayerState.cpp.h"
 
-#include "Game/GameObjects/Player/Player.h"
-#include "Game/GameObjects/Player/State/IdlePlayerState/IdlePlayerState.h"
-#include "Game/Common/CommonResources/CommonResources.h"
-#include "Game/GameObjects/Player/State/WalkPlayerState/WalkPlayerState.h"
-#include "Game/Common/Event/WireSystemObserver/WireSystemSubject.h"
-#include "Game/Common/Event/WireSystemObserver/WireEventData.h"
-#include "Game/GameObjects/Player/State/WireThrowing/WireThrowingPlayerState.cpp.h"
+// ライブラリ関連
 #include "Library/MyLib/DirectXMyToolKit/DebugFont/DebugFont.h"
-#include "Game/Common/Camera/Camera.h"
-
-#include "Game/Common/Screen.h"
 #include "Library/MyLib/Ray/Ray.h"
+
+// ゲームオブジェクト関連
+#include "Game/GameObjects/Player/Player.h"
 #include "Game/GameObjects/Wire/Wire.h"
+
+// プレイヤーの状態
+#include "Game/GameObjects/Player/State/IdlePlayerState/IdlePlayerState.h"
+#include "Game/GameObjects/Player/State/WalkPlayerState/WalkPlayerState.h"
+#include "Game/GameObjects/Player/State/WireThrowing/WireThrowingPlayerState.cpp.h"
+
+// フレームワーク関連
+#include "Game/Common/Framework/CommonResources/CommonResources.h"
+#include "Game/Common/Framework/Event/WireSystemObserver/WireSystemSubject.h"
+#include "Game/Common/Framework/Event/WireSystemObserver/WireEventData.h"
+
+// グラフィック関連
+#include "Game/Common/Camera/Camera.h"
+#include "Game/Common/Screen.h"
+
 using namespace DirectX;
 
 

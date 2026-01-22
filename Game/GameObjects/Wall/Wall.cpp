@@ -10,9 +10,11 @@
 #include "pch.h"
 #include "Wall.h"
 
+
+// フレームワーク関連
 #include "Game/Common/Collision/CollisionManager/CollisionManager.h"
-#include "Game/Common/CommonResources/CommonResources.h"
-#include "Game/Common/ResourceManager/ResourceManager.h"
+#include "Game/Common/Framework/CommonResources/CommonResources.h"
+#include "Game/Common/Framework/ResourceManager/ResourceManager.h"
 
 
 

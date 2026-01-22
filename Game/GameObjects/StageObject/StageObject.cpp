@@ -11,12 +11,19 @@
 #include "StageObject.h"
 #include <typeindex>
 
+// ゲームオブジェクト関連
 #include "Game/GameObjects/StageObject/State/IdleStageObjectState.h"
+
+// 状態関連
 #include "Game/GameObjects/StageObject/State/ThrownStageObjectState/ThrownStageObjectState.h"
+
+// フレームワーク関連
 #include "Game/Common/Collision/CollisionManager/CollisionManager.h"
-#include "Game/Common/CommonResources/CommonResources.h"
-#include "Game/Common/ResourceManager/ResourceManager.h"
-#include "Game/Common/Event/WireSystemObserver/WireEventData.h"
+#include "Game/Common/Framework/CommonResources/CommonResources.h"
+#include "Game/Common/Framework/ResourceManager/ResourceManager.h"
+#include "Game/Common/Framework/Event/WireSystemObserver/WireEventData.h"
+
+// グラフィック関連
 #include "Game/Common/Camera/Camera.h"
 
 

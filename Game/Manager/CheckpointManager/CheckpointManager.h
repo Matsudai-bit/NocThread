@@ -13,7 +13,8 @@
 
 
 // ヘッダファイルの読み込み ===================================================
-#include "Game/Common/TaskManager/TaskManager.h"
+// フレームワーク関連
+#include "Game/Common/Framework/TaskManager/TaskManager.h"
 
 // クラスの前方宣言 ===================================================
 class Checkpoint;		// チェックポイントクラス

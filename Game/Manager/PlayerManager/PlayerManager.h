@@ -13,13 +13,15 @@
 
 
 // ヘッダファイルの読み込み ===================================================
-#include "Game/Common/Input/InputActionType/InputActionType.h"
-#include "Game/Common/Input/InputSystem/InputSystem.h"
+
+// フレームワーク関連
+#include "Game/Common/Framework/Input/InputActionType/InputActionType.h"
+#include "Game/Common/Framework/Input/InputSystem/InputSystem.h"
+#include "Game/Common/Framework/TaskManager/TaskManager.h"
+#include "Game/Common/Framework/Event/Messenger/GameFlowMessenger/IGameFlowObserver.h"
+
+// グラフィック関連
 #include "Game/Common/Shadow/CircularShadow/CircularShadow.h"
-
-#include "Game/Common/TaskManager/TaskManager.h"
-
-#include "Game/Common/Event/Messenger/GameFlowMessenger/IGameFlowObserver.h"
 
 // クラスの前方宣言 ===================================================
 class CommonResources;	// 共通リソース

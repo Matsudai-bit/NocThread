@@ -10,7 +10,8 @@
 #include "pch.h"
 #include "SoundManager.h"
 
-#include "Game/Common/ResourceManager/ResourceManager.h"
+// フレームワーク関連
+#include "Game/Common/Framework/ResourceManager/ResourceManager.h"
 
 using namespace DirectX;
 

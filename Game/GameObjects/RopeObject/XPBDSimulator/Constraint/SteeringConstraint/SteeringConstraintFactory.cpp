@@ -10,20 +10,25 @@
 #include "pch.h"
 #include "SteeringConstraintFactory.h"
 
-#include "Game/Common/Collision/CollisionManager/CollisionManager.h"
-
-#include "Game/GameObjects/RopeObject/XPBDSimulator/Constraint/SteeringConstraint/SteeringConstraint.h"
-#include "Game/GameObjects/RopeObject/XPBDSimulator/SimParticle/SimParticle.h"
-
-#include "Game/Common/Camera/MainCamera/MainCamera.h"
-#include "Game/Common/Camera/Camera.h"
-
+// ライブラリ関連
 #include "Library/MyLib/MathUtils/MathUtils.h"
 #include "Library/DirectXFramework/DebugDraw.h"
 #include "Library/DirectXFramework/StepTimer.h"
 #include "Library/MyLib/DirectXMyToolKit/DebugFont/DebugFont.h"
 
-#include "Game/Common/CommonResources/CommonResources.h"
+// フレームワーク関連
+#include "Game/Common/Collision/CollisionManager/CollisionManager.h"
+#include "Game/Common/Framework/CommonResources/CommonResources.h"
+#include "Game/GameObjects/RopeObject/XPBDSimulator/SimParticle/SimParticle.h"
+
+// グラフィック関連
+#include "Game/Common/Camera/MainCamera/MainCamera.h"
+#include "Game/Common/Camera/Camera.h"
+
+// ユーティリティ関連
+#include "Game/GameObjects/RopeObject/XPBDSimulator/Constraint/SteeringConstraint/SteeringConstraint.h"
+
+
 
 using namespace DirectX;
 

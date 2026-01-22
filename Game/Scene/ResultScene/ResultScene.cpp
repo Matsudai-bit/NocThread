@@ -11,35 +11,45 @@
 // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "ResultScene.h"
+
+// シーン関連
 #include "Game/Scene/TitleScene/TitleScene.h"
+#include "Game/Scene/GameplayScene/GameplayScene.h"
+
 
 // ライブラリ関連
 #include "Library/MyLib/DirectXMyToolKit/DebugFont/DebugFont.h"
 #include "Library/DirectXFramework/DeviceResources.h"
 #include "Game/Scene/Loading/LoadingScreen.h"
 
-#include "Game/Common/CommonResources/CommonResources.h"
-#include "Game/Common/ResourceManager/ResourceManager.h"
+// ファクトリー関連
+#include "Game/Common/Factory/InputBindingFactory/InputBindingFactory.h"
 
-#include "Game/Scene/GameplayScene/GameplayScene.h"
+// データベース関連
+#include "Game/Common/Database/SoundDatabase.h"
+#include "Game/Common/Database/TextureDatabase.h"
 
+// フレームワーク関連
+#include "Game/Common/Framework/CommonResources/CommonResources.h"
+#include "Game/Common/Framework/ResourceManager/ResourceManager.h"
+#include "Game/Common/Framework/SoundManager/SoundManager.h"
+
+// グラフィック関連
+#include "Game/Common/TransitionMask/TransitionMask.h"
+
+// UIツール関連
 #include "Game/Common/UserInterfaceTool/Sprite/Sprite.h"
 #include "Game/Common/UserInterfaceTool/Canvas/Canvas.h"
 
-#include "Game/Common/SoundManager/SoundManager.h"
-#include "Game/Common/Database/SoundDatabase.h"
-
+// ゲームプレイロジック関連
 #include "Game/Common/ResultData/ResultData.h"
-
-#include "Game/Common/Factory/InputBindingFactory/InputBindingFactory.h"
 
 // 状態
 #include "Game/Scene/ResultScene/State/SuccessResultState/SuccessResultState.h"
 #include "Game/Scene/ResultScene/State/FailureResultState/FailureResultState.h"
 
-#include "Game/Common/Database/TextureDatabase.h"
 
-#include "Game/Common/TransitionMask/TransitionMask.h"
+
 
 using namespace DirectX;
 

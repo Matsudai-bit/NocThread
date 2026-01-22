@@ -8,16 +8,22 @@
 
 // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
-
-#include "Game/Common/Collision/CollisionManager/CollisionManager.h"
 #include "Floor.h"
-#include "Game/Common/CommonResources/CommonResources.h"
+
+// ライブラリ関連
 #include "Library/MyLib/DirectXMyToolKit/DebugFont/DebugFont.h"
 
+// データベース関連
+#include "Game/Common/Database/TextureDatabase.h"
+
+// フレームワーク関連
+#include "Game/Common/Collision/CollisionManager/CollisionManager.h"
+#include "Game/Common/Framework/CommonResources/CommonResources.h"
+#include "Game/Common/Framework/ResourceManager/ResourceManager.h"
+
+// グラフィック関連
 #include "Game/Common/Camera/Camera.h"
 
-#include "Game/Common/Database/TextureDatabase.h"
-#include "Game/Common/ResourceManager/ResourceManager.h"
 
 using namespace DirectX;
 

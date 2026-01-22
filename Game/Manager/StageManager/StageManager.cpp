@@ -12,22 +12,35 @@
 #include "StageManager.h"
 
 #include <fstream>
+#include <random>
 
-// 定数ヘッダーをインクルード
-#include "Game/Common/Camera/MainCamera/MainCamera.h"
-#include "Game/Scene/TitleScene/TitleScene.h"
-#include "Game/Scene/ResultScene/ResultScene.h"
+
+// ライブラリ関連
+#include "Library/MyLib/DirectXMyToolKit/DebugFont/DebugFont.h"
 #include "Library/DirectXFramework/DeviceResources.h"
-#include "Game/Common/CommonResources/CommonResources.h"
-#include "Game/Common/ResourceManager/ResourceManager.h"
+
+// フレームワーク関連
+#include "Game/Common/Framework/CommonResources/CommonResources.h"
+#include "Game/Common/Framework/ResourceManager/ResourceManager.h"
 #include "Game/Common/Collision/CollisionManager/CollisionManager.h"
-#include "Game/Common/Collision/Collision.h"
-#include "Game/Common/SoundManager/SoundManager.h"
-#include "Game/Scene/Loading/LoadingScreen.h"
+#include "Game/Common/Framework/SoundManager/SoundManager.h"
+#include "Game/Common/Framework/GameObjectManager/EnemyManager/EnemyManager.h"
+#include "Game//Common/Framework/GameObjectRegistry/GameObjectRegistry.h"
+#include "Game/Common/Framework/Event/Messenger/GameFlowMessenger/GameFlowMessenger.h"
+#include "Game/Common/Framework/TaskManager/TaskManager.h"
 
+// グラフィック関連
+#include "Game/Common/Camera/MainCamera/MainCamera.h"
 #include "Game/Common/Shadow/CircularShadow/CircularShadow.h"
+#include "Game/Common/Camera/PlayerCamera/PlayerCamera.h"
 
-// ゲームオブジェクト
+// ゲームプレイロジック関連
+#include "Game/Common/ResultData/ResultData.h"
+
+// ユーティリティ関連
+#include "Game/Common/Collision/Collision.h"
+
+// ゲームオブジェクト関連
 #include "Game/GameObjects/Floor/Floor.h"
 #include "Game/GameObjects/Wall/Wall.h"		// 壁
 #include "Game/GameObjects/Player/Player.h"
@@ -36,30 +49,25 @@
 #include "Game/GameObjects/Treasure/Treasure.h"
 #include "Game/GameObjects/Prop/Building/Building.h"
 #include "Game/GameObjects/Helicopter/EscapeHelicopter/EscapeHelicopter.h"
-#include "Game/Manager/BuildingManager/BuildingManager.h"
+#include "Game/GameObjects/Player/PlayerController/PlayerController.h"
 
-// ゲームオブジェクト管理系
-#include "Game/Common/GameObjectManager/EnemyManager/EnemyManager.h"
+// ゲームオブジェクト管理関連
 #include "Game/Common/SpawnManager/SpawnManager.h"
 #include "Game/Manager/PlayerManager/PlayerManager.h"
 #include "Game/Manager/CheckpointManager/CheckpointManager.h"
+#include "Game/Manager/BuildingManager/BuildingManager.h"
 
-#include "Game/Common/Camera/PlayerCamera/PlayerCamera.h"
-#include "Game/GameObjects/Player/PlayerController/PlayerController.h"
-
+// UIツール関連
 #include "Game/Common/UserInterfaceTool/Canvas/Canvas.h"
 #include "Game/Common/UserInterfaceTool/Sprite/Sprite.h"
 
-#include "Library/MyLib/DirectXMyToolKit/DebugFont/DebugFont.h"
-#include "Game//Common/GameObjectRegistry/GameObjectRegistry.h"
-#include "Game/Common/Event/Messenger/GameFlowMessenger/GameFlowMessenger.h"
-#include "Game/Common/TaskManager/TaskManager.h"
-#include <random>
+// シーン関連
+#include "Game/Scene/TitleScene/TitleScene.h"
+#include "Game/Scene/ResultScene/ResultScene.h"
+#include "Game/Scene/Loading/LoadingScreen.h"
 
 
-// ロープオブジェクト
 
-#include "Game/Common/ResultData/ResultData.h"
 
 using namespace DirectX;
 

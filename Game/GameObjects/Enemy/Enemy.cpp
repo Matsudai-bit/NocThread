@@ -9,24 +9,34 @@
 // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "Enemy.h"
-#include "Game/Common/Helper/PhysicsHelper/PhysicsHelper.h"
 
-#include "Game/GameObjects/Enemy/Behaviour/Update/IEnemyUpdateBehaviour.h"
-#include "Game/Common/CommonResources/CommonResources.h"
-#include "Game/Common/ResourceManager/ResourceManager.h"
+// ライブラリ関連
 #include "Library/DirectXFramework/DeviceResources.h"
-#include "Game/Common/Collision/CollisionManager/CollisionManager.h"
-
-#include "Game/Common/Event/WireSystemObserver/WireEventData.h"
-#include "Game/Common/Collision/CollisionManager/CollisionManager.h"
-
-#include "Game/Common/Helper/MovementHelper/MovementHelper.h"
 #include "Library/MyLib/DirectXMyToolKit/DebugFont/DebugFont.h"
 
-#include "Game/Common/ResultData/ResultData.h"
+// ユーティリティ関連
+#include "Game/Common/Helper/PhysicsHelper/PhysicsHelper.h"
+#include "Game/Common/Helper/MovementHelper/MovementHelper.h"
 
+// 敵挙動関連
+#include "Game/GameObjects/Enemy/Behaviour/Update/IEnemyUpdateBehaviour.h"
+
+// フレームワーク関連
+#include "Game/Common/Framework/CommonResources/CommonResources.h"
+#include "Game/Common/Framework/ResourceManager/ResourceManager.h"
+#include "Game/Common/Framework/Event/WireSystemObserver/WireEventData.h"
+#include "Game/Common/Collision/CollisionManager/CollisionManager.h"
+
+// グラフィック関連
 #include "Game/Common/Screen.h"
 #include "Game/Common/Camera/Camera.h"
+
+// ゲームプレイロジック関連
+#include "Game/Common/ResultData/ResultData.h"
+
+
+
+
 
 using namespace DirectX;
 

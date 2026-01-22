@@ -16,8 +16,11 @@
 #include <unordered_map>
 #include <vector>
 
+// フレームワーク関連
+#include "Game/Common/Framework/TaskManager/TaskManager.h"
+
+// グラフィック関連
 #include "Game/Common/GameEffect/Base/IGameEffect.h"
-#include "Game/Common/TaskManager/TaskManager.h"
 
 // クラスの前方宣言 ===================================================
 

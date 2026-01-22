@@ -17,12 +17,17 @@
 #include <vector>
 #include <functional>
 
-#include "Game/Common/Line2D/Line2D.h"
-#include "Game/Common/ElapsedTimeCounter/ElapsedTimeCounter.h"
-
-#include "Game/Common/Input/InputSystem/InputSystem.h"
+// ファクトリー関連
 #include "Game/Common/Factory/InputBindingFactory/InputBindingFactory.h"
 
+// フレームワーク関連
+#include "Game/Common/Framework/Input/InputSystem/InputSystem.h"
+
+// グラフィック関連
+#include "Game/Common/Line2D/Line2D.h"
+
+// ユーティリティ関連
+#include "Game/Common/ElapsedTimeCounter/ElapsedTimeCounter.h"
 // クラスの前方宣言 ===================================================
 class CommonResources;  // 共通リソース
 class Canvas;			// キャンバス

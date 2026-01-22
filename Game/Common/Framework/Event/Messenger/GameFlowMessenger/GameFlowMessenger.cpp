@@ -10,7 +10,8 @@
 #include "pch.h"
 #include "GameFlowMessenger.h"
 
-#include "Game/Common/Event/Messenger/GameFlowMessenger/IGameFlowObserver.h"
+// フレームワーク関連
+#include "Game/Common/Framework/Event/Messenger/GameFlowMessenger/IGameFlowObserver.h"
 
 // 静的変数の初期化
 std::unique_ptr<GameFlowMessenger> GameFlowMessenger::s_instance = nullptr;

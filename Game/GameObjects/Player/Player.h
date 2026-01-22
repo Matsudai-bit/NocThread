@@ -21,14 +21,14 @@
 
 
 
-#include "Game/Common/StateMachine/StateMachine.h"
+#include "Game/Common/Framework/StateMachine/StateMachine.h"
 
 #include "Game/GameObjects/Wire/IWireHolder/IWireHolder.h"
-#include "Game/Common/Event/Messenger/GameFlowMessenger/IGameFlowObserver.h"
-#include "Game/Common/Input/InputActionType/InputActionType.h"
+#include "Game/Common/Framework/Event/Messenger/GameFlowMessenger/IGameFlowObserver.h"
+#include "Game/Common/Framework/Input/InputActionType/InputActionType.h"
 
-#include "Game/Common/Input/InputSystem/InputSystem.h"
-#include "Game/Common/SoundManager/SoundManager.h"
+#include "Game/Common/Framework/Input/InputSystem/InputSystem.h"
+#include "Game/Common/Framework/SoundManager/SoundManager.h"
 #include "Game/Common/Database/SoundDatabase.h"
 #include "Library/DirectXFramework/Animation.h"
 

@@ -17,41 +17,46 @@
 // DirectX系
 #include "Library/DirectXFramework/DeviceResources.h"
 
-#include "Game/Common/Camera/PlayerCamera/PlayerCamera.h"
 
-// ファクトリー
+// ファクトリー関連
 #include "Game/Common/Factory/CollisionMatrixFactory/CollisionMatrixFactory.h"
 
-// ゲームデータ
-#include "Game/Common/ResultData/ResultData.h"
-#include "Game/Common/CommonResources/CommonResources.h"
 
-// 基盤システム
-#include "Game/Common/GameDirector/GameDirector.h"
-#include "Game/Common/ResourceManager/ResourceManager.h"
-#include "Game/Common/Collision/CollisionManager/CollisionManager.h"
-#include "Game/Common/Collision/CollisionMatrix/CollisionMatrix.h"
-#include "Game/Common/SoundManager/SoundManager.h"
+// データベース関連
 #include "Game/Common/Database/SoundDatabase.h"
-#include "Game/Scene/Loading/LoadingScreen.h"
-#include "Game/Common/GameEffect/GameEffectController.h"
+
+// フレームワーク関連
+#include "Game/Common/Framework/CommonResources/CommonResources.h"
+#include "Game/Common/Framework/ResourceManager/ResourceManager.h"
+#include "Game/Common/Collision/CollisionManager/CollisionManager.h"
+#include "Game/Common/GameDirector/GameDirector.h"
+#include "Game/Common/Collision/CollisionMatrix/CollisionMatrix.h"
+#include "Game/Common/Framework/SoundManager/SoundManager.h"
+#include "Game/Common/Framework/TaskManager/TaskManager.h"
 #include "Game/Common/SpawnManager/SpawnManager.h"
-#include "Game/Common/TaskManager/TaskManager.h"
-
-// ミニマップ
-#include "Game/Common/MiniMap/MiniMap.h"
-
-// 管理系
-#include "Game//Common/GameObjectRegistry/GameObjectRegistry.h"
-#include "Game/Common/Event/Messenger/GameFlowMessenger/GameFlowMessenger.h"
+#include "Game//Common/Framework/GameObjectRegistry/GameObjectRegistry.h"
+#include "Game/Common/Framework/Event/Messenger/GameFlowMessenger/GameFlowMessenger.h"
 #include "Game/Manager/StageManager/StageManager.h"
 
-// 状態
+// ゲームプレイロジック関連
+#include "Game/Common/ResultData/ResultData.h"
+
+// グラフィック関連
+#include "Game/Common/GameEffect/GameEffectController.h"
+#include "Game/Common/TransitionMask/TransitionMask.h"
+#include "Game/Common/Camera/PlayerCamera/PlayerCamera.h"
+
+// ミニマップ関連
+#include "Game/Common/MiniMap/MiniMap.h"
+
+
+// プレイシーンの状態関連
 #include "Game/Scene/GameplayScene/State/NormalGameplayState/NormalGameplayState.h"
 #include "Game/Scene/GameplayScene/State/PoseGameplayState/PauseGameplayState.h"
-// シーン
+
+// シーン関連
 #include "Game/Scene/ResultScene/ResultScene.h"
-#include "Game/Common/TransitionMask/TransitionMask.h"
+#include "Game/Scene/Loading/LoadingScreen.h"
 
 using namespace DirectX;
 

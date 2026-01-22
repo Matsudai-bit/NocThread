@@ -9,14 +9,19 @@
 // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "FlyingChaserEnemyBehaviour.h"
+#include <random>
 
 
+
+// フレームワーク関連
+#include "Game/Common/Framework/GameObjectRegistry/GameObjectRegistry.h"
+
+// ユーティリティ関連
+#include "Game/Common/Helper/MovementHelper/MovementHelper.h"
+
+// ゲームオブジェクト関連
 #include "Game/GameObjects/Enemy/Enemy.h"
 #include "Game/GameObjects/Player/Player.h"
-#include "Game/Common/GameObjectRegistry/GameObjectRegistry.h"
-
-#include "Game/Common/Helper/MovementHelper/MovementHelper.h"
-#include <random>
 
 using namespace DirectX;
 

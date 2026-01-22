@@ -9,14 +9,19 @@
 // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "BuildingManager.h"
-#include "Game/Common/CommonResources/CommonResources.h"
+#include <fstream>
+#include <iostream>
+
+// ライブラリ関連
 #include "Library/DirectXFramework/DebugDraw.h"
 #include "Library/MyLib/DirectXMyToolKit/DebugFont/DebugFont.h"
 #include "Library/DirectXFramework/ReadData.h"
 #include "Library/MyLib/DirectXMyToolKit/DirectXUtils.h"
 
-#include <fstream>
-#include <iostream>
+// フレームワーク関連
+#include "Game/Common/Framework/CommonResources/CommonResources.h"
+
+// グラフィック関連
 #include "Game/Common/Camera/Camera.h"
 
 using namespace DirectX;

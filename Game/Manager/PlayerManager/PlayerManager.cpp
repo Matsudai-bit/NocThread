@@ -10,14 +10,22 @@
 #include "pch.h"
 #include "PlayerManager.h"
 
-#include "Game/GameObjects/Player/Player.h"
-#include "Game/Common/CommonResources/CommonResources.h"
-#include "Game/GameObjects/Player/PlayerController/PlayerController.h"
+// ファクトリー関連
+#include "Game/Common/Factory/InputBindingFactory/InputBindingFactory.h"
+
+// フレームワーク関連
+#include "Game/Common/Framework/Event/Messenger/GameFlowMessenger/GameFlowMessenger.h"
+#include "Game/Common/Framework/CommonResources/CommonResources.h"
+
+// グラフィック関連
 #include "Game/Common/Camera/PlayerCamera/PlayerCamera.h"
 
-#include "Game/Common/Input/InputBindingFactory/InputBindingFactory.h"
+// ゲームオブジェクト関連
+#include "Game/GameObjects/Player/Player.h"
+#include "Game/GameObjects/Player/PlayerController/PlayerController.h"
 
-#include "Game/Common/Event/Messenger/GameFlowMessenger/GameFlowMessenger.h"
+
+
 
 // メンバ関数の定義 ===========================================================
 /**

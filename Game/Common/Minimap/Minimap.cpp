@@ -12,22 +12,23 @@
 #include "pch.h"
 #include "Minimap.h"
 
-// DirectXTK系
-#include "Game/Common/CommonResources/CommonResources.h"
+// ライブラリ関連
 #include "Library/DirectXFramework/DeviceResources.h"
-
-// ライブラリ
 #include "Library/DirectXFramework/ReadData.h"
-
-// 描画関連
-#include "Game/Common/Camera/Camera.h"
-#include "Game/Common/Screen.h"
-#include "Game/Common/ResourceManager/ResourceManager.h"
-
-#include "Game/Common/GameObjectRegistry/GameObjectRegistry.h"
 
 // データベース関連
 #include "Game/Common/Database/TextureDatabase.h"
+
+// フレームワーク関連
+#include "Game/Common/Framework/CommonResources/CommonResources.h"
+#include "Game/Common/Framework/ResourceManager/ResourceManager.h"
+#include "Game/Common/Framework/GameObjectRegistry/GameObjectRegistry.h"
+
+// グラフィック関連
+#include "Game/Common/Camera/Camera.h"
+#include "Game/Common/Screen.h"
+
+
 
 using namespace DirectX;
 

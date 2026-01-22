@@ -16,14 +16,20 @@
 #include <memory>
 #include <vector>
 
+// ライブラリ関連
 #include "Library/DirectXFramework/RenderTexture.h"
 #include "Library/MyLib/DirectXMyToolKit/DepthStencil/DepthStencil.h"
 
-#include "Game/Common/StateMachine/StateBase/StateBase.h"
+// フレームワーク関連
+#include "Game/Common/Framework/StateMachine/StateBase/StateBase.h"
+#include "Game/Common/Framework/Input/InputSystem/InputSystem.h"
+#include "Game/Common/Framework/Input/InputActionType/InputActionType.h"
+
+// グラフィック関連
 #include "Game/Common/Line2D/Line2D.h"
+
+// UI関連
 #include "Game/UI/Pose/PoseMenu/PauseMenu.h"
-#include "Game/Common/Input/InputSystem/InputSystem.h"
-#include "Game/Common/Input/InputActionType/InputActionType.h"
 
 // クラスの前方宣言 ===================================================
 class GameplayScene; // ゲームプレイシーン

@@ -13,7 +13,9 @@
 
 
 // ヘッダファイルの読み込み ===================================================
-#include "Game/Common/StateMachine/StateBase/StateBase.h"
+
+// フレームワーク関連
+#include "Game/Common/Framework/StateMachine/StateBase/StateBase.h"
 
 #include "Game/Common/ElapsedTimeCounter/ElapsedTimeCounter.h"
 

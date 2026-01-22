@@ -13,8 +13,11 @@
 
 
 // ヘッダファイルの読み込み ===================================================
-#include "Game/Common/TaskManager/TaskManager.h"
-#include "Game/Common/Event/Messenger/GameFlowMessenger/IGameFlowObserver.h"
+
+// フレームワーク関連
+#include "Game/Common/Framework/TaskManager/TaskManager.h"
+#include "Game/Common/Framework/Event/Messenger/GameFlowMessenger/IGameFlowObserver.h"
+
 // クラスの前方宣言 ===================================================
 class IEnemy; // 敵のインターフェース
 class Camera; // カメラ

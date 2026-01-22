@@ -18,8 +18,8 @@
 #include <functional>
 #include <typeinfo>
 
-#include "Game/Common/StateMachine/StateBase/StateBase.h"
-#include "Library\DebugHelper.h"
+#include "Game/Common/Framework/StateMachine/StateBase/StateBase.h"
+#include "Library/DebugHelper.h"
 
 // ƒNƒ‰ƒX‚Ì‘O•ûéŒ¾ ===================================================
 

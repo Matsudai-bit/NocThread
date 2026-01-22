@@ -10,21 +10,28 @@
 #include "pch.h"
 #include "TitleMenu.h"
 
-
+// ライブラリ関連
 #include "Library/MyLib/MathUtils/MathUtils.h"
-#include "Game/Common/Screen.h"
-#include "Game/Common/CommonResources/CommonResources.h"
-#include "Game/Common/ResourceManager/ResourceManager.h"
-#include "Game/Common/UserInterfaceTool/Sprite/Sprite.h"
-#include "Game/Common/UserInterfaceTool/Canvas/Canvas.h"
-#include "Game/Common/Factory/InputBindingFactory/InputBindingFactory.h"
-
 #include "Library/MyLib/EasingKit/EasingKit.h"
-#include <Game\Common\SoundManager\SoundManager.h>
 
 // データベース関連
 #include "Game/Common/Database/SoundDatabase.h"
 #include "Game/Common/Database/TextureDatabase.h"
+
+// ファクトリー関連
+#include "Game/Common/Factory/InputBindingFactory/InputBindingFactory.h"
+
+// フレームワーク関連
+#include "Game/Common/Framework/CommonResources/CommonResources.h"
+#include "Game/Common/Framework/ResourceManager/ResourceManager.h"
+#include "Game/Common/Framework/SoundManager/SoundManager.h"
+
+// グラフィック関連
+#include "Game/Common/Screen.h"
+
+// UIツール関連
+#include "Game/Common/UserInterfaceTool/Sprite/Sprite.h"
+#include "Game/Common/UserInterfaceTool/Canvas/Canvas.h"
 
 using namespace DirectX;
 

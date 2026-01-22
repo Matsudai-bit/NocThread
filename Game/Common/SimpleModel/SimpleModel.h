@@ -13,7 +13,9 @@
 
 
 // ヘッダファイルの読み込み ===================================================
-#include "Game/Common/CommonResources/CommonResources.h"
+
+// フレームワーク関連
+#include "Game/Common/Framework/CommonResources/CommonResources.h"
 
 // クラスの前方宣言 ===================================================
 

@@ -14,9 +14,11 @@
 
 // ヘッダファイルの読み込み ===================================================
 #include <memory>
-#include "Game/Common/StateMachine/StateBase/StateBase.h"
-#include "Game/Common/Input/InputSystem/InputSystem.h"
-#include "Game/Common/Input/InputActionType/InputActionType.h"
+
+// フレームワーク関連
+#include "Game/Common/Framework/StateMachine/StateBase/StateBase.h"
+#include "Game/Common/Framework/Input/InputSystem/InputSystem.h"
+#include "Game/Common/Framework/Input/InputActionType/InputActionType.h"
 
 // クラスの前方宣言 ===================================================
 class GameplayScene;	// ゲームプレイシーン

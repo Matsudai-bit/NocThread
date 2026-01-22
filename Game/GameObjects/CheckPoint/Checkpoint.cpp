@@ -10,19 +10,19 @@
 #include "pch.h"
 #include "Checkpoint.h"
 
-#include "Game/Common/GameObjectRegistry/GameObjectRegistry.h"
+#include "Game/Common/Framework/GameObjectRegistry/GameObjectRegistry.h"
 // ライブラリ関連
 #include "Library/DirectXFramework/DeviceResources.h"
 // リソース関連
-#include "Game/Common/CommonResources/CommonResources.h"
-#include "Game/Common/ResourceManager/ResourceManager.h"
+#include "Game/Common/Framework/CommonResources/CommonResources.h"
+#include "Game/Common/Framework/ResourceManager/ResourceManager.h"
 // 描画関連
 #include "Game/Common/Camera/Camera.h"
 // ゲームシステム関連
 #include "Game/Common/Collision/CollisionManager/CollisionManager.h"
 #include "Game/Common/GameEffect/GameEffectController.h"
 // イベント関連
-#include "Game/Common/Event/Messenger/GameFlowMessenger/GameFlowMessenger.h"
+#include "Game/Common/Framework/Event/Messenger/GameFlowMessenger/GameFlowMessenger.h"
 
 #include "Game/GameObjects/CheckPoint/CheckpointObject/CheckpointObject.h"
 

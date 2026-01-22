@@ -10,16 +10,24 @@
 #include "pch.h"
 #include "TutorialWindow.h"
 
-#include "Game/Common/ResourceManager/ResourceManager.h"
-#include "Game/Common/Screen.h"
-#include "Game/Common/UserInterfaceTool/Sprite/Sprite.h"
-
-#include "Game/Common/Factory/InputBindingFactory/InputBindingFactory.h"
-#include <Game/Common/SoundManager/SoundManager.h>
-
 // データベース関連
 #include "Game/Common/Database/SoundDatabase.h"
 #include "Game/Common/Database/TextureDatabase.h"
+
+// ファクトリー関連
+#include "Game/Common/Factory/InputBindingFactory/InputBindingFactory.h"
+
+// フレームワーク関連
+#include "Game/Common/Framework/ResourceManager/ResourceManager.h"
+#include "Game/Common/Framework/SoundManager/SoundManager.h"
+
+// グラフィック関連
+#include "Game/Common/Screen.h"
+
+// UIツール関連
+#include "Game/Common/UserInterfaceTool/Sprite/Sprite.h"
+
+
 using namespace DirectX;
 
 

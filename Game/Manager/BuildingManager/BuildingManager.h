@@ -16,8 +16,11 @@
 #include <memory>
 #include <vector>
 
+// フレームワーク関連
+#include "Game/Common/Framework/TaskManager/TaskManager.h"
+
+// ゲームオブジェクト関連
 #include "Game/GameObjects/Prop/Building/Building.h"
-#include "Game/Common/TaskManager/TaskManager.h"
 
 
 // クラスの前方宣言 ===================================================

@@ -10,14 +10,24 @@
 #include "pch.h"
 #include "JumpingPlayerState.h"
 
+
+// ライブラリ関連
+#include "Library/MyLib/DirectXMyToolKit/DebugFont/DebugFont.h"
+
+// フレームワーク関連
+#include "Game/Common/Framework/CommonResources/CommonResources.h"
+
+// ゲームロジック関連
+#include "Game/Common/WireTargetFinder/WireTargetFinder.h"
+
+// ゲームオブジェクト関連
 #include "Game/GameObjects/Player/Player.h"
+
+// プレイヤー状態関連
 #include "Game/GameObjects/Player/State/IdlePlayerState/IdlePlayerState.h"
 #include "Game/GameObjects/Player/State/WireActionPlayerState/WireActionPlayerState.h"
 #include "Game/GameObjects/Player/State/ShootingWireState/ShootingWirePlayerState.h"
-#include "Game/Common/CommonResources/CommonResources.h"
-#include "Library/MyLib/DirectXMyToolKit/DebugFont/DebugFont.h"
 
-#include "Game/Common/WireTargetFinder/WireTargetFinder.h"
 
 using namespace DirectX;
 

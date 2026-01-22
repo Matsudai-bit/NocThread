@@ -10,26 +10,39 @@
 #include "pch.h"
 #include "NormalGameplayState.h"
 
-
-#include "Game/Scene/GameplayScene/GameplayScene.h"
-#include "Game/Scene/GameplayScene/State/PoseGameplayState/PauseGameplayState.h"
-#include "Game/Common/CommonResources/CommonResources.h"
-#include "Game/Common/Factory/InputBindingFactory/InputBindingFactory.h"
-
-#include "Game/Common/UserInterfaceTool/Canvas/Canvas.h"
-#include "Game/Common/UserInterfaceTool/Sprite/Sprite.h"
-#include "Game/Common/Screen.h"
-#include "Game/Common/ResourceManager/ResourceManager.h"
-
-#include "Game/Manager/StageManager/StageManager.h"
+// ライブラリ関連
 #include "Library/DirectXFramework/DeviceResources.h"
-#include "Game/Common/Camera/MainCamera/MainCamera.h"
-#include "Game/Common/GameEffect/GameEffectController.h"
-
-#include "Game/Common/TransitionMask/TransitionMask.h"
 
 // データベース関連
 #include "Game/Common/Database/TextureDatabase.h"
+
+// シーン関連
+#include "Game/Scene/GameplayScene/GameplayScene.h"
+
+// シーンの状態関連
+#include "Game/Scene/GameplayScene/State/PoseGameplayState/PauseGameplayState.h"
+
+// ファクトリー関連
+#include "Game/Common/Factory/InputBindingFactory/InputBindingFactory.h"
+
+// フレームワーク関連
+#include "Game/Common/Framework/ResourceManager/ResourceManager.h"
+#include "Game/Common/Framework/CommonResources/CommonResources.h"
+#include "Game/Manager/StageManager/StageManager.h"
+
+// UIツール関連
+#include "Game/Common/UserInterfaceTool/Canvas/Canvas.h"
+#include "Game/Common/UserInterfaceTool/Sprite/Sprite.h"
+
+// グラフィック関連
+#include "Game/Common/Screen.h"
+#include "Game/Common/TransitionMask/TransitionMask.h"
+#include "Game/Common/Camera/MainCamera/MainCamera.h"
+#include "Game/Common/GameEffect/GameEffectController.h"
+
+
+
+
 
 using namespace DirectX;
 

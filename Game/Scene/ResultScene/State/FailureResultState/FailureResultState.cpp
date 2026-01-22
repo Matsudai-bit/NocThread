@@ -10,19 +10,29 @@
 #include "pch.h"
 #include "FailureResultState.h"
 
-#include "Game/Scene/ResultScene/ResultScene.h"
-
-#include "Game/Common/Screen.h"
-
-#include "Game/Common/UserInterfaceTool/Sprite/Sprite.h"
-#include "Game/Common/UserInterfaceTool/Canvas/Canvas.h"
-#include "Game/Common/CommonResources/CommonResources.h"
+// ライブラリ関連
 #include "Library/DirectXFramework/DeviceResources.h"
-#include "Game/Common/ResourceManager/ResourceManager.h"
 
+// データベース関連
+#include "Game/Common/Database/TextureDatabase.h"
+
+// フレームワーク関連
+#include "Game/Common/Framework/CommonResources/CommonResources.h"
+#include "Game/Common/Framework/ResourceManager/ResourceManager.h"
+
+// ゲームプレイロジック関連
 #include "Game/Common/ResultData/ResultData.h"
 
-#include "Game/Common/Database/TextureDatabase.h"
+// シーン関連
+#include "Game/Scene/ResultScene/ResultScene.h"
+
+// グラフィック関連
+#include "Game/Common/Screen.h"
+
+// UIツール関連
+#include "Game/Common/UserInterfaceTool/Sprite/Sprite.h"
+#include "Game/Common/UserInterfaceTool/Canvas/Canvas.h"
+
 
 
 

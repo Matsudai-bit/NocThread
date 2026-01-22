@@ -356,9 +356,6 @@
     <Filter Include="Game\Common\Framework\CommonResources">
       <UniqueIdentifier>{3cda07fa-605a-46ab-b132-5b8454faeb7c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Game\Common\Framework\EntityManager">
-      <UniqueIdentifier>{ec7f0dc5-f908-4e5e-990a-af05d5c2c7b0}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Game\Common\Framework\Input">
       <UniqueIdentifier>{7b1f3ae4-9dd5-4b84-93ab-a51b114a6e22}</UniqueIdentifier>
     </Filter>
@@ -528,9 +525,6 @@
     <ClInclude Include="Game\Common\Collision\CollisionManager\CollisionManager.h">
       <Filter>Game\Common\Utillities\Collision</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Common\CommonResources\CommonResources.h">
-      <Filter>Game\Common\Framework\CommonResources</Filter>
-    </ClInclude>
     <ClInclude Include="Game\Common\ElapsedTimeCounter\ElapsedTimeCounter.h">
       <Filter>Game\Common\Utillities\ElapsedTimeCounter</Filter>
     </ClInclude>
@@ -548,9 +542,6 @@
     </ClInclude>
     <ClInclude Include="Game\GameObjects\Common\MovableObject\MovableObject.h">
       <Filter>Game\GameObjects\Common\MovableObject</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Common\ResourceManager\ResourceManager.h">
-      <Filter>Game\Common\Framework\ResourceManager</Filter>
     </ClInclude>
     <ClInclude Include="Game\GameObjects\RopeObject\ParticleObject\ParticleObject.h">
       <Filter>Game\GameObjects\RopeObject\ParticleObject</Filter>
@@ -588,12 +579,6 @@
     <ClInclude Include="Game\Common\Screen.h">
       <Filter>Game\Common</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Common\StateMachine\StateMachine.h">
-      <Filter>Game\Common\Framework\StateMachine</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Common\StateMachine\StateBase\StateBase.h">
-      <Filter>Game\Common\Framework\StateMachine\StateBase</Filter>
-    </ClInclude>
     <ClInclude Include="Game\GameObjects\Player\State\IdlePlayerState\IdlePlayerState.h">
       <Filter>Game\GameObjects\Player\State\Idle</Filter>
     </ClInclude>
@@ -626,12 +611,6 @@
     </ClInclude>
     <ClInclude Include="Game\GameObjects\StageObject\State\ThrownStageObjectState\ThrownStageObjectState.h">
       <Filter>Game\GameObjects\StageObject\state\Thrown</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Common\EventSystem\EventSystem.h">
-      <Filter>Game\Common\Framework\EventSystem</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Common\EventSystem\EventData\EventData.h">
-      <Filter>Game\Common\Framework\EventSystem\EventData</Filter>
     </ClInclude>
     <ClInclude Include="Game\GameObjects\Common\GameObjectEvent\GameObjectEvent.h">
       <Filter>Game\GameObjects\Common\GameObject\GameObjectEvent</Filter>
@@ -684,26 +663,8 @@
     <ClInclude Include="Game\Common\Helper\MovementHelper\MovementHelper.h">
       <Filter>Game\Common\Utillities\Helper\MovementHelper</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Common\Event\Messenger\GameFlowMessenger\GameFlowEventID.h">
-      <Filter>Game\Common\Framework\Event\Messenger\GameFlowMessenger</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Common\Event\Messenger\GameFlowMessenger\IGameFlowObserver.h">
-      <Filter>Game\Common\Framework\Event\Messenger\GameFlowMessenger</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Common\Event\Messenger\GameFlowMessenger\GameFlowMessenger.h">
-      <Filter>Game\Common\Framework\Event\Messenger\GameFlowMessenger</Filter>
-    </ClInclude>
     <ClInclude Include="Game\GameObjects\Treasure\Treasure.h">
       <Filter>Game\GameObjects\Treasure</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Common\Event\WireSystemObserver\IWireEventObserver.h">
-      <Filter>Game\Common\Framework\Event\WireSystemObserver</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Common\Event\WireSystemObserver\WireEventData.h">
-      <Filter>Game\Common\Framework\Event\WireSystemObserver</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Common\Event\WireSystemObserver\WireSystemSubject.h">
-      <Filter>Game\Common\Framework\Event\WireSystemObserver</Filter>
     </ClInclude>
     <ClInclude Include="Game\Common\UserInterfaceTool\Canvas\Canvas.h">
       <Filter>Game\Common\UserInterfaceTool\Canvas</Filter>
@@ -717,9 +678,6 @@
     <ClInclude Include="Game\Common\UserInterfaceTool\SpriteAnimator\SpriteAnimator.h">
       <Filter>Game\Common\UserInterfaceTool\SpriteAnimator</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Common\GameObjectManager\EnemyManager\EnemyManager.h">
-      <Filter>Game\Common\Framework\GameObjectManager\EnemyManager</Filter>
-    </ClInclude>
     <ClInclude Include="Game\Common\Factory\EnemyFactory\IEnemyFactory\IEnemyFactory.h">
       <Filter>Game\Common\Factory\EnemyFactory</Filter>
     </ClInclude>
@@ -728,9 +686,6 @@
     </ClInclude>
     <ClInclude Include="Game\Common\SpawnManager\SpawnManager.h">
       <Filter>Game\Common\Gameplay\SpawnManager</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Common\GameObjectRegistry\GameObjectRegistry.h">
-      <Filter>Game\Common\Framework\GameObjectRigstry</Filter>
     </ClInclude>
     <ClInclude Include="Game\GameObjects\Prop\Base\IProp.h">
       <Filter>Game\GameObjects\Prop\Base</Filter>
@@ -770,9 +725,6 @@
     </ClInclude>
     <ClInclude Include="Game\Common\Line2D\Line2D.h">
       <Filter>Game\Common\Graphics\Line2D</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Common\SoundManager\SoundManager.h">
-      <Filter>Game\Common\Framework\SoundManager</Filter>
     </ClInclude>
     <ClInclude Include="Game\Scene\ResultScene\State\SuccessResultState\SuccessResultState.h">
       <Filter>Game\Scene\ResultScene\State\SuccessResultState</Filter>
@@ -858,23 +810,11 @@
     <ClInclude Include="Game\Common\GameEffect\GameEffectController.h">
       <Filter>Game\Common\Graphics\GameEffect</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Common\EntityManager\EntityManager.h">
-      <Filter>Game\Common\Framework\EntityManager</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Common\EntityManager\IEntity.h">
-      <Filter>Game\Common\Framework\EntityManager</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Manager\PlayerManager\PlayerManager.h">
-      <Filter>Game\Common\Framework\GameObjectManager\PlayerManager</Filter>
-    </ClInclude>
     <ClInclude Include="Game\GameObjects\Player\State\ShootingWireState\ShootingWirePlayerState.h">
       <Filter>Game\GameObjects\Player\State\ShootingWire</Filter>
     </ClInclude>
     <ClInclude Include="Game\Manager\StageManager\StageManager.h">
       <Filter>Game\Common\Gameplay\StageManager</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Common\TaskManager\TaskManager.h">
-      <Filter>Game\Common\Framework\TaskManager</Filter>
     </ClInclude>
     <ClInclude Include="Library\DirectXFramework\RenderTexture.h">
       <Filter>Library\DirectXFramework\RenderTexture</Filter>
@@ -909,9 +849,6 @@
     <ClInclude Include="Game\GameObjects\CheckPoint\Checkpoint.h">
       <Filter>Game\GameObjects\Checkpoint</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Manager\CheckpointManager\CheckpointManager.h">
-      <Filter>Game\Common\Framework\GameObjectManager\CheckpointManager</Filter>
-    </ClInclude>
     <ClInclude Include="Game\Common\GameProgressData\GameProgressData.h">
       <Filter>Game\Common\Gameplay\GameProgressData</Filter>
     </ClInclude>
@@ -941,9 +878,6 @@
     </ClInclude>
     <ClInclude Include="Game\Common\Behaviour\SteeringBehavior\SteeringParameters.h">
       <Filter>Game\Common\Gameplay\Behaviour</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Manager\BuildingManager\BuildingManager.h">
-      <Filter>Game\Common\Framework\GameObjectManager\BuildingManager</Filter>
     </ClInclude>
     <ClInclude Include="Game\Common\Minimap\Minimap.h">
       <Filter>Game\Common\Minimap</Filter>
@@ -978,17 +912,74 @@
     <ClInclude Include="Game\Common\GameEffect\Effects\ConcentrationLines\ConcentrationLines.h">
       <Filter>Game\Common\Graphics\GameEffect\Effects\2D</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Common\Input\InputActionType\InputActionType.h">
-      <Filter>Game\Common\Framework\Input</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Common\Input\InputSystem\InputSystem.h">
-      <Filter>Game\Common\Framework\Input</Filter>
-    </ClInclude>
     <ClInclude Include="Game\Common\Camera\MainCamera\MainCamera.h">
       <Filter>Game\Common\Graphics\Camera\MainCamera</Filter>
     </ClInclude>
     <ClInclude Include="Game\Common\Factory\InputBindingFactory\InputBindingFactory.h">
       <Filter>Game\Common\Factory\InputFactory</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Common\Framework\CommonResources\CommonResources.h">
+      <Filter>Game\Common\Framework\CommonResources</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Common\Framework\Event\Messenger\GameFlowMessenger\GameFlowEventID.h">
+      <Filter>Game\Common\Framework\Event\Messenger\GameFlowMessenger</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Common\Framework\Event\Messenger\GameFlowMessenger\GameFlowMessenger.h">
+      <Filter>Game\Common\Framework\Event\Messenger\GameFlowMessenger</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Common\Framework\Event\Messenger\GameFlowMessenger\IGameFlowObserver.h">
+      <Filter>Game\Common\Framework\Event\Messenger\GameFlowMessenger</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Common\Framework\Event\WireSystemObserver\IWireEventObserver.h">
+      <Filter>Game\Common\Framework\Event\WireSystemObserver</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Common\Framework\Event\WireSystemObserver\WireEventData.h">
+      <Filter>Game\Common\Framework\Event\WireSystemObserver</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Common\Framework\Event\WireSystemObserver\WireSystemSubject.h">
+      <Filter>Game\Common\Framework\Event\WireSystemObserver</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Common\Framework\EventSystem\EventSystem.h">
+      <Filter>Game\Common\Framework\EventSystem</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Common\Framework\EventSystem\EventData\EventData.h">
+      <Filter>Game\Common\Framework\EventSystem\EventData</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Common\Framework\GameObjectManager\EnemyManager\EnemyManager.h">
+      <Filter>Game\Common\Framework\GameObjectManager\EnemyManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Manager\BuildingManager\BuildingManager.h">
+      <Filter>Game\Common\Framework\GameObjectManager\BuildingManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Manager\CheckpointManager\CheckpointManager.h">
+      <Filter>Game\Common\Framework\GameObjectManager\CheckpointManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Manager\PlayerManager\PlayerManager.h">
+      <Filter>Game\Common\Framework\GameObjectManager\PlayerManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Common\Framework\GameObjectRegistry\GameObjectRegistry.h">
+      <Filter>Game\Common\Framework\GameObjectRigstry</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Common\Framework\Input\InputActionType\InputActionType.h">
+      <Filter>Game\Common\Framework\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Common\Framework\Input\InputSystem\InputSystem.h">
+      <Filter>Game\Common\Framework\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Common\Framework\ResourceManager\ResourceManager.h">
+      <Filter>Game\Common\Framework\ResourceManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Common\Framework\SoundManager\SoundManager.h">
+      <Filter>Game\Common\Framework\SoundManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Common\Framework\StateMachine\StateMachine.h">
+      <Filter>Game\Common\Framework\StateMachine</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Common\Framework\StateMachine\StateBase\StateBase.h">
+      <Filter>Game\Common\Framework\StateMachine\StateBase</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Common\Framework\TaskManager\TaskManager.h">
+      <Filter>Game\Common\Framework\TaskManager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1003,9 +994,6 @@
     <ClCompile Include="Game\Common\Collision\CollisionManager\CollisionManager.cpp">
       <Filter>Game\Common\Utillities\Collision</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Common\CommonResources\CommonResources.cpp">
-      <Filter>Game\Common\Framework\CommonResources</Filter>
-    </ClCompile>
     <ClCompile Include="Game\Common\ElapsedTimeCounter\ElapsedTimeCounter.cpp">
       <Filter>Game\Common\Utillities\ElapsedTimeCounter</Filter>
     </ClCompile>
@@ -1017,9 +1005,6 @@
     </ClCompile>
     <ClCompile Include="Game\GameObjects\Common\MovableObject\MovableObject.cpp">
       <Filter>Game\GameObjects\Common\MovableObject</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Common\ResourceManager\ResourceManager.cpp">
-      <Filter>Game\Common\Framework\ResourceManager</Filter>
     </ClCompile>
     <ClCompile Include="Game\GameObjects\RopeObject\ParticleObject\ParticleObject.cpp">
       <Filter>Game\GameObjects\RopeObject\ParticleObject</Filter>
@@ -1054,12 +1039,6 @@
     <ClCompile Include="Game\GameObjects\Player\PlayerController\PlayerController.cpp">
       <Filter>Game\GameObjects\Player\PlayerController</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Common\StateMachine\StateMachine.cpp">
-      <Filter>Game\Common\Framework\StateMachine</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Common\StateMachine\StateBase\StateBase.cpp">
-      <Filter>Game\Common\Framework\StateMachine\StateBase</Filter>
-    </ClCompile>
     <ClCompile Include="Game\GameObjects\Player\State\IdlePlayerState\IdlePlayerState.cpp">
       <Filter>Game\GameObjects\Player\State\Idle</Filter>
     </ClCompile>
@@ -1086,12 +1065,6 @@
     </ClCompile>
     <ClCompile Include="Game\GameObjects\StageObject\State\ThrownStageObjectState\ThrownObjectState.cpp">
       <Filter>Game\GameObjects\StageObject\state\Thrown</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Common\EventSystem\EventData\EventData.cpp">
-      <Filter>Game\Common\Framework\EventSystem\EventData</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Common\EventSystem\EventSystem.cpp">
-      <Filter>Game\Common\Framework\EventSystem</Filter>
     </ClCompile>
     <ClCompile Include="Game\GameObjects\RopeObject\XPBDSimulator\Constraint\IConstraint.cpp">
       <Filter>Game\GameObjects\RopeObject\XPBDSimulator\Constraint</Filter>
@@ -1126,14 +1099,8 @@
     <ClCompile Include="Game\Common\Helper\MovementHelper\MovementHelper.cpp">
       <Filter>Game\Common\Utillities\Helper\MovementHelper</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Common\Event\Messenger\GameFlowMessenger\GameFlowMessenger.cpp">
-      <Filter>Game\Common\Framework\Event\Messenger\GameFlowMessenger</Filter>
-    </ClCompile>
     <ClCompile Include="Game\GameObjects\Treasure\Treasure.cpp">
       <Filter>Game\GameObjects\Treasure</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Common\Event\WireSystemObserver\WireSystemSubject.cpp">
-      <Filter>Game\Common\Framework\Event\WireSystemObserver</Filter>
     </ClCompile>
     <ClCompile Include="Game\Common\UserInterfaceTool\Canvas\Canvas.cpp">
       <Filter>Game\Common\UserInterfaceTool\Canvas</Filter>
@@ -1144,17 +1111,11 @@
     <ClCompile Include="Game\Common\UserInterfaceTool\SpriteAnimator\SpriteAnimator.cpp">
       <Filter>Game\Common\UserInterfaceTool\SpriteAnimator</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Common\GameObjectManager\EnemyManager\EnemyManager.cpp">
-      <Filter>Game\Common\Framework\GameObjectManager\EnemyManager</Filter>
-    </ClCompile>
     <ClCompile Include="Game\Common\Factory\EnemyFactory\EnemyFactory.cpp">
       <Filter>Game\Common\Factory\EnemyFactory</Filter>
     </ClCompile>
     <ClCompile Include="Game\Common\SpawnManager\SpawnManager.cpp">
       <Filter>Game\Common\Gameplay\SpawnManager</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Common\GameObjectRegistry\GameObjectRegistry.cpp">
-      <Filter>Game\Common\Framework\GameObjectRigstry</Filter>
     </ClCompile>
     <ClCompile Include="Game\GameObjects\Prop\Base\IProp.cpp">
       <Filter>Game\GameObjects\Prop\Base</Filter>
@@ -1194,9 +1155,6 @@
     </ClCompile>
     <ClCompile Include="Game\Common\Line2D\Line2D.cpp">
       <Filter>Game\Common\Graphics\Line2D</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Common\SoundManager\SoundManager.cpp">
-      <Filter>Game\Common\Framework\SoundManager</Filter>
     </ClCompile>
     <ClCompile Include="Game\Scene\ResultScene\State\SuccessResultState\SuccessResultState.cpp">
       <Filter>Game\Scene\ResultScene\State\SuccessResultState</Filter>
@@ -1279,23 +1237,11 @@
     <ClCompile Include="Game\Common\GameEffect\GameEffectController.cpp">
       <Filter>Game\Common\Graphics\GameEffect</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Common\EntityManager\EntityManager.cpp">
-      <Filter>Game\Common\Framework\EntityManager</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Common\EntityManager\IEntity.cpp">
-      <Filter>Game\Common\Framework\EntityManager</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Manager\PlayerManager\PlayerManager.cpp">
-      <Filter>Game\Common\Framework\GameObjectManager\PlayerManager</Filter>
-    </ClCompile>
     <ClCompile Include="Game\GameObjects\Player\State\ShootingWireState\ShootingWirePlayerState.cpp">
       <Filter>Game\GameObjects\Player\State\ShootingWire</Filter>
     </ClCompile>
     <ClCompile Include="Game\Manager\StageManager\StageManager.cpp">
       <Filter>Game\Common\Gameplay\StageManager</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Common\TaskManager\TaskManager.cpp">
-      <Filter>Game\Common\Framework\TaskManager</Filter>
     </ClCompile>
     <ClCompile Include="Library\DirectXFramework\RenderTexture.cpp">
       <Filter>Library\DirectXFramework\RenderTexture</Filter>
@@ -1327,9 +1273,6 @@
     <ClCompile Include="Game\GameObjects\CheckPoint\Checkpoint.cpp">
       <Filter>Game\GameObjects\Checkpoint</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Manager\CheckpointManager\CheckpointManager.cpp">
-      <Filter>Game\Common\Framework\GameObjectManager\CheckpointManager</Filter>
-    </ClCompile>
     <ClCompile Include="Game\Common\GameProgressData\GameProgressData.cpp">
       <Filter>Game\Common\Gameplay\GameProgressData</Filter>
     </ClCompile>
@@ -1353,9 +1296,6 @@
     </ClCompile>
     <ClCompile Include="Game\Common\Behaviour\SteeringBehavior\SteeringParameters.cpp">
       <Filter>Game\Common\Gameplay\Behaviour</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Manager\BuildingManager\BuildingManager.cpp">
-      <Filter>Game\Common\Framework\GameObjectManager\BuildingManager</Filter>
     </ClCompile>
     <ClCompile Include="Game\Common\Minimap\Minimap.cpp">
       <Filter>Game\Common\Minimap</Filter>
@@ -1381,17 +1321,62 @@
     <ClCompile Include="Game\Common\GameEffect\Effects\ConcentrationLines\ConcentrationLines.cpp">
       <Filter>Game\Common\Graphics\GameEffect\Effects\2D</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Common\Input\InputActionType\InputActionType.cpp">
-      <Filter>Game\Common\Framework\Input</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Common\Input\InputSystem\InputSystem.cpp">
-      <Filter>Game\Common\Framework\Input</Filter>
-    </ClCompile>
     <ClCompile Include="Game\Common\Camera\MainCamera\MainCamera.cpp">
       <Filter>Game\Common\Graphics\Camera\MainCamera</Filter>
     </ClCompile>
     <ClCompile Include="Game\Common\Factory\InputBindingFactory\InputBindingFactory.cpp">
       <Filter>Game\Common\Factory\InputFactory</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Common\Framework\CommonResources\CommonResources.cpp">
+      <Filter>Game\Common\Framework\CommonResources</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Common\Framework\Event\Messenger\GameFlowMessenger\GameFlowMessenger.cpp">
+      <Filter>Game\Common\Framework\Event\Messenger\GameFlowMessenger</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Common\Framework\Event\WireSystemObserver\WireSystemSubject.cpp">
+      <Filter>Game\Common\Framework\Event\WireSystemObserver</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Common\Framework\EventSystem\EventSystem.cpp">
+      <Filter>Game\Common\Framework\EventSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Common\Framework\EventSystem\EventData\EventData.cpp">
+      <Filter>Game\Common\Framework\EventSystem\EventData</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Common\Framework\GameObjectManager\EnemyManager\EnemyManager.cpp">
+      <Filter>Game\Common\Framework\GameObjectManager\EnemyManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Manager\BuildingManager\BuildingManager.cpp">
+      <Filter>Game\Common\Framework\GameObjectManager\BuildingManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Manager\CheckpointManager\CheckpointManager.cpp">
+      <Filter>Game\Common\Framework\GameObjectManager\CheckpointManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Manager\PlayerManager\PlayerManager.cpp">
+      <Filter>Game\Common\Framework\GameObjectManager\PlayerManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Common\Framework\GameObjectRegistry\GameObjectRegistry.cpp">
+      <Filter>Game\Common\Framework\GameObjectRigstry</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Common\Framework\Input\InputActionType\InputActionType.cpp">
+      <Filter>Game\Common\Framework\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Common\Framework\Input\InputSystem\InputSystem.cpp">
+      <Filter>Game\Common\Framework\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Common\Framework\ResourceManager\ResourceManager.cpp">
+      <Filter>Game\Common\Framework\ResourceManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Common\Framework\SoundManager\SoundManager.cpp">
+      <Filter>Game\Common\Framework\SoundManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Common\Framework\StateMachine\StateMachine.cpp">
+      <Filter>Game\Common\Framework\StateMachine</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Common\Framework\StateMachine\StateBase\StateBase.cpp">
+      <Filter>Game\Common\Framework\StateMachine\StateBase</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Common\Framework\TaskManager\TaskManager.cpp">
+      <Filter>Game\Common\Framework\TaskManager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

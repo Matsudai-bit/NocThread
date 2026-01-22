@@ -12,32 +12,39 @@
 #include "pch.h"
 #include "TitleScene.h"
 
-// ライブラリ関連
-#include "Game/Scene/Loading/LoadingScreen.h"
+#include <string>
+#include <typeinfo>
 
-#include "Game/Common/CommonResources/CommonResources.h"
-#include "Game/Common/ResourceManager/ResourceManager.h"
+// ライブラリ関連
 #include "Library/MyLib/DirectXMyToolKit/DebugFont/DebugFont.h"
 #include "Library/DirectXFramework/DeviceResources.h"
 #include "Library/MyLib/EasingKit/EasingKit.h"
+#include "Library/DebugHelper.h"
 
+// シーン関連
+#include "Game/Scene/Loading/LoadingScreen.h"
 #include "Game/Scene/GameplayScene/GameplayScene.h"
 
+// データベース関連
+#include "Game/Common/Database/SoundDatabase.h"
+#include "Game/Common/Database/TextureDatabase.h"
+
+// フレームワーク関連
+#include "Game/Common/Framework/CommonResources/CommonResources.h"
+#include "Game/Common/Framework/ResourceManager/ResourceManager.h"
+#include "Game/Common/Framework/SoundManager/SoundManager.h"
+
+// グラフィック関連
+#include "Game/Common/TransitionMask/TransitionMask.h"
+
+// UIツール関連
 #include "Game/Common/UserInterfaceTool/Sprite/Sprite.h"
 #include "Game/Common/UserInterfaceTool/Canvas/Canvas.h"
 
-#include "Game/Common/SoundManager/SoundManager.h"
-#include "Game/Common/Database/SoundDatabase.h"
-
+// UIメニュー関連
 #include "Game/UI/TutorialWindow/TutorialWindow.h"
-#include "Game/Common/TransitionMask/TransitionMask.h"
 
-// データベース関連
-#include "Game/Common/Database/TextureDatabase.h"
 
-#include "Library/DebugHelper.h"
-#include <string>
-#include <typeinfo>
 using namespace DirectX;
 
 

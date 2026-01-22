@@ -10,7 +10,9 @@
 #include "pch.h"
 #include "WireSystemSubject.h"
 
-#include "Game/Common/Event/WireSystemObserver/IWireEventObserver.h"
+
+// フレームワーク関連
+#include "Game/Common/Framework/Event/WireSystemObserver/IWireEventObserver.h"
 
 // メンバ関数の定義 ===========================================================
 /**

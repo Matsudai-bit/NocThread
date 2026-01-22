@@ -11,16 +11,18 @@
 
 // **** 追加インクルード ****
 
-// ライブラリ
+// ライブラリ関連
 #include "Library/MyLib/DirectXMyToolKit/DebugFont/DebugFont.h" // デバックフォント
 #include "Library/DirectXFramework/RenderTexture.h"             // レンダーテクスチャ
 #include "Library/MyLib/FrameTimer/FrameTimer.h"
 
 
-// フレームワーク
+// フレームワーク関連
 #include "Game/Common/Framework/CommonResources/CommonResources.h"    // 共通リソース
 #include "Game/Common/Framework/ResourceManager/ResourceManager.h"    // リソース管理
 #include "Game/Manager/SceneManager/SceneManager.h"         // シーン管理
+
+// グラフィック関連
 #include "Game/Common/TransitionMask/TransitionMask.h"      // トランジションマスク
 
 

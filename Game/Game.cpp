@@ -9,16 +9,19 @@
 
 #define GAME_MODE
 
-
-
 #include "Game.h"
+
+// シーン関連
 #include "Game/Scene/TitleScene/TitleScene.h"
 #include "Game/Scene/GameplayScene/GameplayScene.h"
 #include "Game/Scene/ResultScene/ResultScene.h"
 #include "Game/Scene/Loading/LoadingScreen.h"
 #include "Game/Common/Screen.h"
 
-#include "Game/Common/SoundManager/SoundManager.h"
+// フレームワーク関連
+#include "Game/Common/Framework/SoundManager/SoundManager.h"
+
+// グラフィック関連
 #include "Game/Common/GameEffect/GameEffectController.h"
 
 // ImGui系のヘッダーのインクルード

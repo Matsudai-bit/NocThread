@@ -18,19 +18,22 @@
 #include <memory>
 #include "Game/Manager/SceneManager/SceneManager.h"
 
-// ライブラリ
-#include "Library/MyLib/DirectXMyToolKit/DebugCamera/DebugCamera.h"       // デバックカメラ
-#include "Library/DirectXFramework/DebugDraw.h"         // デバック描画
+// ライブラリ関連
+#include "Library/MyLib/DirectXMyToolKit/DebugCamera/DebugCamera.h"     // デバックカメラ
+#include "Library/DirectXFramework/DebugDraw.h"							// デバック描画
 #include "Library/MyLib/DirectXMyToolKit/GridFloor/GridFloor.h"         // デバック床
 
+// フレームワーク関連
+#include "Game/Common/Framework/CommonResources/CommonResources.h"                
+#include "Game/Common/Framework/EventSystem/EventData/EventData.h"
+#include "Game/Common/Framework/EventSystem/EventSystem.h"
+#include "Game/Common/Framework/Event/Messenger/GameFlowMessenger/IGameFlowObserver.h"
+#include "Game/Common/Framework/StateMachine/StateMachine.h"
+
+// グラフィック関連
 #include "Game/Common/Screen.h"
 
-// システム
-#include "Game/Common/CommonResources/CommonResources.h"                // 共通リソース
-#include "Game/Common/EventSystem/EventData/EventData.h"
-#include "Game/Common/EventSystem/EventSystem.h"
-#include "Game/Common/Event/Messenger/GameFlowMessenger/IGameFlowObserver.h"
-#include "Game/Common/StateMachine/StateMachine.h"
+// ユーティリティ関連
 #include "Game/Common/ElapsedTimeCounter/ElapsedTimeCounter.h"
 
 // ゲームオブジェクト

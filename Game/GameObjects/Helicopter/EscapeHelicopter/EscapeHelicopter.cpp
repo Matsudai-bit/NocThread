@@ -10,11 +10,13 @@
 #include "pch.h"
 #include "EscapeHelicopter.h"
 
-#include "Game/Common/CommonResources/CommonResources.h"
+// フレームワーク関連
+#include "Game/Common/Framework/CommonResources/CommonResources.h"
 #include "Game/Common/Collision/CollisionManager/CollisionManager.h"
-#include "Game/Common/ResourceManager/ResourceManager.h"
+#include "Game/Common/Framework/Event/Messenger/GameFlowMessenger/GameFlowMessenger.h"
+#include "Game/Common/Framework/ResourceManager/ResourceManager.h"
 
-#include "Game/Common/Event/Messenger/GameFlowMessenger/GameFlowMessenger.h"
+// グラフィック関連
 #include "Game/Common/Camera/Camera.h"
 
 using namespace DirectX;

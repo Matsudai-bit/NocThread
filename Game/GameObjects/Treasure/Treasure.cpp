@@ -10,20 +10,22 @@
 #include "pch.h"
 #include "Treasure.h"
 
+// ライブラリ関連
 #include "Library/DirectXFramework/DeviceResources.h"
 
-#include "Game/Common/CommonResources/CommonResources.h"
-#include "Game/Common/ResourceManager/ResourceManager.h"
+// フレームワーク関連
+#include "Game/Common/Framework/CommonResources/CommonResources.h"
+#include "Game/Common/Framework/ResourceManager/ResourceManager.h"
+#include "Game/Common/Framework/Event/Messenger/GameFlowMessenger/GameFlowMessenger.h"
 #include "Game/Common/Collision/CollisionManager/CollisionManager.h"
 
-#include "Game/Common/Event/Messenger/GameFlowMessenger/GameFlowMessenger.h"
-
+// グラフィック関連
 #include "Game/Common/GameEffect/GameEffectManager.h"
 #include "Game/Common/GameEffect/Effects/SimpleParticle/SimpleParticle.h"
 #include "Game/Common/Camera/MainCamera/MainCamera.h"
 #include "Game/Common/GameEffect/GameEffectController.h"
-
 #include "Game/Common/Camera/Camera.h"
+
 
 using namespace DirectX;
 

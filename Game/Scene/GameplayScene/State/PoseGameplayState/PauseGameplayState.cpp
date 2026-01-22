@@ -10,36 +10,43 @@
 #include "pch.h"
 #include "PauseGameplayState.h"
 
-
-#include "Game/Scene/GameplayScene/GameplayScene.h"
-
-#include "Game/Common/UserInterfaceTool/Sprite/Sprite.h"
-#include "Game/Common/UserInterfaceTool/Canvas/Canvas.h"
-#include "Game/Common/CommonResources/CommonResources.h"
-#include "Game/Common/ResourceManager/ResourceManager.h"
-#include "Game/Common/Screen.h"
+// ライブラリ関連
 #include "Library/DirectXFramework/DeviceResources.h"
-#include "Game/Common/Factory/InputBindingFactory/InputBindingFactory.h"
-
-
-#include "Game/UI/TutorialWindow/TutorialWindow.h"
-
-// シーン
-#include "Game/Scene/TitleScene/TitleScene.h"
-#include "Game/Common/TransitionMask/TransitionMask.h"
-#include "Game/Scene/Loading/LoadingScreen.h"
-
-// 状態
-#include "Game/Scene/GameplayScene/State/NormalGameplayState/NormalGameplayState.h"
-
-#include "Game/Manager/StageManager/StageManager.h"
-#include "Game/Common/GameEffect/GameEffectController.h"
-#include "Game/Common/Camera/MainCamera/MainCamera.h"
-#include "Game/Common/Database/SoundDatabase.h"
-#include <Game\Common\SoundManager\SoundManager.h>
 
 // データベース関連
+#include "Game/Common/Database/SoundDatabase.h"
 #include "Game/Common/Database/TextureDatabase.h"
+
+// シーン関連
+#include "Game/Scene/GameplayScene/GameplayScene.h"
+#include "Game/Scene/TitleScene/TitleScene.h"
+#include "Game/Scene/Loading/LoadingScreen.h"
+
+// シーン状態関連
+#include "Game/Scene/GameplayScene/State/NormalGameplayState/NormalGameplayState.h"
+
+// ファクトリー関連
+#include "Game/Common/Factory/InputBindingFactory/InputBindingFactory.h"
+
+// フレームワーク関連
+#include "Game/Common/Framework/CommonResources/CommonResources.h"
+#include "Game/Common/Framework/ResourceManager/ResourceManager.h"
+#include "Game/Common/Framework/SoundManager/SoundManager.h"
+#include "Game/Manager/StageManager/StageManager.h"
+
+// グラフィック関連
+#include "Game/Common/Screen.h"
+#include "Game/Common/TransitionMask/TransitionMask.h"
+#include "Game/Common/GameEffect/GameEffectController.h"
+#include "Game/Common/Camera/MainCamera/MainCamera.h"
+
+// UIツール関連
+#include "Game/Common/UserInterfaceTool/Sprite/Sprite.h"
+#include "Game/Common/UserInterfaceTool/Canvas/Canvas.h"
+
+// UIメニュー関連
+#include "Game/UI/TutorialWindow/TutorialWindow.h"
+
 
 using namespace DirectX;
 

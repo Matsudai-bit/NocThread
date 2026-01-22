@@ -10,15 +10,19 @@
 #include "pch.h"
 #include "GameDirector.h"
 
+// フレームワーク関連
+#include "Game/Common/Framework/Event/Messenger/GameFlowMessenger/GameFlowMessenger.h"	// ゲームフローの監視者ようインターフェース
+#include "Game/Common/Framework/CommonResources/CommonResources.h"
+
+// グラフィック関連
+#include "Game/Common/TransitionMask/TransitionMask.h"
+#include "Game/Scene/ResultScene/ResultScene.h"
+
+// ゲームプレイロジック関連
+#include "Game/Common/ResultData/ResultData.h"
 #include "Game/Common/GameProgressData/GameProgressData.h"
 
-#include "Game/Common/Event/Messenger/GameFlowMessenger/GameFlowMessenger.h"	// ゲームフローの監視者ようインターフェース
-
-#include "Game/Common/CommonResources/CommonResources.h"
-#include "Game/Common/TransitionMask/TransitionMask.h"
-#include "Game/Common/ResultData/ResultData.h"
-
-#include "Game/Scene/ResultScene/ResultScene.h"
+// シーン関連
 #include "Game/Scene/Loading/LoadingScreen.h"
 
 // メンバ関数の定義 ===========================================================

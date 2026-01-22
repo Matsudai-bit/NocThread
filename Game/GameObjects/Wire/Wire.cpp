@@ -10,27 +10,31 @@
 #include "pch.h"
 #include "Wire.h"
 
-#include "Library/MyLib/DirectXMathUtils/DirectXMathUtils.h"
-
-// 共有リソース
-#include "Game/Common/CommonResources/CommonResources.h"
-#include "Game/Common/ResourceManager/ResourceManager.h"
-
-// オブザーバー関連
-#include "Game/Common/Event/WireSystemObserver/WireSystemSubject.h"
-#include "Game/Common/Event/WireSystemObserver/IWireEventObserver.h"
-
-#include "Game/Common/Collision/Collision.h"
-#include "Game/Common/Collision/CollisionManager/CollisionManager.h"
-#include "Game/GameObjects/Common/MovableObject/MovableObject.h"
-
-#include "Game/GameObjects/Wire/IWireHolder/IWireHolder.h"
-
-#include "Game/Common/Camera/Camera.h"
-
+// ファクトリー関連
 #include "Game/GameObjects/RopeObject/XPBDSimulator/Constraint/DistanceConstraint/DistanceConstraintFactory.h"
 #include "Game/GameObjects/RopeObject/XPBDSimulator/Constraint/CollisionConstraint/CollisionConstraintFactory.h"
 #include "Game/GameObjects/RopeObject/XPBDSimulator/Constraint/SteeringConstraint/SteeringConstraintFactory.h"
+
+// ライブラリ関連
+#include "Library/MyLib/DirectXMathUtils/DirectXMathUtils.h"
+
+// フレームワーク関連
+#include "Game/Common/Framework/CommonResources/CommonResources.h"
+#include "Game/Common/Framework/ResourceManager/ResourceManager.h"
+#include "Game/Common/Framework/Event/WireSystemObserver/WireSystemSubject.h"
+#include "Game/Common/Framework/Event/WireSystemObserver/IWireEventObserver.h"
+#include "Game/Common/Collision/CollisionManager/CollisionManager.h"
+
+// グラフィック関連
+#include "Game/Common/Camera/Camera.h"
+
+// ユーティリティ関連
+#include "Game/Common/Collision/Collision.h"
+
+// ゲームオブジェクト関連
+#include "Game/GameObjects/Common/MovableObject/MovableObject.h"
+#include "Game/GameObjects/Wire/IWireHolder/IWireHolder.h"
+
 
 
 using namespace DirectX;

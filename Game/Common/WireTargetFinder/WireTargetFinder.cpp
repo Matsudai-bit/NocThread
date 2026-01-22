@@ -12,19 +12,20 @@
 
 #include <algorithm>
 
-// リソース関連
-#include "Game/Common/CommonResources/CommonResources.h"
-
-// ゲームシステム関連
-#include "Game/Common/Collision/CollisionManager/CollisionManager.h"
-
-// ゲームオブジェクト関連
-#include "Game/Common/Camera/Camera.h"
-#include "Game/GameObjects/Player/Player.h"
-
-// 外部ライブラリ・ツール
+// ライブラリ関連
 #include "Library/MyLib/DirectXMyToolKit/DebugCamera/DebugCamera.h"
 #include "Library/DirectXFramework/DebugDraw.h"
+
+// フレームワーク関連
+#include "Game/Common/Framework/CommonResources/CommonResources.h"
+#include "Game/Common/Collision/CollisionManager/CollisionManager.h"
+
+// グラフィック関連
+#include "Game/Common/Camera/Camera.h"
+
+// ゲームオブジェクト関連
+#include "Game/GameObjects/Player/Player.h"
+
 
 
 using namespace DirectX;

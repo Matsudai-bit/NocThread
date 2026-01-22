@@ -15,8 +15,8 @@
 // ヘッダファイルの読み込み ===================================================
 #include <memory>
 #include <stack>
-#include "Game/Common/Event/Messenger/GameFlowMessenger/IGameFlowObserver.h"	// ゲームフローの監視者ようインターフェース
-#include "Game/Common/TaskManager/TaskManager.h"								// タスク管理
+#include "Game/Common/Framework/Event/Messenger/GameFlowMessenger/IGameFlowObserver.h"	// ゲームフローの監視者ようインターフェース
+#include "Game/Common/Framework/TaskManager/TaskManager.h"								// タスク管理
 #include "Game/Manager/SceneManager/SceneManager.h"
 
 // クラスの前方宣言 ===================================================

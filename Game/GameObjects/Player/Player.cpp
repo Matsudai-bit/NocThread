@@ -11,27 +11,41 @@
 
 #include "Player.h"
 
-// ゲームプレイシーン関連
+// シーン関連
 #include "Game/Scene/GameplayScene/GameplayScene.h"
 
-// 共通ライブラリ・コンポーネント
-#include "Game/Common/CommonResources/CommonResources.h"
-#include "Game/Common/ResourceManager/ResourceManager.h"
-#include "Game/Common/SimpleModel/SimpleModel.h"
+// ライブラリ関連
+#include "Library/DirectXFramework/DebugDraw.h"
+#include "Library/MyLib/DirectXMyToolKit/DebugFont/DebugFont.h"
+#include "Library/MyLib/DirectXMyToolKit/DirectXUtils.h"
+#include "Library/MyLib/Ray/Ray.h"
 #include "Library/DirectXFramework/DeviceResources.h"
-#include "Game/Common/Collision/Collision.h"
+
+// フレームワーク関連
+#include "Game/Common/Framework/CommonResources/CommonResources.h"
+#include "Game/Common/Framework/ResourceManager/ResourceManager.h"
+#include "Game/Common/Framework/Event/WireSystemObserver/WireSystemSubject.h"
+#include "Game/Common/Framework/Event/WireSystemObserver/IWireEventObserver.h"
+#include "Game/Common/Framework/Event/Messenger/GameFlowMessenger/GameFlowMessenger.h"
 #include "Game/Common/Collision/CollisionManager/CollisionManager.h"
+
+// グラフィック関連
+#include "Game/Common/SimpleModel/SimpleModel.h"
 #include "Game/Common/Camera/PlayerCamera/PlayerCamera.h"
+
+// ユーティリティ関連
+#include "Game/Common/Collision/Collision.h"
 #include "Game/Common/Helper/MovementHelper/MovementHelper.h"
 #include "Game/Common//Helper/PhysicsHelper/PhysicsHelper.h"
+
+// ゲームプレイロジック関連
 #include "Game/Common/WireTargetFinder/WireTargetFinder.h"
 
-// イベントシステム
-#include "Game/Common/Event/WireSystemObserver/WireSystemSubject.h"
-#include "Game/Common/Event/WireSystemObserver/IWireEventObserver.h"
-#include "Game/Common/Event/Messenger/GameFlowMessenger/GameFlowMessenger.h"
+// ゲームオブジェクト
+#include "Game/GameObjects/Wire/Wire.h"
+#include "Game/Common/Framework/GameObjectRegistry/GameObjectRegistry.h"
 
-// プレイヤーの状態 (ステートパターン)
+// プレイヤーの状態関連
 #include "Game/GameObjects/Player/State/IdlePlayerState/IdlePlayerState.h"
 #include "Game/GameObjects/Player/State/WalkPlayerState/WalkPlayerState.h"
 #include "Game/GameObjects/Player/State/JumpingPlayerState/JumpingPlayerState.h"
@@ -41,18 +55,10 @@
 #include "Game/GameObjects/Player/State/WireThrowing/WireThrowingPlayerState.cpp.h"
 #include "Game/GameObjects/Player/State/ShootingWireState/ShootingWirePlayerState.h"
 
-// ゲームオブジェクト
-#include "Game/GameObjects/Wire/Wire.h"
-#include "Game/Common/GameObjectRegistry/GameObjectRegistry.h"
-
-// 外部ライブラリ・ツール
-#include "Library/DirectXFramework/DebugDraw.h"
-#include "Library/MyLib/DirectXMyToolKit/DebugFont/DebugFont.h"
-#include "Library/MyLib/DirectXMyToolKit/DirectXUtils.h"
-#include "Library/MyLib/Ray/Ray.h"
 
 // パラメータ
 #include "Game/Common/Database/PlayerParameter.h"
+// シーン関連
 
 using namespace DirectX;
 

@@ -12,23 +12,28 @@
 #include <fstream>
 #include "SpawnManager.h"
 
+// ライブラリ関連
 #include "Library/MyLib/NlohmannUtils/NlohmannUtils.h"
-#include "Game/Common/Event/Messenger/GameFlowMessenger/GameFlowMessenger.h"
-
-#include "Game/GameObjects/Enemy/Enemy.h"
-
-#include "Game/Common/GameObjectManager/EnemyManager/EnemyManager.h"
-#include "Game/Common/Factory/EnemyFactory/EnemyFactory.h"
-#include "Game/Common/GameObjectRegistry/GameObjectRegistry.h"
-#include "Game/GameObjects/Helicopter/EscapeHelicopter/EscapeHelicopter.h"
-
-#include "Game/Manager/BuildingManager/BuildingManager.h"
-#include "Game/Manager/PlayerManager/PlayerManager.h"
-#include "Game/GameObjects/Player/Player.h"
 
 // ファクトリー関連
 #include "Game/Common/Factory/PlayerFactory/PlayerFactory.h"
 #include "Game/Common/Factory/BuildingFactory/BuildingFactory.h"
+#include "Game/Common/Factory/EnemyFactory/EnemyFactory.h"
+
+// フレームワーク関連
+#include "Game/Common/Framework/Event/Messenger/GameFlowMessenger/GameFlowMessenger.h"
+#include "Game/Common/Framework/GameObjectManager/EnemyManager/EnemyManager.h"
+#include "Game/Common/Framework/GameObjectRegistry/GameObjectRegistry.h"
+
+// ゲームオブジェクト関連
+#include "Game/GameObjects/Enemy/Enemy.h"
+#include "Game/GameObjects/Helicopter/EscapeHelicopter/EscapeHelicopter.h"
+#include "Game/GameObjects/Player/Player.h"
+
+
+#include "Game/Manager/BuildingManager/BuildingManager.h"
+#include "Game/Manager/PlayerManager/PlayerManager.h"
+
 
 using namespace DirectX;
 

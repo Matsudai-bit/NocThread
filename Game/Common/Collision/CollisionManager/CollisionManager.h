@@ -19,7 +19,7 @@
 #include "Game/Common/Collision/ICollision.h"
 #include "Game/GameObjects/Common/GameObject.h"
 
-#include "Game/Common/TaskManager/TaskManager.h"
+#include "Game/Common/Framework/TaskManager/TaskManager.h"
 
 #include "Game/Common/Collision/CollisionMatrix/CollisionMatrix.h"
 

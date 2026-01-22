@@ -13,11 +13,19 @@
 
 
 // ヘッダファイルの読み込み ===================================================
-#include "Game/Common/TaskManager/TaskManager.h"
+
+// ライブラリ関連
 #include "Library/DirectXFramework/RenderTexture.h"
 #include "Library/MyLib/DirectXMyToolKit/DepthStencil/DepthStencil.h"
 #include "Library/MyLib/DirectXMyToolKit/OffscreenRendering/OffscreenRendering.h"
+
+// フレームワーク関連
+#include "Game/Common/Framework/TaskManager/TaskManager.h"
+
+// UIツール関連
 #include "Game/Common/UserInterfaceTool/Sprite/Sprite.h"
+
+// ゲームオブジェクト関連
 #include "Game/GameObjects/Common/GameObject.h"
 
 // クラスの前方宣言 ===================================================
