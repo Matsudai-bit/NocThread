@@ -22,11 +22,11 @@
 #include "Game/Common/GameplayLogic/CollisionManager/CollisionManager.h"
 
 // グラフィック関連
-#include "Game/Common/GameEffect/GameEffectManager.h"
-#include "Game/Common/GameEffect/Effects/SimpleParticle/SimpleParticle.h"
-#include "Game/Common/Camera/MainCamera/MainCamera.h"
-#include "Game/Common/GameEffect/GameEffectController.h"
-#include "Game/Common/Camera/Camera.h"
+#include "Game/Common/Graphics/GameEffect/GameEffectManager.h"
+#include "Game/Common/Graphics/GameEffect/Effects/SimpleParticle/SimpleParticle.h"
+#include "Game/Common/Graphics/Camera/MainCamera/MainCamera.h"
+#include "Game/Common/Graphics/GameEffect/GameEffectController.h"
+#include "Game/Common/Graphics/Camera/Camera.h"
 
 
 using namespace DirectX;

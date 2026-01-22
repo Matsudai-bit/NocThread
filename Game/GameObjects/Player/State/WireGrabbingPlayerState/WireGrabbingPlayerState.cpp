@@ -29,7 +29,7 @@
 #include "Game/Common/Framework/Event/WireSystemObserver/WireEventData.h"
 
 // グラフィック関連
-#include "Game/Common/Camera/Camera.h"
+#include "Game/Common/Graphics/Camera/Camera.h"
 #include "Game/Common/Screen.h"
 
 using namespace DirectX;

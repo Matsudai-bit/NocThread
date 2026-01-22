@@ -182,9 +182,6 @@
     </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Game\Common\Camera\Camera.h" />
-    <ClInclude Include="Game\Common\Camera\MainCamera\MainCamera.h" />
-    <ClInclude Include="Game\Common\Camera\PlayerCamera\PlayerCamera.h" />
     <ClInclude Include="Game\Common\Collision\Collision.h" />
     <ClInclude Include="Game\Common\Collision\ICollider.h" />
     <ClInclude Include="Game\Common\Collision\ICollision.h" />
@@ -217,12 +214,6 @@
     <ClInclude Include="Game\Common\Framework\StateMachine\StateBase\StateBase.h" />
     <ClInclude Include="Game\Common\Framework\StateMachine\StateMachine.h" />
     <ClInclude Include="Game\Common\Framework\TaskManager\TaskManager.h" />
-    <ClInclude Include="Game\Common\GameEffect\Base\GameEffectBase.h" />
-    <ClInclude Include="Game\Common\GameEffect\Base\IGameEffect.h" />
-    <ClInclude Include="Game\Common\GameEffect\Effects\ConcentrationLines\ConcentrationLines.h" />
-    <ClInclude Include="Game\Common\GameEffect\Effects\SimpleParticle\SimpleParticle.h" />
-    <ClInclude Include="Game\Common\GameEffect\GameEffectController.h" />
-    <ClInclude Include="Game\Common\GameEffect\GameEffectManager.h" />
     <ClInclude Include="Game\Common\GameplayLogic\Behaviour\SteeringBehavior\SteeringBehavior.h" />
     <ClInclude Include="Game\Common\GameplayLogic\Behaviour\SteeringBehavior\SteeringParameters.h" />
     <ClInclude Include="Game\Common\GameplayLogic\CollisionManager\CollisionManager.h" />
@@ -234,14 +225,23 @@
     <ClInclude Include="Game\Common\GameplayLogic\SpawnManager\SpawnManager.h" />
     <ClInclude Include="Game\Common\GameplayLogic\StageManager\StageManager.h" />
     <ClInclude Include="Game\Common\GameplayLogic\WireTargetFinder\WireTargetFinder.h" />
+    <ClInclude Include="Game\Common\Graphics\Camera\Camera.h" />
+    <ClInclude Include="Game\Common\Graphics\Camera\MainCamera\MainCamera.h" />
+    <ClInclude Include="Game\Common\Graphics\Camera\PlayerCamera\PlayerCamera.h" />
+    <ClInclude Include="Game\Common\Graphics\GameEffect\Base\GameEffectBase.h" />
+    <ClInclude Include="Game\Common\Graphics\GameEffect\Base\IGameEffect.h" />
+    <ClInclude Include="Game\Common\Graphics\GameEffect\Effects\ConcentrationLines\ConcentrationLines.h" />
+    <ClInclude Include="Game\Common\Graphics\GameEffect\Effects\SimpleParticle\SimpleParticle.h" />
+    <ClInclude Include="Game\Common\Graphics\GameEffect\GameEffectController.h" />
+    <ClInclude Include="Game\Common\Graphics\GameEffect\GameEffectManager.h" />
+    <ClInclude Include="Game\Common\Graphics\Line2D\Line2D.h" />
+    <ClInclude Include="Game\Common\Graphics\Shadow\CircularShadow\CircularShadow.h" />
+    <ClInclude Include="Game\Common\Graphics\SimpleModel\SimpleModel.h" />
+    <ClInclude Include="Game\Common\Graphics\TransitionMask\TransitionMask.h" />
     <ClInclude Include="Game\Common\Helper\MovementHelper\MovementHelper.h" />
     <ClInclude Include="Game\Common\Helper\PhysicsHelper\PhysicsHelper.h" />
-    <ClInclude Include="Game\Common\Line2D\Line2D.h" />
     <ClInclude Include="Game\Common\Minimap\Minimap.h" />
     <ClInclude Include="Game\Common\Screen.h" />
-    <ClInclude Include="Game\Common\Shadow\CircularShadow\CircularShadow.h" />
-    <ClInclude Include="Game\Common\SimpleModel\SimpleModel.h" />
-    <ClInclude Include="Game\Common\TransitionMask\TransitionMask.h" />
     <ClInclude Include="Game\Common\UserInterfaceTool\Canvas\Canvas.h" />
     <ClInclude Include="Game\Common\UserInterfaceTool\SpriteAnimator\SpriteAnimator.h" />
     <ClInclude Include="Game\Common\UserInterfaceTool\SpriteNumber\SpriteNumber.h" />
@@ -341,9 +341,6 @@
     <ClInclude Include="StepTimer.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Game\Common\Camera\Camera.cpp" />
-    <ClCompile Include="Game\Common\Camera\MainCamera\MainCamera.cpp" />
-    <ClCompile Include="Game\Common\Camera\PlayerCamera\PlayerCamera.cpp" />
     <ClCompile Include="Game\Common\Collision\Collision.cpp" />
     <ClCompile Include="Game\Common\ElapsedTimeCounter\ElapsedTimeCounter.cpp" />
     <ClCompile Include="Game\Common\Factory\BuildingFactory\BuildingFactory.cpp" />
@@ -365,12 +362,6 @@
     <ClCompile Include="Game\Common\Framework\StateMachine\StateBase\StateBase.cpp" />
     <ClCompile Include="Game\Common\Framework\StateMachine\StateMachine.cpp" />
     <ClCompile Include="Game\Common\Framework\TaskManager\TaskManager.cpp" />
-    <ClCompile Include="Game\Common\GameEffect\Base\GameEffectBase.cpp" />
-    <ClCompile Include="Game\Common\GameEffect\Base\IGameEffect.cpp" />
-    <ClCompile Include="Game\Common\GameEffect\Effects\ConcentrationLines\ConcentrationLines.cpp" />
-    <ClCompile Include="Game\Common\GameEffect\Effects\SimpleParticle\SimpleParticle.cpp" />
-    <ClCompile Include="Game\Common\GameEffect\GameEffectController.cpp" />
-    <ClCompile Include="Game\Common\GameEffect\GameEffectManager.cpp" />
     <ClCompile Include="Game\Common\GameplayLogic\Behaviour\SteeringBehavior\SteeringBehavior.cpp" />
     <ClCompile Include="Game\Common\GameplayLogic\Behaviour\SteeringBehavior\SteeringParameters.cpp" />
     <ClCompile Include="Game\Common\GameplayLogic\CollisionManager\CollisionManager.cpp" />
@@ -382,14 +373,23 @@
     <ClCompile Include="Game\Common\GameplayLogic\SpawnManager\SpawnManager.cpp" />
     <ClCompile Include="Game\Common\GameplayLogic\StageManager\StageManager.cpp" />
     <ClCompile Include="Game\Common\GameplayLogic\WireTargetFinder\WireTargetFinder.cpp" />
+    <ClCompile Include="Game\Common\Graphics\Camera\Camera.cpp" />
+    <ClCompile Include="Game\Common\Graphics\Camera\MainCamera\MainCamera.cpp" />
+    <ClCompile Include="Game\Common\Graphics\Camera\PlayerCamera\PlayerCamera.cpp" />
+    <ClCompile Include="Game\Common\Graphics\GameEffect\Base\GameEffectBase.cpp" />
+    <ClCompile Include="Game\Common\Graphics\GameEffect\Base\IGameEffect.cpp" />
+    <ClCompile Include="Game\Common\Graphics\GameEffect\Effects\ConcentrationLines\ConcentrationLines.cpp" />
+    <ClCompile Include="Game\Common\Graphics\GameEffect\Effects\SimpleParticle\SimpleParticle.cpp" />
+    <ClCompile Include="Game\Common\Graphics\GameEffect\GameEffectController.cpp" />
+    <ClCompile Include="Game\Common\Graphics\GameEffect\GameEffectManager.cpp" />
+    <ClCompile Include="Game\Common\Graphics\Line2D\Line2D.cpp" />
+    <ClCompile Include="Game\Common\Graphics\Shadow\CircularShadow\CircularShadow.cpp" />
+    <ClCompile Include="Game\Common\Graphics\SimpleModel\SimpleModel.cpp" />
+    <ClCompile Include="Game\Common\Graphics\TransitionMask\TransitionMask.cpp" />
     <ClCompile Include="Game\Common\Helper\MovementHelper\MovementHelper.cpp" />
     <ClCompile Include="Game\Common\Helper\PhysicsHelper\PhysicsHelper.cpp" />
-    <ClCompile Include="Game\Common\Line2D\Line2D.cpp" />
     <ClCompile Include="Game\Common\Minimap\Minimap.cpp" />
     <ClCompile Include="Game\Common\Screen.cpp" />
-    <ClCompile Include="Game\Common\Shadow\CircularShadow\CircularShadow.cpp" />
-    <ClCompile Include="Game\Common\SimpleModel\SimpleModel.cpp" />
-    <ClCompile Include="Game\Common\TransitionMask\TransitionMask.cpp" />
     <ClCompile Include="Game\Common\UserInterfaceTool\Canvas\Canvas.cpp" />
     <ClCompile Include="Game\Common\UserInterfaceTool\SpriteAnimator\SpriteAnimator.cpp" />
     <ClCompile Include="Game\Common\UserInterfaceTool\SpriteNumber\SpriteNumber.cpp" />

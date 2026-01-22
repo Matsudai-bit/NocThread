@@ -21,7 +21,7 @@
 #include "Game/Common/Framework/Event/Messenger/GameFlowMessenger/IGameFlowObserver.h"
 
 // グラフィック関連
-#include "Game/Common/Shadow/CircularShadow/CircularShadow.h"
+#include "Game/Common/Graphics/Shadow/CircularShadow/CircularShadow.h"
 
 // クラスの前方宣言 ===================================================
 class CommonResources;	// 共通リソース

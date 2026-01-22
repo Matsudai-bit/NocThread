@@ -1,5 +1,5 @@
 /*****************************************************************//**
- * @file    ConcentrationLines.h
+ * @file    SimpleParticle.h
  * @brief   シンプルなパーティクルエフェクトに関するヘッダーファイル
  *
  * @author  松下大暉
@@ -17,8 +17,13 @@
 #include <vector>
 #include <random>
 
-#include "Game/Common/GameEffect/Base/GameEffectBase.h"
+// ライブラリ関連
 #include "Library/DirectXFramework/DeviceResources.h"
+
+// グラフィック関連
+#include "Game/Common/Graphics/GameEffect/Base/GameEffectBase.h"
+
+// ユーティリティ関連
 #include "Game/Common/ElapsedTimeCounter/ElapsedTimeCounter.h"
 
 // クラスの前方宣言 ===================================================
@@ -29,7 +34,7 @@ class Camera;
 /**
  * @brief シンプルなパーティクルエフェクト
  */
-class ConcentrationLines
+class SimpleParticle
 	: public GameEffectBase
 {
 
@@ -55,15 +60,12 @@ public:
 
 	struct ConstantBuffer
 	{
-		DirectX::SimpleMath::Vector3  lineColor;
-		float time;
-		float speed;
+		DirectX::SimpleMath::Matrix matWorldTranspose;
+		DirectX::SimpleMath::Matrix matView;
+		DirectX::SimpleMath::Matrix matProj;
 
-		float noiseScale;
-		DirectX::SimpleMath::Vector2 uvOffset;
-		float lineRegion;
-		float lineRate;
-		float padding[2];
+		DirectX::SimpleMath::Vector3 objectTarget;    // オブジェクトの注視点(ビルボード用)
+		float scale;
 	};
 
 	// クラス定数の宣言 -------------------------------------------------
@@ -78,6 +80,7 @@ private:
 	std::unique_ptr<DirectX::PrimitiveBatch<DirectX::VertexPositionColorTexture>> m_primitiveBatch; ///< プリミティブバッチ
 	std::unique_ptr<DirectX::BasicEffect> m_basicEffect;		///< ベーシックエフェクト
 	Microsoft::WRL::ComPtr<ID3D11InputLayout> m_inputLayout;	///< インプットレイアウト
+	std::unique_ptr<DirectX::GeometricPrimitive> m_model;
 
 	Microsoft::WRL::ComPtr<ID3D11PixelShader>		m_ps;
 	Microsoft::WRL::ComPtr<ID3D11VertexShader>		m_vs;
@@ -85,25 +88,28 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11Buffer> m_constantBuffer;
 
 
+	// パーティクル生成関連
+	std::vector<Particle> m_particles;	///< パーティクル群
+	ElapsedTimeCounter m_timeCounter;   ///< 時間計測器
+	std::mt19937 m_randomGenerator;		///< ランダム生成器
+	DirectX::SimpleMath::Vector3 m_position; ///< 中心座標
+
 	// その他
 	DirectX::CommonStates m_commonStates; ///< 共通状態
 	DX::DeviceResources* m_pDeviceResources;
+	const Camera* m_pCamera;					 ///< カメラ
 
-	ElapsedTimeCounter m_elapsedTimeCounter; ///< 経過時間計測
 
-	// パラメータ
-	float m_lineLengthRate ;	///< 線の長さ
-	float m_speed ;			///< 線の流れる速さ
 
 
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
 public:
 	// コンストラクタ
-	ConcentrationLines(DX::DeviceResources* pDeviceResources, const float& speed, const float& lineLengthRate);
+	SimpleParticle(DX::DeviceResources* pDeviceResources, DirectX::SimpleMath::Vector3 position, const Camera* pCamera);
 
 	// デストラクタ
-	~ConcentrationLines();
+	~SimpleParticle();
 
 
 // 操作
@@ -117,14 +123,13 @@ public:
 
 // 取得/設定
 public:
-	
-	// 線の長さの倍率設定
-	void SetLineLengthRate(float lineLengthRate) { m_lineLengthRate = lineLengthRate; }
-	// 速度設定
-	void SetSpeed(float speed) { m_speed = speed; }
+
+	// 座標の設定
+	void SetPosition(const DirectX::SimpleMath::Vector3& position);
 
 // 内部実装
 private:
 
+	void CreateParticle();
 
 };

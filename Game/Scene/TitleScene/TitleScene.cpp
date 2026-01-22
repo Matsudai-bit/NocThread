@@ -35,7 +35,7 @@
 #include "Game/Common/Framework/SoundManager/SoundManager.h"
 
 // グラフィック関連
-#include "Game/Common/TransitionMask/TransitionMask.h"
+#include "Game/Common/Graphics/TransitionMask/TransitionMask.h"
 
 // UIツール関連
 #include "Game/Common/UserInterfaceTool/Sprite/Sprite.h"

@@ -18,12 +18,14 @@
 #include "Game/Common/Framework/Event/Messenger/GameFlowMessenger/GameFlowMessenger.h"
 #include "Game/Common/Framework/CommonResources/CommonResources.h"
 #include "Game/Common/Framework/ResourceManager/ResourceManager.h"
-// グラフィック関連
-#include "Game/Common/Camera/Camera.h"
-#include "Game/Common/Camera/MainCamera/MainCamera.h"
-#include "Game/Common/GameEffect/Effects/SimpleParticle/SimpleParticle.h"
+
+// ゲームプレイロジック関連
 #include "Game/Common/GameplayLogic/CollisionManager/CollisionManager.h"
-#include "Game/Common/GameEffect/GameEffectController.h"
+// グラフィック関連
+#include "Game/Common/Graphics/Camera/Camera.h"
+#include "Game/Common/Graphics/Camera/MainCamera/MainCamera.h"
+#include "Game/Common/Graphics/GameEffect/Effects/SimpleParticle/SimpleParticle.h"
+#include "Game/Common/Graphics/GameEffect/GameEffectController.h"
 
 // ゲームオブジェクト関連
 #include "Game/GameObjects/CheckPoint/CheckpointObject/CheckpointObject.h"

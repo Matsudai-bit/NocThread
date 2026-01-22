@@ -22,7 +22,7 @@
 #include "Game/Common/Framework/CommonResources/CommonResources.h"
 
 // グラフィック関連
-#include "Game/Common/Camera/Camera.h"
+#include "Game/Common/Graphics/Camera/Camera.h"
 
 using namespace DirectX;
 // メンバ関数の定義 ===========================================================

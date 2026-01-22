@@ -19,7 +19,7 @@
 #include "Game/Manager/SceneManager/SceneManager.h"
 
 #include "Game/UI/Title/TitleMenu/TitleMenu.h"
-#include "Game/Common/Line2D/Line2D.h"
+#include "Game/Common/Graphics/Line2D/Line2D.h"
 #include "Game/Common/ElapsedTimeCounter/ElapsedTimeCounter.h"
 
 // ƒNƒ‰ƒX‚ÌéŒ¾ ===============================================================

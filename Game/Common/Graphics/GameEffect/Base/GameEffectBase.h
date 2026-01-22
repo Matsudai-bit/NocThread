@@ -13,7 +13,9 @@
 
 
 // ヘッダファイルの読み込み ===================================================
-#include "Game/Common/GameEffect/Base/IGameEffect.h"
+
+// グラフィック関連
+#include "Game/Common/Graphics/GameEffect/Base/IGameEffect.h"
 
 // クラスの前方宣言 ===================================================
 

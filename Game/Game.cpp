@@ -22,7 +22,7 @@
 #include "Game/Common/Framework/SoundManager/SoundManager.h"
 
 // グラフィック関連
-#include "Game/Common/GameEffect/GameEffectController.h"
+#include "Game/Common/Graphics/GameEffect/GameEffectController.h"
 
 // ImGui系のヘッダーのインクルード
 #include "Library/ImGui/imgui.h"

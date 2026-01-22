@@ -42,9 +42,11 @@
 #include "Game/Common/GameplayLogic/CollisionMatrix/CollisionMatrix.h"
 
 // グラフィック関連
-#include "Game/Common/GameEffect/GameEffectController.h"
-#include "Game/Common/TransitionMask/TransitionMask.h"
-#include "Game/Common/Camera/PlayerCamera/PlayerCamera.h"
+#include "Game/Common/Graphics/GameEffect/GameEffectController.h"
+#include "Game/Common/Graphics/TransitionMask/TransitionMask.h"
+#include "Game/Common/Graphics/Camera/PlayerCamera/PlayerCamera.h"
+#include "Game/Common/Graphics/GameEffect/Effects/ConcentrationLines/ConcentrationLines.h"
+
 
 // ミニマップ関連
 #include "Game/Common/MiniMap/MiniMap.h"
@@ -344,7 +346,6 @@ void GameplayScene::CreateTask()
 	m_taskManager->AddTask(m_miniMap.get());			// Minimap
 }
 
-#include "Game/Common/GameEffect/Effects/ConcentrationLines/ConcentrationLines.h"
 /**
  * @brief ゲームを開始する
  */

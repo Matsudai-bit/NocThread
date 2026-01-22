@@ -10,10 +10,14 @@
 #include "pch.h"
 #include "PlayerController.h"
 
-#include "Game/GameObjects/Player/Player.h"
-#include "Game/Common/Camera/Camera.h"
-
+// ファクトリー関連
 #include "Game/Common/Factory/InputBindingFactory/InputBindingFactory.h"
+
+// ゲームオブジェクト関連
+#include "Game/GameObjects/Player/Player.h"
+
+// グラフィック関連
+#include "Game/Common/Graphics/Camera/Camera.h"
 
 using namespace DirectX;
 

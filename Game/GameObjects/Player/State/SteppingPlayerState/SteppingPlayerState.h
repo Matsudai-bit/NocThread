@@ -17,10 +17,12 @@
 // フレームワーク関連
 #include "Game/Common/Framework/StateMachine/StateBase/StateBase.h"
 
-#include "Game/Common/ElapsedTimeCounter/ElapsedTimeCounter.h"
+// グラフィック関連
+#include "Game/Common/Graphics/GameEffect/Effects/ConcentrationLines/ConcentrationLines.h"
+#include "Game/Common/Graphics/GameEffect/GameEffectController.h"
 
-#include "Game/Common/GameEffect/Effects/ConcentrationLines/ConcentrationLines.h"
-#include "Game/Common/GameEffect/GameEffectController.h"
+// ユーティリティ関連
+#include "Game/Common/ElapsedTimeCounter/ElapsedTimeCounter.h"
 
 // クラスの前方宣言 ===================================================
 class Player;

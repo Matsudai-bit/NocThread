@@ -9,7 +9,9 @@
 // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "GameEffectManager.h"
-#include "Game/Common/Camera/Camera.h"
+
+// グラフィック関連
+#include "Game/Common/Graphics/Camera/Camera.h"
 
 // メンバ関数の定義 ===========================================================
 /**

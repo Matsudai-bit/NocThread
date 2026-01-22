@@ -23,7 +23,7 @@
 #include "Game/Manager/SceneManager/SceneManager.h"         // シーン管理
 
 // グラフィック関連
-#include "Game/Common/TransitionMask/TransitionMask.h"      // トランジションマスク
+#include "Game/Common/Graphics/TransitionMask/TransitionMask.h"      // トランジションマスク
 
 
 // A basic game implementation that creates a D3D11 device and

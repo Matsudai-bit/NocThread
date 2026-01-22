@@ -518,6 +518,9 @@
     <Filter Include="Game\Common\GameplayLogic\CollisionMatrix">
       <UniqueIdentifier>{6d6c8f23-a426-4a1a-a39c-1b6a26219de0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\Common\Graphics\GameEffect\Interface">
+      <UniqueIdentifier>{8c1aac98-1703-413d-9ebf-78e6a9f2d5af}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -563,15 +566,6 @@
     </ClInclude>
     <ClInclude Include="Game\GameObjects\Player\Player.h">
       <Filter>Game\GameObjects\Player</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Common\SimpleModel\SimpleModel.h">
-      <Filter>Game\Common\Graphics\SimpleModel</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Common\Camera\Camera.h">
-      <Filter>Game\Common\Graphics\Camera</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Common\Camera\PlayerCamera\PlayerCamera.h">
-      <Filter>Game\Common\Graphics\Camera\PlayerCamera</Filter>
     </ClInclude>
     <ClInclude Include="Game\GameObjects\Player\PlayerController\PlayerController.h">
       <Filter>Game\GameObjects\Player\PlayerController</Filter>
@@ -717,9 +711,6 @@
     <ClInclude Include="Game\UI\Title\TitleMenu\TitleMenu.h">
       <Filter>Game\UI\Title\TitleMenu</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Common\Line2D\Line2D.h">
-      <Filter>Game\Common\Graphics\Line2D</Filter>
-    </ClInclude>
     <ClInclude Include="Game\Scene\ResultScene\State\SuccessResultState\SuccessResultState.h">
       <Filter>Game\Scene\ResultScene\State\SuccessResultState</Filter>
     </ClInclude>
@@ -749,9 +740,6 @@
     </ClInclude>
     <ClInclude Include="Game\Scene\TitleScene\TitleScene.h">
       <Filter>Game\Scene\TitleScene</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Common\Shadow\CircularShadow\CircularShadow.h">
-      <Filter>Game\Common\Graphics\Shadow\CircularShadow</Filter>
     </ClInclude>
     <ClInclude Include="Library\ImGui\imconfig.h">
       <Filter>Library\ImGui</Filter>
@@ -788,18 +776,6 @@
     </ClInclude>
     <ClInclude Include="Game\GameObjects\RopeObject\XPBDSimulator\Constraint\CollisionConstraint\CollisionConstraintFactory.h">
       <Filter>Game\GameObjects\RopeObject\XPBDSimulator\Constraint\Factory</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Common\GameEffect\Base\GameEffectBase.h">
-      <Filter>Game\Common\Graphics\GameEffect\Base</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Common\GameEffect\Base\IGameEffect.h">
-      <Filter>Game\Common\Graphics\GameEffect\Base</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Common\GameEffect\GameEffectManager.h">
-      <Filter>Game\Common\Graphics\GameEffect</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Common\GameEffect\GameEffectController.h">
-      <Filter>Game\Common\Graphics\GameEffect</Filter>
     </ClInclude>
     <ClInclude Include="Game\GameObjects\Player\State\ShootingWireState\ShootingWirePlayerState.h">
       <Filter>Game\GameObjects\Player\State\ShootingWire</Filter>
@@ -867,9 +843,6 @@
     <ClInclude Include="Game\Common\Factory\CollisionMatrixFactory\CollisionMatrixFactory.h">
       <Filter>Game\Common\Factory\CollisionMatrixFactory</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Common\TransitionMask\TransitionMask.h">
-      <Filter>Game\Common\Graphics\TransitionMask</Filter>
-    </ClInclude>
     <ClInclude Include="Game\Common\Database\SoundDatabase.h">
       <Filter>Game\Common\Database</Filter>
     </ClInclude>
@@ -878,15 +851,6 @@
     </ClInclude>
     <ClInclude Include="Game\Common\Database\PlayerParameter.h">
       <Filter>Game\Common\Database</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Common\GameEffect\Effects\SimpleParticle\SimpleParticle.h">
-      <Filter>Game\Common\Graphics\GameEffect\Effects\3D</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Common\GameEffect\Effects\ConcentrationLines\ConcentrationLines.h">
-      <Filter>Game\Common\Graphics\GameEffect\Effects\2D</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Common\Camera\MainCamera\MainCamera.h">
-      <Filter>Game\Common\Graphics\Camera\MainCamera</Filter>
     </ClInclude>
     <ClInclude Include="Game\Common\Factory\InputBindingFactory\InputBindingFactory.h">
       <Filter>Game\Common\Factory\InputFactory</Filter>
@@ -987,6 +951,45 @@
     <ClInclude Include="Game\Common\GameplayLogic\WireTargetFinder\WireTargetFinder.h">
       <Filter>Game\Common\GameplayLogic\WireTargetFinder</Filter>
     </ClInclude>
+    <ClInclude Include="Game\Common\Graphics\Camera\Camera.h">
+      <Filter>Game\Common\Graphics\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Common\Graphics\Camera\MainCamera\MainCamera.h">
+      <Filter>Game\Common\Graphics\Camera\MainCamera</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Common\Graphics\Camera\PlayerCamera\PlayerCamera.h">
+      <Filter>Game\Common\Graphics\Camera\PlayerCamera</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Common\Graphics\GameEffect\GameEffectController.h">
+      <Filter>Game\Common\Graphics\GameEffect</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Common\Graphics\GameEffect\GameEffectManager.h">
+      <Filter>Game\Common\Graphics\GameEffect</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Common\Graphics\GameEffect\Effects\ConcentrationLines\ConcentrationLines.h">
+      <Filter>Game\Common\Graphics\GameEffect\Effects\2D</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Common\Graphics\GameEffect\Base\GameEffectBase.h">
+      <Filter>Game\Common\Graphics\GameEffect\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Common\Graphics\GameEffect\Base\IGameEffect.h">
+      <Filter>Game\Common\Graphics\GameEffect\Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Common\Graphics\GameEffect\Effects\SimpleParticle\SimpleParticle.h">
+      <Filter>Game\Common\Graphics\GameEffect\Effects\3D</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Common\Graphics\Line2D\Line2D.h">
+      <Filter>Game\Common\Graphics\Line2D</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Common\Graphics\Shadow\CircularShadow\CircularShadow.h">
+      <Filter>Game\Common\Graphics\Shadow\CircularShadow</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Common\Graphics\TransitionMask\TransitionMask.h">
+      <Filter>Game\Common\Graphics\TransitionMask</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Common\Graphics\SimpleModel\SimpleModel.h">
+      <Filter>Game\Common\Graphics\SimpleModel</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -1026,15 +1029,6 @@
     </ClCompile>
     <ClCompile Include="Game\GameObjects\Player\Player.cpp">
       <Filter>Game\GameObjects\Player</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Common\SimpleModel\SimpleModel.cpp">
-      <Filter>Game\Common\Graphics\SimpleModel</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Common\Camera\Camera.cpp">
-      <Filter>Game\Common\Graphics\Camera</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Common\Camera\PlayerCamera\PlayerCamera.cpp">
-      <Filter>Game\Common\Graphics\Camera\PlayerCamera</Filter>
     </ClCompile>
     <ClCompile Include="Game\GameObjects\Player\PlayerController\PlayerController.cpp">
       <Filter>Game\GameObjects\Player\PlayerController</Filter>
@@ -1147,9 +1141,6 @@
     <ClCompile Include="Game\UI\Title\TitleMenu\TitleMenu.cpp">
       <Filter>Game\UI\Title\TitleMenu</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Common\Line2D\Line2D.cpp">
-      <Filter>Game\Common\Graphics\Line2D</Filter>
-    </ClCompile>
     <ClCompile Include="Game\Scene\ResultScene\State\SuccessResultState\SuccessResultState.cpp">
       <Filter>Game\Scene\ResultScene\State\SuccessResultState</Filter>
     </ClCompile>
@@ -1179,9 +1170,6 @@
     </ClCompile>
     <ClCompile Include="Game\Scene\TitleScene\TitleScene.cpp">
       <Filter>Game\Scene\TitleScene</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Common\Shadow\CircularShadow\CircularShadow.cpp">
-      <Filter>Game\Common\Graphics\Shadow\CircularShadow</Filter>
     </ClCompile>
     <ClCompile Include="Library\ImGui\imgui.cpp">
       <Filter>Library\ImGui</Filter>
@@ -1215,18 +1203,6 @@
     </ClCompile>
     <ClCompile Include="Game\GameObjects\RopeObject\XPBDSimulator\Constraint\CollisionConstraint\CollisionConstraintFactory.cpp">
       <Filter>Game\GameObjects\RopeObject\XPBDSimulator\Constraint\Factory</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Common\GameEffect\Base\GameEffectBase.cpp">
-      <Filter>Game\Common\Graphics\GameEffect\Base</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Common\GameEffect\Base\IGameEffect.cpp">
-      <Filter>Game\Common\Graphics\GameEffect\Base</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Common\GameEffect\GameEffectManager.cpp">
-      <Filter>Game\Common\Graphics\GameEffect</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Common\GameEffect\GameEffectController.cpp">
-      <Filter>Game\Common\Graphics\GameEffect</Filter>
     </ClCompile>
     <ClCompile Include="Game\GameObjects\Player\State\ShootingWireState\ShootingWirePlayerState.cpp">
       <Filter>Game\GameObjects\Player\State\ShootingWire</Filter>
@@ -1284,18 +1260,6 @@
     </ClCompile>
     <ClCompile Include="Game\Common\Factory\CollisionMatrixFactory\CollisionMatrixFactory.cpp">
       <Filter>Game\Common\Factory\CollisionMatrixFactory</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Common\TransitionMask\TransitionMask.cpp">
-      <Filter>Game\Common\Graphics\TransitionMask</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Common\GameEffect\Effects\SimpleParticle\SimpleParticle.cpp">
-      <Filter>Game\Common\Graphics\GameEffect\Effects\3D</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Common\GameEffect\Effects\ConcentrationLines\ConcentrationLines.cpp">
-      <Filter>Game\Common\Graphics\GameEffect\Effects\2D</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Common\Camera\MainCamera\MainCamera.cpp">
-      <Filter>Game\Common\Graphics\Camera\MainCamera</Filter>
     </ClCompile>
     <ClCompile Include="Game\Common\Factory\InputBindingFactory\InputBindingFactory.cpp">
       <Filter>Game\Common\Factory\InputFactory</Filter>
@@ -1383,6 +1347,45 @@
     </ClCompile>
     <ClCompile Include="Game\Common\GameplayLogic\WireTargetFinder\WireTargetFinder.cpp">
       <Filter>Game\Common\GameplayLogic\WireTargetFinder</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Common\Graphics\Camera\Camera.cpp">
+      <Filter>Game\Common\Graphics\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Common\Graphics\Camera\MainCamera\MainCamera.cpp">
+      <Filter>Game\Common\Graphics\Camera\MainCamera</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Common\Graphics\Camera\PlayerCamera\PlayerCamera.cpp">
+      <Filter>Game\Common\Graphics\Camera\PlayerCamera</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Common\Graphics\GameEffect\GameEffectController.cpp">
+      <Filter>Game\Common\Graphics\GameEffect</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Common\Graphics\GameEffect\GameEffectManager.cpp">
+      <Filter>Game\Common\Graphics\GameEffect</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Common\Graphics\GameEffect\Effects\ConcentrationLines\ConcentrationLines.cpp">
+      <Filter>Game\Common\Graphics\GameEffect\Effects\2D</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Common\Graphics\GameEffect\Base\GameEffectBase.cpp">
+      <Filter>Game\Common\Graphics\GameEffect\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Common\Graphics\GameEffect\Base\IGameEffect.cpp">
+      <Filter>Game\Common\Graphics\GameEffect\Interface</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Common\Graphics\GameEffect\Effects\SimpleParticle\SimpleParticle.cpp">
+      <Filter>Game\Common\Graphics\GameEffect\Effects\3D</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Common\Graphics\Line2D\Line2D.cpp">
+      <Filter>Game\Common\Graphics\Line2D</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Common\Graphics\Shadow\CircularShadow\CircularShadow.cpp">
+      <Filter>Game\Common\Graphics\Shadow\CircularShadow</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Common\Graphics\TransitionMask\TransitionMask.cpp">
+      <Filter>Game\Common\Graphics\TransitionMask</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Common\Graphics\SimpleModel\SimpleModel.cpp">
+      <Filter>Game\Common\Graphics\SimpleModel</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

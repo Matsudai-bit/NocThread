@@ -16,7 +16,9 @@
 
 // ヘッダファイルの読み込み ===================================================
 #include <memory>
-#include "Game/Common/GameEffect/GameEffectManager.h"
+
+// グラフィック関連
+#include "Game/Common/Graphics/GameEffect/GameEffectManager.h"
 
 // クラスの前方宣言 ===================================================
 class IGameEffect;

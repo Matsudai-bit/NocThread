@@ -6,16 +6,23 @@
  * @date    2025/6/15
  *********************************************************************/
 #pragma once
-#include "Game/Common/Camera/Camera.h"
 
 #include <memory>
+
+// フレームワーク関連
+#include "Game/Common/Framework/Event/Messenger/GameFlowMessenger/IGameFlowObserver.h"
+
+// グラフィック関連
+#include "Game/Common/Graphics/Camera/Camera.h"
+
+// ゲームオブジェクト関連
 #include "Game/GameObjects/Common/GameObject.h"
 #include "Game/GameObjects/Common/MovableObject/MovableObject.h"
-#include "Game/Common/Collision/Collision.h"
 
+// ユーティリティ関連
+#include "Game/Common/Collision/Collision.h"
 #include "Game/Common/Helper/PhysicsHelper/PhysicsHelper.h"
 
-#include "Game/Common/Framework/Event/Messenger/GameFlowMessenger/IGameFlowObserver.h"
 
 class Player;
 class CollisionManager;

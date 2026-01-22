@@ -15,8 +15,7 @@
 #include "Game/Common/Framework/CommonResources/CommonResources.h"
 
 // グラフィック関連
-#include "Game/Common/TransitionMask/TransitionMask.h"
-#include "Game/Scene/ResultScene/ResultScene.h"
+#include "Game/Common/Graphics/TransitionMask/TransitionMask.h"
 
 // ゲームプレイロジック関連
 #include "Game/Common/GameplayLogic/ResultData/ResultData.h"
@@ -24,6 +23,7 @@
 
 // シーン関連
 #include "Game/Scene/Loading/LoadingScreen.h"
+#include "Game/Scene/ResultScene/ResultScene.h"
 
 // メンバ関数の定義 ===========================================================
 /**

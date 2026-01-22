@@ -26,7 +26,7 @@
 #include "Game/Common/Framework/Input/InputActionType/InputActionType.h"
 
 // グラフィック関連
-#include "Game/Common/Line2D/Line2D.h"
+#include "Game/Common/Graphics/Line2D/Line2D.h"
 
 // UI関連
 #include "Game/UI/Pose/PoseMenu/PauseMenu.h"

@@ -38,9 +38,9 @@
 
 // グラフィック関連
 #include "Game/Common/Screen.h"
-#include "Game/Common/TransitionMask/TransitionMask.h"
-#include "Game/Common/GameEffect/GameEffectController.h"
-#include "Game/Common/Camera/MainCamera/MainCamera.h"
+#include "Game/Common/Graphics/TransitionMask/TransitionMask.h"
+#include "Game/Common/Graphics/GameEffect/GameEffectController.h"
+#include "Game/Common/Graphics/Camera/MainCamera/MainCamera.h"
 
 // UIツール関連
 #include "Game/Common/UserInterfaceTool/Sprite/Sprite.h"

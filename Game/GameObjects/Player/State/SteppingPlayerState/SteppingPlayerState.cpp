@@ -23,7 +23,7 @@
 #include "Game/Common/Framework/SoundManager/SoundManager.h"
 
 // グラフィック関連
-#include "Game/Common/Camera/PlayerCamera/PlayerCamera.h"
+#include "Game/Common/Graphics/Camera/PlayerCamera/PlayerCamera.h"
 
 // ゲームオブジェクト関連
 #include "Game/GameObjects/Player/Player.h"

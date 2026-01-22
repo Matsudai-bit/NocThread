@@ -18,7 +18,7 @@
 #include "Game/Common/Framework/CommonResources/CommonResources.h"
 
 // グラフィック関連
-#include "Game/Common/Camera/Camera.h"
+#include "Game/Common/Graphics/Camera/Camera.h"
 
 // ユーティリティ関連
 #include "Game/Common/GameplayLogic/CollisionManager/CollisionManager.h"

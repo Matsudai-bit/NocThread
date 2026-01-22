@@ -10,9 +10,12 @@
 #include "pch.h"
 #include "SimpleParticle.h"
 
-#include "Game/Common/Shadow/CircularShadow/CircularShadow.h"
+// ライブラリ関連
 #include "Library/DirectXFramework/ReadData.h"
-#include "Game/Common/Camera/Camera.h"
+
+// グラフィック関連
+#include "Game/Common/Graphics/Shadow/CircularShadow/CircularShadow.h"
+#include "Game/Common/Graphics/Camera/Camera.h"
 using namespace DirectX;
 
 
