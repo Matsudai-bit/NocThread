@@ -32,7 +32,9 @@
 #include "Game/Common/Framework/CommonResources/CommonResources.h"
 #include "Game/Common/Framework/ResourceManager/ResourceManager.h"
 #include "Game/Common/Framework/SoundManager/SoundManager.h"
-#include "Game/Manager/StageManager/StageManager.h"
+
+// ゲームプレイロジック関連
+#include "Game/Common/GameplayLogic/StageManager/StageManager.h"
 
 // グラフィック関連
 #include "Game/Common/Screen.h"

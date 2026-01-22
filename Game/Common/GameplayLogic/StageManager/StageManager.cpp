@@ -22,7 +22,6 @@
 // フレームワーク関連
 #include "Game/Common/Framework/CommonResources/CommonResources.h"
 #include "Game/Common/Framework/ResourceManager/ResourceManager.h"
-#include "Game/Common/Collision/CollisionManager/CollisionManager.h"
 #include "Game/Common/Framework/SoundManager/SoundManager.h"
 #include "Game/Common/Framework/GameObjectManager/EnemyManager/EnemyManager.h"
 #include "Game//Common/Framework/GameObjectRegistry/GameObjectRegistry.h"
@@ -35,7 +34,9 @@
 #include "Game/Common/Camera/PlayerCamera/PlayerCamera.h"
 
 // ゲームプレイロジック関連
-#include "Game/Common/ResultData/ResultData.h"
+#include "Game/Common/GameplayLogic/ResultData/ResultData.h"
+#include "Game/Common/GameplayLogic/CollisionManager/CollisionManager.h"
+#include "Game/Common/GameplayLogic/SpawnManager/SpawnManager.h"
 
 // ユーティリティ関連
 #include "Game/Common/Collision/Collision.h"
@@ -52,7 +53,6 @@
 #include "Game/GameObjects/Player/PlayerController/PlayerController.h"
 
 // ゲームオブジェクト管理関連
-#include "Game/Common/SpawnManager/SpawnManager.h"
 #include "Game/Manager/PlayerManager/PlayerManager.h"
 #include "Game/Manager/CheckpointManager/CheckpointManager.h"
 #include "Game/Manager/BuildingManager/BuildingManager.h"

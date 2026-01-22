@@ -21,7 +21,7 @@
 #include "Game/Common/Framework/ResourceManager/ResourceManager.h"
 
 // ゲームプレイロジック関連
-#include "Game/Common/ResultData/ResultData.h"
+#include "Game/Common/GameplayLogic/ResultData/ResultData.h"
 
 // シーン関連
 #include "Game/Scene/ResultScene/ResultScene.h"

@@ -9,7 +9,11 @@
 // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "CollisionMatrixFactory.h"
-#include "Game/Common/Collision/CollisionMatrix/CollisionMatrix.h"
+
+// ゲームプレイロジック関連
+#include "Game/Common/GameplayLogic/CollisionMatrix/CollisionMatrix.h"
+
+// ゲームオブジェクト関連
 #include "Game/GameObjects/Common/GameObject.h"
 
 

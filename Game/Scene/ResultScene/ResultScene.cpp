@@ -42,7 +42,7 @@
 #include "Game/Common/UserInterfaceTool/Canvas/Canvas.h"
 
 // ゲームプレイロジック関連
-#include "Game/Common/ResultData/ResultData.h"
+#include "Game/Common/GameplayLogic/ResultData/ResultData.h"
 
 // 状態
 #include "Game/Scene/ResultScene/State/SuccessResultState/SuccessResultState.h"

@@ -12,18 +12,23 @@
 
 #include "pch.h"
 #include "PlayerCamera.h"
-#include "Mouse.h"
-#include "Game/GameObjects/Player/Player.h"
 
-#include "Game/Common/Collision/CollisionManager/CollisionManager.h"
-
+// ライブラリ関連
 #include "Library/MyLib/DirectXMathUtils/DirectXMathUtils.h"
 #include "Library/MyLib/MathUtils/MathUtils.h"
-
-#include "Game/Common/Framework/CommonResources/CommonResources.h"
 #include "Library/MyLib/DirectXMyToolKit/DebugFont/DebugFont.h"
 
+// フレームワーク関連
+#include "Game/Common/Framework/CommonResources/CommonResources.h"
 #include "Game/Common/Framework/Event/Messenger/GameFlowMessenger/GameFlowMessenger.h"
+
+// ゲームオブジェクト関連 
+#include "Game/GameObjects/Player/Player.h"
+
+// ゲームプレイロジック関連
+#include "Game/Common/GameplayLogic//CollisionManager/CollisionManager.h"
+
+
 
 using namespace DirectX;
 

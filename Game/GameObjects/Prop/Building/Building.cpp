@@ -21,7 +21,7 @@
 #include "Game/Common/Camera/Camera.h"
 
 // ユーティリティ関連
-#include "Game/Common/Collision/CollisionManager/CollisionManager.h"
+#include "Game/Common/GameplayLogic/CollisionManager/CollisionManager.h"
 
 
 using namespace DirectX;

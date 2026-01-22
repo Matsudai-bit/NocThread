@@ -151,10 +151,6 @@ private:
 	// 
 	void EraseEffectToMap(unsigned int id);
 
-	// 
-	bool CanEraseEffect(unsigned int id, bool isEnd, EffectClip clip);
-
-
 // æ“¾/İ’è
 public:
 

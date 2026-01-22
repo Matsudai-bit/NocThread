@@ -28,7 +28,9 @@
 // フレームワーク関連
 #include "Game/Common/Framework/ResourceManager/ResourceManager.h"
 #include "Game/Common/Framework/CommonResources/CommonResources.h"
-#include "Game/Manager/StageManager/StageManager.h"
+
+// ゲームプレイロジック関連
+#include "Game/Common/GameplayLogic/StageManager/StageManager.h"
 
 // UIツール関連
 #include "Game/Common/UserInterfaceTool/Canvas/Canvas.h"

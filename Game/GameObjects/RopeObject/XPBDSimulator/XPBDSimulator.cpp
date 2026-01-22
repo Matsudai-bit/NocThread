@@ -10,21 +10,22 @@
 #include "pch.h"
 #include "XPBDSimulator.h"
 
-#include "Game/GameObjects/RopeObject/RopeObject.h"
-#include "Game/GameObjects/RopeObject/XPBDSimulator/Constraint/DistanceConstraint/DistanceConstraint.h"
+// ライブラリ関連
+#include "Library/MyLib\MathUtils/MathUtils.h"
 
-#include "Game/GameObjects/RopeObject/XPBDSimulator/Constraint/IConstraint.h"
-#include "Game/GameObjects/RopeObject/XPBDSimulator/Constraint/CollisionConstraint/CollisionConstraint.h"
+// ゲームプレイロジック関連
+#include "Game/Common/GameplayLogic/CollisionManager/CollisionManager.h"
 
-#include "GeometricPrimitive.h"
-#include "Library/MyLib\MathUtils\MathUtils.h"
-
-#include "Game/Common/Collision/CollisionManager/CollisionManager.h"
+// ユーティリティ関連
 #include "Game/Common/Collision/Collision.h"
 
-// 制約生成
-#include "Game/GameObjects/RopeObject/XPBDSimulator/Constraint/CollisionConstraint/CollisionConstraintFactory.h"
-#include "Game/GameObjects/RopeObject/XPBDSimulator/Constraint/DistanceConstraint/DistanceConstraintFactory.h"
+// XPBD制約関連
+#include "Game/GameObjects/RopeObject/XPBDSimulator/Constraint/ConstraintFactory.h"
+#include "Game/GameObjects/RopeObject/XPBDSimulator/Constraint/IConstraint.h"
+
+// ゲームオブジェクト関連
+#include "Game/GameObjects/RopeObject/RopeObject.h"
+#include "Game/GameObjects/RopeObject/XPBDSimulator/Constraint/DistanceConstraint/DistanceConstraint.h"
 
 using namespace DirectX;
 

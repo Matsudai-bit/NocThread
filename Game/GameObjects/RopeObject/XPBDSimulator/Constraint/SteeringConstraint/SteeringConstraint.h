@@ -13,8 +13,12 @@
 
 
 // ヘッダファイルの読み込み ===================================================
+
+// ゲームプレイロジック関連
+#include "Game/Common/GameplayLogic/Behaviour/SteeringBehavior/SteeringBehavior.h"
+
+// ユーティリティ関連
 #include "Game/GameObjects/RopeObject/XPBDSimulator/Constraint/IConstraint.h"
-#include "Game/Common/Behaviour/SteeringBehavior/SteeringBehavior.h"
 
 // クラスの前方宣言 ===================================================
 class SimParticle; // シミュレーションのパーティクル

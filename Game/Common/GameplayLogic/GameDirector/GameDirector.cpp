@@ -19,8 +19,8 @@
 #include "Game/Scene/ResultScene/ResultScene.h"
 
 // ゲームプレイロジック関連
-#include "Game/Common/ResultData/ResultData.h"
-#include "Game/Common/GameProgressData/GameProgressData.h"
+#include "Game/Common/GameplayLogic/ResultData/ResultData.h"
+#include "Game/Common/GameplayLogic/GameProgressData/GameProgressData.h"
 
 // シーン関連
 #include "Game/Scene/Loading/LoadingScreen.h"

@@ -28,18 +28,18 @@
 // フレームワーク関連
 #include "Game/Common/Framework/CommonResources/CommonResources.h"
 #include "Game/Common/Framework/ResourceManager/ResourceManager.h"
-#include "Game/Common/Collision/CollisionManager/CollisionManager.h"
-#include "Game/Common/GameDirector/GameDirector.h"
-#include "Game/Common/Collision/CollisionMatrix/CollisionMatrix.h"
 #include "Game/Common/Framework/SoundManager/SoundManager.h"
 #include "Game/Common/Framework/TaskManager/TaskManager.h"
-#include "Game/Common/SpawnManager/SpawnManager.h"
 #include "Game//Common/Framework/GameObjectRegistry/GameObjectRegistry.h"
 #include "Game/Common/Framework/Event/Messenger/GameFlowMessenger/GameFlowMessenger.h"
-#include "Game/Manager/StageManager/StageManager.h"
 
 // ゲームプレイロジック関連
-#include "Game/Common/ResultData/ResultData.h"
+#include "Game/Common/GameplayLogic/ResultData/ResultData.h"
+#include "Game/Common/GameplayLogic/CollisionManager/CollisionManager.h"
+#include "Game/Common/GameplayLogic/StageManager/StageManager.h"
+#include "Game/Common/GameplayLogic/SpawnManager/SpawnManager.h"
+#include "Game/Common/GameplayLogic/GameDirector/GameDirector.h"
+#include "Game/Common/GameplayLogic/CollisionMatrix/CollisionMatrix.h"
 
 // グラフィック関連
 #include "Game/Common/GameEffect/GameEffectController.h"

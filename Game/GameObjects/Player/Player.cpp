@@ -27,7 +27,6 @@
 #include "Game/Common/Framework/Event/WireSystemObserver/WireSystemSubject.h"
 #include "Game/Common/Framework/Event/WireSystemObserver/IWireEventObserver.h"
 #include "Game/Common/Framework/Event/Messenger/GameFlowMessenger/GameFlowMessenger.h"
-#include "Game/Common/Collision/CollisionManager/CollisionManager.h"
 
 // グラフィック関連
 #include "Game/Common/SimpleModel/SimpleModel.h"
@@ -39,7 +38,8 @@
 #include "Game/Common//Helper/PhysicsHelper/PhysicsHelper.h"
 
 // ゲームプレイロジック関連
-#include "Game/Common/WireTargetFinder/WireTargetFinder.h"
+#include "Game/Common/GameplayLogic/WireTargetFinder/WireTargetFinder.h"
+#include "Game/Common/GameplayLogic/CollisionManager/CollisionManager.h"
 
 // ゲームオブジェクト
 #include "Game/GameObjects/Wire/Wire.h"

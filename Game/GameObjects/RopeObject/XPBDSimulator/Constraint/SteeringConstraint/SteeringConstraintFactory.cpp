@@ -17,9 +17,11 @@
 #include "Library/MyLib/DirectXMyToolKit/DebugFont/DebugFont.h"
 
 // フレームワーク関連
-#include "Game/Common/Collision/CollisionManager/CollisionManager.h"
 #include "Game/Common/Framework/CommonResources/CommonResources.h"
 #include "Game/GameObjects/RopeObject/XPBDSimulator/SimParticle/SimParticle.h"
+
+// ゲームプレイロジック関連
+#include "Game/Common/GameplayLogic/CollisionManager/CollisionManager.h"
 
 // グラフィック関連
 #include "Game/Common/Camera/MainCamera/MainCamera.h"

@@ -13,12 +13,17 @@
 
 #include "DistanceConstraint.h"
 
-#include "Game/Common/Collision/CollisionManager/CollisionManager.h"
 
+// ライブラリ関連
+#include "Library/MyLib/MathUtils/MathUtils.h"
+
+// ゲームプレイロジック関連
+#include "Game/Common/GameplayLogic/CollisionManager/CollisionManager.h"
+
+// ユーティリティ関連
 #include "Game/GameObjects/RopeObject/XPBDSimulator/Constraint/CollisionConstraint/CollisionConstraint.h"
 #include "Game/GameObjects/RopeObject/XPBDSimulator/SimParticle/SimParticle.h"
 
-#include "Library/MyLib/MathUtils/MathUtils.h"
 using namespace DirectX;
 
 

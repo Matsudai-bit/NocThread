@@ -20,7 +20,9 @@
 
 // フレームワーク関連
 #include "Game/Common/Framework/CommonResources/CommonResources.h"
-#include "Game/Common/WireTargetFinder/WireTargetFinder.h"
+
+// ゲームプレイロジック関連
+#include "Game/Common/GameplayLogic/WireTargetFinder/WireTargetFinder.h"
 
 // ゲームオブジェクト関連
 #include "Game/GameObjects/Player/Player.h"

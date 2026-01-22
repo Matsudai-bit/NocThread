@@ -18,10 +18,12 @@
 #include "Game/GameObjects/StageObject/State/ThrownStageObjectState/ThrownStageObjectState.h"
 
 // フレームワーク関連
-#include "Game/Common/Collision/CollisionManager/CollisionManager.h"
 #include "Game/Common/Framework/CommonResources/CommonResources.h"
 #include "Game/Common/Framework/ResourceManager/ResourceManager.h"
 #include "Game/Common/Framework/Event/WireSystemObserver/WireEventData.h"
+
+// ゲームプレイロジック関連
+#include "Game/Common/GameplayLogic/CollisionManager/CollisionManager.h"
 
 // グラフィック関連
 #include "Game/Common/Camera/Camera.h"

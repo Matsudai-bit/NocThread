@@ -17,7 +17,9 @@
 #include "Game/Common/Framework/CommonResources/CommonResources.h"
 #include "Game/Common/Framework/ResourceManager/ResourceManager.h"
 #include "Game/Common/Framework/Event/Messenger/GameFlowMessenger/GameFlowMessenger.h"
-#include "Game/Common/Collision/CollisionManager/CollisionManager.h"
+
+// ゲームプレイロジック関連
+#include "Game/Common/GameplayLogic/CollisionManager/CollisionManager.h"
 
 // グラフィック関連
 #include "Game/Common/GameEffect/GameEffectManager.h"

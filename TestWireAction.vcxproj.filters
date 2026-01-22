@@ -359,33 +359,6 @@
     <Filter Include="Game\Common\Framework\Input">
       <UniqueIdentifier>{7b1f3ae4-9dd5-4b84-93ab-a51b114a6e22}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Game\Common\Gameplay">
-      <UniqueIdentifier>{e1641f2a-80f6-4643-b5d5-a973a03530c3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\Common\Gameplay\Behaviour">
-      <UniqueIdentifier>{3b2469f0-bc4c-44c0-91b6-f4d57868b62e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\Common\Gameplay\GameDirector">
-      <UniqueIdentifier>{bb3178ef-78d9-4c1e-b37f-f5e1b405c2ad}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\Common\Gameplay\SpawnManager">
-      <UniqueIdentifier>{3b993bdf-c799-4b74-b635-ebb1f79f9413}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\Common\Gameplay\GameProgressData">
-      <UniqueIdentifier>{d4180116-d967-4e68-af8e-8b0e33d5ef8b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\Common\Gameplay\StageManager">
-      <UniqueIdentifier>{14387b5c-ae5b-480c-8151-48ce7309d821}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\Common\Gameplay\WireTargetFinder">
-      <UniqueIdentifier>{11eb867a-005c-47f8-b03a-83d0841f7c54}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\Common\Gameplay\ExitController">
-      <UniqueIdentifier>{f5d2ab48-831a-401b-8320-0706aa8113e7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\Common\Gameplay\ResultData">
-      <UniqueIdentifier>{6cb8f038-3210-4c03-80d7-7d397b98cee4}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Game\Common\Framework\TaskManager">
       <UniqueIdentifier>{ccb36434-55c4-46dc-8ddc-eb73595021b6}</UniqueIdentifier>
     </Filter>
@@ -512,6 +485,39 @@
     <Filter Include="Game\Scene\GameplayScene\State\Pause">
       <UniqueIdentifier>{ffc0fc77-e56d-457f-aecd-0e36faaafdab}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\Common\GameplayLogic">
+      <UniqueIdentifier>{e1641f2a-80f6-4643-b5d5-a973a03530c3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Common\GameplayLogic\Behaviour">
+      <UniqueIdentifier>{3b2469f0-bc4c-44c0-91b6-f4d57868b62e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Common\GameplayLogic\GameDirector">
+      <UniqueIdentifier>{bb3178ef-78d9-4c1e-b37f-f5e1b405c2ad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Common\GameplayLogic\SpawnManager">
+      <UniqueIdentifier>{3b993bdf-c799-4b74-b635-ebb1f79f9413}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Common\GameplayLogic\GameProgressData">
+      <UniqueIdentifier>{d4180116-d967-4e68-af8e-8b0e33d5ef8b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Common\GameplayLogic\StageManager">
+      <UniqueIdentifier>{14387b5c-ae5b-480c-8151-48ce7309d821}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Common\GameplayLogic\WireTargetFinder">
+      <UniqueIdentifier>{11eb867a-005c-47f8-b03a-83d0841f7c54}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Common\GameplayLogic\ExitController">
+      <UniqueIdentifier>{f5d2ab48-831a-401b-8320-0706aa8113e7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Common\GameplayLogic\ResultData">
+      <UniqueIdentifier>{6cb8f038-3210-4c03-80d7-7d397b98cee4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Common\GameplayLogic\CollisionManager">
+      <UniqueIdentifier>{f5cf191d-ae94-4e1b-b468-77e553e983ba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Common\GameplayLogic\CollisionMatrix">
+      <UniqueIdentifier>{6d6c8f23-a426-4a1a-a39c-1b6a26219de0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -522,14 +528,8 @@
     <ClInclude Include="Game\Common\Collision\Collision.h">
       <Filter>Game\Common\Utillities\Collision</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Common\Collision\CollisionManager\CollisionManager.h">
-      <Filter>Game\Common\Utillities\Collision</Filter>
-    </ClInclude>
     <ClInclude Include="Game\Common\ElapsedTimeCounter\ElapsedTimeCounter.h">
       <Filter>Game\Common\Utillities\ElapsedTimeCounter</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Common\ExitController\ExitController.h">
-      <Filter>Game\Common\Gameplay\ExitController</Filter>
     </ClInclude>
     <ClInclude Include="Game\Common\Collision\ICollider.h">
       <Filter>Game\Common\Utillities\Collision</Filter>
@@ -684,9 +684,6 @@
     <ClInclude Include="Game\Common\Factory\EnemyFactory\EnemyFactory.h">
       <Filter>Game\Common\Factory\EnemyFactory</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Common\SpawnManager\SpawnManager.h">
-      <Filter>Game\Common\Gameplay\SpawnManager</Filter>
-    </ClInclude>
     <ClInclude Include="Game\GameObjects\Prop\Base\IProp.h">
       <Filter>Game\GameObjects\Prop\Base</Filter>
     </ClInclude>
@@ -707,9 +704,6 @@
     </ClInclude>
     <ClInclude Include="Library\MyLib\DirectXMyToolKit\DirectXUtils.h">
       <Filter>Library\MyLib\DirectX\DirectXMyToolKit</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Common\WireTargetFinder\WireTargetFinder.h">
-      <Filter>Game\Common\Gameplay\WireTargetFinder</Filter>
     </ClInclude>
     <ClInclude Include="Game\GameObjects\Player\State\SteppingPlayerState\SteppingPlayerState.h">
       <Filter>Game\GameObjects\Player\State\Step</Filter>
@@ -749,9 +743,6 @@
     </ClInclude>
     <ClInclude Include="Game\UI\Pose\PoseMenu\PauseMenu.h">
       <Filter>Game\UI\Pause\PauseMenu</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Common\ResultData\ResultData.h">
-      <Filter>Game\Common\Gameplay\ResultData</Filter>
     </ClInclude>
     <ClInclude Include="Game\UI\TutorialWindow\TutorialWindow.h">
       <Filter>Game\UI\Tutorial\TutorialWindow</Filter>
@@ -813,9 +804,6 @@
     <ClInclude Include="Game\GameObjects\Player\State\ShootingWireState\ShootingWirePlayerState.h">
       <Filter>Game\GameObjects\Player\State\ShootingWire</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Manager\StageManager\StageManager.h">
-      <Filter>Game\Common\Gameplay\StageManager</Filter>
-    </ClInclude>
     <ClInclude Include="Library\DirectXFramework\RenderTexture.h">
       <Filter>Library\DirectXFramework\RenderTexture</Filter>
     </ClInclude>
@@ -849,12 +837,6 @@
     <ClInclude Include="Game\GameObjects\CheckPoint\Checkpoint.h">
       <Filter>Game\GameObjects\Checkpoint</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Common\GameProgressData\GameProgressData.h">
-      <Filter>Game\Common\Gameplay\GameProgressData</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Common\GameDirector\GameDirector.h">
-      <Filter>Game\Common\Gameplay\GameDirector</Filter>
-    </ClInclude>
     <ClInclude Include="Library\MyLib\DirectXMyToolKit\ModelPart\ModelPart.h">
       <Filter>Library\MyLib\DirectX\DirectXMyToolKit\ModelPart</Filter>
     </ClInclude>
@@ -873,12 +855,6 @@
     <ClInclude Include="Library\MyLib\NlohmannUtils\NlohmannUtils.h">
       <Filter>Library\MyLib\NlohmannUtils</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Common\Behaviour\SteeringBehavior\SteeringBehavior.h">
-      <Filter>Game\Common\Gameplay\Behaviour</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Common\Behaviour\SteeringBehavior\SteeringParameters.h">
-      <Filter>Game\Common\Gameplay\Behaviour</Filter>
-    </ClInclude>
     <ClInclude Include="Game\Common\Minimap\Minimap.h">
       <Filter>Game\Common\Minimap</Filter>
     </ClInclude>
@@ -887,9 +863,6 @@
     </ClInclude>
     <ClInclude Include="Game\GameObjects\RopeObject\XPBDSimulator\Constraint\SteeringConstraint\SteeringConstraintFactory.h">
       <Filter>Game\GameObjects\RopeObject\XPBDSimulator\Constraint\Factory</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Common\Collision\CollisionMatrix\CollisionMatrix.h">
-      <Filter>Game\Common\Utillities\Collision</Filter>
     </ClInclude>
     <ClInclude Include="Game\Common\Factory\CollisionMatrixFactory\CollisionMatrixFactory.h">
       <Filter>Game\Common\Factory\CollisionMatrixFactory</Filter>
@@ -981,6 +954,39 @@
     <ClInclude Include="Game\Common\Framework\TaskManager\TaskManager.h">
       <Filter>Game\Common\Framework\TaskManager</Filter>
     </ClInclude>
+    <ClInclude Include="Game\Common\GameplayLogic\CollisionMatrix\CollisionMatrix.h">
+      <Filter>Game\Common\GameplayLogic\CollisionMatrix</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Common\GameplayLogic\CollisionManager\CollisionManager.h">
+      <Filter>Game\Common\GameplayLogic\CollisionManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Common\GameplayLogic\Behaviour\SteeringBehavior\SteeringBehavior.h">
+      <Filter>Game\Common\GameplayLogic\Behaviour</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Common\GameplayLogic\Behaviour\SteeringBehavior\SteeringParameters.h">
+      <Filter>Game\Common\GameplayLogic\Behaviour</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Common\GameplayLogic\ExitController\ExitController.h">
+      <Filter>Game\Common\GameplayLogic\ExitController</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Common\GameplayLogic\GameDirector\GameDirector.h">
+      <Filter>Game\Common\GameplayLogic\GameDirector</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Common\GameplayLogic\GameProgressData\GameProgressData.h">
+      <Filter>Game\Common\GameplayLogic\GameProgressData</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Common\GameplayLogic\ResultData\ResultData.h">
+      <Filter>Game\Common\GameplayLogic\ResultData</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Common\GameplayLogic\SpawnManager\SpawnManager.h">
+      <Filter>Game\Common\GameplayLogic\SpawnManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Common\GameplayLogic\StageManager\StageManager.h">
+      <Filter>Game\Common\GameplayLogic\StageManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Common\GameplayLogic\WireTargetFinder\WireTargetFinder.h">
+      <Filter>Game\Common\GameplayLogic\WireTargetFinder</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -991,14 +997,8 @@
     <ClCompile Include="Game\Common\Collision\Collision.cpp">
       <Filter>Game\Common\Utillities\Collision</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Common\Collision\CollisionManager\CollisionManager.cpp">
-      <Filter>Game\Common\Utillities\Collision</Filter>
-    </ClCompile>
     <ClCompile Include="Game\Common\ElapsedTimeCounter\ElapsedTimeCounter.cpp">
       <Filter>Game\Common\Utillities\ElapsedTimeCounter</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Common\ExitController\ExitController.cpp">
-      <Filter>Game\Common\Gameplay\ExitController</Filter>
     </ClCompile>
     <ClCompile Include="Game\GameObjects\Common\GameObject.cpp">
       <Filter>Game\GameObjects\Common\GameObject</Filter>
@@ -1114,9 +1114,6 @@
     <ClCompile Include="Game\Common\Factory\EnemyFactory\EnemyFactory.cpp">
       <Filter>Game\Common\Factory\EnemyFactory</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Common\SpawnManager\SpawnManager.cpp">
-      <Filter>Game\Common\Gameplay\SpawnManager</Filter>
-    </ClCompile>
     <ClCompile Include="Game\GameObjects\Prop\Base\IProp.cpp">
       <Filter>Game\GameObjects\Prop\Base</Filter>
     </ClCompile>
@@ -1137,9 +1134,6 @@
     </ClCompile>
     <ClCompile Include="Library\MyLib\DirectXMyToolKit\DirectXUtils.cpp">
       <Filter>Library\MyLib\DirectX\DirectXMyToolKit</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Common\WireTargetFinder\WireTargetFinder.cpp">
-      <Filter>Game\Common\Gameplay\WireTargetFinder</Filter>
     </ClCompile>
     <ClCompile Include="Game\GameObjects\Player\State\SteppingPlayerState\SteppingPlayerState.cpp">
       <Filter>Game\GameObjects\Player\State\Step</Filter>
@@ -1179,9 +1173,6 @@
     </ClCompile>
     <ClCompile Include="Game\UI\Pose\PoseMenu\PauseMenu.cpp">
       <Filter>Game\UI\Pause\PauseMenu</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Common\ResultData\ResultData.cpp">
-      <Filter>Game\Common\Gameplay\ResultData</Filter>
     </ClCompile>
     <ClCompile Include="Game\UI\TutorialWindow\TutorialWindow.cpp">
       <Filter>Game\UI\Tutorial\TutorialWindow</Filter>
@@ -1240,9 +1231,6 @@
     <ClCompile Include="Game\GameObjects\Player\State\ShootingWireState\ShootingWirePlayerState.cpp">
       <Filter>Game\GameObjects\Player\State\ShootingWire</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Manager\StageManager\StageManager.cpp">
-      <Filter>Game\Common\Gameplay\StageManager</Filter>
-    </ClCompile>
     <ClCompile Include="Library\DirectXFramework\RenderTexture.cpp">
       <Filter>Library\DirectXFramework\RenderTexture</Filter>
     </ClCompile>
@@ -1273,12 +1261,6 @@
     <ClCompile Include="Game\GameObjects\CheckPoint\Checkpoint.cpp">
       <Filter>Game\GameObjects\Checkpoint</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Common\GameProgressData\GameProgressData.cpp">
-      <Filter>Game\Common\Gameplay\GameProgressData</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Common\GameDirector\GameDirector.cpp">
-      <Filter>Game\Common\Gameplay\GameDirector</Filter>
-    </ClCompile>
     <ClCompile Include="Game\GameObjects\CheckPoint\CheckpointObject\CheckpointObject.cpp">
       <Filter>Game\GameObjects\Checkpoint\CheckpointObject</Filter>
     </ClCompile>
@@ -1291,12 +1273,6 @@
     <ClCompile Include="Library\MyLib\NlohmannUtils\NlohmannUtils.cpp">
       <Filter>Library\MyLib\NlohmannUtils</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Common\Behaviour\SteeringBehavior\SteeringBehavior.cpp">
-      <Filter>Game\Common\Gameplay\Behaviour</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Common\Behaviour\SteeringBehavior\SteeringParameters.cpp">
-      <Filter>Game\Common\Gameplay\Behaviour</Filter>
-    </ClCompile>
     <ClCompile Include="Game\Common\Minimap\Minimap.cpp">
       <Filter>Game\Common\Minimap</Filter>
     </ClCompile>
@@ -1305,9 +1281,6 @@
     </ClCompile>
     <ClCompile Include="Game\GameObjects\RopeObject\XPBDSimulator\Constraint\SteeringConstraint\SteeringConstraintFactory.cpp">
       <Filter>Game\GameObjects\RopeObject\XPBDSimulator\Constraint\Factory</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Common\Collision\CollisionMatrix\CollisionMatrix.cpp">
-      <Filter>Game\Common\Utillities\Collision</Filter>
     </ClCompile>
     <ClCompile Include="Game\Common\Factory\CollisionMatrixFactory\CollisionMatrixFactory.cpp">
       <Filter>Game\Common\Factory\CollisionMatrixFactory</Filter>
@@ -1377,6 +1350,39 @@
     </ClCompile>
     <ClCompile Include="Game\Common\Framework\TaskManager\TaskManager.cpp">
       <Filter>Game\Common\Framework\TaskManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Common\GameplayLogic\CollisionMatrix\CollisionMatrix.cpp">
+      <Filter>Game\Common\GameplayLogic\CollisionMatrix</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Common\GameplayLogic\CollisionManager\CollisionManager.cpp">
+      <Filter>Game\Common\GameplayLogic\CollisionManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Common\GameplayLogic\Behaviour\SteeringBehavior\SteeringBehavior.cpp">
+      <Filter>Game\Common\GameplayLogic\Behaviour</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Common\GameplayLogic\Behaviour\SteeringBehavior\SteeringParameters.cpp">
+      <Filter>Game\Common\GameplayLogic\Behaviour</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Common\GameplayLogic\ExitController\ExitController.cpp">
+      <Filter>Game\Common\GameplayLogic\ExitController</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Common\GameplayLogic\GameDirector\GameDirector.cpp">
+      <Filter>Game\Common\GameplayLogic\GameDirector</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Common\GameplayLogic\GameProgressData\GameProgressData.cpp">
+      <Filter>Game\Common\GameplayLogic\GameProgressData</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Common\GameplayLogic\ResultData\ResultData.cpp">
+      <Filter>Game\Common\GameplayLogic\ResultData</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Common\GameplayLogic\SpawnManager\SpawnManager.cpp">
+      <Filter>Game\Common\GameplayLogic\SpawnManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Common\GameplayLogic\StageManager\StageManager.cpp">
+      <Filter>Game\Common\GameplayLogic\StageManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Common\GameplayLogic\WireTargetFinder\WireTargetFinder.cpp">
+      <Filter>Game\Common\GameplayLogic\WireTargetFinder</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

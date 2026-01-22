@@ -15,13 +15,19 @@
 #include <vector>
 
 // ヘッダファイルの読み込み ===================================================
+
+// ユーティリティ関連
 #include "Game/Common/Collision/Collision.h"
 #include "Game/Common/Collision/ICollision.h"
+
+// ゲームオブジェクト関連
 #include "Game/GameObjects/Common/GameObject.h"
 
+// フレームワーク関連
 #include "Game/Common/Framework/TaskManager/TaskManager.h"
 
-#include "Game/Common/Collision/CollisionMatrix/CollisionMatrix.h"
+// ゲームプレイロジック関連
+#include "Game/Common/GameplayLogic/CollisionMatrix/CollisionMatrix.h"
 
 // クラスの定義 ===============================================================
 /**
