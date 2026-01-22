@@ -29,13 +29,13 @@
 #include "Game/Common/Framework/Event/Messenger/GameFlowMessenger/GameFlowMessenger.h"
 
 // グラフィック関連
-#include "Game/Common/SimpleModel/SimpleModel.h"
-#include "Game/Common/Camera/PlayerCamera/PlayerCamera.h"
+#include "Game/Common/Graphics/SimpleModel/SimpleModel.h"
+#include "Game/Common/Graphics/Camera/PlayerCamera/PlayerCamera.h"
 
 // ユーティリティ関連
-#include "Game/Common/Collision/Collision.h"
-#include "Game/Common/Helper/MovementHelper/MovementHelper.h"
-#include "Game/Common//Helper/PhysicsHelper/PhysicsHelper.h"
+#include "Game/Common/Utillities/Collision/Collision.h"
+#include "Game/Common/Utillities/Helper/MovementHelper/MovementHelper.h"
+#include "Game/Common/Utillities/Helper/PhysicsHelper/PhysicsHelper.h"
 
 // ゲームプレイロジック関連
 #include "Game/Common/GameplayLogic/WireTargetFinder/WireTargetFinder.h"

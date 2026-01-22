@@ -20,7 +20,7 @@
 // フレームワーク関連
 #include "Game/Common/Framework/CommonResources/CommonResources.h"    // 共通リソース
 #include "Game/Common/Framework/ResourceManager/ResourceManager.h"    // リソース管理
-#include "Game/Manager/SceneManager/SceneManager.h"         // シーン管理
+#include "Game/Scene/SceneManager.h"         // シーン管理
 
 // グラフィック関連
 #include "Game/Common/Graphics/TransitionMask/TransitionMask.h"      // トランジションマスク

@@ -16,7 +16,7 @@
 
 // ヘッダファイルの読み込み ===================================================
 #include <memory>
-#include "Game/Manager/SceneManager/SceneManager.h"
+#include "Game/Scene//SceneManager.h"
 
 // ライブラリ関連
 #include "Library/MyLib/DirectXMyToolKit/DebugCamera/DebugCamera.h"     // デバックカメラ
@@ -34,7 +34,7 @@
 #include "Game/Common/Screen.h"
 
 // ユーティリティ関連
-#include "Game/Common/ElapsedTimeCounter/ElapsedTimeCounter.h"
+#include "Game/Common/Utillities/ElapsedTimeCounter/ElapsedTimeCounter.h"
 
 // ゲームオブジェクト
 

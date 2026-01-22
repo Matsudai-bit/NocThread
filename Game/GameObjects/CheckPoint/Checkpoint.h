@@ -15,9 +15,15 @@
 // ヘッダファイルの読み込み ===================================================
 #include <memory>
 #include <unordered_map>
-#include "Game/GameObjects/Common/GameObject.h"
-#include "Game/Common/Collision/Collision.h"
+
+// ライブラリ関連
 #include "Library/MyLib/DirectXMyToolKit/ModelPart/ModelPart.h"
+
+// ゲームオブジェクト関連
+#include "Game/GameObjects/Common/GameObject.h"
+
+// ユーティリティ関連
+#include "Game/Common/Utillities/Collision/Collision.h"
 // クラスの前方宣言 ===================================================
 class CommonResources; // 共通リソース
 class CollisionManager;// 衝突管理

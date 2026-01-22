@@ -20,8 +20,8 @@
 #include "Game/GameObjects/Common/MovableObject/MovableObject.h"
 
 // ユーティリティ関連
-#include "Game/Common/Collision/Collision.h"
-#include "Game/Common/Helper/PhysicsHelper/PhysicsHelper.h"
+#include "Game/Common/Utillities/Collision/Collision.h"
+#include "Game/Common/Utillities/Helper/PhysicsHelper/PhysicsHelper.h"
 
 
 class Player;

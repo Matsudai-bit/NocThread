@@ -29,9 +29,9 @@
 #include "Game/Common/Framework/TaskManager/TaskManager.h"
 
 // グラフィック関連
-#include "Game/Common/Camera/MainCamera/MainCamera.h"
-#include "Game/Common/Shadow/CircularShadow/CircularShadow.h"
-#include "Game/Common/Camera/PlayerCamera/PlayerCamera.h"
+#include "Game/Common/Graphics/Camera/MainCamera/MainCamera.h"
+#include "Game/Common/Graphics/Shadow/CircularShadow/CircularShadow.h"
+#include "Game/Common/Graphics/Camera/PlayerCamera/PlayerCamera.h"
 
 // ゲームプレイロジック関連
 #include "Game/Common/GameplayLogic/ResultData/ResultData.h"
@@ -39,7 +39,7 @@
 #include "Game/Common/GameplayLogic/SpawnManager/SpawnManager.h"
 
 // ユーティリティ関連
-#include "Game/Common/Collision/Collision.h"
+#include "Game/Common/Utillities/Collision/Collision.h"
 
 // ゲームオブジェクト関連
 #include "Game/GameObjects/Floor/Floor.h"
@@ -53,9 +53,9 @@
 #include "Game/GameObjects/Player/PlayerController/PlayerController.h"
 
 // ゲームオブジェクト管理関連
-#include "Game/Manager/PlayerManager/PlayerManager.h"
-#include "Game/Manager/CheckpointManager/CheckpointManager.h"
-#include "Game/Manager/BuildingManager/BuildingManager.h"
+#include "Game/Common/Framework/GameObjectManager/PlayerManager/PlayerManager.h"
+#include "Game/Common/Framework/GameObjectManager/CheckpointManager/CheckpointManager.h"
+#include "Game/Common/Framework/GameObjectManager/BuildingManager/BuildingManager.h"
 
 // UIツール関連
 #include "Game/Common/UserInterfaceTool/Canvas/Canvas.h"

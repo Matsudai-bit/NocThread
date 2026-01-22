@@ -18,10 +18,12 @@
 
 // フレームワーク関連
 #include "Game/Common/Framework/CommonResources/CommonResources.h"
-#include "Game/Common/Collision/CollisionManager/CollisionManager.h"
+
+// ゲームプレイロジック関連
+#include "Game/Common/GameplayLogic/CollisionManager/CollisionManager.h"
 
 // グラフィック関連
-#include "Game/Common/Camera/Camera.h"
+#include "Game/Common/Graphics/Camera/Camera.h"
 
 // ゲームオブジェクト関連
 #include "Game/GameObjects/Player/Player.h"

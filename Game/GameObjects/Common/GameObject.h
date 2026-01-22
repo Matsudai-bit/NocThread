@@ -15,14 +15,19 @@
 // ヘッダファイルの読み込み ===================================================
 #include <typeindex>
 #include <unordered_map>
-#include "Game/Common/Collision/ICollision.h"
-#include "Game/Common/Framework/EventSystem/EventSystem.h"
-#include "Game/GameObjects/Common/GameObjectEvent/GameObjectEvent.h"
-#include "Game/Common/Framework/EntityManager/IEntity.h"
 
+// フレームワーク関連
+#include "Game/Common/Framework/EventSystem/EventSystem.h"
 #include "Game/Common/Framework/TaskManager/TaskManager.h"
 
+// ユーティリティ関連
+#include "Game/Common/Utillities/Collision/ICollision.h"
+
+// ゲームオブジェクト関連
+#include "Game/GameObjects/Common/GameObjectEvent/GameObjectEvent.h"
+#include "Game/Common/Framework/EntityManager/IEntity.h"
 #include "Game/GameObjects/Common/Transform/Transform.h"
+
 
 
 // クラスの前方宣言 ===================================================

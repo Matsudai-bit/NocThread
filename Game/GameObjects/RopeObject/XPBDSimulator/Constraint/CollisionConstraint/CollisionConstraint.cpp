@@ -11,8 +11,8 @@
 #include "CollisionConstraint.h"
 #include "Game/GameObjects/RopeObject/XPBDSimulator/SimParticle/SimParticle.h"
 
-#include "Library\MyLib\MathUtils\MathUtils.h"
-#include "Game/Common/Collision/Collision.h"
+#include "Library/MyLib/MathUtils/MathUtils.h"
+#include "Game/Common/Utillities/Collision/Collision.h"
 using namespace DirectX;
 
 

@@ -17,8 +17,8 @@
 // ヘッダファイルの読み込み ===================================================
 
 // ユーティリティ関連
-#include "Game/Common/Collision/Collision.h"
-#include "Game/Common/Collision/ICollision.h"
+#include "Game/Common/Utillities/Collision/Collision.h"
+#include "Game/Common/Utillities/Collision/ICollision.h"
 
 // ゲームオブジェクト関連
 #include "Game/GameObjects/Common/GameObject.h"

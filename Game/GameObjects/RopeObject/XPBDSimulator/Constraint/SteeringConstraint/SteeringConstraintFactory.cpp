@@ -24,8 +24,8 @@
 #include "Game/Common/GameplayLogic/CollisionManager/CollisionManager.h"
 
 // グラフィック関連
-#include "Game/Common/Camera/MainCamera/MainCamera.h"
-#include "Game/Common/Camera/Camera.h"
+#include "Game/Common/Graphics/Camera/MainCamera/MainCamera.h"
+#include "Game/Common/Graphics/Camera/Camera.h"
 
 // ユーティリティ関連
 #include "Game/GameObjects/RopeObject/XPBDSimulator/Constraint/SteeringConstraint/SteeringConstraint.h"

@@ -15,9 +15,11 @@
 // ヘッダファイルの読み込み ===================================================
 #include <memory>
 #include <stack>
+
+// フレームワーク関連
 #include "Game/Common/Framework/Event/Messenger/GameFlowMessenger/IGameFlowObserver.h"	// ゲームフローの監視者ようインターフェース
 #include "Game/Common/Framework/TaskManager/TaskManager.h"								// タスク管理
-#include "Game/Manager/SceneManager/SceneManager.h"
+#include "Game/Scene/SceneManager.h"
 
 // クラスの前方宣言 ===================================================
 class GameProgressDataManager; // ゲーム進捗データ管理

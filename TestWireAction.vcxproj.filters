@@ -528,18 +528,6 @@
     <ClInclude Include="Game\Game.h">
       <Filter>Game</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Common\Collision\Collision.h">
-      <Filter>Game\Common\Utillities\Collision</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Common\ElapsedTimeCounter\ElapsedTimeCounter.h">
-      <Filter>Game\Common\Utillities\ElapsedTimeCounter</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Common\Collision\ICollider.h">
-      <Filter>Game\Common\Utillities\Collision</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Common\Collision\ICollision.h">
-      <Filter>Game\Common\Utillities\Collision</Filter>
-    </ClInclude>
     <ClInclude Include="Game\GameObjects\Common\GameObject.h">
       <Filter>Game\GameObjects\Common\GameObject</Filter>
     </ClInclude>
@@ -621,9 +609,6 @@
     <ClInclude Include="Game\GameObjects\Enemy\IEnemy.h">
       <Filter>Game\GameObjects\Enemy</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Manager\SceneManager\SceneManager.h">
-      <Filter>Game\Scene</Filter>
-    </ClInclude>
     <ClInclude Include="Game\Scene\Loading\LoadingScreen.h">
       <Filter>Game\Scene\LoadingScreen</Filter>
     </ClInclude>
@@ -654,9 +639,6 @@
     <ClInclude Include="Game\GameObjects\Enemy\Behaviour\Update\TrackingEnemyBehaviour\TrackingEnemyBehaviour.h">
       <Filter>Game\GameObjects\Enemy\Behaviour\EnemyUpdateBehaviour\TrackingEnemyBehaviour</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Common\Helper\MovementHelper\MovementHelper.h">
-      <Filter>Game\Common\Utillities\Helper\MovementHelper</Filter>
-    </ClInclude>
     <ClInclude Include="Game\GameObjects\Treasure\Treasure.h">
       <Filter>Game\GameObjects\Treasure</Filter>
     </ClInclude>
@@ -686,9 +668,6 @@
     </ClInclude>
     <ClInclude Include="Game\GameObjects\Prop\Building\Building.h">
       <Filter>Game\GameObjects\Prop\Buiding</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Common\Helper\PhysicsHelper\PhysicsHelper.h">
-      <Filter>Game\Common\Utillities\Helper\PhysicsHelper</Filter>
     </ClInclude>
     <ClInclude Include="Game\GameObjects\Helicopter\EscapeHelicopter\EscapeHelicopter.h">
       <Filter>Game\GameObjects\Helicopter\EscapeHelicopter</Filter>
@@ -885,15 +864,6 @@
     <ClInclude Include="Game\Common\Framework\GameObjectManager\EnemyManager\EnemyManager.h">
       <Filter>Game\Common\Framework\GameObjectManager\EnemyManager</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Manager\BuildingManager\BuildingManager.h">
-      <Filter>Game\Common\Framework\GameObjectManager\BuildingManager</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Manager\CheckpointManager\CheckpointManager.h">
-      <Filter>Game\Common\Framework\GameObjectManager\CheckpointManager</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Manager\PlayerManager\PlayerManager.h">
-      <Filter>Game\Common\Framework\GameObjectManager\PlayerManager</Filter>
-    </ClInclude>
     <ClInclude Include="Game\Common\Framework\GameObjectRegistry\GameObjectRegistry.h">
       <Filter>Game\Common\Framework\GameObjectRigstry</Filter>
     </ClInclude>
@@ -990,18 +960,42 @@
     <ClInclude Include="Game\Common\Graphics\SimpleModel\SimpleModel.h">
       <Filter>Game\Common\Graphics\SimpleModel</Filter>
     </ClInclude>
+    <ClInclude Include="Game\Common\Utillities\Collision\Collision.h">
+      <Filter>Game\Common\Utillities\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Common\Utillities\Collision\ICollider.h">
+      <Filter>Game\Common\Utillities\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Common\Utillities\Collision\ICollision.h">
+      <Filter>Game\Common\Utillities\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Common\Utillities\ElapsedTimeCounter\ElapsedTimeCounter.h">
+      <Filter>Game\Common\Utillities\ElapsedTimeCounter</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Common\Utillities\Helper\MovementHelper\MovementHelper.h">
+      <Filter>Game\Common\Utillities\Helper\MovementHelper</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Common\Utillities\Helper\PhysicsHelper\PhysicsHelper.h">
+      <Filter>Game\Common\Utillities\Helper\PhysicsHelper</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Common\Framework\GameObjectManager\BuildingManager\BuildingManager.h">
+      <Filter>Game\Common\Framework\GameObjectManager\BuildingManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Common\Framework\GameObjectManager\CheckpointManager\CheckpointManager.h">
+      <Filter>Game\Common\Framework\GameObjectManager\CheckpointManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Common\Framework\GameObjectManager\PlayerManager\PlayerManager.h">
+      <Filter>Game\Common\Framework\GameObjectManager\PlayerManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Scene\SceneManager.h">
+      <Filter>Game\Scene</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Game\Game.cpp">
       <Filter>Game</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Common\Collision\Collision.cpp">
-      <Filter>Game\Common\Utillities\Collision</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Common\ElapsedTimeCounter\ElapsedTimeCounter.cpp">
-      <Filter>Game\Common\Utillities\ElapsedTimeCounter</Filter>
     </ClCompile>
     <ClCompile Include="Game\GameObjects\Common\GameObject.cpp">
       <Filter>Game\GameObjects\Common\GameObject</Filter>
@@ -1090,9 +1084,6 @@
     <ClCompile Include="Game\GameObjects\Enemy\Behaviour\Update\TrackingEnemyBehaviour\TrackingEnemyBehaviour.cpp">
       <Filter>Game\GameObjects\Enemy\Behaviour\EnemyUpdateBehaviour\TrackingEnemyBehaviour</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Common\Helper\MovementHelper\MovementHelper.cpp">
-      <Filter>Game\Common\Utillities\Helper\MovementHelper</Filter>
-    </ClCompile>
     <ClCompile Include="Game\GameObjects\Treasure\Treasure.cpp">
       <Filter>Game\GameObjects\Treasure</Filter>
     </ClCompile>
@@ -1116,9 +1107,6 @@
     </ClCompile>
     <ClCompile Include="Game\GameObjects\Prop\Building\Building.cpp">
       <Filter>Game\GameObjects\Prop\Buiding</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Common\Helper\PhysicsHelper\PhysicsHelper.cpp">
-      <Filter>Game\Common\Utillities\Helper\PhysicsHelper</Filter>
     </ClCompile>
     <ClCompile Include="Game\GameObjects\Helicopter\EscapeHelicopter\EscapeHelicopter.cpp">
       <Filter>Game\GameObjects\Helicopter\EscapeHelicopter</Filter>
@@ -1282,15 +1270,6 @@
     <ClCompile Include="Game\Common\Framework\GameObjectManager\EnemyManager\EnemyManager.cpp">
       <Filter>Game\Common\Framework\GameObjectManager\EnemyManager</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Manager\BuildingManager\BuildingManager.cpp">
-      <Filter>Game\Common\Framework\GameObjectManager\BuildingManager</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Manager\CheckpointManager\CheckpointManager.cpp">
-      <Filter>Game\Common\Framework\GameObjectManager\CheckpointManager</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Manager\PlayerManager\PlayerManager.cpp">
-      <Filter>Game\Common\Framework\GameObjectManager\PlayerManager</Filter>
-    </ClCompile>
     <ClCompile Include="Game\Common\Framework\GameObjectRegistry\GameObjectRegistry.cpp">
       <Filter>Game\Common\Framework\GameObjectRigstry</Filter>
     </ClCompile>
@@ -1386,6 +1365,27 @@
     </ClCompile>
     <ClCompile Include="Game\Common\Graphics\SimpleModel\SimpleModel.cpp">
       <Filter>Game\Common\Graphics\SimpleModel</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Common\Utillities\Collision\Collision.cpp">
+      <Filter>Game\Common\Utillities\Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Common\Utillities\ElapsedTimeCounter\ElapsedTimeCounter.cpp">
+      <Filter>Game\Common\Utillities\ElapsedTimeCounter</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Common\Utillities\Helper\MovementHelper\MovementHelper.cpp">
+      <Filter>Game\Common\Utillities\Helper\MovementHelper</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Common\Utillities\Helper\PhysicsHelper\PhysicsHelper.cpp">
+      <Filter>Game\Common\Utillities\Helper\PhysicsHelper</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Common\Framework\GameObjectManager\BuildingManager\BuildingManager.cpp">
+      <Filter>Game\Common\Framework\GameObjectManager\BuildingManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Common\Framework\GameObjectManager\CheckpointManager\CheckpointManager.cpp">
+      <Filter>Game\Common\Framework\GameObjectManager\CheckpointManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Common\Framework\GameObjectManager\PlayerManager\PlayerManager.cpp">
+      <Filter>Game\Common\Framework\GameObjectManager\PlayerManager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

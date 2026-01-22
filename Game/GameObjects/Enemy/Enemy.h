@@ -16,12 +16,16 @@
 #include <memory>
 #include <vector>
 
+// ゲームオブジェクト関連
 #include "Game/GameObjects/Common/MovableObject/MovableObject.h"
 #include "Game/GameObjects/Common/GameObject.h"
 #include "Game/GameObjects/Enemy/IEnemy.h"
+
+// フレームワーク関連
 #include "Game/Common/Framework/Event/WireSystemObserver/IWireEventObserver.h"
 
-#include "Game/Common/Collision/Collision.h"
+// ユーティリティ関連
+#include "Game/Common/Utillities/Collision/Collision.h"
 
 // クラスの前方宣言 ===================================================
 class CommonResources; // 共通リソース

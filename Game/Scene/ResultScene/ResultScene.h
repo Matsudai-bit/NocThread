@@ -15,7 +15,7 @@
 
 
 // ヘッダファイルの読み込み ===================================================
-#include "Game/Manager/SceneManager/SceneManager.h"
+#include "Game/Scene/SceneManager.h"
 #include "Game/Common/Framework/StateMachine/StateMachine.h"
 
 #include "Game/Common/Framework/Input/InputSystem/InputSystem.h"

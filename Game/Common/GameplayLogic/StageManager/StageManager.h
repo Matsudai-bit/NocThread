@@ -21,18 +21,19 @@
 #include "Library/DirectXFramework/DebugDraw.h"         // デバック描画
 #include "Library/MyLib/DirectXMyToolKit/GridFloor/GridFloor.h"         // デバック床
 
-#include "Game/Common/Framework/TaskManager/TaskManager.h"// タスク（基底クラス）
-#include "Game/Common/Screen.h"
-
-
-// システム
+// フレームワーク関連
 #include "Game/Common/Framework/CommonResources/CommonResources.h"                // 共通リソース
 #include "Game/Common/Framework/EventSystem/EventData/EventData.h"
 #include "Game/Common/Framework/EventSystem/EventSystem.h"
 #include "Game/Common/Framework/Event/Messenger/GameFlowMessenger/IGameFlowObserver.h"
 #include "Game/Common/Framework/StateMachine/StateMachine.h"
-#include "Game/Common/ElapsedTimeCounter/ElapsedTimeCounter.h"
+#include "Game/Common/Framework/TaskManager/TaskManager.h"// タスク（基底クラス）
 
+// グラフィック関連
+#include "Game/Common/Screen.h"
+
+// ユーティリティ関連
+#include "Game/Common/Utillities/ElapsedTimeCounter/ElapsedTimeCounter.h"
 
 // ゲームオブジェクト
 #include "Game/GameObjects/RopeObject/RopeObject.h"

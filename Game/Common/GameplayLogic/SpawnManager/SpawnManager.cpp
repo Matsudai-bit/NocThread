@@ -31,8 +31,8 @@
 #include "Game/GameObjects/Player/Player.h"
 
 
-#include "Game/Manager/BuildingManager/BuildingManager.h"
-#include "Game/Manager/PlayerManager/PlayerManager.h"
+#include "Game/Common/Framework/GameObjectManager/BuildingManager/BuildingManager.h"
+#include "Game/Common/Framework/GameObjectManager/PlayerManager/PlayerManager.h"
 
 
 using namespace DirectX;

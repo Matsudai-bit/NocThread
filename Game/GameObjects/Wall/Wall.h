@@ -14,9 +14,15 @@
 
 // ヘッダファイルの読み込み ===================================================
 #include <memory>
-#include "Game/GameObjects/Common/GameObject.h"
+
+// ライブラリ関連
 #include "Library/DirectXFramework/DeviceResources.h"
-#include "Game/Common/Collision/Collision.h"
+
+// ゲームオブジェクト関連
+#include "Game/GameObjects/Common/GameObject.h"
+
+// ユーティリティ関連
+#include "Game/Common/Utillities/Collision/Collision.h"
 
 
 // クラスの前方宣言 ===================================================

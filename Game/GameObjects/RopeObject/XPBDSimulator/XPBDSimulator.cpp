@@ -17,7 +17,7 @@
 #include "Game/Common/GameplayLogic/CollisionManager/CollisionManager.h"
 
 // ユーティリティ関連
-#include "Game/Common/Collision/Collision.h"
+#include "Game/Common/Utillities/Collision/Collision.h"
 
 // XPBD制約関連
 #include "Game/GameObjects/RopeObject/XPBDSimulator/Constraint/ConstraintFactory.h"

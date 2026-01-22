@@ -19,7 +19,7 @@
 #include "Game/Common/Framework/GameObjectRegistry/GameObjectRegistry.h"
 
 // ユーティリティ関連
-#include "Game/Common/Helper/MovementHelper/MovementHelper.h"
+#include "Game/Common/Utillities/Helper/MovementHelper/MovementHelper.h"
 
 using namespace DirectX;
 

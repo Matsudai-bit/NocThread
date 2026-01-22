@@ -16,10 +16,14 @@
 #include <vector>
 #include <memory>
 #include <functional>
-#include "Game/Common/Framework/Event/Messenger/GameFlowMessenger/IGameFlowObserver.h"
-#include "Game/Common/ElapsedTimeCounter/ElapsedTimeCounter.h"
 
+// フレームワーク関連
+#include "Game/Common/Framework/Event/Messenger/GameFlowMessenger/IGameFlowObserver.h"
 #include "Game/Common/Framework/TaskManager/TaskManager.h"
+
+// ユーティリティ関連
+#include "Game/Common/Utillities/ElapsedTimeCounter/ElapsedTimeCounter.h"
+
 
 // クラスの前方宣言 ===================================================
 class EnemyManager;		// 敵管理

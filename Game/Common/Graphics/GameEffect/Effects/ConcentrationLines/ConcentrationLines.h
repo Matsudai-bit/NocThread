@@ -24,7 +24,7 @@
 #include "Game/Common/Graphics/GameEffect/Base/GameEffectBase.h"
 
 // ユーティリティ関連
-#include "Game/Common/ElapsedTimeCounter/ElapsedTimeCounter.h"
+#include "Game/Common/Utillities/ElapsedTimeCounter/ElapsedTimeCounter.h"
 
 // クラスの前方宣言 ===================================================
 class CircularShadow;

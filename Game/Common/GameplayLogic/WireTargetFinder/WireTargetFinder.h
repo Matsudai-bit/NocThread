@@ -13,10 +13,16 @@
 // ヘッダファイルの読み込み ===================================================
 #include <memory>
 #include <vector>
-#include "Game/GameObjects/Common/GameObject.h"
-#include "Game/Common/Collision/Collision.h"
+
+// ライブラリ関連
 #include "Library/MyLib/MathUtils/MathUtils.h"
 #include "Library/MyLib/Ray/Ray.h"
+
+// ゲームオブジェクト関連
+#include "Game/GameObjects/Common/GameObject.h"
+
+// ユーティリティ関連
+#include "Game/Common/Utillities/Collision/Collision.h"
 
 
 

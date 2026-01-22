@@ -25,7 +25,7 @@
 #include "Game/Common/Graphics/Line2D/Line2D.h"
 
 // ユーティリティ関連
-#include "Game/Common/ElapsedTimeCounter/ElapsedTimeCounter.h"
+#include "Game/Common/Utillities/ElapsedTimeCounter/ElapsedTimeCounter.h"
 
 // クラスの前方宣言 ===================================================
 class CommonResources;  // 共通リソース

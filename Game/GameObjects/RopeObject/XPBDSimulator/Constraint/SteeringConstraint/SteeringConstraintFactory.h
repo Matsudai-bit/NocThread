@@ -25,7 +25,7 @@
 
 // ユーティリティ関連
 #include "Game/GameObjects/RopeObject/XPBDSimulator/XPBDSimulator.h"
-#include "Game/Common/ElapsedTimeCounter/ElapsedTimeCounter.h"
+#include "Game/Common/Utillities/ElapsedTimeCounter/ElapsedTimeCounter.h"
 
 // クラスの前方宣言 ===================================================
 class SimParticle; // シミュレーションのパーティクル

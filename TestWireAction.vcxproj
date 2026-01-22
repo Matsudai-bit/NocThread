@@ -182,13 +182,9 @@
     </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Game\Common\Collision\Collision.h" />
-    <ClInclude Include="Game\Common\Collision\ICollider.h" />
-    <ClInclude Include="Game\Common\Collision\ICollision.h" />
     <ClInclude Include="Game\Common\Database\PlayerParameter.h" />
     <ClInclude Include="Game\Common\Database\SoundDatabase.h" />
     <ClInclude Include="Game\Common\Database\TextureDatabase.h" />
-    <ClInclude Include="Game\Common\ElapsedTimeCounter\ElapsedTimeCounter.h" />
     <ClInclude Include="Game\Common\Factory\BuildingFactory\BuildingFactory.h" />
     <ClInclude Include="Game\Common\Factory\CollisionMatrixFactory\CollisionMatrixFactory.h" />
     <ClInclude Include="Game\Common\Factory\EnemyFactory\EnemyFactory.h" />
@@ -205,7 +201,10 @@
     <ClInclude Include="Game\Common\Framework\Event\WireSystemObserver\IWireEventObserver.h" />
     <ClInclude Include="Game\Common\Framework\Event\WireSystemObserver\WireEventData.h" />
     <ClInclude Include="Game\Common\Framework\Event\WireSystemObserver\WireSystemSubject.h" />
+    <ClInclude Include="Game\Common\Framework\GameObjectManager\BuildingManager\BuildingManager.h" />
+    <ClInclude Include="Game\Common\Framework\GameObjectManager\CheckpointManager\CheckpointManager.h" />
     <ClInclude Include="Game\Common\Framework\GameObjectManager\EnemyManager\EnemyManager.h" />
+    <ClInclude Include="Game\Common\Framework\GameObjectManager\PlayerManager\PlayerManager.h" />
     <ClInclude Include="Game\Common\Framework\GameObjectRegistry\GameObjectRegistry.h" />
     <ClInclude Include="Game\Common\Framework\Input\InputActionType\InputActionType.h" />
     <ClInclude Include="Game\Common\Framework\Input\InputSystem\InputSystem.h" />
@@ -238,8 +237,6 @@
     <ClInclude Include="Game\Common\Graphics\Shadow\CircularShadow\CircularShadow.h" />
     <ClInclude Include="Game\Common\Graphics\SimpleModel\SimpleModel.h" />
     <ClInclude Include="Game\Common\Graphics\TransitionMask\TransitionMask.h" />
-    <ClInclude Include="Game\Common\Helper\MovementHelper\MovementHelper.h" />
-    <ClInclude Include="Game\Common\Helper\PhysicsHelper\PhysicsHelper.h" />
     <ClInclude Include="Game\Common\Minimap\Minimap.h" />
     <ClInclude Include="Game\Common\Screen.h" />
     <ClInclude Include="Game\Common\UserInterfaceTool\Canvas\Canvas.h" />
@@ -248,6 +245,12 @@
     <ClInclude Include="Game\Common\UserInterfaceTool\Sprite\ISprite2D.h" />
     <ClInclude Include="Game\Common\UserInterfaceTool\Sprite\Sprite.h" />
     <ClInclude Include="Game\Common\UserInterfaceTool\TimeUI\TimeUI.h" />
+    <ClInclude Include="Game\Common\Utillities\Collision\Collision.h" />
+    <ClInclude Include="Game\Common\Utillities\Collision\ICollider.h" />
+    <ClInclude Include="Game\Common\Utillities\Collision\ICollision.h" />
+    <ClInclude Include="Game\Common\Utillities\ElapsedTimeCounter\ElapsedTimeCounter.h" />
+    <ClInclude Include="Game\Common\Utillities\Helper\MovementHelper\MovementHelper.h" />
+    <ClInclude Include="Game\Common\Utillities\Helper\PhysicsHelper\PhysicsHelper.h" />
     <ClInclude Include="Game\Game.h" />
     <ClInclude Include="Game\GameObjects\CheckPoint\Checkpoint.h" />
     <ClInclude Include="Game\GameObjects\CheckPoint\CheckpointObject\CheckpointObject.h" />
@@ -296,10 +299,6 @@
     <ClInclude Include="Game\GameObjects\Wall\Wall.h" />
     <ClInclude Include="Game\GameObjects\Wire\IWireHolder\IWireHolder.h" />
     <ClInclude Include="Game\GameObjects\Wire\Wire.h" />
-    <ClInclude Include="Game\Manager\BuildingManager\BuildingManager.h" />
-    <ClInclude Include="Game\Manager\CheckpointManager\CheckpointManager.h" />
-    <ClInclude Include="Game\Manager\PlayerManager\PlayerManager.h" />
-    <ClInclude Include="Game\Manager\SceneManager\SceneManager.h" />
     <ClInclude Include="Game\Scene\GameplayScene\GameplayScene.h" />
     <ClInclude Include="Game\Scene\GameplayScene\State\NormalGameplayState\NormalGameplayState.h" />
     <ClInclude Include="Game\Scene\GameplayScene\State\PoseGameplayState\PauseGameplayState.h" />
@@ -307,6 +306,7 @@
     <ClInclude Include="Game\Scene\ResultScene\ResultScene.h" />
     <ClInclude Include="Game\Scene\ResultScene\State\FailureResultState\FailureResultState.h" />
     <ClInclude Include="Game\Scene\ResultScene\State\SuccessResultState\SuccessResultState.h" />
+    <ClInclude Include="Game\Scene\SceneManager.h" />
     <ClInclude Include="Game\Scene\TitleScene\TitleScene.h" />
     <ClInclude Include="Game\UI\Pose\PoseMenu\PauseMenu.h" />
     <ClInclude Include="Game\UI\Title\TitleMenu\TitleMenu.h" />
@@ -341,8 +341,6 @@
     <ClInclude Include="StepTimer.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Game\Common\Collision\Collision.cpp" />
-    <ClCompile Include="Game\Common\ElapsedTimeCounter\ElapsedTimeCounter.cpp" />
     <ClCompile Include="Game\Common\Factory\BuildingFactory\BuildingFactory.cpp" />
     <ClCompile Include="Game\Common\Factory\CollisionMatrixFactory\CollisionMatrixFactory.cpp" />
     <ClCompile Include="Game\Common\Factory\EnemyFactory\EnemyFactory.cpp" />
@@ -353,7 +351,10 @@
     <ClCompile Include="Game\Common\Framework\EventSystem\EventSystem.cpp" />
     <ClCompile Include="Game\Common\Framework\Event\Messenger\GameFlowMessenger\GameFlowMessenger.cpp" />
     <ClCompile Include="Game\Common\Framework\Event\WireSystemObserver\WireSystemSubject.cpp" />
+    <ClCompile Include="Game\Common\Framework\GameObjectManager\BuildingManager\BuildingManager.cpp" />
+    <ClCompile Include="Game\Common\Framework\GameObjectManager\CheckpointManager\CheckpointManager.cpp" />
     <ClCompile Include="Game\Common\Framework\GameObjectManager\EnemyManager\EnemyManager.cpp" />
+    <ClCompile Include="Game\Common\Framework\GameObjectManager\PlayerManager\PlayerManager.cpp" />
     <ClCompile Include="Game\Common\Framework\GameObjectRegistry\GameObjectRegistry.cpp" />
     <ClCompile Include="Game\Common\Framework\Input\InputActionType\InputActionType.cpp" />
     <ClCompile Include="Game\Common\Framework\Input\InputSystem\InputSystem.cpp" />
@@ -386,8 +387,6 @@
     <ClCompile Include="Game\Common\Graphics\Shadow\CircularShadow\CircularShadow.cpp" />
     <ClCompile Include="Game\Common\Graphics\SimpleModel\SimpleModel.cpp" />
     <ClCompile Include="Game\Common\Graphics\TransitionMask\TransitionMask.cpp" />
-    <ClCompile Include="Game\Common\Helper\MovementHelper\MovementHelper.cpp" />
-    <ClCompile Include="Game\Common\Helper\PhysicsHelper\PhysicsHelper.cpp" />
     <ClCompile Include="Game\Common\Minimap\Minimap.cpp" />
     <ClCompile Include="Game\Common\Screen.cpp" />
     <ClCompile Include="Game\Common\UserInterfaceTool\Canvas\Canvas.cpp" />
@@ -395,6 +394,10 @@
     <ClCompile Include="Game\Common\UserInterfaceTool\SpriteNumber\SpriteNumber.cpp" />
     <ClCompile Include="Game\Common\UserInterfaceTool\Sprite\Sprite.cpp" />
     <ClCompile Include="Game\Common\UserInterfaceTool\TimeUI\TimeUI.cpp" />
+    <ClCompile Include="Game\Common\Utillities\Collision\Collision.cpp" />
+    <ClCompile Include="Game\Common\Utillities\ElapsedTimeCounter\ElapsedTimeCounter.cpp" />
+    <ClCompile Include="Game\Common\Utillities\Helper\MovementHelper\MovementHelper.cpp" />
+    <ClCompile Include="Game\Common\Utillities\Helper\PhysicsHelper\PhysicsHelper.cpp" />
     <ClCompile Include="Game\Game.cpp" />
     <ClCompile Include="Game\GameObjects\CheckPoint\Checkpoint.cpp" />
     <ClCompile Include="Game\GameObjects\CheckPoint\CheckpointObject\CheckpointObject.cpp" />
@@ -438,9 +441,6 @@
     <ClCompile Include="Game\GameObjects\Treasure\Treasure.cpp" />
     <ClCompile Include="Game\GameObjects\Wall\Wall.cpp" />
     <ClCompile Include="Game\GameObjects\Wire\Wire.cpp" />
-    <ClCompile Include="Game\Manager\BuildingManager\BuildingManager.cpp" />
-    <ClCompile Include="Game\Manager\CheckpointManager\CheckpointManager.cpp" />
-    <ClCompile Include="Game\Manager\PlayerManager\PlayerManager.cpp" />
     <ClCompile Include="Game\Scene\GameplayScene\GameplayScene.cpp" />
     <ClCompile Include="Game\Scene\GameplayScene\State\NormalGameplayState\NormalGameplayState.cpp" />
     <ClCompile Include="Game\Scene\GameplayScene\State\PoseGameplayState\PauseGameplayState.cpp" />

@@ -16,11 +16,16 @@
 
 
 // ヘッダファイルの読み込み ===================================================
-#include "Game/Manager/SceneManager/SceneManager.h"
+#include "Game/Scene/SceneManager.h"
 
+// UIメニュー関連
 #include "Game/UI/Title/TitleMenu/TitleMenu.h"
+
+// グラフィック関連
 #include "Game/Common/Graphics/Line2D/Line2D.h"
-#include "Game/Common/ElapsedTimeCounter/ElapsedTimeCounter.h"
+
+// ユーティリティ関連
+#include "Game/Common/Utillities/ElapsedTimeCounter/ElapsedTimeCounter.h"
 
 // クラスの宣言 ===============================================================
 class CommonResources;  // 共通リソース

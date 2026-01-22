@@ -13,8 +13,12 @@
 
 
 // ヘッダファイルの読み込み ===================================================
+
+// 建物の基底クラス
 #include "Game/GameObjects/Prop/Base/Prop.h"
-#include "Game/Common/Collision/Collision.h"
+
+// ユーティリティ関連
+#include "Game/Common/Utillities/Collision/Collision.h"
 
 // クラスの前方宣言 ===================================================
 

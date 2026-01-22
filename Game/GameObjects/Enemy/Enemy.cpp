@@ -15,8 +15,8 @@
 #include "Library/MyLib/DirectXMyToolKit/DebugFont/DebugFont.h"
 
 // ユーティリティ関連
-#include "Game/Common/Helper/PhysicsHelper/PhysicsHelper.h"
-#include "Game/Common/Helper/MovementHelper/MovementHelper.h"
+#include "Game/Common/Utillities/Helper/PhysicsHelper/PhysicsHelper.h"
+#include "Game/Common/Utillities/Helper/MovementHelper/MovementHelper.h"
 
 // 敵挙動関連
 #include "Game/GameObjects/Enemy/Behaviour/Update/IEnemyUpdateBehaviour.h"
@@ -25,14 +25,14 @@
 #include "Game/Common/Framework/CommonResources/CommonResources.h"
 #include "Game/Common/Framework/ResourceManager/ResourceManager.h"
 #include "Game/Common/Framework/Event/WireSystemObserver/WireEventData.h"
-#include "Game/Common/Collision/CollisionManager/CollisionManager.h"
 
 // グラフィック関連
 #include "Game/Common/Screen.h"
-#include "Game/Common/Camera/Camera.h"
+#include "Game/Common/Graphics/Camera/Camera.h"
 
 // ゲームプレイロジック関連
-#include "Game/Common/ResultData/ResultData.h"
+#include "Game/Common/GameplayLogic/CollisionManager/CollisionManager.h"
+#include "Game/Common/GameplayLogic/ResultData/ResultData.h"
 
 
 

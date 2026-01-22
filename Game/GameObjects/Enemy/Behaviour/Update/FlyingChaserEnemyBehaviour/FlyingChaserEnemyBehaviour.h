@@ -21,7 +21,7 @@
 #include "Game/Common/GameplayLogic/Behaviour/SteeringBehavior/SteeringBehavior.h"
 
 // ユーティリティ関連
-#include "Game/Common/ElapsedTimeCounter/ElapsedTimeCounter.h"
+#include "Game/Common/Utillities/ElapsedTimeCounter/ElapsedTimeCounter.h"
 
 // クラスの前方宣言 ===================================================
 class Player;

@@ -10,7 +10,7 @@
 #include "pch.h"
 #include "CircularShadow.h"
 
-#include "Game/Common/Camera/Camera.h"
+#include "Game/Common/Graphics/Camera/Camera.h"
 #include "Library/DirectXFramework/ReadData.h"
 
 using namespace DirectX;

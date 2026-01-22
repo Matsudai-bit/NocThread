@@ -25,7 +25,7 @@
 #include "Game/Common/Framework/GameObjectRegistry/GameObjectRegistry.h"
 
 // グラフィック関連
-#include "Game/Common/Camera/Camera.h"
+#include "Game/Common/Graphics/Camera/Camera.h"
 #include "Game/Common/Screen.h"
 
 
