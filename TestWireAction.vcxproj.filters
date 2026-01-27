@@ -990,6 +990,12 @@
     <ClInclude Include="Game\Scene\SceneManager.h">
       <Filter>Game\Scene</Filter>
     </ClInclude>
+    <ClInclude Include="Game\Common\Database\PhysicsParameter.h">
+      <Filter>Game\Common\Database</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Common\Database\EnemyParameter.h">
+      <Filter>Game\Common\Database</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />

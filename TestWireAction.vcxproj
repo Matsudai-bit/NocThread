@@ -182,6 +182,8 @@
     </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Game\Common\Database\EnemyParameter.h" />
+    <ClInclude Include="Game\Common\Database\PhysicsParameter.h" />
     <ClInclude Include="Game\Common\Database\PlayerParameter.h" />
     <ClInclude Include="Game\Common\Database\SoundDatabase.h" />
     <ClInclude Include="Game\Common\Database\TextureDatabase.h" />

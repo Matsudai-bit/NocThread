@@ -1,5 +1,5 @@
 /*****************************************************************//**
- * @file    TrackingEnemyBehaviour.h
+ * @file    TrackingEnemyBehaviour.cpp
  * @brief   敵の追跡挙動に関するソースファイル
  *
  * @author  松下大暉

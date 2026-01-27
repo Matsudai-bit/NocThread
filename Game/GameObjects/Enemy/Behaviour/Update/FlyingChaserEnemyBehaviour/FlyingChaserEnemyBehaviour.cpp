@@ -1,5 +1,5 @@
 /*****************************************************************//**
- * @file    FlyingChaserEnemyBehaviour.h
+ * @file    FlyingChaserEnemyBehaviour.cpp
  * @brief   敵の空中追跡挙動に関するソースファイル
  *
  * @author  松下大暉

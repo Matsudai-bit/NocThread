@@ -14,13 +14,10 @@
 #include "GameplayScene.h"
 
 // ライブラリ
-// DirectX系
 #include "Library/DirectXFramework/DeviceResources.h"
-
 
 // ファクトリー関連
 #include "Game/Common/Factory/CollisionMatrixFactory/CollisionMatrixFactory.h"
-
 
 // データベース関連
 #include "Game/Common/Database/SoundDatabase.h"
@@ -47,10 +44,8 @@
 #include "Game/Common/Graphics/Camera/PlayerCamera/PlayerCamera.h"
 #include "Game/Common/Graphics/GameEffect/Effects/ConcentrationLines/ConcentrationLines.h"
 
-
 // ミニマップ関連
 #include "Game/Common/MiniMap/MiniMap.h"
-
 
 // プレイシーンの状態関連
 #include "Game/Scene/GameplayScene/State/NormalGameplayState/NormalGameplayState.h"

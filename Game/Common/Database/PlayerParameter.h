@@ -17,25 +17,24 @@ namespace PlayerParameter
 	// プレイヤーモデルのファイル名
 	static const constexpr char* PLAYER_MODEL_FILE_NAME = "player.sdkmesh";
 
-	// プレイヤーの挙動
-	static constexpr float FRICTION = 3.0f;			// 摩擦係数
-	static constexpr float AIR_RESISTANCE = 0.05f;	// 空気抵抗係数
-	static constexpr float ROTATION_SPEED = 1.0f;	// 回転速度(s)
-
-	static constexpr float ACCELERATION = 100.0f;				// 加速力（加速の強さ）
-	static constexpr float DECELERATION = 60.0f;				// 減速力（ブレーキの強さ）
-	static constexpr float MAX_MOVE_SPEED = 20.0f;				// 最大速度
-	static constexpr float MAX_FLYING_MOVE_SPEED = 15.0f;		// 空中速度
-	static constexpr float JUMPING_POWER = 1200.0f; // ジャンプ力
+	// 物理パラメータ
+	static constexpr float FRICTION			= 3.0f;		// 摩擦係数
+	static constexpr float AIR_RESISTANCE	= 0.05f;	// 空気抵抗係数
+	static constexpr float ACCELERATION		= 100.0f;	// 加速力（加速の強さ）
+	static constexpr float MAX_MOVE_SPEED	= 20.0f;	// 最大速度
+	static constexpr float MAX_FLYING_MOVE_SPEED = 15.0f;// 空中速度
+	static constexpr float ROTATION_SPEED	= 1.0f;		// 回転速度(s)
+	static constexpr float DECELERATION		= 60.0f;	// 減速力（ブレーキの強さ）
+	static constexpr float JUMPING_POWER	= 1200.0f;	// ジャンプ力
 
 	// ワイヤー関連
 	static constexpr float WIRE_LENGTH = 65.0f;					// ワイヤーの長さ
 	static constexpr float MAX_TARGETING_RAY_DISTANCE = 30.0f;	// ワイヤーの照準計算に使用する仮想的な最大距離（ワイヤーの実際の長さとは異なる）
 
 	// アニメーション関連
-	static const constexpr char* ANIM_WALKING = "Resources/Models/player_walk.sdkmesh_anim";
-	static const constexpr char* ANIM_IDLENG = "Resources/Models/player_idle.sdkmesh_anim";
-	static const constexpr char* ANIM_WIREACTION = "Resources/Models/player_wireAction.sdkmesh_anim";
+	static const constexpr char* ANIM_WALKING		= "Resources/Models/player_walk.sdkmesh_anim";
+	static const constexpr char* ANIM_IDLENG		= "Resources/Models/player_idle.sdkmesh_anim";
+	static const constexpr char* ANIM_WIREACTION	= "Resources/Models/player_wireAction.sdkmesh_anim";
 
 	// プレイヤーの初期設定値
 	static constexpr float DEFAULT_MODEL_SCALE = 0.5f;              // プレイヤーモデルの標準的なスケール

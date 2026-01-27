@@ -39,7 +39,7 @@ class IEnemyDrawBehaviour;		// 描画処理インターフェース
 
 // クラスの定義 ===============================================================
 /**
- * @brief 敵　( 基底 )
+ * @brief 敵　(基底)
  */
 class Enemy
 	: public MovableObject
@@ -59,10 +59,6 @@ public:
 
 // クラス定数の宣言 -------------------------------------------------
 public:
-	static constexpr float FRICTION = 3.0f;		// 摩擦係数
-	static constexpr float AIR_RESISTANCE = 0.05f;  // 空気抵抗係数
-	static constexpr float ROTATION_SPEED = 1.0f;	// 回転速度(s)
-
 
 // データメンバの宣言 -----------------------------------------------
 private:

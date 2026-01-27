@@ -88,9 +88,9 @@ private:
 	std::unique_ptr<CollisionMatrix>	m_collisionMatrix;	///< 出現管理
 
 	// その他
-	std::unique_ptr<StageManager> m_stageManager;	///< ステージ上のオブジェクトを管理
+	std::unique_ptr<StageManager>	m_stageManager;	///< ステージ上のオブジェクトを管理
 	
-	std::unique_ptr<Minimap>	m_miniMap; ///< ミニマップ
+	std::unique_ptr<Minimap>		m_miniMap;		///< ミニマップ
 
 	std::vector <std::function<void()>> m_eventStack;
 	ElapsedTimeCounter m_gamePlayingTimeCounter;		///< ゲームのプレイ時間カウンター

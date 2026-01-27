@@ -17,6 +17,9 @@
 // 状態関連
 #include "Game/GameObjects/StageObject/State/ThrownStageObjectState/ThrownStageObjectState.h"
 
+// データベース関連
+#include "Game/Common/Database/PhysicsParameter.h"
+
 // フレームワーク関連
 #include "Game/Common/Framework/CommonResources/CommonResources.h"
 #include "Game/Common/Framework/ResourceManager/ResourceManager.h"
@@ -199,7 +202,7 @@ void StageObject::ApplyGravity(const float& deltaTime)
 
 	// 重力を加える
 	SimpleMath::Vector3 velocity = GetVelocity();
-	velocity += GRAVITY_ACCELERATION * deltaTime;
+	velocity += PhysicsParameter::GRAVITY_ACCELERATION * deltaTime;
 
 	SetVelocity(velocity);
 }

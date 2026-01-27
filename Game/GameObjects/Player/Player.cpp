@@ -58,7 +58,7 @@
 
 // パラメータ
 #include "Game/Common/Database/PlayerParameter.h"
-// シーン関連
+#include "Game/Common/Database/PhysicsParameter.h"
 
 using namespace DirectX;
 
@@ -654,7 +654,7 @@ void Player::ApplyPhysic(const float& deltaTime)
 void Player::ApplyFriction(float deltaTime)
 {
 	// 摩擦を加える
-	SimpleMath::Vector3 velocity = PhysicsHelper::CalculateFrictionVelocity(GetVelocity(), deltaTime, PlayerParameter::FRICTION, GameObject::GRAVITY_ACCELERATION.Length());
+	SimpleMath::Vector3 velocity = PhysicsHelper::CalculateFrictionVelocity(GetVelocity(), deltaTime, PlayerParameter::FRICTION, PhysicsParameter::GRAVITY_ACCELERATION.Length());
 
 	SetVelocity(velocity);
 }
@@ -709,7 +709,7 @@ void Player::ApplyGravity(const float& deltaTime)
 {
 	SimpleMath::Vector3 accel = SimpleMath::Vector3::Zero;
 
-	accel = GRAVITY_ACCELERATION * deltaTime ;
+	accel = PhysicsParameter::GRAVITY_ACCELERATION * deltaTime ;
 
 	AddForceToVelocity(accel);
 }

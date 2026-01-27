@@ -14,6 +14,10 @@
 #include "Library/DirectXFramework/DeviceResources.h"
 #include "Library/MyLib/DirectXMyToolKit/DebugFont/DebugFont.h"
 
+// データベース関連
+#include "Game/Common/Database/PhysicsParameter.h"
+#include "Game/Common/Database/EnemyParameter.h"
+
 // ユーティリティ関連
 #include "Game/Common/Utillities/Helper/PhysicsHelper/PhysicsHelper.h"
 #include "Game/Common/Utillities/Helper/MovementHelper/MovementHelper.h"
@@ -140,15 +144,16 @@ void Enemy::Update(float deltaTime)
 	SimpleMath::Vector3 velocity = GetVelocity();
 
 	// 重力を加える
-	velocity += GRAVITY_ACCELERATION * deltaTime;
+	velocity += PhysicsParameter::GRAVITY_ACCELERATION * deltaTime;
 
 	if (m_isGrounded)
 	{
+		
 		// 摩擦を加える
-		velocity = PhysicsHelper::CalculateFrictionVelocity(velocity, deltaTime, FRICTION, GameObject::GRAVITY_ACCELERATION.Length());
+		velocity = PhysicsHelper::CalculateFrictionVelocity(velocity, deltaTime, EnemyParameter::FRICTION, PhysicsParameter::GRAVITY_SCALE);
 	}
 	// 適用
-	velocity = PhysicsHelper::CalculateDragVelocity(velocity, deltaTime, AIR_RESISTANCE);
+	velocity = PhysicsHelper::CalculateDragVelocity(velocity, deltaTime, EnemyParameter::AIR_RESISTANCE);
 
 
 

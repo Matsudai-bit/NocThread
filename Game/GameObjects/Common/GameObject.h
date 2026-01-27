@@ -87,9 +87,6 @@ class GameObject
 {
 // クラス定数の宣言 -------------------------------------------------
 public:
-	static constexpr float GRAVITY_SCALE = 25.0f;						// 重力量(s)
-	static constexpr DirectX::SimpleMath::Vector3 GRAVITY_ACCELERATION =
-		DirectX::SimpleMath::Vector3(0.0f, -GRAVITY_SCALE, 0.0f);		// 重力加速度
 
 
 // データメンバの宣言 -----------------------------------------------
