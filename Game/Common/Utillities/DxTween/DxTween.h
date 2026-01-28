@@ -38,12 +38,12 @@ private:
 	T m_startValue;		///< 開始
 	T m_endValue;		///< 終了
 	T m_currentValue;	//< 現在
-	float m_duration;	///< 目標時間
-	float m_delay;		///< 遅延時間
 
 	float m_rate;		///< 比率（進み具合）
 
-	double m_elapsedTime; ///< 経過時間
+	float m_elapsedTime; ///< 経過時間(s)
+	float m_delay;		 ///< 遅延時間(s)
+	float m_duration;	 ///< 目標時間(s)
 
 	std::function<float(float)> m_calculateEasingValue;
 
@@ -133,17 +133,23 @@ inline void DxTween<T>::Initialize(const T& startValue, const T& endValue, float
 template<typename T>
 inline void DxTween<T>::Update(float deltaTime)
 {
-	m_elapsedTime += static_cast<double>(deltaTime);
+	// 経過時間の加算
+	m_elapsedTime += deltaTime;
 
-	m_rate = (m_elapsedTime - m_delay) / static_cast<float>(m_duration);
+	// 比率の算出
+	m_rate = (m_elapsedTime - m_delay) / m_duration;
 	m_rate = std::clamp(m_rate, 0.0f, 1.0f);
 
+	// ループするかどうか
 	if (m_loop && m_rate >= 0.9999f)
 	{
 		m_elapsedTime = m_delay;
 	}
 
+	// イージングを適用した比率の算出
 	float easeRate = m_calculateEasingValue(m_rate);
+
+	// 現在の値の算出
 	m_currentValue = m_startValue + (m_endValue - m_startValue) * easeRate;
 	
 

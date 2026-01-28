@@ -58,7 +58,6 @@ public:
 	// XVˆ—
 	void Update(
 		float deltaTime,
-		Player* pPlayer,
 		const DirectX::Keyboard::KeyboardStateTracker* pKeyboardStateTracker,
 		const DirectX::Mouse::ButtonStateTracker* pMouseStateTracker, const DirectX::GamePad::ButtonStateTracker* pGamePadStateTracker);
 

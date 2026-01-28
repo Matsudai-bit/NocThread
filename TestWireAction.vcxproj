@@ -399,7 +399,6 @@
     <ClCompile Include="Game\Common\UserInterfaceTool\Sprite\Sprite.cpp" />
     <ClCompile Include="Game\Common\UserInterfaceTool\TimeUI\TimeUI.cpp" />
     <ClCompile Include="Game\Common\Utillities\Collision\Collision.cpp" />
-    <ClCompile Include="Game\Common\Utillities\DxTween\DxTween.cpp" />
     <ClCompile Include="Game\Common\Utillities\ElapsedTimeCounter\ElapsedTimeCounter.cpp" />
     <ClCompile Include="Game\Common\Utillities\Helper\MovementHelper\MovementHelper.cpp" />
     <ClCompile Include="Game\Common\Utillities\Helper\PhysicsHelper\PhysicsHelper.cpp" />

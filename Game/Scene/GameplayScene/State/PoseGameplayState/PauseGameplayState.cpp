@@ -83,7 +83,6 @@ void PauseGameplayState::OnStartState()
 	using namespace SimpleMath;
 
 	auto resourceManager	= GetOwner()->GetCommonResources()->GetResourceManager();
-	auto context			= GetOwner()->GetCommonResources()->GetDeviceResources()->GetD3DDeviceContext();
 	auto screen = Screen::Get();
 	// ***** ƒLƒƒƒ“ƒoƒX‚Ìì¬ *********************************************
 

@@ -1408,9 +1408,6 @@
     <ClCompile Include="Game\Scene\GameplayScene\State\StartingGameplayState\StartingGameplayState.cpp">
       <Filter>Game\Scene\GameplayScene\State\Starting</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Common\Utillities\DxTween\DxTween.cpp">
-      <Filter>Game\Common\Utillities\DxTween</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="resource.rc" />

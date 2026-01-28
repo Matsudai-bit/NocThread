@@ -149,7 +149,7 @@ void StartingGameplayState::OnStartState()
  * @return ‚È‚µ
  */
 void StartingGameplayState::OnUpdate(float deltaTime)
-{
+ {
 	m_elapsedTimeCounter.UpperTime(deltaTime);
 
 	m_backgroundTween	.Update(deltaTime);

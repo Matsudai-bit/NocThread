@@ -71,7 +71,6 @@ NormalGameplayState::~NormalGameplayState()
 void NormalGameplayState::OnStartState()
 {
 	auto screen = Screen::Get();
-	auto context = GetOwner()->GetCommonResources()->GetDeviceResources()->GetD3DDeviceContext();
 
 	// “ü—Í‚Ìì¬
 	m_systemInput = InputBindingFactory::SystemInputFactory().Create(DefaultSpawnDesc());

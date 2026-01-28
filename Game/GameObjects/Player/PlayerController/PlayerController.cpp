@@ -29,8 +29,9 @@ using namespace DirectX;
  * @param[in] ‚È‚µ
  */
 PlayerController::PlayerController()
-	: m_pCamera{ nullptr }
-	, m_playerInput{ nullptr }
+	: m_pCamera		{ nullptr }
+	, m_playerInput	{ nullptr }
+	, m_pPlayer		{ nullptr }
 {
 }
 
@@ -74,7 +75,6 @@ void PlayerController::Initialize(const Camera* pCamera, Player* pPlayer)
  */
 void PlayerController::Update(
 	float deltaTime,
-	Player* pPlayer,
 	const Keyboard::KeyboardStateTracker* pKeyboardStateTracker,
 	const Mouse::ButtonStateTracker* pMouseStateTracker, 
 	const DirectX::GamePad::ButtonStateTracker* pGamePadStateTracker)

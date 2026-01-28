@@ -98,7 +98,7 @@ bool PlayerManager::UpdateTask(float deltaTime)
 	// プレイヤーの更新処理
 	m_player->Update(deltaTime);
 
-	m_playerController->Update(deltaTime,m_player.get(), m_pCommonResources->GetKeyboardTracker(), m_pCommonResources->GetMouseTracker(), m_pCommonResources->GetGamePadTracker());
+	m_playerController->Update(deltaTime,m_pCommonResources->GetKeyboardTracker(), m_pCommonResources->GetMouseTracker(), m_pCommonResources->GetGamePadTracker());
 
 	return true;
 }
