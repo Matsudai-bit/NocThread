@@ -27,6 +27,7 @@ Sprite::Sprite()
 	, m_opacity		 { 1.0f }
 	, m_texture		 {}
 	, m_centerPos	 {}
+	, m_isVisible	 { true }
 {
 
 }

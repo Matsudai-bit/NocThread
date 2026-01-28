@@ -44,8 +44,6 @@ private:
 
 	bool m_isPrevConnectedGamepad; ///< ゲームパッドが接続されているかどうか
 
-	std::unique_ptr<Canvas> m_canvas;		///< キャンバス
-
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
 public:

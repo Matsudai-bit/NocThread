@@ -26,6 +26,7 @@ TimeUI::TimeUI()
 	: m_punctuationTexture	{ nullptr }
 	, m_scale				{ 0.0f }
 	, m_times				{ TIME_NUM }
+	, m_isVisible			{ true }
 {
 
 }

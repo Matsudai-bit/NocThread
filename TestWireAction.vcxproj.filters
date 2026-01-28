@@ -524,6 +524,9 @@
     <Filter Include="Game\Scene\GameplayScene\State\Starting">
       <UniqueIdentifier>{5784dc21-179b-41e6-a706-b155ea93d521}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\Common\Utillities\DxTween">
+      <UniqueIdentifier>{6b714247-f64a-4644-aa87-7fbc5749b251}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -1002,6 +1005,9 @@
     <ClInclude Include="Game\Scene\GameplayScene\State\StartingGameplayState\StartingGameplayState.h">
       <Filter>Game\Scene\GameplayScene\State\Starting</Filter>
     </ClInclude>
+    <ClInclude Include="Game\Common\Utillities\DxTween\DxTween.h">
+      <Filter>Game\Common\Utillities\DxTween</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -1401,6 +1407,9 @@
     </ClCompile>
     <ClCompile Include="Game\Scene\GameplayScene\State\StartingGameplayState\StartingGameplayState.cpp">
       <Filter>Game\Scene\GameplayScene\State\Starting</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Common\Utillities\DxTween\DxTween.cpp">
+      <Filter>Game\Common\Utillities\DxTween</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -48,6 +48,8 @@ private:
 
 	ID3D11ShaderResourceView*		m_punctuationTexture;	///<　区切りテクスチャ
 
+	bool m_isVisible;		///< 見えるかどうか
+
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
 public:
@@ -89,6 +91,10 @@ public:
 
 	// 配列の取得
 	std::vector<Sprite> GetDrawingSprites() ;
+
+	// 見えるかどうか
+	void SetVisible(bool isVisible) { m_isVisible = isVisible; }
+	bool IsVisible() const override { return m_isVisible; }
 
 // 内部実装
 private:

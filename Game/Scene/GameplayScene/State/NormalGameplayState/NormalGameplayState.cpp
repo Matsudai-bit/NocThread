@@ -78,12 +78,11 @@ void NormalGameplayState::OnStartState()
 
 	m_manualSprite = std::make_unique<Sprite>();
 
-	// キャンバスの作成
-	m_canvas = std::make_unique<Canvas>(context, GetOwner()->GetCommonResources()->GetCommonStates());
+	// キャンバス
+	Canvas* pCanvas = GetOwner()->GetCanvas();
 
 	// キャンバスへ登録
-	m_canvas->AddSprite(m_manualSprite.get());
-	m_canvas->SetOt(0);  // 一番手前にする
+	pCanvas->AddSprite(m_manualSprite.get());
 
 	// スプライトのテクスチャ設定
 	m_manualSprite->Initialize(GetOwner()->GetCommonResources()->GetResourceManager()->CreateTexture(
@@ -100,7 +99,6 @@ void NormalGameplayState::OnStartState()
 	m_isPrevConnectedGamepad = false;
 
 	// **** タスク管理へ登録 ****
-	GetOwner()->GetTaskManager()->AddTask(m_canvas.get());
 
 	// ステージ管理の更新を開始する
 	GetOwner()->GetStageManager()->StartUpdating();
@@ -110,9 +108,7 @@ void NormalGameplayState::OnStartState()
 void NormalGameplayState::OnExitState()
 {
 	// キャンバスから削除
-	m_canvas->RemoveSprite(m_manualSprite.get());
-	// キャンバスタスクの削除
-	GetOwner()->GetTaskManager()->DeleteTask(m_canvas.get());
+	GetOwner()->GetCanvas()->RemoveSprite(m_manualSprite.get());
 
 
 }

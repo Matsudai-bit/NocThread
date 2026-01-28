@@ -35,4 +35,6 @@ public:
 public:
    // スプライト描画
    virtual void DrawSprite(DirectX::SpriteBatch* pSpriteBatch) = 0;
+
+   virtual bool IsVisible() const = 0;
 };

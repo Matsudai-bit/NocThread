@@ -39,6 +39,7 @@ using namespace DirectX;
  */
 TutorialWindow::TutorialWindow()
 	: m_currentTutorialSpriteIndex{}
+	, m_isVisible{ true }
 {
 
 }

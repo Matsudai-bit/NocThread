@@ -101,6 +101,7 @@ private:
 
 	std::unique_ptr<InputSystem<InputActionType::UIActionID>> m_uiInput; ///< UI入力
 
+	Canvas* m_pCanvas;
 
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ

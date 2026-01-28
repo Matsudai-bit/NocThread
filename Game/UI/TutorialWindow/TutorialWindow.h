@@ -49,6 +49,8 @@ private:
 
 	std::unique_ptr < InputSystem<InputActionType::UIActionID>> m_uiInput; ///< UI入力
 
+	bool m_isVisible; ///< 見えるかどうか
+
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
 public:
@@ -76,6 +78,10 @@ public:
 	void Finalize();
 	// スプライト描画
 	void DrawSprite(DirectX::SpriteBatch* pSpriteBatch) override;
+
+	// 見えるかどうか
+	void SetVisible(bool isVisible) { m_isVisible = isVisible; }
+	bool IsVisible() const override { return m_isVisible; }
 
 // 取得/設定
 public:

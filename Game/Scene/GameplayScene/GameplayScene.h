@@ -49,7 +49,7 @@ class Minimap;			// ミニマップ
 class GameDirector;		// ゲーム進行の監督
 class SpawnManager;		// 出現管理
 class CollisionMatrix;	// 衝突検知する対応付け表
-
+class Canvas;			// キャンバス
 
 // クラスの定義 ===============================================================
 /**
@@ -86,6 +86,7 @@ private:
 	std::unique_ptr<TaskManager>		m_taskManager;		///< タスク管理
 	std::unique_ptr<SpawnManager>		m_spawnManager;		///< 出現管理
 	std::unique_ptr<CollisionMatrix>	m_collisionMatrix;	///< 出現管理
+	std::unique_ptr<Canvas>				m_canvas;			///< キャンバス(UI表示用)
 
 	// その他
 	std::unique_ptr<StageManager>	m_stageManager;	///< ステージ上のオブジェクトを管理
@@ -146,6 +147,9 @@ public:
 
 	// タスク管理の取得
 	TaskManager* GetTaskManager() const { return m_taskManager.get();	}
+
+	// キャンバスの取得
+	Canvas* GetCanvas() const { return m_canvas.get(); }
 
 // 内部実装
 private:

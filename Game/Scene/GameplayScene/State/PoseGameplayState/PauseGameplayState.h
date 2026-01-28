@@ -88,8 +88,6 @@ private:
 
 	std::unique_ptr<Sprite> m_backInGameplayingSprite; ///< ゲームプレイ中の画像スプライト
 
-	std::unique_ptr<Canvas> m_canvas;					///< キャンバス　
-
 	std::vector< std::unique_ptr<Line2D>>	m_lines;	///< 2D線
 
 	std::unique_ptr<PauseMenu>				m_pauseMenu;	///< ポーズメニュー

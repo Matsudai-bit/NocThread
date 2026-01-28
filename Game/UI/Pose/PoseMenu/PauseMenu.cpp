@@ -37,6 +37,7 @@ using namespace DirectX;
 PauseMenu::PauseMenu()
 	: m_currentSelectItemForInt{}
 	, m_pCommonResources{ nullptr }
+	, m_pCanvas{ nullptr }
 {
 
 }
@@ -65,6 +66,8 @@ void PauseMenu::Initialize(Canvas* pCanvas, const CommonResources* pCommonResour
 	using namespace TextureDatabase;
 	auto screen = Screen::Get();
 
+	m_pCanvas = pCanvas;
+
 	m_pauseFontSprites.resize(static_cast<int>(MenuItem::NUM));
 	std::for_each(m_pauseFontSprites.begin(), m_pauseFontSprites.end(), [&](std::unique_ptr<Sprite>& sprite)
 		{sprite = std::make_unique<Sprite>(); }
@@ -78,7 +81,10 @@ void PauseMenu::Initialize(Canvas* pCanvas, const CommonResources* pCommonResour
 	m_pauseFontSprites[3]->Initialize(pResourceManager->CreateTexture(TEXTURE_PATH_MAP.at(TextureID::UI_PAUSE_FONT_RETURNTILTE)));
 
 	// キャンバスにスプライトの登録
-	std::for_each(m_pauseFontSprites.begin(), m_pauseFontSprites.end(), [&](std::unique_ptr<Sprite>& sprite) {pCanvas->AddSprite(sprite.get()); });
+	std::for_each(m_pauseFontSprites.begin(), m_pauseFontSprites.end(), [&](std::unique_ptr<Sprite>& sprite)
+		{
+			pCanvas->AddSprite(sprite.get()); 
+		});
 
 	// フォント類の各種設定
 	std::for_each(m_pauseFontSprites.begin(), m_pauseFontSprites.end(), [&](std::unique_ptr<Sprite>& sprite)
@@ -216,7 +222,11 @@ void PauseMenu::Draw()
  */
 void PauseMenu::Finalize()
 {
-
+	// キャンバスから削除
+	std::for_each(m_pauseFontSprites.begin(), m_pauseFontSprites.end(), [&](std::unique_ptr<Sprite>& sprite)
+		{
+			m_pCanvas->RemoveSprite(sprite.get());
+		});
 }
 
 /**

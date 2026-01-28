@@ -47,6 +47,9 @@
 // ミニマップ関連
 #include "Game/Common/MiniMap/MiniMap.h"
 
+// UIツール関連
+#include "Game/Common/UserInterfaceTool/Canvas/Canvas.h"
+
 // プレイシーンの状態関連
 #include "Game/Scene/GameplayScene/State/NormalGameplayState/NormalGameplayState.h"
 #include "Game/Scene/GameplayScene/State/PoseGameplayState/PauseGameplayState.h"
@@ -266,6 +269,9 @@ void GameplayScene::SetUpForGameStart()
  */
 void GameplayScene::CreatePlatform()
 {
+	auto context = GetCommonResources()->GetDeviceResources()->GetD3DDeviceContext();
+	auto states = GetCommonResources()->GetCommonStates();
+
 	// ステートマシーンの作成
 	m_stateMachine = std::make_unique <StateMachine<GameplayScene>>(this);
 
@@ -292,6 +298,9 @@ void GameplayScene::CreatePlatform()
 	// ミニマップの作成
 	m_miniMap = std::make_unique<Minimap>(GetCommonResources());
 
+	// キャンバスの作成
+	m_canvas = std::make_unique<Canvas>(context, states);
+
 	// 基盤のセットアップ
 	SetupPlatform();
 }
@@ -316,6 +325,8 @@ void GameplayScene::SetupPlatform()
 	// 出現管理の初期化処理
 	m_spawnManager->Initialize(GetCommonResources(), m_collisionManager.get());
 
+	// 一番手前にする
+	m_canvas->SetOt(0);
 }
 
 /**
@@ -340,6 +351,7 @@ void GameplayScene::CreateTask()
 	m_taskManager->AddTask(m_collisionManager.get());	// CollisionManager
 	m_taskManager->AddTask(m_gameEffectManager.get());	// EffectManager
 	m_taskManager->AddTask(m_miniMap.get());			// Minimap
+	m_taskManager->AddTask(m_canvas.get());				// Canvas
 }
 
 /**

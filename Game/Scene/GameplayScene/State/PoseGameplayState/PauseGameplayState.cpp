@@ -86,8 +86,6 @@ void PauseGameplayState::OnStartState()
 	auto context			= GetOwner()->GetCommonResources()->GetDeviceResources()->GetD3DDeviceContext();
 	auto screen = Screen::Get();
 	// ***** キャンバスの作成 *********************************************
-	m_canvas = std::make_unique<Canvas>(context, GetOwner()->GetCommonResources()->GetCommonStates());
-	m_canvas->SetOt(0);  // 一番手前にする
 
 	// **** スプライトの作成 **********************************************
 	m_backgroundAlphaSprite = std::make_unique<Sprite>();
@@ -98,13 +96,14 @@ void PauseGameplayState::OnStartState()
 	m_backInGameplayingSprite = std::make_unique<Sprite>();
 
 
+	Canvas* pCanvas = GetOwner()->GetCanvas();
 	// キャンバスへ登録
-	m_canvas->AddSprite(m_backInGameplayingSprite.get());
-	m_canvas->AddSprite(m_backgroundAlphaSprite.get());
-	m_canvas->AddSprite(m_pauseFontSprite.get());
-	m_canvas->AddSprite(m_operatingFontSprite.get());
-	m_canvas->AddSprite(m_operatingSprite.get());
-	m_canvas->AddSprite(m_manualSprite.get());
+	pCanvas->AddSprite(m_backInGameplayingSprite.get());
+	pCanvas->AddSprite(m_backgroundAlphaSprite.get());
+	pCanvas->AddSprite(m_pauseFontSprite.get());
+	pCanvas->AddSprite(m_operatingFontSprite.get());
+	pCanvas->AddSprite(m_operatingSprite.get());
+	pCanvas->AddSprite(m_manualSprite.get());
 
 	using namespace TextureDatabase;
 	// スプライトのテクスチャ設定
@@ -154,7 +153,7 @@ void PauseGameplayState::OnStartState()
 
 	// ポーズメニューの作成 **********************************************
 	m_pauseMenu = std::make_unique<PauseMenu>();
-	m_pauseMenu->Initialize(m_canvas.get(), GetOwner()->GetCommonResources(), [&](PauseMenu::MenuItem pushItem) {
+	m_pauseMenu->Initialize(pCanvas, GetOwner()->GetCommonResources(), [&](PauseMenu::MenuItem pushItem) {
 		OnPushMenuItem(pushItem); });
 
 	// チュートリアルウィンドウの作成 **********************************************
@@ -171,8 +170,6 @@ void PauseGameplayState::OnStartState()
 	m_backInGameplayingSprite->SetPosition(Vector2(screen->GetCenterXF(), screen->GetCenterYF()));
 
 	// **** タスク管理へ登録 ****
-	GetOwner()->GetTaskManager()->AddTask(m_canvas.get());
-
 	// ステージ管理の更新を停止する
 	GetOwner()->GetStageManager()->StopUpdating();
 
@@ -257,8 +254,18 @@ void PauseGameplayState::OnDraw()
 
 void PauseGameplayState::OnExitState()
 {
-	// キャンバスの削除
-	GetOwner()->GetTaskManager()->DeleteTask(m_canvas.get());
+	// キャンバスから削除
+	Canvas* pCanvas = GetOwner()->GetCanvas();
+	pCanvas->RemoveSprite(m_backInGameplayingSprite.get());
+	pCanvas->RemoveSprite(m_backgroundAlphaSprite.get());
+	pCanvas->RemoveSprite(m_pauseFontSprite.get());
+	pCanvas->RemoveSprite(m_operatingFontSprite.get());
+	pCanvas->RemoveSprite(m_operatingSprite.get());
+	pCanvas->RemoveSprite(m_manualSprite.get());
+	pCanvas->RemoveSprite(m_tutorialWindow.get());
+
+
+	m_pauseMenu->Finalize();
 }
 
 /**
@@ -280,7 +287,7 @@ void PauseGameplayState::OnPushMenuItem(PauseMenu::MenuItem menuItem)
 		SoundManager::GetInstance()->Play(SoundDatabase::SOUND_CLIP_MAP.at(SoundDatabase::SE_DECIDE), false);
 
 		m_isDisplayingTutorialWindow = true;
-		m_canvas->AddSprite(m_tutorialWindow.get());
+		GetOwner()->GetCanvas()->AddSprite(m_tutorialWindow.get());
 		break;
 	case PauseMenu::MenuItem::SETTING:
 		break;
@@ -321,7 +328,7 @@ void PauseGameplayState::ContinueGame()
 void PauseGameplayState::OnCloseTutorialWindow()
 {
 	m_isDisplayingTutorialWindow = false;
-	m_canvas->RemoveSprite(m_tutorialWindow.get());
+	GetOwner()->GetCanvas()->RemoveSprite(m_tutorialWindow.get());
 }
 
 
