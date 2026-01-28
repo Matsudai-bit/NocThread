@@ -53,13 +53,14 @@ PlayerController::~PlayerController()
  *
  * @return なし
  */
-void PlayerController::Initialize(const Camera* pCamera)
+void PlayerController::Initialize(const Camera* pCamera, Player* pPlayer)
 {
 	m_pCamera = pCamera;
 
 	// プレイヤー入力の作成
 	m_playerInput = InputBindingFactory::PlayerInputFactory().Create(DefaultSpawnDesc());
 
+	m_pPlayer = pPlayer;
 }
 
 
@@ -82,58 +83,15 @@ void PlayerController::Update(
 
 	m_playerInput->Update(pKeyboardStateTracker, pMouseStateTracker, pGamePadStateTracker);
 
-
-	auto kb = pKeyboardStateTracker->GetLastState();
-	auto mouse = pMouseStateTracker->GetLastState();
-
-	// 移動方向
-	SimpleMath::Vector3 movementDirection = SimpleMath::Vector3::Zero;
-
-	// 奥へ
-	if (m_playerInput->IsInput(InputActionType::PlyayerActionID::FRONT_MOVE)){	movementDirection += SimpleMath::Vector3::Forward;}
-	// 手前へ
-	if (m_playerInput->IsInput(InputActionType::PlyayerActionID::BACK_MOVE)) { movementDirection += SimpleMath::Vector3::Backward; }
-	// 右へ
-	if (m_playerInput->IsInput(InputActionType::PlyayerActionID::RIGHT_MOVE)) { movementDirection += SimpleMath::Vector3::Right; }
-	// 左へ
-	if (m_playerInput->IsInput(InputActionType::PlyayerActionID::LEFT_MOVE)) { movementDirection += SimpleMath::Vector3::Left; }
-
-	// 入力がないときは移動しない
-	if (movementDirection.LengthSquared() > 0.0f)
-	{
-		movementDirection.Normalize();
-
-		// カメラの「正面方向（XZ平面）」を取得
-		SimpleMath::Vector3 cameraForward = m_pCamera->GetTarget() - m_pCamera->GetEye();
-		cameraForward.y = 0.0f;
-		cameraForward.Normalize();
-
-		// カメラの「右方向」を取得（カメラの向き × Y軸）
-		SimpleMath::Vector3 cameraRight = cameraForward.Cross(SimpleMath::Vector3::Up);
-		cameraRight.Normalize();
-
-		// ローカル入力をカメラ空間に変換（X:右、Z:前）
-		// Z方向が正面同士の時に-の乗算になり結果敵に反対方向に向いてしまうため-で補正
-		SimpleMath::Vector3 worldMovementDir = -movementDirection.z * cameraForward + movementDirection.x * cameraRight;
-
-		worldMovementDir.Normalize();
-
-		// 移動方向の設定
-		pPlayer->RequestedMovement(worldMovementDir);
-	}
+	TryWalk();
+	
 	bool isJumpSuccess = false;
 	// ジャンプ
-	if (m_playerInput->IsInput(InputActionType::PlyayerActionID::JUMPING, InputSystem<InputActionType::PlyayerActionID>::InputOption::PRESSED))
-	{
-		isJumpSuccess = pPlayer->RequestJump();
-	}
-
+	isJumpSuccess = TryJumping();
+	
 	// ステップ
-	if (m_playerInput->IsInput(InputActionType::PlyayerActionID::STEPPING, InputSystem<InputActionType::PlyayerActionID>::InputOption::PRESSED)
-		&& !isJumpSuccess)
-	{
-		pPlayer->RequestStep();
-	}
+	TryStep(isJumpSuccess);
+
 }
 
 
@@ -162,4 +120,66 @@ void PlayerController::Draw()
 void PlayerController::Finalize()
 {
 
+}
+
+bool PlayerController::TryStep(bool isJumping)
+{
+	if (m_playerInput->IsInput(InputActionType::PlyayerActionID::STEPPING, InputSystem<InputActionType::PlyayerActionID>::InputOption::PRESSED)
+		&& !isJumping)
+	{
+		return m_pPlayer->RequestStep();
+	}
+	return false;
+}
+
+bool PlayerController::TryWalk()
+{
+	// 移動方向
+	SimpleMath::Vector3 movementDirection = SimpleMath::Vector3::Zero;
+
+	// 奥へ
+	if (m_playerInput->IsInput(InputActionType::PlyayerActionID::FRONT_MOVE)) { movementDirection += SimpleMath::Vector3::Forward; }
+	// 手前へ
+	if (m_playerInput->IsInput(InputActionType::PlyayerActionID::BACK_MOVE)) { movementDirection += SimpleMath::Vector3::Backward; }
+	// 右へ
+	if (m_playerInput->IsInput(InputActionType::PlyayerActionID::RIGHT_MOVE)) { movementDirection += SimpleMath::Vector3::Right; }
+	// 左へ
+	if (m_playerInput->IsInput(InputActionType::PlyayerActionID::LEFT_MOVE)) { movementDirection += SimpleMath::Vector3::Left; }
+
+	// 入力がないときは移動しない
+	if (movementDirection.LengthSquared() > 0.0f)
+	{
+		movementDirection.Normalize();
+
+		// カメラの「正面方向（XZ平面）」を取得
+		SimpleMath::Vector3 cameraForward = m_pCamera->GetTarget() - m_pCamera->GetEye();
+		cameraForward.y = 0.0f;
+		cameraForward.Normalize();
+
+		// カメラの「右方向」を取得（カメラの向き × Y軸）
+		SimpleMath::Vector3 cameraRight = cameraForward.Cross(SimpleMath::Vector3::Up);
+		cameraRight.Normalize();
+
+		// ローカル入力をカメラ空間に変換（X:右、Z:前）
+		// Z方向が正面同士の時に-の乗算になり結果敵に反対方向に向いてしまうため-で補正
+		SimpleMath::Vector3 worldMovementDir = -movementDirection.z * cameraForward + movementDirection.x * cameraRight;
+
+		worldMovementDir.Normalize();
+
+		// 移動方向の設定
+		return m_pPlayer->RequestedMovement(worldMovementDir);
+	}
+
+	return false;
+}
+
+bool PlayerController::TryJumping()
+{
+	// ジャンプ
+	if (m_playerInput->IsInput(InputActionType::PlyayerActionID::JUMPING, InputSystem<InputActionType::PlyayerActionID>::InputOption::PRESSED))
+	{
+		return m_pPlayer->RequestJump();
+	}
+
+	return false;
 }

@@ -50,6 +50,7 @@
 // プレイシーンの状態関連
 #include "Game/Scene/GameplayScene/State/NormalGameplayState/NormalGameplayState.h"
 #include "Game/Scene/GameplayScene/State/PoseGameplayState/PauseGameplayState.h"
+#include "Game/Scene/GameplayScene/State/StartingGameplayState/StartingGameplayState.h"
 
 // シーン関連
 #include "Game/Scene/ResultScene/ResultScene.h"
@@ -351,7 +352,7 @@ void GameplayScene::StartGame()
 
 
 	// **** 最初の状態 ****
-	m_stateMachine->ChangeState<NormalGameplayState>();
+	m_stateMachine->ChangeState<StartingGameplayState>();
 	// **** BGMを鳴らす ****
 	SoundManager::GetInstance()->RemoveAll();
 	SoundManager::GetInstance()->Play(SoundDatabase::SOUND_CLIP_MAP.at(SoundDatabase::BGM_INGAME), true);

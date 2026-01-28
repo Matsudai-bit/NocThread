@@ -521,6 +521,9 @@
     <Filter Include="Game\Common\Graphics\GameEffect\Interface">
       <UniqueIdentifier>{8c1aac98-1703-413d-9ebf-78e6a9f2d5af}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\Scene\GameplayScene\State\Starting">
+      <UniqueIdentifier>{5784dc21-179b-41e6-a706-b155ea93d521}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -996,6 +999,9 @@
     <ClInclude Include="Game\Common\Database\EnemyParameter.h">
       <Filter>Game\Common\Database</Filter>
     </ClInclude>
+    <ClInclude Include="Game\Scene\GameplayScene\State\StartingGameplayState\StartingGameplayState.h">
+      <Filter>Game\Scene\GameplayScene\State\Starting</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -1392,6 +1398,9 @@
     </ClCompile>
     <ClCompile Include="Game\Common\Framework\GameObjectManager\PlayerManager\PlayerManager.cpp">
       <Filter>Game\Common\Framework\GameObjectManager\PlayerManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Scene\GameplayScene\State\StartingGameplayState\StartingGameplayState.cpp">
+      <Filter>Game\Scene\GameplayScene\State\Starting</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -304,6 +304,7 @@
     <ClInclude Include="Game\Scene\GameplayScene\GameplayScene.h" />
     <ClInclude Include="Game\Scene\GameplayScene\State\NormalGameplayState\NormalGameplayState.h" />
     <ClInclude Include="Game\Scene\GameplayScene\State\PoseGameplayState\PauseGameplayState.h" />
+    <ClInclude Include="Game\Scene\GameplayScene\State\StartingGameplayState\StartingGameplayState.h" />
     <ClInclude Include="Game\Scene\Loading\LoadingScreen.h" />
     <ClInclude Include="Game\Scene\ResultScene\ResultScene.h" />
     <ClInclude Include="Game\Scene\ResultScene\State\FailureResultState\FailureResultState.h" />
@@ -446,6 +447,7 @@
     <ClCompile Include="Game\Scene\GameplayScene\GameplayScene.cpp" />
     <ClCompile Include="Game\Scene\GameplayScene\State\NormalGameplayState\NormalGameplayState.cpp" />
     <ClCompile Include="Game\Scene\GameplayScene\State\PoseGameplayState\PauseGameplayState.cpp" />
+    <ClCompile Include="Game\Scene\GameplayScene\State\StartingGameplayState\StartingGameplayState.cpp" />
     <ClCompile Include="Game\Scene\Loading\LoadingScreen.cpp" />
     <ClCompile Include="Game\Scene\ResultScene\ResultScene.cpp" />
     <ClCompile Include="Game\Scene\ResultScene\State\FailureResultState\FailureResultState.cpp" />

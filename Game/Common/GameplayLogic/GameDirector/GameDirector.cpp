@@ -178,8 +178,8 @@ void GameDirector::SetUpEventFlowMap()
 	// イベントの流れを設定する
 
 	// **** ゲーム開始 ****
-	m_eventFlowMap[GameFlowEventID::GAME_SETUP_FINISH] = GameFlowEventID::GAME_START;
-	m_eventFlowMap[GameFlowEventID::GAME_START] = GameFlowEventID::GAME_TRANSITION_FADING_START;
+	m_eventFlowMap[GameFlowEventID::GAME_SETUP_FINISH] = GameFlowEventID::GAME_TRANSITION_FADING_START;
+	//m_eventFlowMap[GameFlowEventID::GAME_TRANSITION_FADING_FINISH] = GameFlowEventID::GAME_START;
 
 	// **** ゲーム終了 ****
 	m_eventFlowMap[GameFlowEventID::ESCAPE_SUCCESS] = GameFlowEventID::GAME_TRANSITION_FADING_START;

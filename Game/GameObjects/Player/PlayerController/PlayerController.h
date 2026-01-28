@@ -38,6 +38,7 @@ private:
 
 	std::unique_ptr<InputSystem<InputActionType::PlyayerActionID>> m_playerInput;
 	
+	Player* m_pPlayer;
 
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
@@ -52,7 +53,7 @@ public:
 // 操作
 public:
 	// 初期化処理
-	void Initialize(const Camera* pCamera);
+	void Initialize(const Camera* pCamera, Player* pPlayer);
 
 	// 更新処理
 	void Update(
@@ -66,6 +67,12 @@ public:
 
 	// 終了処理
 	void Finalize();
+
+	bool TryStep(bool isJumping);
+
+	bool TryWalk();
+
+	bool TryJumping();
 
 
 // 取得/設定

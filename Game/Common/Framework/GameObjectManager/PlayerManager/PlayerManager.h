@@ -55,6 +55,8 @@ private:
 
 	bool m_isStoppingUpdate;					///< 更新処理を停止するかどうか
 
+	const PlayerCamera* m_pPlayerCamera;
+
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
 public:

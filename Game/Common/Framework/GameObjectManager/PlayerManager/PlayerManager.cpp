@@ -36,6 +36,7 @@
 PlayerManager::PlayerManager()
 	: m_pCommonResources{ nullptr }
 	, m_isStoppingUpdate{ false }
+	, m_pPlayerCamera	{ nullptr }
 {
 	GameFlowMessenger::GetInstance()->RegistryObserver(this);
 }
@@ -72,7 +73,9 @@ void PlayerManager::Initialize(const CommonResources* pCommonResources, const Pl
 
 	// プレイヤーコントローラの作成
 	m_playerController = std::make_unique<PlayerController>();
-	m_playerController->Initialize(pPlayerCamera);
+
+	// プレイヤーカメラの取得
+	m_pPlayerCamera = pPlayerCamera;
 }
 
 
@@ -141,9 +144,14 @@ void PlayerManager::OnGameFlowEvent(GameFlowEventID eventID)
 		// プレイヤーのアクティブ化
 		m_isStoppingUpdate = true;
 		break;
-	case GameFlowEventID::GAME_TRANSITION_FADING_FINISH:
+	case GameFlowEventID::GAME_START:
 		// プレイヤーのアクティブ化
 		m_isStoppingUpdate = false;
+
+		// プレイヤーコントローラの初期化処理
+		m_playerController->Initialize(m_pPlayerCamera, m_player.get());
+		m_player->RequestStep();
+
 		break;
 	}
 }

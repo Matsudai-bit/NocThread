@@ -127,7 +127,7 @@ void EnemyManager::OnGameFlowEvent(GameFlowEventID eventID)
 	case GameFlowEventID::GAME_TRANSITION_FADING_START:
 		m_isStoppingUpdate = true;
 		break;
-	case GameFlowEventID::GAME_TRANSITION_FADING_FINISH:
+	case GameFlowEventID::GAME_START:
 		m_isStoppingUpdate = false;
 		break;
 
