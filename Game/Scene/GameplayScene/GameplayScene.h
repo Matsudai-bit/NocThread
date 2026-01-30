@@ -76,8 +76,6 @@ public:
 // データメンバの宣言 -----------------------------------------------
 private:
 
-	// 状態
-	std::unique_ptr<StateMachine<GameplayScene>> m_stateMachine; ///< ステートマシーン
 
     // システム
 	std::unique_ptr<GameDirector>		m_gameDirector;		///< ゲーム進行の監督
@@ -95,6 +93,8 @@ private:
 
 	std::vector <std::function<void()>> m_eventStack;
 	ElapsedTimeCounter m_gamePlayingTimeCounter;		///< ゲームのプレイ時間カウンター
+	// 状態
+	std::unique_ptr<StateMachine<GameplayScene>> m_stateMachine; ///< ステートマシーン
 
 
 // メンバ関数の宣言 -------------------------------------------------

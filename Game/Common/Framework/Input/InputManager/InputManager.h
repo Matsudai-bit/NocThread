@@ -21,8 +21,8 @@
 
 // ƒNƒ‰ƒX‚Ì‘O•ûéŒ¾ ===================================================
 class InputActionMap;
-class InputData;
-class InputOptionData;
+struct InputData;
+struct InputOptionData;
 /**
  * @brief “ü—ÍŠÇ—
  */

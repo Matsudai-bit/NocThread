@@ -57,8 +57,6 @@ TitleMenu::TitleMenu()
  */
 TitleMenu::~TitleMenu()
 {
-	auto pInputManager = m_pCommonResources->GetInputManager();
-
 }
 
 

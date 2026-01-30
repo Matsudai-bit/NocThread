@@ -35,7 +35,7 @@ class CommonResources;  // 共通リソース
 class Canvas;			// キャンバス
 class Sprite;			// スプライト
 class TitleMenu;		// タイトルメニュー
-class InputEventData;	// 入力イベントデータ
+struct InputEventData;	// 入力イベントデータ
 class TutorialWindow;	// チュートリアルウィンドウ
 
 // クラスの定義 ===============================================================
@@ -70,11 +70,12 @@ private:
 	// オブジェクト関連
 
 	// UI
-	std::unique_ptr<Sprite>				m_backgroundSprite;	///< 背景スプライト
+	std::unique_ptr<Sprite>				m_backgroundSprite;		///< 背景スプライト
 
-	std::unique_ptr<Sprite>				m_alphaSprite;		///< 透過フィルタースプライト
-	std::unique_ptr<Sprite>				m_logoSprite;		///< ロゴスプライト
-	std::unique_ptr<Sprite>				m_manualSprite;		///< 操作説明スプライト
+	std::unique_ptr<Sprite>				m_alphaSprite;			///< 透過フィルタースプライト
+	std::unique_ptr<Sprite>				m_logoSprite;			///< ロゴスプライト
+	std::unique_ptr<Sprite>				m_keyboardManualSprite;	///< 操作説明スプライト(キーボード）
+	std::unique_ptr<Sprite>				m_gamePadManualSprite;	///< 操作説明スプライト(ゲームパッド）
 	
 	std::unique_ptr<TitleMenu>			m_titleMenu;		///< タイトルメニュー
 	std::unique_ptr<TutorialWindow>		m_tutorialWindow;	///< チュートリアルウィンドウ
@@ -131,20 +132,15 @@ private:
 	// チュートリアルウィンドウを閉じる際の処理
 	void OnCloseTutorialWindow();
 
-	// 現在のガイドUIの変更を試みる
-	bool TryChangeCurrentGuideUI();
-
 	// ロゴの不透明度を更新する
 	void UpdateLogoOpacity(float deltaTime);
 
 	// タイトルメニューの更新処理
 	void UpdateTitleMenu(float deltaTime);
 
-	// チュートリアルウィンドウの更新処理
-	void UpdateTutorialWindow(float deltaTime);
-
 	// 入力のコールバックの登録
 	void RegisterBindCallbackToInput();
+	// 紐づけの解除をする
 	void UnBindCallbackToInput();
 
 	// 左入力された時に呼ばれる
@@ -157,7 +153,8 @@ private:
 	void OnInputDown	(InputEventData data);
 	// 決定入力された時に呼ばれる
 	void OnInputConfirm	(InputEventData data);
-
+	// 戻るが入力された時に呼ばれる
+	void OnInputExit(InputEventData data);
 	// メニューアイテムイベントの作成
 	void CreateMenuItemEvent();
 

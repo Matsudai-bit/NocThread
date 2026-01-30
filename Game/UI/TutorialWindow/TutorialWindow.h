@@ -22,7 +22,7 @@
 // クラスの前方宣言 ===================================================
 class Sprite;
 class ResourceManager;
-class InputEventData;
+struct InputEventData;
 // クラスの定義 ===============================================================
 /**
  * @brief チュートリアルウィンドウ
@@ -63,15 +63,6 @@ public:
 public:
 	// 初期化処理
 	void Initialize(ResourceManager* pResourceManager, std::function<void()> closeWindow);
-
-	// 更新処理
-	void Update(
-		float deltaTime,
-		const DirectX::Keyboard::KeyboardStateTracker* pKeyboardStateTracker,
-		const DirectX::Mouse::ButtonStateTracker* pMouseStateTracker,
-		const DirectX::GamePad::ButtonStateTracker* pGamePadStateTracker);
-	// 描画処理
-	void Draw();
 	// 終了処理
 	void Finalize();
 	// スプライト描画

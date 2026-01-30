@@ -43,6 +43,7 @@
 // UIツール関連
 #include "Game/Common/UserInterfaceTool/Sprite/Sprite.h"
 #include "Game/Common/UserInterfaceTool/Canvas/Canvas.h"
+#include "Game/Common/UserInterfaceTool/InputDeviceSpriteResolver/InputDeviceSpriteResolver.h"
 
 // UIメニュー関連
 #include "Game/UI/TutorialWindow/TutorialWindow.h"
@@ -94,6 +95,10 @@ void TitleScene::Initialize()
 
 	// スプライトの作成
 	CreateSprites();
+
+	// デバイス毎の切り替えに登録
+	GetCommonResources()->GetInputDeviceSpriteResolver()->AddKeyboardSprite(m_keyboardManualSprite.get());
+	GetCommonResources()->GetInputDeviceSpriteResolver()->AddGamePadSprite(m_gamePadManualSprite.get());
 	
 	// キャンバスの作成
 	m_canvas = std::make_unique<Canvas>(context, states);
@@ -102,10 +107,11 @@ void TitleScene::Initialize()
 	m_canvas->AddSprite(m_backgroundSprite.get());
 	m_canvas->AddSprite(m_alphaSprite.get());
 	m_canvas->AddSprite(m_logoSprite.get());
-	m_canvas->AddSprite(m_manualSprite.get());
+	m_canvas->AddSprite(m_keyboardManualSprite.get());
+	m_canvas->AddSprite(m_gamePadManualSprite.get());
 
-	m_titleMenu->		Initialize(m_canvas.get(), GetCommonResources(), [this](TitleMenu::MenuItem menuItem) { OnPushMenuItem(menuItem); });
-	m_tutorialWindow->	Initialize(GetCommonResources()->GetResourceManager(), [this]() {OnCloseTutorialWindow(); });
+	m_titleMenu			->Initialize(m_canvas.get(), GetCommonResources(), [this](TitleMenu::MenuItem menuItem) { OnPushMenuItem(menuItem); });
+	m_tutorialWindow	->Initialize(GetCommonResources()->GetResourceManager(), [this]() {OnCloseTutorialWindow(); });
 
 
 	m_ElapsedTimeCounter.Reset();
@@ -113,6 +119,7 @@ void TitleScene::Initialize()
 	SoundManager::GetInstance()->RemoveAll();
 	m_bgmSoundID = SoundManager::GetInstance()->Play(SoundDatabase::SOUND_CLIP_MAP.at(SoundDatabase::BGM_TITLE), true);
 
+	m_tutorialWindow->SetVisible(false);
 
 	m_isPrevConnectedGamepad = false;
 
@@ -143,10 +150,6 @@ void TitleScene::Update(float deltaTime)
 	
 	// メインコンテンツの更新
 	UpdateTitleMenu(deltaTime);
-	UpdateTutorialWindow(deltaTime);
-
-	// ガイドUIの更新
-	TryChangeCurrentGuideUI();
 }
 
 
@@ -238,62 +241,6 @@ void TitleScene::OnCloseTutorialWindow()
 	m_canvas->RemoveSprite(m_tutorialWindow.get());
 }
 
-/**
- * @brief 現在のガイドガイドUIの変更を試みる
- *
- * 簡易実装用の後にクラス化する
- *
- * @returns true 成功
- * @returns false 失敗
- */
-bool TitleScene::TryChangeCurrentGuideUI()
-{
-	bool requestChange = false;
-	bool changePC = true;;
-
-	// ゲームパッドの接続されたらパッドガイドにに切り替える
-	if (!m_isPrevConnectedGamepad && GetCommonResources()->GetGamePadTracker()->GetLastState().IsConnected())
-	{
-		changePC = false;
-		requestChange = true;
-		m_isPrevConnectedGamepad = true;
-	}
-
-	// ゲームパッドが接続されなくなったらPCガイドに切り替える
-	if (m_isPrevConnectedGamepad && !GetCommonResources()->GetGamePadTracker()->GetLastState().IsConnected())
-	{
-		changePC = true;
-		requestChange = true;
-		m_isPrevConnectedGamepad = false;
-
-	}
-
-	if (requestChange)
-	{
-		std::string filePath;
-
-		if (changePC)
-		{
-			filePath = TextureDatabase::TEXTURE_PATH_MAP.at(TextureDatabase::TextureID::UI_GUIDE_UI_KEYBOARD);
-		}
-
-		else
-		{
-			filePath = TextureDatabase::TEXTURE_PATH_MAP.at(TextureDatabase::TextureID::UI_GUIDE_UI_GAMEPAD);
-		}
-
-		// 拡大率と座標を保持する
-		float scale = m_manualSprite->GetScale();
-		SimpleMath::Vector2 position = m_manualSprite->GetPosition();
-		m_manualSprite->Initialize(GetCommonResources()->GetResourceManager()->CreateTexture(filePath));
-		m_manualSprite->SetScale(scale);
-		m_manualSprite->SetPosition(position);
-
-		return true;
-	}
-
-	return false;
-}
 
 /**
  * @brief ロゴの透過イージングの更新処理
@@ -332,24 +279,6 @@ void TitleScene::UpdateTitleMenu(float deltaTime)
 
 	m_titleMenu->Update(deltaTime);
 }
-
-/**
- * @brief チュートリアルウィンドウの更新処理
- *
- * @param[in] deltaTime 経過時間
- */
-void TitleScene::UpdateTutorialWindow(float deltaTime)
-{
-	auto* common = GetCommonResources();
-
-	m_tutorialWindow->Update(
-		deltaTime,
-		common->GetKeyboardTracker(),
-		common->GetMouseTracker(),
-		common->GetGamePadTracker()
-	);
-}
-
 /**
  * @brief 入力に対するコールバックを登録
  */
@@ -373,6 +302,9 @@ void TitleScene::RegisterBindCallbackToInput()
 	// 決定入力
 	pInputManager->GetInputActionMap(InputActionID::UI::MAP_NAME)->BindInputEvent(InputActionID::UI::CONFIRM, this,
 		[this](InputEventData data)	{ OnInputConfirm(data); });
+	// 戻る入力
+	pInputManager->GetInputActionMap(InputActionID::UI::MAP_NAME)->BindInputEvent(InputActionID::UI::CANCEL, this,
+		[this](InputEventData data) { OnInputExit(data); });
 }
 
 /**
@@ -388,6 +320,8 @@ void TitleScene::UnBindCallbackToInput()
 	pInputManager->GetInputActionMap(InputActionID::UI::MAP_NAME)->UnBindAllInputEvent(InputActionID::UI::RIGHT_MOVE,	this);
 	pInputManager->GetInputActionMap(InputActionID::UI::MAP_NAME)->UnBindAllInputEvent(InputActionID::UI::DOWN_MOVE,	this);
 	pInputManager->GetInputActionMap(InputActionID::UI::MAP_NAME)->UnBindAllInputEvent(InputActionID::UI::CONFIRM,		this);
+	pInputManager->GetInputActionMap(InputActionID::UI::MAP_NAME)->UnBindAllInputEvent(InputActionID::UI::CANCEL,		this);
+
 }
 
 /**
@@ -397,7 +331,7 @@ void TitleScene::UnBindCallbackToInput()
  */
 void TitleScene::OnInputLeft(InputEventData data)
 {
-	if (m_tutorialWindow && m_tutorialWindow->IsVisible())
+	if (m_tutorialWindow && m_tutorialWindow->IsVisible() && GetCommonResources()->GetTransitionMask()->IsEnd())
 		m_tutorialWindow->OnMoveDownLeft(data);
 }
 
@@ -408,7 +342,7 @@ void TitleScene::OnInputLeft(InputEventData data)
  */
 void TitleScene::OnInputRight(InputEventData data)
 {
-	if (m_tutorialWindow && m_tutorialWindow->IsVisible())
+	if (m_tutorialWindow && m_tutorialWindow->IsVisible() && GetCommonResources()->GetTransitionMask()->IsEnd())
 		m_tutorialWindow->OnMoveUpRight(data);
 }
 
@@ -419,7 +353,7 @@ void TitleScene::OnInputRight(InputEventData data)
  */
 void TitleScene::OnInputUp(InputEventData data)
 {
-	if (m_titleMenu && m_titleMenu->IsActive())
+	if (m_titleMenu && m_titleMenu->IsActive() && GetCommonResources()->GetTransitionMask()->IsEnd())
 		m_titleMenu->OnMoveUpSelector(data);
 }
 
@@ -430,7 +364,7 @@ void TitleScene::OnInputUp(InputEventData data)
  */
 void TitleScene::OnInputDown(InputEventData data)
 {
-	if (m_titleMenu && m_titleMenu->IsActive())
+	if (m_titleMenu && m_titleMenu->IsActive() && GetCommonResources()->GetTransitionMask()->IsEnd())
 		m_titleMenu->OnMoveDownSelector(data);
 }
 
@@ -441,13 +375,27 @@ void TitleScene::OnInputDown(InputEventData data)
  */
 void TitleScene::OnInputConfirm(InputEventData data)
 {
-	if (m_titleMenu && m_titleMenu->IsActive())
-		m_titleMenu->OnSelect(data);
+	if (GetCommonResources()->GetTransitionMask()->IsEnd())
+	{
+		if (m_titleMenu && m_titleMenu->IsActive())
+			m_titleMenu->OnSelect(data);
 
-	if (m_tutorialWindow && m_tutorialWindow->IsVisible())
+		if (m_tutorialWindow && m_tutorialWindow->IsVisible())
+			m_tutorialWindow->OnSelect(data);
+	}
+
+}
+/**
+ * @brief 出る入力された時に呼ばれる
+ *
+ * @param[in] data	入力イベントデータ
+ */
+void TitleScene::OnInputExit(InputEventData data)
+{
+	
+
+	if (m_tutorialWindow->IsVisible() && GetCommonResources()->GetTransitionMask()->IsEnd())
 		m_tutorialWindow->OnSelect(data);
-
-
 }
 
 /**
@@ -468,8 +416,6 @@ void TitleScene::CreateMenuItemEvent()
 
 			GetCommonResources()->GetTransitionMask()->Close([&]() {ChangeScene<GameplayScene, LoadingScreen>(); });
 
-			// 入力の紐づけを解除する
-			UnBindCallbackToInput();
 		});
 
 	// チュートリアルボタンをを押したとき
@@ -492,8 +438,6 @@ void TitleScene::CreateMenuItemEvent()
 			m_isQuit = true;
 			GetCommonResources()->GetTransitionMask()->Close([&]() {PostQuitMessage(0);; });
 
-			// 入力の紐づけを解除する
-			UnBindCallbackToInput();
 		});
 	
 }
@@ -507,10 +451,11 @@ void TitleScene::CreateSprites()
 	auto screen = Screen::Get();
 
 	// スプライトの作成
-	m_backgroundSprite = std::make_unique<Sprite>();
-	m_alphaSprite = std::make_unique<Sprite>();
-	m_logoSprite = std::make_unique<Sprite>();
-	m_manualSprite = std::make_unique<Sprite>();
+	m_backgroundSprite	= std::make_unique<Sprite>();
+	m_alphaSprite		= std::make_unique<Sprite>();
+	m_logoSprite		= std::make_unique<Sprite>();
+	m_keyboardManualSprite	= std::make_unique<Sprite>();
+	m_gamePadManualSprite	= std::make_unique<Sprite>();
 
 	// 処理用変数
 	auto pResourceManager = GetCommonResources()->GetResourceManager();
@@ -518,10 +463,11 @@ void TitleScene::CreateSprites()
 	using namespace TextureDatabase;
 	{
 
-		m_backgroundSprite->Initialize(pResourceManager->CreateTexture(TEXTURE_PATH_MAP.at(TextureID::BACKGROUND_TITLE)));
-		m_alphaSprite->Initialize(pResourceManager->CreateTexture(TEXTURE_PATH_MAP.at(TextureID::BACKGROUND_TITLE_ALPHA_MASK)));
-		m_logoSprite->Initialize(pResourceManager->CreateTexture(TEXTURE_PATH_MAP.at(TextureID::BACKGROUND_TITLE_LOGO)));
-		m_manualSprite->Initialize(pResourceManager->CreateTexture(TEXTURE_PATH_MAP.at(TextureID::UI_GUIDE_UI_KEYBOARD)));
+		m_backgroundSprite	  ->Initialize(pResourceManager->CreateTexture(TEXTURE_PATH_MAP.at(TextureID::BACKGROUND_TITLE)));
+		m_alphaSprite		  ->Initialize(pResourceManager->CreateTexture(TEXTURE_PATH_MAP.at(TextureID::BACKGROUND_TITLE_ALPHA_MASK)));
+		m_logoSprite		  ->Initialize(pResourceManager->CreateTexture(TEXTURE_PATH_MAP.at(TextureID::BACKGROUND_TITLE_LOGO)));
+		m_keyboardManualSprite->Initialize(pResourceManager->CreateTexture(TEXTURE_PATH_MAP.at(TextureID::UI_GUIDE_UI_KEYBOARD)));
+		m_gamePadManualSprite ->Initialize(pResourceManager->CreateTexture(TEXTURE_PATH_MAP.at(TextureID::UI_GUIDE_UI_GAMEPAD)));
 	}
 
 	// スプライトの座標の設定
@@ -532,12 +478,14 @@ void TitleScene::CreateSprites()
 	// ロゴスプライト
 	m_logoSprite->SetPosition(SimpleMath::Vector2(screen->GetRightF() - LOGO_POS_OFFSET_X * screen->GetScreenScale(), screen->GetTopF() + LOGO_POS_OFFSET_Y * screen->GetScreenScale()));
 	// マニュアルスプライト
-	m_manualSprite->SetPosition(SimpleMath::Vector2(screen->GetRightF() - MANUAL_POS_OFFSET_X * screen->GetScreenScale(), screen->GetBottomF() - MANUAL_POS_OFFSET_Y * screen->GetScreenScale()));
+	m_keyboardManualSprite->SetPosition(SimpleMath::Vector2(screen->GetRightF() - MANUAL_POS_OFFSET_X * screen->GetScreenScale(), screen->GetBottomF() - MANUAL_POS_OFFSET_Y * screen->GetScreenScale()));
+	m_gamePadManualSprite->SetPosition(SimpleMath::Vector2(screen->GetRightF() - MANUAL_POS_OFFSET_X * screen->GetScreenScale(), screen->GetBottomF() - MANUAL_POS_OFFSET_Y * screen->GetScreenScale()));
 
 
 	// スプライトの拡大率
 	m_backgroundSprite->SetScale(BACKGROUND_SCALE * screen->GetScreenScale());
 	m_alphaSprite->SetScale(ALPHA_SCALE * screen->GetScreenScale());
 	m_logoSprite->SetScale(LOGO_SCALE * screen->GetScreenScale());
-	m_manualSprite->SetScale(MANUAL_SCALE * screen->GetScreenScale());
+	m_keyboardManualSprite->SetScale(MANUAL_SCALE * screen->GetScreenScale());
+	m_gamePadManualSprite->SetScale(MANUAL_SCALE * screen->GetScreenScale());
 }

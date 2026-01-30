@@ -38,6 +38,7 @@ PauseMenu::PauseMenu()
 	: m_currentSelectItemForInt{}
 	, m_pCommonResources{ nullptr }
 	, m_pCanvas{ nullptr }
+	, m_isActive{ false }
 {
 
 }
@@ -118,8 +119,7 @@ void PauseMenu::Initialize(Canvas* pCanvas, const CommonResources* pCommonResour
 
 	m_ElapsedTimeCounter.Reset();
 
-	// 入力の作成
-	m_uiInput = InputBindingFactory::UIInputFactory().Create(DefaultSpawnDesc());
+	m_isActive = true;
 }
 
 
@@ -133,12 +133,6 @@ void PauseMenu::Initialize(Canvas* pCanvas, const CommonResources* pCommonResour
  */
 void PauseMenu::Update(float deltaTime)
 {
-
-	// 入力の更新処理
-	m_uiInput->Update(
-		m_pCommonResources->GetKeyboardTracker(),
-		m_pCommonResources->GetMouseTracker(),
-		m_pCommonResources->GetGamePadTracker());
 
 	// 加算
 	m_ElapsedTimeCounter.UpperTime(deltaTime);
@@ -157,31 +151,6 @@ void PauseMenu::Update(float deltaTime)
 	}
 	m_line.SetLength(length);
 
-
-
-	if (CanMoveDownSelector())
-	{	
-		// SEの再生
-		SoundManager::GetInstance()->Play(SoundDatabase::SOUND_CLIP_MAP.at(SoundDatabase::SE_CURSOR_MOVING), false);
-		
-		m_currentSelectItemForInt++;
-	}
-
-	if (CanMoveUpSelector())
-	{
-		// SEの再生
-		SoundManager::GetInstance()->Play(SoundDatabase::SOUND_CLIP_MAP.at(SoundDatabase::SE_CURSOR_MOVING), false);		
-		// 加算する
-		m_currentSelectItemForInt--;
-	}
-
-	// 最後にクランプする
-	m_currentSelectItemForInt = (m_currentSelectItemForInt + static_cast<int>(MenuItem::NUM)) % static_cast<int>(MenuItem::NUM);
-
-	if (CanPush() && m_pushButtonFunc)
-	{
-		m_pushButtonFunc(static_cast<MenuItem>(m_currentSelectItemForInt));
-	}
 }
 
 
@@ -195,6 +164,7 @@ void PauseMenu::Update(float deltaTime)
  */
 void PauseMenu::Draw()
 {
+	if (!m_isActive) { return; }
 
 	auto screen = Screen::Get();
 
@@ -230,28 +200,52 @@ void PauseMenu::Finalize()
 }
 
 /**
- * @brief 下にセレクターが動くことが出来るかどうか
- * * @return true 可能
+ * @brief 上にセレクターを動かす
+ * 
+ * @param[in] data　入力イベントデータ
  */
-bool PauseMenu::CanMoveDownSelector() const
+void PauseMenu::OnMoveUpSelector(InputEventData data)
 {
-	return (m_uiInput->IsInput(InputActionType::UIActionID::DOWN_MOVE, InputSystem<InputActionType::UIActionID>::InputOption::PRESSED));
+	if (data.inputOption.pressed)
+	{
+		// SEの再生
+		SoundManager::GetInstance()->Play(SoundDatabase::SOUND_CLIP_MAP.at(SoundDatabase::SE_CURSOR_MOVING), false);
+		// 加算する
+		m_currentSelectItemForInt--;
+		// 最後にクランプする
+		m_currentSelectItemForInt = (m_currentSelectItemForInt + static_cast<int>(MenuItem::NUM)) % static_cast<int>(MenuItem::NUM);
+	}
+
 }
 
 /**
- * @brief 上にセレクターが動くことが出来るかどうか
- * * @return true 可能
+ * @brief 上にセレクターを動かす
+ *
+ * @param[in] data　入力イベントデータ
  */
-bool PauseMenu::CanMoveUpSelector() const
+void PauseMenu::OnMoveDownSelector(InputEventData data)
 {
-	return (m_uiInput->IsInput(InputActionType::UIActionID::UP_MOVE, InputSystem<InputActionType::UIActionID>::InputOption::PRESSED));
+	if (data.inputOption.pressed)
+	{
+		// SEの再生
+		SoundManager::GetInstance()->Play(SoundDatabase::SOUND_CLIP_MAP.at(SoundDatabase::SE_CURSOR_MOVING), false);
+		// 減算する
+		m_currentSelectItemForInt++;
+		// 最後にクランプする
+		m_currentSelectItemForInt = (m_currentSelectItemForInt + static_cast<int>(MenuItem::NUM)) % static_cast<int>(MenuItem::NUM);
+	}
 }
 
 /**
- * @brief 選択することが出来るかどうか
- * * @return true 可能
+ * @brief 上にセレクターを動かす
+ *
+ * @param[in] data　入力イベントデータ
  */
-bool PauseMenu::CanPush() const
+void PauseMenu::OnSelect(InputEventData data)
 {
-	return (m_uiInput->IsInput(InputActionType::UIActionID::CONFIRM, InputSystem<InputActionType::UIActionID>::InputOption::PRESSED));
+	if (data.inputOption.pressed)
+	{
+		m_pushButtonFunc(static_cast<MenuItem>(m_currentSelectItemForInt));
+	}
 }
+

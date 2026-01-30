@@ -24,6 +24,7 @@
 #include "Game/Common/Framework/StateMachine/StateBase/StateBase.h"
 #include "Game/Common/Framework/Input/InputSystem/InputSystem.h"
 #include "Game/Common/Framework/Input/InputActionType/InputActionType.h"
+#include "Game/Common/Framework/EventSystem/EventSystem.h"
 
 // グラフィック関連
 #include "Game/Common/Graphics/Line2D/Line2D.h"
@@ -79,12 +80,17 @@ public:
 // データメンバの宣言 -----------------------------------------------
 private:
 
+	std::unique_ptr<EventSystem<PauseMenu::MenuItem>> m_onPushMenuItemEvent; // メニューアイテムが押された時のイベント
+
+
 	// スプライト
 	std::unique_ptr<Sprite> m_backgroundAlphaSprite;	///< 背景透過用スプライト
 	std::unique_ptr<Sprite> m_pauseFontSprite;			///< ポーズフォントのスプライト
 	std::unique_ptr<Sprite> m_operatingFontSprite;		///< 操作方法フォントのスプライト
-	std::unique_ptr<Sprite> m_operatingSprite;			///< 操作方法のスプライト
-	std::unique_ptr<Sprite>	m_manualSprite;				///< 操作説明スプライト
+	std::unique_ptr<Sprite> m_keyboardOperatingSprite;			///< 操作方法のスプライト
+	std::unique_ptr<Sprite> m_gamePadOperatingSprite;			///< 操作方法のスプライト
+	std::unique_ptr<Sprite>	m_keyboardManualSprite;			///< 操作説明スプライト(キーボード）
+	std::unique_ptr<Sprite>	m_gamePadManualSprite;			///< 操作説明スプライト(ゲームパッド）
 
 	std::unique_ptr<Sprite> m_backInGameplayingSprite; ///< ゲームプレイ中の画像スプライト
 
@@ -97,10 +103,8 @@ private:
 	std::unique_ptr<DX::RenderTexture>	m_pauseBackRT;	///< レンダーテクスチャ	(ポーズ画面の背景のSRVを取得するのに使用)
 
 	// 簡易フラグ
-	bool m_isDisplayingTutorialWindow;
 	bool m_isPrevConnectedGamepad;  ///< 直前フレームでゲームパッドが接続されていたかどうか
 
-	std::unique_ptr < InputSystem<InputActionType::SystemActionID>> m_systemInput; ///< ゲームシステムの入力判断
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
 public:
@@ -136,15 +140,34 @@ public:
 private:
 	// メニューアイテムを押した時に呼ばれる
 	void OnPushMenuItem(PauseMenu::MenuItem menuItem);
-
 	// ゲームに戻る
 	void ContinueGame();
-
-
 	// チュートリアルウィンドウを閉じる際の処理
 	void OnCloseTutorialWindow();
 
+	// 入力のコールバックの登録
+	void RegisterBindCallbackToInput();
+	// 紐づけの解除をする
+	void UnBindCallbackToInput();
 
-	//@brief 現在のガイドガイドUIの変更を試みる
-	bool TryChangeCurrentGuideUI();
+	// 左入力された時に呼ばれる
+	void OnInputLeft(InputEventData data);
+	// 右入力された時に呼ばれる
+	void OnInputRight(InputEventData data);
+	// 上入力された時に呼ばれる
+	void OnInputUp(InputEventData data);
+	// 下入力された時に呼ばれる
+	void OnInputDown(InputEventData data);
+	// 決定入力された時に呼ばれる
+	void OnInputConfirm(InputEventData data);
+	// 戻るが入力された時に呼ばれる
+	void OnInputExit(InputEventData data);
+
+	// メニューアイテムイベントの作成
+	void CreateMenuItemEvent();
+
+	// スプライトの作成
+	void CreateSprites();
+	// 2Dラインの作成
+	void Create2DLines();
 };

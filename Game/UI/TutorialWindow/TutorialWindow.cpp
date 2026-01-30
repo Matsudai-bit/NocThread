@@ -105,39 +105,6 @@ void TutorialWindow::Initialize(ResourceManager* pResourceManager, std::function
 }
 
 /**
- * @brief 更新処理
- *
- * @param[in] deltaTime 経過時間
- *
- * @return なし
- */
-void TutorialWindow::Update(
-	float deltaTime, 
-	const DirectX::Keyboard::KeyboardStateTracker* pKeyboardStateTracker,
-	const DirectX::Mouse::ButtonStateTracker* pMouseStateTracker,
-	const DirectX::GamePad::ButtonStateTracker* pGamePadStateTracker)
-{
-	UNREFERENCED_PARAMETER(deltaTime);
-
-}
-
-
-
-/**
- * @brief 描画処理
- *
- * @param[in] なし
- *
- * @return なし
- */
-void TutorialWindow::Draw()
-{
-
-}
-
-
-
-/**
  * @brief 終了処理
  *
  * @param[in] なし

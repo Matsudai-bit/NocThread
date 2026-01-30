@@ -64,7 +64,13 @@ public:
 	}
 
 	// デストラクタ
-	~StateMachine() = default;
+	~StateMachine()
+	{
+		if (GetNowState())
+		{
+			GetNowState()->OnExitState();
+		}
+	}
 
 
 // 操作
