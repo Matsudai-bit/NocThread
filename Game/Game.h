@@ -25,6 +25,8 @@
 // グラフィック関連
 #include "Game/Common/Graphics/TransitionMask/TransitionMask.h"      // トランジションマスク
 
+// ユーザーインターフェースツール関連
+#include "Game/Common/UserInterfaceTool/InputDeviceSpriteResolver/InputDeviceSpriteResolver.h"
 
 // A basic game implementation that creates a D3D11 device and
 // provides a game loop.
@@ -61,6 +63,7 @@ private:
     std::unique_ptr<MyLib::FrameTimer>  m_frameTimer;
     std::unique_ptr<TransitionMask>     m_transitionMask;   ///< トランジションマスク
     std::unique_ptr<MyLib::SceneManager<CommonResources>>  m_sceneManager;     ///< シーン管理
+    std::unique_ptr<InputDeviceSpriteResolver>  m_inputDeviceSpriteResolver;    ///< 入力デバイス毎のスプライトの表記を切り替え器
 
 
 public:

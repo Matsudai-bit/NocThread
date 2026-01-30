@@ -30,7 +30,7 @@ namespace MyLib
 
 class ResourceManager;	// リソース管理
 class TransitionMask;	// シーン遷移マスク表示クラス
-
+class InputDeviceSpriteResolver; // 入力デバイス毎のスプライトの表記を切り替え器
 
 
 
@@ -62,6 +62,8 @@ private:
 
 	TransitionMask* m_pTransitionMask;								///< シーン遷移マスク表示クラス
 
+	InputDeviceSpriteResolver*	m_pInputDeviceSpriteResolver;	///< 入力デバイス毎のスプライトの表記を切り替え器
+
 	// ---- 仮実装 ----
 	DX::RenderTexture* m_pCopyRenderTexture;			///< 画面をコピーしたテクスチャ
 	bool m_copyScreenRequest;
@@ -81,7 +83,8 @@ public:
 		DirectX::Mouse::ButtonStateTracker*		pMouseState,
 		DirectX::GamePad::ButtonStateTracker*	pGamePadState,
 		DX::RenderTexture*						pCopyRenderTexture,
-		TransitionMask* pTransitionMask);
+		TransitionMask* pTransitionMask,
+		InputDeviceSpriteResolver* pInputDeviceSpriteResolver);
 
 
 	// デストラクタ
@@ -117,6 +120,9 @@ public:
 
 	// シーン遷移マスク表示の取得
 	TransitionMask* GetTransitionMask() const;
+
+	// 入力デバイス毎のスプライトの表記を切り替え器の取得
+	InputDeviceSpriteResolver* GetInputDeviceSpriteResolver() const;
 
 	// 画面をコピーしたテクスチャの取得
 	DX::RenderTexture* GetCopyScreenTexture() const { return m_pCopyRenderTexture; }

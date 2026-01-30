@@ -28,6 +28,7 @@ using namespace DirectX;
  * @param[in] pGamePadState		ゲームパッドの状態
  * @param[in] pCopyRenderTexture画面をコピーしたテクスチャ
  * @param[in] pTransitionMask	シーン遷移表示用マスク
+ * @param[in] pInputDeviceSpriteResolver	入力デバイス毎のスプライトの表記を切り替え器
 
  */
 CommonResources::CommonResources(
@@ -38,9 +39,10 @@ CommonResources::CommonResources(
 	ResourceManager*		pResourceManager,
 	Keyboard::KeyboardStateTracker* pKeyboardState,
 	Mouse::ButtonStateTracker*		pMouseState,
-	DirectX::GamePad::ButtonStateTracker* pGamePadState,
-	DX::RenderTexture*					  pCopyRenderTexture,
-	TransitionMask*						  pTransitionMask)
+	GamePad::ButtonStateTracker*	pGamePadState,
+	DX::RenderTexture*				pCopyRenderTexture,
+	TransitionMask*					pTransitionMask,
+	InputDeviceSpriteResolver*		pInputDeviceSpriteResolver)
 
 	: m_pStepTimer		{pStepTimer}
 	, m_pDeviceResources{pDeviceResources}
@@ -53,6 +55,7 @@ CommonResources::CommonResources(
 	, m_pCopyRenderTexture{ pCopyRenderTexture }
 	, m_copyScreenRequest{ false }
 	, m_pTransitionMask{ pTransitionMask }
+	, m_pInputDeviceSpriteResolver{ pInputDeviceSpriteResolver }
 
 
 {
@@ -157,6 +160,16 @@ DirectX::GamePad::ButtonStateTracker* CommonResources::GetGamePadTracker() const
 TransitionMask* CommonResources::GetTransitionMask() const
 {
 	return m_pTransitionMask;
+}
+
+/**
+ * @brief 入力デバイス毎のスプライトの表記を切り替え器
+ * 
+ * @return 入力デバイス毎のスプライトの表記を切り替え器のポインタ
+ */
+InputDeviceSpriteResolver* CommonResources::GetInputDeviceSpriteResolver() const
+{
+	return m_pInputDeviceSpriteResolver;
 }
 
 

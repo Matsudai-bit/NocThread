@@ -242,6 +242,7 @@
     <ClInclude Include="Game\Common\Minimap\Minimap.h" />
     <ClInclude Include="Game\Common\Screen.h" />
     <ClInclude Include="Game\Common\UserInterfaceTool\Canvas\Canvas.h" />
+    <ClInclude Include="Game\Common\UserInterfaceTool\InputDeviceSpriteResolver\InputDeviceSpriteResolver.h" />
     <ClInclude Include="Game\Common\UserInterfaceTool\SpriteAnimator\SpriteAnimator.h" />
     <ClInclude Include="Game\Common\UserInterfaceTool\SpriteNumber\SpriteNumber.h" />
     <ClInclude Include="Game\Common\UserInterfaceTool\Sprite\ISprite2D.h" />
@@ -394,6 +395,7 @@
     <ClCompile Include="Game\Common\Minimap\Minimap.cpp" />
     <ClCompile Include="Game\Common\Screen.cpp" />
     <ClCompile Include="Game\Common\UserInterfaceTool\Canvas\Canvas.cpp" />
+    <ClCompile Include="Game\Common\UserInterfaceTool\InputDeviceSpriteResolver\InputDeviceSpriteResolver.cpp" />
     <ClCompile Include="Game\Common\UserInterfaceTool\SpriteAnimator\SpriteAnimator.cpp" />
     <ClCompile Include="Game\Common\UserInterfaceTool\SpriteNumber\SpriteNumber.cpp" />
     <ClCompile Include="Game\Common\UserInterfaceTool\Sprite\Sprite.cpp" />

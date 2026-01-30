@@ -137,6 +137,9 @@ void Game::Initialize(HWND window, int width, int height)
     m_mouseStateTracker     = std::make_unique<Mouse::ButtonStateTracker>();
     m_gamePadStateTracker   = std::make_unique<GamePad::ButtonStateTracker>();
 
+    // 入力デバイス毎のスプライトの表記を切り替え器の作成
+    m_inputDeviceSpriteResolver = std::make_unique<InputDeviceSpriteResolver>(m_keyboardStateTracker.get(), m_gamePadStateTracker.get());
+
     // 共通リソースの生成
     m_commonResources = std::make_unique<CommonResources>(
         &m_timer,
@@ -148,7 +151,8 @@ void Game::Initialize(HWND window, int width, int height)
         m_mouseStateTracker.get(),
         m_gamePadStateTracker.get(),
         m_copyRenderTexture.get(),
-        m_transitionMask.get()
+        m_transitionMask.get(),
+        m_inputDeviceSpriteResolver.get()
     );
 
     // **** 初期化処理 ****
@@ -219,6 +223,9 @@ void Game::Update(DX::StepTimer const& timer)
     // ゲームパッドトラッカーの更新処理
     auto gamePad = GamePad::Get().GetState(0);
     m_gamePadStateTracker->Update(gamePad);
+
+    // 入力デバイス切り替え器の更新処理
+    m_inputDeviceSpriteResolver->Update();
 
     // トランジションマスクの更新処理
     m_transitionMask->Update(deltaTime);

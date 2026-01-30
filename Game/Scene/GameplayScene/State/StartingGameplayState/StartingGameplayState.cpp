@@ -36,6 +36,7 @@
 // UIツール関連
 #include "Game/Common/UserInterfaceTool/Sprite/Sprite.h"
 #include "Game/Common/UserInterfaceTool/Canvas/Canvas.h"
+#include "Game/Common/UserInterfaceTool/InputDeviceSpriteResolver/InputDeviceSpriteResolver.h"
 
 // 状態
 #include "Game/Scene/GameplayScene/State/NormalGameplayState/NormalGameplayState.h"
@@ -57,13 +58,8 @@ StartingGameplayState::StartingGameplayState()
 	for (auto& sprite : m_sprites)
 	{
 		sprite = std::make_unique<Sprite>();
-
-		// キャンバスに登録
 		
 	}
-	
-	
-
 }
 
 
@@ -74,7 +70,7 @@ StartingGameplayState::StartingGameplayState()
 StartingGameplayState::~StartingGameplayState()
 {
 
-}
+ }
 
 
 
@@ -139,6 +135,8 @@ void StartingGameplayState::OnStartState()
 	m_guideAlphaTween.SetDelay(2.3f);
 	m_guideAlphaTween.SetLoop(true);
 
+	GetOwner()->GetCommonResources()->GetInputDeviceSpriteResolver()->AddKeyboardSprite(m_sprites[static_cast<UINT>(SpriteID::PUSHGUIDE_KEYBOARD)].get());
+	GetOwner()->GetCommonResources()->GetInputDeviceSpriteResolver()->AddGamePadSprite(m_sprites[static_cast<UINT>(SpriteID::PUSHGUIDE_GAMEPAD)].get());
 }
 
 /**
@@ -159,6 +157,7 @@ void StartingGameplayState::OnUpdate(float deltaTime)
 	m_sprites[static_cast<UINT>(SpriteID::BACKGROUND_APLPHA)]->SetPosition(m_backgroundTween.GetValue());
 	m_sprites[static_cast<UINT>(SpriteID::ITEM)]->SetOpacity(m_itemAlphaTween.GetValue());
 	m_sprites[static_cast<UINT>(SpriteID::PUSHGUIDE_KEYBOARD)]->SetOpacity(m_guideAlphaTween.GetValue());
+	m_sprites[static_cast<UINT>(SpriteID::PUSHGUIDE_GAMEPAD)]->SetOpacity(m_guideAlphaTween.GetValue());
 
 	// タスクの更新処理
 	GetOwner()->GetTaskManager()->Update(deltaTime);
@@ -198,6 +197,12 @@ void StartingGameplayState::OnExitState()
 	{
 		GetOwner()->GetCanvas()->RemoveSprite(sprite.get());
 	}
+
+	// スプライト切り替え器から削除
+	auto inputDeviceResolver = GetOwner()->GetCommonResources()->GetInputDeviceSpriteResolver();
+	inputDeviceResolver->RemoveGamePadSprite (m_sprites[static_cast<UINT>(SpriteID::PUSHGUIDE_GAMEPAD)].get());
+	inputDeviceResolver->RemoveKeyboardSprite(m_sprites[static_cast<UINT>(SpriteID::PUSHGUIDE_KEYBOARD)].get());
+
 }
 
 

@@ -527,6 +527,9 @@
     <Filter Include="Game\Common\Utillities\DxTween">
       <UniqueIdentifier>{6b714247-f64a-4644-aa87-7fbc5749b251}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\Common\UserInterfaceTool\InputDeviceSpriteResolver">
+      <UniqueIdentifier>{2168a2a1-ddc7-4afe-ad0c-904b6557dc9a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -1008,6 +1011,9 @@
     <ClInclude Include="Game\Common\Utillities\DxTween\DxTween.h">
       <Filter>Game\Common\Utillities\DxTween</Filter>
     </ClInclude>
+    <ClInclude Include="Game\Common\UserInterfaceTool\InputDeviceSpriteResolver\InputDeviceSpriteResolver.h">
+      <Filter>Game\Common\UserInterfaceTool\InputDeviceSpriteResolver</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -1407,6 +1413,9 @@
     </ClCompile>
     <ClCompile Include="Game\Scene\GameplayScene\State\StartingGameplayState\StartingGameplayState.cpp">
       <Filter>Game\Scene\GameplayScene\State\Starting</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Common\UserInterfaceTool\InputDeviceSpriteResolver\InputDeviceSpriteResolver.cpp">
+      <Filter>Game\Common\UserInterfaceTool\InputDeviceSpriteResolver</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
