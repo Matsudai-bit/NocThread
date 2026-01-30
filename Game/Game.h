@@ -21,6 +21,8 @@
 #include "Game/Common/Framework/CommonResources/CommonResources.h"    // 共通リソース
 #include "Game/Common/Framework/ResourceManager/ResourceManager.h"    // リソース管理
 #include "Game/Scene/SceneManager.h"         // シーン管理
+#include "Game/Common/Framework/Input/InputManager/InputManager.h"
+#include "Game/Common/Framework/Input/InputActionMap/InputActionMap.h"
 
 // グラフィック関連
 #include "Game/Common/Graphics/TransitionMask/TransitionMask.h"      // トランジションマスク
@@ -65,6 +67,8 @@ private:
     std::unique_ptr<MyLib::SceneManager<CommonResources>>  m_sceneManager;     ///< シーン管理
     std::unique_ptr<InputDeviceSpriteResolver>  m_inputDeviceSpriteResolver;    ///< 入力デバイス毎のスプライトの表記を切り替え器
 
+
+    std::unique_ptr<InputManager> m_inputManager;
 
 public:
 

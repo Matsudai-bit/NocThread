@@ -18,6 +18,9 @@
 // ヘッダファイルの読み込み ===================================================
 #include "Game/Scene/SceneManager.h"
 
+// フレームワーク関連
+#include "Game/Common/Framework/EventSystem/EventSystem.h"
+
 // UIメニュー関連
 #include "Game/UI/Title/TitleMenu/TitleMenu.h"
 
@@ -32,6 +35,7 @@ class CommonResources;  // 共通リソース
 class Canvas;			// キャンバス
 class Sprite;			// スプライト
 class TitleMenu;		// タイトルメニュー
+class InputEventData;	// 入力イベントデータ
 class TutorialWindow;	// チュートリアルウィンドウ
 
 // クラスの定義 ===============================================================
@@ -61,6 +65,7 @@ public:
 private:
 	// システム関連
 	std::unique_ptr<Canvas> m_canvas; ///< UI表示キャンバス
+	std::unique_ptr<EventSystem<TitleMenu::MenuItem>> m_onPushMenuItemEvent; // メニューアイテムが押された時のイベント
 
 	// オブジェクト関連
 
@@ -76,9 +81,6 @@ private:
 
 	// 演出系
 	ElapsedTimeCounter m_ElapsedTimeCounter; ///< 経過時間カウンター
-
-	// 簡易フラグ
-	bool m_isDisplayingTutorialWindow; ///< チュートリアルウィンドウを表示しているかどうか
 
 	// サウンド
 	int m_bgmSoundID;
@@ -140,4 +142,25 @@ private:
 
 	// チュートリアルウィンドウの更新処理
 	void UpdateTutorialWindow(float deltaTime);
+
+	// 入力のコールバックの登録
+	void RegisterBindCallbackToInput();
+	void UnBindCallbackToInput();
+
+	// 左入力された時に呼ばれる
+	void OnInputLeft	(InputEventData data);
+	// 右入力された時に呼ばれる
+	void OnInputRight	(InputEventData data);
+	// 上入力された時に呼ばれる
+	void OnInputUp		(InputEventData data);
+	// 下入力された時に呼ばれる
+	void OnInputDown	(InputEventData data);
+	// 決定入力された時に呼ばれる
+	void OnInputConfirm	(InputEventData data);
+
+	// メニューアイテムイベントの作成
+	void CreateMenuItemEvent();
+
+	// スプライトの作成
+	void CreateSprites();
 };

@@ -31,7 +31,7 @@
 class CommonResources;  // 共通リソース
 class Canvas;			// キャンバス
 class Sprite;			// スプライト
-
+struct InputEventData;  // 入力イベントデータ
 // クラスの定義 ===============================================================
 /**
  * @brief タイトルメニュー
@@ -94,7 +94,8 @@ private:
 
 	ElapsedTimeCounter m_ElapsedTimeCounter; ///< 経過時間カウンター
 
-	std::unique_ptr < InputSystem<InputActionType::UIActionID>> m_uiInput; ///< UI入力
+	bool m_isActive; ///< 活動しているかどうか
+
 
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
@@ -120,20 +121,23 @@ public:
 	// 終了処理
 	void Finalize();
 
+	// 上にセレクターが動かす
+	void OnMoveUpSelector(InputEventData data) ;
+	// 下にセレクターが動かす
+	void OnMoveDownSelector(InputEventData data) ;
+	// 選択する
+	void OnSelect(InputEventData data) ;
+
 
 // 取得/設定
 public:
+
+	void SetActive(bool isActive) { m_isActive = isActive; }
+	bool IsActive() const { return m_isActive; }
 
 
 // 内部実装
 private:
 
-	// 下にセレクターが動くことが出来るかどうか
-	bool CanMoveDownSelector() const;
-	// 上にセレクターが動くことが出来るかどうか
-	bool CanMoveUpSelector() const;
-	// 選択することができるかどうか
-	bool CanPush() const;
-
-
+	
 };

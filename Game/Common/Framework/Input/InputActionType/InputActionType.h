@@ -14,8 +14,55 @@
 
 // ヘッダファイルの読み込み ===================================================
 
+namespace InputActionID {
+
+	/**
+	 * @brief プレイヤーアクションの識別ID
+	 */
+	struct Player {
+		static constexpr const char* MAP_NAME = "player";
+
+		static constexpr const char* JUMPING		= "jumping";
+		static constexpr const char* FRONT_MOVE		= "frontMove";
+		static constexpr const char* RIGHT_MOVE		= "rightMove";
+		static constexpr const char* LEFT_MOVE		= "leftMove";
+		static constexpr const char* BACK_MOVE		= "backMove";
+		static constexpr const char* WIRE_SHOOTING	= "wireShooting";
+		static constexpr const char* RELEASE_WIRE	= "releaseWire";
+		static constexpr const char* STEPPING		= "stepping";
+	};
+
+	/**
+	 * @brief UI操作の識別ID
+	 */
+	struct UI {
+		static constexpr const char* MAP_NAME = "ui";
+
+
+		static constexpr const char* CONFIRM	= "confirm";
+		static constexpr const char* CANCEL		= "cancel";
+		static constexpr const char* UP_MOVE	= "upMove";
+		static constexpr const char* DOWN_MOVE	= "downMove";
+		static constexpr const char* LEFT_MOVE	= "leftMove";
+		static constexpr const char* RIGHT_MOVE = "rightMove";
+	};
+
+	/**
+	 * @brief システム操作の識別ID
+	 */
+	struct System {
+		static constexpr const char* MAP_NAME = "system";
+
+
+		static constexpr const char* PAUSE				= "pause";
+		static constexpr const char* CHANGE_DEBUG_MODE	= "changeDebugMode";
+	};
+
+}
+
 namespace InputActionType
 {
+
 	/**
 	 * @brief プレイヤーアクションの識別番号
 	 */

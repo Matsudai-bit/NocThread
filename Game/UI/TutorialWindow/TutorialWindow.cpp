@@ -39,7 +39,7 @@ using namespace DirectX;
  */
 TutorialWindow::TutorialWindow()
 	: m_currentTutorialSpriteIndex{}
-	, m_isVisible{ true }
+	, m_isActive{ true }
 {
 
 }
@@ -101,8 +101,7 @@ void TutorialWindow::Initialize(ResourceManager* pResourceManager, std::function
 	m_backgroundAlpha	->Initialize(pResourceManager->CreateTexture(TEXTURE_PATH_MAP.at(TextureID::BACKGROUND_ALPHA_MASK)));
 	m_arrowSprite		->Initialize(pResourceManager->CreateTexture(TEXTURE_PATH_MAP.at(TextureID::UI_TUTORIAL_ARROW)));
 
-	// UI入力の作成
-	m_uiInput = InputBindingFactory::UIInputFactory().Create(DefaultSpawnDesc());
+	m_isActive = true;
 }
 
 /**
@@ -120,33 +119,6 @@ void TutorialWindow::Update(
 {
 	UNREFERENCED_PARAMETER(deltaTime);
 
-	m_uiInput->Update(pKeyboardStateTracker, pMouseStateTracker, pGamePadStateTracker);
-
-	if (CanMoveRight())
-	{
-		// SEの再生
-		SoundManager::GetInstance()->Play(SoundDatabase::SOUND_CLIP_MAP.at(SoundDatabase::SE_CURSOR_MOVING), false);	
-		m_currentTutorialSpriteIndex++;
-	}
-	if (CanMoveLeft())
-	{
-		// SEの再生
-		SoundManager::GetInstance()->Play(SoundDatabase::SOUND_CLIP_MAP.at(SoundDatabase::SE_CURSOR_MOVING), false);
-		m_currentTutorialSpriteIndex--;
-	}
-
-	// 最後にクランプする
-	int max = static_cast<int>(m_tutorialSprites.size());
-	m_currentTutorialSpriteIndex = (m_currentTutorialSpriteIndex + static_cast<int>(max)) % static_cast<int>(max);
-
-	// 終了するかどうか
-	if (m_uiInput->IsInput(InputActionType::UIActionID::CONFIRM, InputSystem<InputActionType::UIActionID>::InputOption::PRESSED) ||
-		m_uiInput->IsInput(InputActionType::UIActionID::CANCEL, InputSystem<InputActionType::UIActionID>::InputOption::PRESSED))
-	{
-		// SEの再生
-		SoundManager::GetInstance()->Play(SoundDatabase::SOUND_CLIP_MAP.at(SoundDatabase::SE_CANCEL), false);		
-		m_closeWindow();
-	}
 }
 
 
@@ -186,7 +158,6 @@ void TutorialWindow::DrawSprite(DirectX::SpriteBatch* pSpriteBatch)
 {
 	auto screen = Screen::Get();
 
-
 	// 背景描画
 	m_backgroundAlpha->SetPosition(SimpleMath::Vector2(screen->GetCenterXF(), screen->GetCenterYF()));
 	m_backgroundAlpha->DrawSprite(pSpriteBatch);
@@ -211,25 +182,43 @@ void TutorialWindow::DrawSprite(DirectX::SpriteBatch* pSpriteBatch)
 	tutorialSprite->DrawSprite(pSpriteBatch);
 }
 
-/**
- * @brief 右にセレクターが動くことが出来るかどうか
- *
- * @return true 可能
- */
-bool TutorialWindow::CanMoveRight() const
+void TutorialWindow::OnMoveUpRight(InputEventData data)
 {
+	if (data.inputOption.pressed)
+	{
+		// SEの再生
+		SoundManager::GetInstance()->Play(SoundDatabase::SOUND_CLIP_MAP.at(SoundDatabase::SE_CURSOR_MOVING), false);
+		m_currentTutorialSpriteIndex++;
 
-	return (m_uiInput->IsInput(InputActionType::UIActionID::RIGHT_MOVE, InputSystem<InputActionType::UIActionID>::InputOption::PRESSED));
+		// 最後にクランプする
+		int max = static_cast<int>(m_tutorialSprites.size());
+		m_currentTutorialSpriteIndex = (m_currentTutorialSpriteIndex + static_cast<int>(max)) % static_cast<int>(max);
+
+	}
 }
 
-/**
- * @brief 左にセレクターが動くことが出来るかどうか
- *
- * @return true 可能
- */
-bool TutorialWindow::CanMoveLeft() const
+void TutorialWindow::OnMoveDownLeft(InputEventData data)
 {
+	if (data.inputOption.pressed)
+	{
+		// SEの再生
+		SoundManager::GetInstance()->Play(SoundDatabase::SOUND_CLIP_MAP.at(SoundDatabase::SE_CURSOR_MOVING), false);
+		m_currentTutorialSpriteIndex--;
 
-	return (m_uiInput->IsInput(InputActionType::UIActionID::LEFT_MOVE, InputSystem<InputActionType::UIActionID>::InputOption::PRESSED));
+
+		// 最後にクランプする
+		int max = static_cast<int>(m_tutorialSprites.size());
+		m_currentTutorialSpriteIndex = (m_currentTutorialSpriteIndex + static_cast<int>(max)) % static_cast<int>(max);
+	}
 }
 
+void TutorialWindow::OnSelect(InputEventData data)
+{
+	if (data.inputOption.pressed)
+	{
+		// SEの再生
+		SoundManager::GetInstance()->Play(SoundDatabase::SOUND_CLIP_MAP.at(SoundDatabase::SE_CANCEL), false);
+		m_closeWindow();
+
+	}
+}

@@ -18,6 +18,9 @@
 #include "Game/Scene/Loading/LoadingScreen.h"
 #include "Game/Common/Screen.h"
 
+// ファクトリー関連
+#include "Game/Common/Factory/InputBindingFactory/InputBindingFactory.h"
+
 // フレームワーク関連
 #include "Game/Common/Framework/SoundManager/SoundManager.h"
 
@@ -140,6 +143,14 @@ void Game::Initialize(HWND window, int width, int height)
     // 入力デバイス毎のスプライトの表記を切り替え器の作成
     m_inputDeviceSpriteResolver = std::make_unique<InputDeviceSpriteResolver>(m_keyboardStateTracker.get(), m_gamePadStateTracker.get());
 
+    // 入力管理の作成
+    m_inputManager = std::make_unique<InputManager>(m_keyboardStateTracker.get(), m_mouseStateTracker.get(), m_gamePadStateTracker.get());
+
+    // 入力管理の設定
+    m_inputManager->AddActionMap(std::move(InputActionMapFactory::PlayerInputMapFactory().Create(DefaultSpawnDesc())));
+    m_inputManager->AddActionMap(std::move(InputActionMapFactory::UIInputMapFactory().Create(DefaultSpawnDesc())));
+    m_inputManager->AddActionMap(std::move(InputActionMapFactory::SystemInputMapFactory().Create(DefaultSpawnDesc())));
+
     // 共通リソースの生成
     m_commonResources = std::make_unique<CommonResources>(
         &m_timer,
@@ -152,8 +163,11 @@ void Game::Initialize(HWND window, int width, int height)
         m_gamePadStateTracker.get(),
         m_copyRenderTexture.get(),
         m_transitionMask.get(),
-        m_inputDeviceSpriteResolver.get()
+        m_inputDeviceSpriteResolver.get(),
+        m_inputManager.get()
     );
+
+  
 
     // **** 初期化処理 ****
     // シーンの共通リソースの設定
@@ -232,6 +246,8 @@ void Game::Update(DX::StepTimer const& timer)
 
     // シーン管理の更新処理
     m_sceneManager->Update(deltaTime);
+
+    m_inputManager->Update();
 
     
 #ifdef GAME_MODE

@@ -530,6 +530,9 @@
     <Filter Include="Game\Common\UserInterfaceTool\InputDeviceSpriteResolver">
       <UniqueIdentifier>{2168a2a1-ddc7-4afe-ad0c-904b6557dc9a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\Common\Framework\Input\InputActionMap">
+      <UniqueIdentifier>{6e338503-610d-4be3-8c93-b6e1e2b76954}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -1014,6 +1017,12 @@
     <ClInclude Include="Game\Common\UserInterfaceTool\InputDeviceSpriteResolver\InputDeviceSpriteResolver.h">
       <Filter>Game\Common\UserInterfaceTool\InputDeviceSpriteResolver</Filter>
     </ClInclude>
+    <ClInclude Include="Game\Common\Framework\Input\InputManager\InputManager.h">
+      <Filter>Game\Common\Framework\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Common\Framework\Input\InputActionMap\InputActionMap.h">
+      <Filter>Game\Common\Framework\Input\InputActionMap</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -1416,6 +1425,12 @@
     </ClCompile>
     <ClCompile Include="Game\Common\UserInterfaceTool\InputDeviceSpriteResolver\InputDeviceSpriteResolver.cpp">
       <Filter>Game\Common\UserInterfaceTool\InputDeviceSpriteResolver</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Common\Framework\Input\InputManager\InputManager.cpp">
+      <Filter>Game\Common\Framework\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Common\Framework\Input\InputActionMap\InputActionMap.cpp">
+      <Filter>Game\Common\Framework\Input\InputActionMap</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

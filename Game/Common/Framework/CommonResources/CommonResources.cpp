@@ -29,6 +29,7 @@ using namespace DirectX;
  * @param[in] pCopyRenderTexture画面をコピーしたテクスチャ
  * @param[in] pTransitionMask	シーン遷移表示用マスク
  * @param[in] pInputDeviceSpriteResolver	入力デバイス毎のスプライトの表記を切り替え器
+ * @param[in] pInputManager		入力管理
 
  */
 CommonResources::CommonResources(
@@ -42,7 +43,8 @@ CommonResources::CommonResources(
 	GamePad::ButtonStateTracker*	pGamePadState,
 	DX::RenderTexture*				pCopyRenderTexture,
 	TransitionMask*					pTransitionMask,
-	InputDeviceSpriteResolver*		pInputDeviceSpriteResolver)
+	InputDeviceSpriteResolver*		pInputDeviceSpriteResolver,
+	InputManager*					pInputManager)
 
 	: m_pStepTimer		{pStepTimer}
 	, m_pDeviceResources{pDeviceResources}
@@ -55,8 +57,8 @@ CommonResources::CommonResources(
 	, m_pCopyRenderTexture{ pCopyRenderTexture }
 	, m_copyScreenRequest{ false }
 	, m_pTransitionMask{ pTransitionMask }
-	, m_pInputDeviceSpriteResolver{ pInputDeviceSpriteResolver }
-
+	, m_pInputDeviceSpriteResolver	{ pInputDeviceSpriteResolver }
+	, m_pInputManager				{ pInputManager }
 
 {
 
@@ -170,6 +172,16 @@ TransitionMask* CommonResources::GetTransitionMask() const
 InputDeviceSpriteResolver* CommonResources::GetInputDeviceSpriteResolver() const
 {
 	return m_pInputDeviceSpriteResolver;
+}
+
+/**
+ * @brief 入力管理の取得
+ * 
+ * @return 入力管理のポインタ
+ */
+InputManager* CommonResources::GetInputManager() const
+{
+	return m_pInputManager;
 }
 
 

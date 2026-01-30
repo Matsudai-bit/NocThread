@@ -14,8 +14,7 @@
 
 // ヘッダファイルの読み込み ===================================================
 #include "Game/Common/UserInterfaceTool/Sprite/ISprite2D.h"
-#include "Game/Common/Framework/Input/InputSystem/InputSystem.h"
-#include "Game/Common/Framework/Input/InputActionType/InputActionType.h"
+
 
 #include <memory>
 #include <vector>
@@ -23,6 +22,7 @@
 // クラスの前方宣言 ===================================================
 class Sprite;
 class ResourceManager;
+class InputEventData;
 // クラスの定義 ===============================================================
 /**
  * @brief チュートリアルウィンドウ
@@ -47,9 +47,7 @@ private:
 
 	std::function<void()> m_closeWindow;
 
-	std::unique_ptr < InputSystem<InputActionType::UIActionID>> m_uiInput; ///< UI入力
-
-	bool m_isVisible; ///< 見えるかどうか
+	bool m_isActive; ///< 見えるかどうか
 
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
@@ -79,20 +77,24 @@ public:
 	// スプライト描画
 	void DrawSprite(DirectX::SpriteBatch* pSpriteBatch) override;
 
-	// 見えるかどうか
-	void SetVisible(bool isVisible) { m_isVisible = isVisible; }
-	bool IsVisible() const override { return m_isVisible; }
+	// 右が動かす
+	void OnMoveUpRight(InputEventData data);
+	// 左が動かす
+	void OnMoveDownLeft(InputEventData data);
+	// 選択する
+	void OnSelect(InputEventData data);
+
 
 // 取得/設定
 public:
+	// 見えるかどうか
+	void SetVisible(bool isVisible) { m_isActive = isVisible; }
+	bool IsVisible() const override { return m_isActive; }
 
 
 // 内部実装
 private:
 
-	// 右に動くことが出来るかどうか
-	bool CanMoveRight() const;
-	// 上に動くことが出来るかどうか
-	bool CanMoveLeft() const;
+
 
 };
