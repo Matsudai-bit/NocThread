@@ -33,6 +33,8 @@
 #include "Game/Common/Framework/CommonResources/CommonResources.h"
 #include "Game/Common/Framework/ResourceManager/ResourceManager.h"
 #include "Game/Common/Framework/SoundManager/SoundManager.h"
+#include "Game/Common/Framework/Input/InputActionMap/InputActionMap.h"
+#include "Game/Common/Framework/Input/InputManager/InputManager.h"
 
 // グラフィック関連
 #include "Game/Common/Graphics/TransitionMask/TransitionMask.h"
@@ -126,8 +128,12 @@ void ResultScene::Initialize()
 	m_backgroundAlphaFilterSprite->SetScale(1.60f * Screen::Get()->GetScreenScale());
 
 	SoundManager::GetInstance()->Play(SoundDatabase::SOUND_CLIP_MAP.at(SoundDatabase::BGM_RESULT), true);
-	// 入力システムの作成
-	m_inputSystem = InputBindingFactory::UIInputFactory().Create(DefaultSpawnDesc());
+
+	// 入力とコールバックの紐づけ
+	RegisterBindCallbackToInput();
+
+	GetCommonResources()->GetTransitionMask()->Open();
+
 }
 
 
@@ -143,23 +149,9 @@ void ResultScene::Update(float deltaTime)
 {
 	UNREFERENCED_PARAMETER(deltaTime);
 
-	// 終了していなければ強制退避
-	if (!GetCommonResources()->GetTransitionMask()->IsEnd())
-	{
-		return;
-	}
-
-	m_inputSystem->Update(GetCommonResources()->GetKeyboardTracker(), GetCommonResources()->GetMouseTracker(), GetCommonResources()->GetGamePadTracker());
-
 
 	// ステートマシーンの更新処理
 	m_stateMachine->Update(deltaTime);
-
-	if (m_inputSystem->IsInput(InputActionType::UIActionID::CONFIRM))
-	{
-		ChangeScene<TitleScene, LoadingScreen>();
-	}
-
 }
 
 
@@ -195,6 +187,9 @@ void ResultScene::Render()
 void ResultScene::Finalize()
 {
 	SoundManager::GetInstance()->RemoveAll();
+
+	// コールバックの紐づけを解除する
+	UnBindCallbackToInput();
 }
 
 /**
@@ -205,6 +200,45 @@ void ResultScene::Finalize()
 Canvas* ResultScene::GetCanvas() const
 {
 	return m_canvas.get();
+}
+
+/**
+ * @brief 入力とコールバックの紐づけ
+ */
+void ResultScene::RegisterBindCallbackToInput()
+{	
+	// 入力管理の取得
+	auto pInputManager = GetCommonResources()->GetInputManager();
+	// 次に行くの入力
+	pInputManager->GetInputActionMap(InputActionID::UI::MAP_NAME)->BindInputEvent(InputActionID::UI::CONFIRM, this,
+		[this](const InputEventData& data) { OnInputExit(data); });
+}
+
+/**
+ * @brief 入力とコールバックの紐づけを解除する
+ * 
+ */
+void ResultScene::UnBindCallbackToInput()
+{
+	// 入力管理の取得
+	auto pInputManager = GetCommonResources()->GetInputManager();
+
+	pInputManager->GetInputActionMap(InputActionID::UI::MAP_NAME)->UnBindAllInputEvent(InputActionID::UI::CONFIRM, this);
+}
+
+/**
+ * @brief 出る
+ * 
+ * @param[in] data　入力イベントデータ
+ */
+void ResultScene::OnInputExit(const InputEventData& data)
+{
+	if (GetCommonResources()->GetTransitionMask()->IsEnd() && data.inputOption.pressed)
+	{
+		GetCommonResources()->GetTransitionMask()->Close([&]() {ChangeScene<TitleScene, LoadingScreen>();; });
+
+		
+	}
 }
 
 // 中心の算出

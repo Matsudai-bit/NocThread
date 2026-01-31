@@ -46,7 +46,6 @@ public:
 private:
 		
 	std::unique_ptr<Player>	m_player;						///< プレイヤー
-	std::unique_ptr<InputSystem<InputActionType::PlyayerActionID>> m_playerInput;				///< プレイヤー入力
 	std::unique_ptr<PlayerController> m_playerController;	///< プレイヤーコントローラ
 
 	std::unique_ptr< CircularShadow> m_playerShadow; ///< プレイヤーの影
@@ -91,10 +90,7 @@ public:
 	void SetPlayer(std::unique_ptr<Player> player);
 	// プレイヤーの取得
 	const Player* GetPlayer() const;
-
-	InputSystem<InputActionType::PlyayerActionID>* GetPlayerInput() const { return m_playerInput.get(); }
-
-// 内部実装
+	// 内部実装
 private:
 
 

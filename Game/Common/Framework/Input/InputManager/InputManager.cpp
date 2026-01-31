@@ -116,7 +116,7 @@ void InputManager::CheckInputActionMap(InputActionMap* pInputActionMap)
 			// コールバックを呼び出す
 			for (auto it = pActionData->callbacks.begin(); it != pActionData->callbacks.end();)
 			{
-				if (!(it->owner))
+				if (!(it->owner || it->callback))
 				{
 					it = pActionData->callbacks.erase(it);
 				}

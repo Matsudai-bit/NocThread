@@ -177,7 +177,6 @@ void SpawnManager::SetupInitialLayout()
 			m_pCollisionManager,
 			*m_pBuildingManager,
 			playerData.tileNumber,
-			m_pPlayerManager->GetPlayerInput(),
 			m_pPlayerCamera });
 
 		m_pPlayerManager->SetPlayer(std::move(player));

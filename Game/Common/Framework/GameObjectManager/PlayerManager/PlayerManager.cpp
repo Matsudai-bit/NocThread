@@ -63,10 +63,6 @@ PlayerManager::~PlayerManager()
 void PlayerManager::Initialize(const CommonResources* pCommonResources, const PlayerCamera* pPlayerCamera)
 {
 	m_pCommonResources = pCommonResources;
-
-	// プレイヤーインプットの作成
-	m_playerInput = InputBindingFactory::PlayerInputFactory().Create(DefaultSpawnDesc());
-
 	// プレイヤーの影の作成
 	m_playerShadow = std::make_unique<CircularShadow>();
 	m_playerShadow->Initialize(m_pCommonResources->GetDeviceResources(), 0.01f);
@@ -92,13 +88,10 @@ bool PlayerManager::UpdateTask(float deltaTime)
 {
 	if (m_isStoppingUpdate || m_player.get() == nullptr) { return true; }
 
-	// プレイヤーの入力
-	m_playerInput->Update(m_pCommonResources->GetKeyboardTracker(), m_pCommonResources->GetMouseTracker(), m_pCommonResources->GetGamePadTracker());
-
 	// プレイヤーの更新処理
 	m_player->Update(deltaTime);
 
-	m_playerController->Update(deltaTime,m_pCommonResources->GetKeyboardTracker(), m_pCommonResources->GetMouseTracker(), m_pCommonResources->GetGamePadTracker());
+	m_playerController->Update(deltaTime);
 
 	return true;
 }
@@ -149,7 +142,7 @@ void PlayerManager::OnGameFlowEvent(GameFlowEventID eventID)
 		m_isStoppingUpdate = false;
 
 		// プレイヤーコントローラの初期化処理
-		m_playerController->Initialize(m_pPlayerCamera, m_player.get());
+		m_playerController->Initialize(m_pPlayerCamera, m_player.get(), m_pCommonResources->GetInputManager());
 		m_player->RequestStep();
 
 		break;

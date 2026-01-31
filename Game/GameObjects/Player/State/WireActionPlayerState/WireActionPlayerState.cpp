@@ -101,7 +101,7 @@ void WireActionPlayerState::OnUpdate(float deltaTime)
 	// ˆÚ“®
 	GetOwner()->Move(deltaTime);
 
-	if (GetOwner()->GetPlayerInput()->IsInput(InputActionType::PlyayerActionID::RELEASE_WIRE, InputSystem< InputActionType::PlyayerActionID>::InputOption::RELEASED))
+	if (GetOwner()->IsReleaseWireRequested())
 	{
 		//GetOwner()->GetWire()->Reset();
 		GetOwner()->GetStateMachine()->ChangeState<WalkPlayerState>();

@@ -91,7 +91,7 @@ void JumpingPlayerState::OnUpdate(float deltaTime)
 		GetOwner()->GetStateMachine()->ChangeState<IdlePlayerState>();
 	}
 
-	if (GetOwner()->GetPlayerInput()->IsInput(InputActionType::PlyayerActionID::WIRE_SHOOTING))
+	if (GetOwner()->IsShootWireRequested())
 	{
 		if (!GetOwner()->IsGround() && GetOwner()->CanShootWire())
 		{

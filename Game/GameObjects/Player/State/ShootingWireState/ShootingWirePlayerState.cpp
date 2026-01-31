@@ -86,8 +86,7 @@ void ShootingWirePlayerState::OnUpdate(float deltaTime)
 {
 
 	// マウスを離したら強制終了する
-	if (!GetOwner()->GetWire()->IsActive() ||
-		GetOwner()->GetPlayerInput()->IsInput(InputActionType::PlyayerActionID::RELEASE_WIRE, InputSystem<InputActionType::PlyayerActionID>::InputOption::RELEASED))
+	if (!GetOwner()->GetWire()->IsActive() || GetOwner()->IsReleaseWireRequested())
 	{
 		GetOwner()->GetWire()->Reset();
 

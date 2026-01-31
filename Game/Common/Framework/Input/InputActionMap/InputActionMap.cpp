@@ -52,6 +52,7 @@ void InputActionMap::AddAction(std::string actionName, InputData inputData)
 
 void InputActionMap::BindInputEvent(std::string actionName, void* owner, std::function<void(InputEventData)> callback)
 {
+
 	m_inputMap[actionName].callbacks.push_back(CallbackEntry(owner, callback));
 
 }

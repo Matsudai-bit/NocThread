@@ -27,7 +27,7 @@ using namespace DirectX;
 void PlayerFactory::StagePlayer::Assemble(Player* instance, const PlayerDesk& desc)
 {
 	// ‰Šú‰»ˆ—
-	instance->Initialize(&desc.commonResources, desc.pCollisionManager, desc.pPlayerCamera, desc.pPlayerInput);
+	instance->Initialize(&desc.commonResources, desc.pCollisionManager, desc.pPlayerCamera);
 
 	// oŒ»ˆÊ’u‚ÌŒš•¨‚ğæ“¾‚·‚é
 	const Building* tileBuilding = nullptr;

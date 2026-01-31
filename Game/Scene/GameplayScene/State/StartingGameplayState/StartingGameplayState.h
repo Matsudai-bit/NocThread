@@ -13,6 +13,10 @@
 
 
 // ヘッダファイルの読み込み ===================================================
+#include <string>
+
+// フレームワーク関連
+#include "Game/Common/Framework/EventSystem/EventSystem.h"
 
 // グラフィック関連
 #include "Game/Common/UserInterfaceTool/Sprite/Sprite.h"
@@ -53,21 +57,21 @@ private:
 // クラス定数の宣言 -------------------------------------------------
 public:
 	static constexpr UINT SPRITE_NUM = 4;
+	static const constexpr char* GAME_START_EVENT_NAME= "GameStart";
 
 // データメンバの宣言 -----------------------------------------------
 private:
 
 	std::unique_ptr<Sprite> m_sprites[static_cast<UINT>(SpriteID::NUM)]; ///< スプライト
 
-	ElapsedTimeCounter m_elapsedTimeCounter;
 	DxTween<DirectX::SimpleMath::Vector2> m_backgroundTween;
 	DxTween<float> m_itemAlphaTween;
 	DxTween<float> m_guideAlphaTween;
 
 	std::unique_ptr<PauseNavigator> m_pauseNavigator;	///< ポーズナビゲーター
 
+	EventSystem<std::string> m_eventStack;	///< イベントスタック
 
-	DirectX::SimpleMath::Vector2 m_startPosition;
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
 public:
@@ -112,6 +116,19 @@ private:
 	// ポーズ画面を開く処理
 	void OnOpenPause(const InputEventData& data);
 
+	// ゲームの開始入力
+	void OnInputStartGame(const InputEventData& data);
 	// ゲームの開始
-	void OnStartGame(const InputEventData& data);
+	void OnStartGame();
+
+	// スプライトの作成
+	void CreateSprite();
+	// 補間アニメーションの作成
+	void CreateTween();
+
+	// 補間アニメーションの更新処理
+	void UpdateTween(float deltaTime);
 };
+
+
+

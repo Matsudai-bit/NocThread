@@ -40,7 +40,6 @@ namespace PlayerFactory
         CollisionManager*       pCollisionManager;
         int                     tileNumber;
         const BuildingManager&  buildingManager;
-        InputSystem<InputActionType::PlyayerActionID>* pPlayerInput;
         PlayerCamera*           pPlayerCamera;
 
 
@@ -49,14 +48,12 @@ namespace PlayerFactory
             CollisionManager*       pCollisionManager,
             const BuildingManager&  buildingManager,
             int                     tileNumber,
-            InputSystem<InputActionType::PlyayerActionID>* pPlayerInput,
             PlayerCamera*           pPlayerCamera
         )
             : commonResources(commonResources)      
             , pCollisionManager(pCollisionManager)  
             , tileNumber(tileNumber)                
             , buildingManager(buildingManager)      
-            , pPlayerInput(pPlayerInput)            
             , pPlayerCamera(pPlayerCamera)          
 
         {

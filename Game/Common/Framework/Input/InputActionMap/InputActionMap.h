@@ -151,6 +151,11 @@ struct InputOptionData
 {
 	bool pressed;
 	bool released;
+
+	InputOptionData()
+		: pressed{ false }
+		, released{ false }
+	{}
 };
 
 struct InputEventData
@@ -178,4 +183,10 @@ struct ActionData
 
 	std::vector<InputData> inputs;
 	std::vector<CallbackEntry> callbacks;
+	ActionData()
+		: isInput{ false }
+		, inputOption{}
+		, inputs{}
+		, callbacks{}
+	{ }
 };

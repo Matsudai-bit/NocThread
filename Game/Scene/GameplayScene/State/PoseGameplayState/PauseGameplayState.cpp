@@ -247,25 +247,26 @@ void PauseGameplayState::OnCloseTutorialWindow()
 void PauseGameplayState::RegisterBindCallbackToInput()
 {
 	// 入力管理の取得
-	auto pInputManager = GetOwner()->GetCommonResources()->GetInputManager();
-
+	auto pInputManager	= GetOwner()->GetCommonResources()->GetInputManager();
+	// アクションマップの取得
+	auto uiActionMap	= pInputManager->GetInputActionMap(InputActionID::UI::MAP_NAME);
 	// 上入力
-	pInputManager->GetInputActionMap(InputActionID::UI::MAP_NAME)->BindInputEvent(InputActionID::UI::UP_MOVE, this,
+	uiActionMap->BindInputEvent(InputActionID::UI::UP_MOVE, this,
 		[this](const InputEventData& data) { OnInputUp(data); });
 	// 下入力
-	pInputManager->GetInputActionMap(InputActionID::UI::MAP_NAME)->BindInputEvent(InputActionID::UI::DOWN_MOVE, this,
+	uiActionMap->BindInputEvent(InputActionID::UI::DOWN_MOVE, this,
 		[this](const InputEventData& data) { OnInputDown(data); });
 	// 左入力
-	pInputManager->GetInputActionMap(InputActionID::UI::MAP_NAME)->BindInputEvent(InputActionID::UI::LEFT_MOVE, this,
+	uiActionMap->BindInputEvent(InputActionID::UI::LEFT_MOVE, this,
 		[this](const InputEventData& data) { OnInputLeft(data); });
 	// 右入力
-	pInputManager->GetInputActionMap(InputActionID::UI::MAP_NAME)->BindInputEvent(InputActionID::UI::RIGHT_MOVE, this,
+	uiActionMap->BindInputEvent(InputActionID::UI::RIGHT_MOVE, this,
 		[this](const InputEventData& data) { OnInputRight(data); });
 	// 決定入力
-	pInputManager->GetInputActionMap(InputActionID::UI::MAP_NAME)->BindInputEvent(InputActionID::UI::CONFIRM, this,
+	uiActionMap->BindInputEvent(InputActionID::UI::CONFIRM, this,
 		[this](const InputEventData& data) { OnInputConfirm(data); });
 	// 戻る入力
-	pInputManager->GetInputActionMap(InputActionID::UI::MAP_NAME)->BindInputEvent(InputActionID::UI::CANCEL, this,
+	uiActionMap->BindInputEvent(InputActionID::UI::CANCEL, this,
 		[this](const InputEventData& data) { OnInputExit(data); });
 }
 
@@ -276,13 +277,14 @@ void PauseGameplayState::UnBindCallbackToInput()
 {
 	// 入力管理の取得
 	auto pInputManager = GetOwner()->GetCommonResources()->GetInputManager();
-
-	pInputManager->GetInputActionMap(InputActionID::UI::MAP_NAME)->UnBindAllInputEvent(InputActionID::UI::UP_MOVE, this);
-	pInputManager->GetInputActionMap(InputActionID::UI::MAP_NAME)->UnBindAllInputEvent(InputActionID::UI::LEFT_MOVE, this);
-	pInputManager->GetInputActionMap(InputActionID::UI::MAP_NAME)->UnBindAllInputEvent(InputActionID::UI::RIGHT_MOVE, this);
-	pInputManager->GetInputActionMap(InputActionID::UI::MAP_NAME)->UnBindAllInputEvent(InputActionID::UI::DOWN_MOVE, this);
-	pInputManager->GetInputActionMap(InputActionID::UI::MAP_NAME)->UnBindAllInputEvent(InputActionID::UI::CONFIRM, this);
-	pInputManager->GetInputActionMap(InputActionID::UI::MAP_NAME)->UnBindAllInputEvent(InputActionID::UI::CANCEL, this);
+	// アクションマップの取得
+	auto uiActionMap = pInputManager->GetInputActionMap(InputActionID::UI::MAP_NAME);
+	uiActionMap->UnBindAllInputEvent(InputActionID::UI::UP_MOVE,	this);
+	uiActionMap->UnBindAllInputEvent(InputActionID::UI::LEFT_MOVE,	this);
+	uiActionMap->UnBindAllInputEvent(InputActionID::UI::RIGHT_MOVE, this);
+	uiActionMap->UnBindAllInputEvent(InputActionID::UI::DOWN_MOVE,	this);
+	uiActionMap->UnBindAllInputEvent(InputActionID::UI::CONFIRM,	this);
+	uiActionMap->UnBindAllInputEvent(InputActionID::UI::CANCEL,		this);
 }
 
 

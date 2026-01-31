@@ -18,9 +18,9 @@
 #include "Game/Common/Framework/Input/InputActionType/InputActionType.h"
 
 // クラスの前方宣言 ===================================================
-class Player;	// プレイヤー
-class Camera;	// カメラ
-
+class Player;		// プレイヤー
+class Camera;		// カメラ
+class InputManager; // 入力管理
 // クラスの定義 ===============================================================
 /**
  * @brief プレイヤーのコントローラ
@@ -35,10 +35,17 @@ public:
 // データメンバの宣言 -----------------------------------------------
 private:
 	const Camera* m_pCamera; // カメラ
-
-	std::unique_ptr<InputSystem<InputActionType::PlyayerActionID>> m_playerInput;
 	
 	Player* m_pPlayer;
+
+	InputManager* m_pInputManager; ///< 入力管理
+
+	DirectX::SimpleMath::Vector3 m_movementDirection;
+
+	bool m_isSteppingRequest;		///< ステップ要求
+	bool m_isJumpingRequest;		///< ジャンプ要求
+	bool m_isReleaseWireRequested;  ///< ワイヤーを離す要求
+	bool m_isShootWireRequested;	///< ワイヤー発射要求
 
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
@@ -53,13 +60,10 @@ public:
 // 操作
 public:
 	// 初期化処理
-	void Initialize(const Camera* pCamera, Player* pPlayer);
+	void Initialize(const Camera* pCamera, Player* pPlayer, InputManager* pInputManager);
 
 	// 更新処理
-	void Update(
-		float deltaTime,
-		const DirectX::Keyboard::KeyboardStateTracker* pKeyboardStateTracker,
-		const DirectX::Mouse::ButtonStateTracker* pMouseStateTracker, const DirectX::GamePad::ButtonStateTracker* pGamePadStateTracker);
+	void Update(float deltaTime);
 
 	// 描画処理
 	void Draw();
@@ -80,6 +84,15 @@ public:
 
 // 内部実装
 private:
+
+	// 入力のコールバックの登録
+	void RegisterBindCallbackToInput();
+	// 紐づけの解除をする
+	void UnBindCallbackToInput();
+
+
+	// 移動方向に加算する
+	void AddMoveDirection(const DirectX::SimpleMath::Vector3& addDirection);
 
 
 };

@@ -84,11 +84,8 @@ void IdlePlayerState::OnUpdate(float deltaTime)
 		GetOwner()->GetStateMachine()->ChangeState<WalkPlayerState>();
 	}
 
-	// プレイヤーの入力機構の取得
-	auto inputSystem = GetOwner()->GetPlayerInput();
-
 	// ワイヤー発射の入力がされたかどうか
-	if (inputSystem->IsInput(InputActionType::PlyayerActionID::WIRE_SHOOTING))
+	if (GetOwner()->IsShootWireRequested())
 	{
 		// ワイヤー発射が可能かどうか
 		if (!GetOwner()->IsGround() && GetOwner()->CanShootWire())
