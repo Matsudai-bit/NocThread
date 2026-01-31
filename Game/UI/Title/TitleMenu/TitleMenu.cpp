@@ -194,7 +194,7 @@ void TitleMenu::Finalize()
 
 }
 
-void TitleMenu::OnMoveUpSelector(InputEventData data)
+void TitleMenu::OnMoveUpSelector(const InputEventData& data)
 {
 	if (data.inputOption.pressed && m_isActive)
 	{
@@ -205,10 +205,10 @@ void TitleMenu::OnMoveUpSelector(InputEventData data)
 		// ç≈å„Ç…ÉNÉâÉìÉvÇ∑ÇÈ
 		m_currentSelectItemForInt = (m_currentSelectItemForInt + static_cast<int>(MenuItem::NUM)) % static_cast<int>(MenuItem::NUM);
 	}
-	
+
 }
 
-void TitleMenu::OnMoveDownSelector(InputEventData data)
+void TitleMenu::OnMoveDownSelector(const InputEventData& data)
 {
 	if (data.inputOption.pressed && m_isActive)
 	{
@@ -221,7 +221,7 @@ void TitleMenu::OnMoveDownSelector(InputEventData data)
 	}
 }
 
-void TitleMenu::OnSelect(InputEventData data)
+void TitleMenu::OnSelect(const InputEventData& data)
 {
 	if (data.inputOption.pressed && m_isActive && m_pushButtonFunc)
 	{

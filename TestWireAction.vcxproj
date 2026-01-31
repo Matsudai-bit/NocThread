@@ -224,6 +224,7 @@
     <ClInclude Include="Game\Common\GameplayLogic\ExitController\ExitController.h" />
     <ClInclude Include="Game\Common\GameplayLogic\GameDirector\GameDirector.h" />
     <ClInclude Include="Game\Common\GameplayLogic\GameProgressData\GameProgressData.h" />
+    <ClInclude Include="Game\Common\GameplayLogic\PauseNavigator\PauseNavigator.h" />
     <ClInclude Include="Game\Common\GameplayLogic\ResultData\ResultData.h" />
     <ClInclude Include="Game\Common\GameplayLogic\SpawnManager\SpawnManager.h" />
     <ClInclude Include="Game\Common\GameplayLogic\StageManager\StageManager.h" />
@@ -315,6 +316,7 @@
     <ClInclude Include="Game\Scene\ResultScene\State\SuccessResultState\SuccessResultState.h" />
     <ClInclude Include="Game\Scene\SceneManager.h" />
     <ClInclude Include="Game\Scene\TitleScene\TitleScene.h" />
+    <ClInclude Include="Game\UI\Gameplay\PauseGuideUI\PauseGuideUI.h" />
     <ClInclude Include="Game\UI\Pose\PoseMenu\PauseMenu.h" />
     <ClInclude Include="Game\UI\Title\TitleMenu\TitleMenu.h" />
     <ClInclude Include="Game\UI\TutorialWindow\TutorialWindow.h" />
@@ -379,6 +381,7 @@
     <ClCompile Include="Game\Common\GameplayLogic\ExitController\ExitController.cpp" />
     <ClCompile Include="Game\Common\GameplayLogic\GameDirector\GameDirector.cpp" />
     <ClCompile Include="Game\Common\GameplayLogic\GameProgressData\GameProgressData.cpp" />
+    <ClCompile Include="Game\Common\GameplayLogic\PauseNavigator\PauseNavigator.cpp" />
     <ClCompile Include="Game\Common\GameplayLogic\ResultData\ResultData.cpp" />
     <ClCompile Include="Game\Common\GameplayLogic\SpawnManager\SpawnManager.cpp" />
     <ClCompile Include="Game\Common\GameplayLogic\StageManager\StageManager.cpp" />
@@ -460,6 +463,7 @@
     <ClCompile Include="Game\Scene\ResultScene\State\FailureResultState\FailureResultState.cpp" />
     <ClCompile Include="Game\Scene\ResultScene\State\SuccessResultState\SuccessResultState.cpp" />
     <ClCompile Include="Game\Scene\TitleScene\TitleScene.cpp" />
+    <ClCompile Include="Game\UI\Gameplay\PauseGuideUI\PauseGuideUI.cpp" />
     <ClCompile Include="Game\UI\Pose\PoseMenu\PauseMenu.cpp" />
     <ClCompile Include="Game\UI\Title\TitleMenu\TitleMenu.cpp" />
     <ClCompile Include="Game\UI\TutorialWindow\TutorialWindow.cpp" />

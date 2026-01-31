@@ -149,7 +149,7 @@ void TutorialWindow::DrawSprite(DirectX::SpriteBatch* pSpriteBatch)
 	tutorialSprite->DrawSprite(pSpriteBatch);
 }
 
-void TutorialWindow::OnMoveUpRight(InputEventData data)
+void TutorialWindow::OnMoveUpRight(const InputEventData& data)
 {
 	if (data.inputOption.pressed)
 	{
@@ -164,7 +164,7 @@ void TutorialWindow::OnMoveUpRight(InputEventData data)
 	}
 }
 
-void TutorialWindow::OnMoveDownLeft(InputEventData data)
+void TutorialWindow::OnMoveDownLeft(const InputEventData& data)
 {
 	if (data.inputOption.pressed)
 	{
@@ -179,7 +179,7 @@ void TutorialWindow::OnMoveDownLeft(InputEventData data)
 	}
 }
 
-void TutorialWindow::OnSelect(InputEventData data)
+void TutorialWindow::OnSelect(const InputEventData& data)
 {
 	if (data.inputOption.pressed)
 	{

@@ -163,7 +163,7 @@ struct InputEventData
 struct CallbackEntry 
 {
 	void* owner; // ’N‚ª“o˜^‚µ‚½‚© (thisƒ|ƒCƒ“ƒ^)
-	std::function<void(InputEventData)> callback;
+	std::function<void(const InputEventData&)> callback;
 
 	CallbackEntry(void* owner, std::function<void(InputEventData)> callback)
 		: owner{ owner }

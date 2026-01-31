@@ -204,7 +204,7 @@ void PauseMenu::Finalize()
  * 
  * @param[in] data　入力イベントデータ
  */
-void PauseMenu::OnMoveUpSelector(InputEventData data)
+void PauseMenu::OnMoveUpSelector(const InputEventData& data)
 {
 	if (data.inputOption.pressed)
 	{
@@ -223,7 +223,7 @@ void PauseMenu::OnMoveUpSelector(InputEventData data)
  *
  * @param[in] data　入力イベントデータ
  */
-void PauseMenu::OnMoveDownSelector(InputEventData data)
+void PauseMenu::OnMoveDownSelector(const InputEventData& data)
 {
 	if (data.inputOption.pressed)
 	{
@@ -241,7 +241,7 @@ void PauseMenu::OnMoveDownSelector(InputEventData data)
  *
  * @param[in] data　入力イベントデータ
  */
-void PauseMenu::OnSelect(InputEventData data)
+void PauseMenu::OnSelect(const InputEventData& data)
 {
 	if (data.inputOption.pressed)
 	{

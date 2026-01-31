@@ -122,11 +122,11 @@ public:
 	void Finalize();
 
 	// 上にセレクターが動かす
-	void OnMoveUpSelector(InputEventData data) ;
+	void OnMoveUpSelector	(const InputEventData& data);
 	// 下にセレクターが動かす
-	void OnMoveDownSelector(InputEventData data) ;
+	void OnMoveDownSelector	(const InputEventData& data);
 	// 選択する
-	void OnSelect(InputEventData data) ;
+	void OnSelect			(const InputEventData& data) ;
 
 
 // 取得/設定

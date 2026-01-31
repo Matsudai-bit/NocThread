@@ -25,8 +25,11 @@
 #include "Game/Common/Framework/Event/Messenger/GameFlowMessenger/GameFlowMessenger.h"
 #include "Game/Common/Framework/TaskManager/TaskManager.h"
 #include "Game/Common/Framework/ResourceManager/ResourceManager.h"
+#include "Game/Common/Framework/Input/InputActionMap/InputActionMap.h"
+#include "Game/Common/Framework/Input/InputManager/InputManager.h"
 
 // ゲームプレイロジック関連
+#include "Game/Common/GameplayLogic/PauseNavigator/PauseNavigator.h"
 
 // グラフィック関連
 #include "Game/Common/Graphics/Camera/MainCamera/MainCamera.h"
@@ -40,6 +43,8 @@
 
 // 状態
 #include "Game/Scene/GameplayScene/State/NormalGameplayState/NormalGameplayState.h"
+#include "Game/Scene/GameplayScene/State/PoseGameplayState/PauseGameplayState.h"
+
 
 // 所有者
 #include "Game/Scene/GameplayScene/GameplayScene.h"
@@ -137,6 +142,12 @@ void StartingGameplayState::OnStartState()
 
 	GetOwner()->GetCommonResources()->GetInputDeviceSpriteResolver()->AddKeyboardSprite(m_sprites[static_cast<UINT>(SpriteID::PUSHGUIDE_KEYBOARD)].get());
 	GetOwner()->GetCommonResources()->GetInputDeviceSpriteResolver()->AddGamePadSprite(m_sprites[static_cast<UINT>(SpriteID::PUSHGUIDE_GAMEPAD)].get());
+
+	// ナビゲーターの作成
+	CreatePauseNavigator();
+
+	// コールバックの紐づけ
+	RegisterBindCallbackToInput();
 }
 
 /**
@@ -162,13 +173,6 @@ void StartingGameplayState::OnUpdate(float deltaTime)
 	// タスクの更新処理
 	GetOwner()->GetTaskManager()->Update(deltaTime);
 
-	auto kt = GetOwner()->GetCommonResources()->GetKeyboardTracker();
-
-	if (m_backgroundTween.IsEnd() && kt->IsKeyReleased(Keyboard::Space))
-	{
-		GameFlowMessenger::GetInstance()->Notify(GameFlowEventID::GAME_START);
-		GetStateMachine()->ChangeState<NormalGameplayState>();
-	}
 }
 
 
@@ -203,6 +207,78 @@ void StartingGameplayState::OnExitState()
 	inputDeviceResolver->RemoveGamePadSprite (m_sprites[static_cast<UINT>(SpriteID::PUSHGUIDE_GAMEPAD)].get());
 	inputDeviceResolver->RemoveKeyboardSprite(m_sprites[static_cast<UINT>(SpriteID::PUSHGUIDE_KEYBOARD)].get());
 
+	// コールバックの紐づけを解除する
+	UnBindCallbackToInput();
+}
+
+/**
+ * @brief 入力とコールバックの紐づけ
+ */
+void StartingGameplayState::RegisterBindCallbackToInput()
+{	// 戻る入力
+	auto pInputManager = GetOwner()->GetCommonResources()->GetInputManager();
+	pInputManager->GetInputActionMap(InputActionID::Player::MAP_NAME)->BindInputEvent(InputActionID::Player::STEPPING, this,
+		[this](const InputEventData& data) { OnStartGame(data); });
+}
+
+/**
+ * @brief 入力とコールバックの紐づけを解除する
+ */
+void StartingGameplayState::UnBindCallbackToInput()
+{
+	// 入力管理の取得
+	auto pInputManager = GetOwner()->GetCommonResources()->GetInputManager();
+
+	pInputManager->GetInputActionMap(InputActionID::Player::MAP_NAME)->UnBindAllInputEvent(InputActionID::Player::STEPPING, this);
+}
+
+/**
+ * @brief ナビゲーターの作成
+ * 
+ */
+void StartingGameplayState::CreatePauseNavigator()
+{
+	// ポーズナビゲーターの作成
+	m_pauseNavigator = std::make_unique<PauseNavigator>();
+
+	// ポーズナビゲーターの初期化処理
+	m_pauseNavigator->Initialize(
+		GetOwner()->GetCommonResources()->GetResourceManager(),
+		GetOwner()->GetCommonResources()->GetInputDeviceSpriteResolver(),
+		GetOwner()->GetCanvas(),
+		GetOwner()->GetCommonResources()->GetInputManager());
+
+	m_pauseNavigator->SetInputCallback([this](const InputEventData& data) {OnOpenPause(data); });
+}
+
+/**
+ * @brief ポーズ画面を開く処理
+ *
+ * @param[in] data 入力イベントデータ
+ */
+void StartingGameplayState::OnOpenPause(const InputEventData& data)
+{
+	if (data.inputOption.pressed)
+	{
+		// ポーズ状態にする
+		GetStateMachine()->ChangeState<PauseGameplayState>();
+		GetOwner()->GetCommonResources()->SetCopyScreenRequest(true);
+
+	}
+}
+
+/**
+ * @brief ゲームの開始
+ * 
+ * @param[in] data　入力イベントデータ
+ */
+void StartingGameplayState::OnStartGame(const InputEventData& data)
+{
+	if (m_backgroundTween.IsEnd() && data.inputOption.pressed)
+	{
+		GameFlowMessenger::GetInstance()->Notify(GameFlowEventID::GAME_START);
+		GetStateMachine()->ChangeState<NormalGameplayState>();
+	}
 }
 
 

@@ -191,7 +191,12 @@ void TitleScene::Finalize()
 {
 	SoundManager::GetInstance()->RemoveAll();
 
+	// 入力とコールバックの紐づけを解除する
 	UnBindCallbackToInput();
+
+	// デバイス毎の切り替を削除する
+	GetCommonResources()->GetInputDeviceSpriteResolver()->RemoveGamePadSprite(m_gamePadManualSprite.get());
+	GetCommonResources()->GetInputDeviceSpriteResolver()->RemoveGamePadSprite(m_keyboardManualSprite.get());
 }
 
 // 中心の算出
@@ -289,22 +294,22 @@ void TitleScene::RegisterBindCallbackToInput()
 
 	// 上入力
 	pInputManager->GetInputActionMap(InputActionID::UI::MAP_NAME)->BindInputEvent(InputActionID::UI::UP_MOVE, this,
-		[this](InputEventData data)	{ OnInputUp(data); });
+		[this](const InputEventData& data) { OnInputUp(data); });
 	// 下入力
 	pInputManager->GetInputActionMap(InputActionID::UI::MAP_NAME)->BindInputEvent(InputActionID::UI::DOWN_MOVE, this,
-		[this](InputEventData data)	{ OnInputDown(data); });
+		[this](const InputEventData& data) { OnInputDown(data); });
 	// 左入力
 	pInputManager->GetInputActionMap(InputActionID::UI::MAP_NAME)->BindInputEvent(InputActionID::UI::LEFT_MOVE, this,
-		[this](InputEventData data) { OnInputLeft(data); });
+		[this](const InputEventData& data) { OnInputLeft(data); });
 	// 右入力
 	pInputManager->GetInputActionMap(InputActionID::UI::MAP_NAME)->BindInputEvent(InputActionID::UI::RIGHT_MOVE, this,
-		[this](InputEventData data)	{ OnInputRight(data); });
+		[this](const InputEventData& data) { OnInputRight(data); });
 	// 決定入力
 	pInputManager->GetInputActionMap(InputActionID::UI::MAP_NAME)->BindInputEvent(InputActionID::UI::CONFIRM, this,
-		[this](InputEventData data)	{ OnInputConfirm(data); });
+		[this](const InputEventData& data) { OnInputConfirm(data); });
 	// 戻る入力
 	pInputManager->GetInputActionMap(InputActionID::UI::MAP_NAME)->BindInputEvent(InputActionID::UI::CANCEL, this,
-		[this](InputEventData data) { OnInputExit(data); });
+		[this](const InputEventData& data) { OnInputExit(data); });
 }
 
 /**
@@ -315,21 +320,21 @@ void TitleScene::UnBindCallbackToInput()
 	// 入力管理の取得
 	auto pInputManager = GetCommonResources()->GetInputManager();
 
-	pInputManager->GetInputActionMap(InputActionID::UI::MAP_NAME)->UnBindAllInputEvent(InputActionID::UI::UP_MOVE,		this);
-	pInputManager->GetInputActionMap(InputActionID::UI::MAP_NAME)->UnBindAllInputEvent(InputActionID::UI::LEFT_MOVE,	this);
-	pInputManager->GetInputActionMap(InputActionID::UI::MAP_NAME)->UnBindAllInputEvent(InputActionID::UI::RIGHT_MOVE,	this);
-	pInputManager->GetInputActionMap(InputActionID::UI::MAP_NAME)->UnBindAllInputEvent(InputActionID::UI::DOWN_MOVE,	this);
-	pInputManager->GetInputActionMap(InputActionID::UI::MAP_NAME)->UnBindAllInputEvent(InputActionID::UI::CONFIRM,		this);
-	pInputManager->GetInputActionMap(InputActionID::UI::MAP_NAME)->UnBindAllInputEvent(InputActionID::UI::CANCEL,		this);
+	pInputManager->GetInputActionMap(InputActionID::UI::MAP_NAME)->UnBindAllInputEvent(InputActionID::UI::UP_MOVE, this);
+	pInputManager->GetInputActionMap(InputActionID::UI::MAP_NAME)->UnBindAllInputEvent(InputActionID::UI::LEFT_MOVE, this);
+	pInputManager->GetInputActionMap(InputActionID::UI::MAP_NAME)->UnBindAllInputEvent(InputActionID::UI::RIGHT_MOVE, this);
+	pInputManager->GetInputActionMap(InputActionID::UI::MAP_NAME)->UnBindAllInputEvent(InputActionID::UI::DOWN_MOVE, this);
+	pInputManager->GetInputActionMap(InputActionID::UI::MAP_NAME)->UnBindAllInputEvent(InputActionID::UI::CONFIRM, this);
+	pInputManager->GetInputActionMap(InputActionID::UI::MAP_NAME)->UnBindAllInputEvent(InputActionID::UI::CANCEL, this);
 
 }
 
 /**
  * @brief 左入力された時に呼ばれる
- * 
+ *
  * @param[in] data	入力イベントデータ
  */
-void TitleScene::OnInputLeft(InputEventData data)
+void TitleScene::OnInputLeft(const InputEventData& data)
 {
 	if (m_tutorialWindow && m_tutorialWindow->IsVisible() && GetCommonResources()->GetTransitionMask()->IsEnd())
 		m_tutorialWindow->OnMoveDownLeft(data);
@@ -340,7 +345,7 @@ void TitleScene::OnInputLeft(InputEventData data)
  *
  * @param[in] data	入力イベントデータ
  */
-void TitleScene::OnInputRight(InputEventData data)
+void TitleScene::OnInputRight(const InputEventData& data)
 {
 	if (m_tutorialWindow && m_tutorialWindow->IsVisible() && GetCommonResources()->GetTransitionMask()->IsEnd())
 		m_tutorialWindow->OnMoveUpRight(data);
@@ -351,7 +356,7 @@ void TitleScene::OnInputRight(InputEventData data)
  *
  * @param[in] data	入力イベントデータ
  */
-void TitleScene::OnInputUp(InputEventData data)
+void TitleScene::OnInputUp(const InputEventData& data)
 {
 	if (m_titleMenu && m_titleMenu->IsActive() && GetCommonResources()->GetTransitionMask()->IsEnd())
 		m_titleMenu->OnMoveUpSelector(data);
@@ -362,7 +367,7 @@ void TitleScene::OnInputUp(InputEventData data)
  *
  * @param[in] data	入力イベントデータ
  */
-void TitleScene::OnInputDown(InputEventData data)
+void TitleScene::OnInputDown(const InputEventData& data)
 {
 	if (m_titleMenu && m_titleMenu->IsActive() && GetCommonResources()->GetTransitionMask()->IsEnd())
 		m_titleMenu->OnMoveDownSelector(data);
@@ -373,7 +378,7 @@ void TitleScene::OnInputDown(InputEventData data)
  *
  * @param[in] data	入力イベントデータ
  */
-void TitleScene::OnInputConfirm(InputEventData data)
+void TitleScene::OnInputConfirm(const InputEventData& data)
 {
 	if (GetCommonResources()->GetTransitionMask()->IsEnd())
 	{
@@ -390,7 +395,7 @@ void TitleScene::OnInputConfirm(InputEventData data)
  *
  * @param[in] data	入力イベントデータ
  */
-void TitleScene::OnInputExit(InputEventData data)
+void TitleScene::OnInputExit(const InputEventData& data)
 {
 	
 

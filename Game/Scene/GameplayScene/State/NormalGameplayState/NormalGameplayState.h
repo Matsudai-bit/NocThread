@@ -24,6 +24,8 @@
 class GameplayScene;	// ゲームプレイシーン
 class Canvas;			// キャンバス
 class Sprite;
+class PauseNavigator;	// ポーズナビゲーター
+struct InputEventData;	// 入力イベント時のデータ
 // クラスの定義 ===============================================================
 /**
  * @brief ゲームプレイシーンの通常状態
@@ -38,11 +40,9 @@ public:
 
 // データメンバの宣言 -----------------------------------------------
 private:
-	std::unique_ptr<Sprite>	m_manualSprite;				///< 操作ガイドスプライト
+	
+	std::unique_ptr<PauseNavigator> m_pauseNavigator;	///< ポーズナビゲーター
 
-	std::unique_ptr < InputSystem<InputActionType::SystemActionID>> m_systemInput; ///< ゲームシステムの入力判断
-
-	bool m_isPrevConnectedGamepad; ///< ゲームパッドが接続されているかどうか
 
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
@@ -56,9 +56,8 @@ public:
 
 // 操作
 public:
-	// 開始処理
+	// 状態の開始
 	void OnStartState() override;
-	void OnExitState() override;
 
 	// 更新処理
 	void OnUpdate(float deltaTime) override;
@@ -76,7 +75,9 @@ public:
 // 内部実装
 private:
 
-	// 現在のガイドガイドUIの変更を試みる
-	bool TryChangeCurrentGuideUI();
+	// ナビゲーターの作成
+	void CreatePauseNavigator();
 
+	// ポーズ画面を開く処理
+	void OnOpenPause(const InputEventData& data);
 };

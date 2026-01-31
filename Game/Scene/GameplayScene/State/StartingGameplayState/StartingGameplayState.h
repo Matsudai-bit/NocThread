@@ -28,7 +28,8 @@
 class GameplayScene;		// ゲームプレイシーン（所有者）
 class Canvas;				// キャンバス
 class Sprite;				// スプライト
-
+class PauseNavigator;	// ポーズナビゲーター
+struct InputEventData;	// 入力イベント時のデータ
 // クラスの定義 ===============================================================
 /**
  * @brief ゲームプレイシーンの開始状態
@@ -62,7 +63,9 @@ private:
 	DxTween<DirectX::SimpleMath::Vector2> m_backgroundTween;
 	DxTween<float> m_itemAlphaTween;
 	DxTween<float> m_guideAlphaTween;
-	
+
+	std::unique_ptr<PauseNavigator> m_pauseNavigator;	///< ポーズナビゲーター
+
 
 	DirectX::SimpleMath::Vector2 m_startPosition;
 // メンバ関数の宣言 -------------------------------------------------
@@ -99,6 +102,16 @@ public:
 
 // 内部実装
 private:
+	// 入力のコールバックの登録
+	void RegisterBindCallbackToInput();
+	// 紐づけの解除をする
+	void UnBindCallbackToInput();
+	// ナビゲーターの作成
+	void CreatePauseNavigator();
 
+	// ポーズ画面を開く処理
+	void OnOpenPause(const InputEventData& data);
 
+	// ゲームの開始
+	void OnStartGame(const InputEventData& data);
 };

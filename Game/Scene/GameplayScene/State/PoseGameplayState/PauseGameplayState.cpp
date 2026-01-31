@@ -197,10 +197,18 @@ void PauseGameplayState::OnExitState()
 	pCanvas->RemoveSprite(m_gamePadManualSprite.get());
 	pCanvas->RemoveSprite(m_tutorialWindow.get());
 
-
 	m_pauseMenu->Finalize();
 
+	// 入力とコールバックの紐づけを解除する
 	UnBindCallbackToInput();
+
+	// デバイス毎の表示切替を削除する
+	auto pInputDeviceSpriteResolver = GetOwner()->GetCommonResources()->GetInputDeviceSpriteResolver();
+	pInputDeviceSpriteResolver->RemoveKeyboardSprite(m_keyboardOperatingSprite.get());
+	pInputDeviceSpriteResolver->RemoveKeyboardSprite(m_keyboardManualSprite.get());
+	pInputDeviceSpriteResolver->RemoveGamePadSprite(m_gamePadOperatingSprite.get());
+	pInputDeviceSpriteResolver->RemoveGamePadSprite(m_gamePadManualSprite.get());
+
 }
 
 /**
@@ -243,22 +251,22 @@ void PauseGameplayState::RegisterBindCallbackToInput()
 
 	// 上入力
 	pInputManager->GetInputActionMap(InputActionID::UI::MAP_NAME)->BindInputEvent(InputActionID::UI::UP_MOVE, this,
-		[this](InputEventData data) { OnInputUp(data); });
+		[this](const InputEventData& data) { OnInputUp(data); });
 	// 下入力
 	pInputManager->GetInputActionMap(InputActionID::UI::MAP_NAME)->BindInputEvent(InputActionID::UI::DOWN_MOVE, this,
-		[this](InputEventData data) { OnInputDown(data); });
+		[this](const InputEventData& data) { OnInputDown(data); });
 	// 左入力
 	pInputManager->GetInputActionMap(InputActionID::UI::MAP_NAME)->BindInputEvent(InputActionID::UI::LEFT_MOVE, this,
-		[this](InputEventData data) { OnInputLeft(data); });
+		[this](const InputEventData& data) { OnInputLeft(data); });
 	// 右入力
 	pInputManager->GetInputActionMap(InputActionID::UI::MAP_NAME)->BindInputEvent(InputActionID::UI::RIGHT_MOVE, this,
-		[this](InputEventData data) { OnInputRight(data); });
+		[this](const InputEventData& data) { OnInputRight(data); });
 	// 決定入力
 	pInputManager->GetInputActionMap(InputActionID::UI::MAP_NAME)->BindInputEvent(InputActionID::UI::CONFIRM, this,
-		[this](InputEventData data) { OnInputConfirm(data); });
+		[this](const InputEventData& data) { OnInputConfirm(data); });
 	// 戻る入力
 	pInputManager->GetInputActionMap(InputActionID::UI::MAP_NAME)->BindInputEvent(InputActionID::UI::CANCEL, this,
-		[this](InputEventData data) { OnInputExit(data); });
+		[this](const InputEventData& data) { OnInputExit(data); });
 }
 
 /**
@@ -283,7 +291,7 @@ void PauseGameplayState::UnBindCallbackToInput()
  *
  * @param[in] data	入力イベントデータ
  */
-void PauseGameplayState::OnInputLeft(InputEventData data)
+void PauseGameplayState::OnInputLeft(const InputEventData& data)
 {
 	bool isEndTransition = GetOwner()->GetCommonResources()->GetTransitionMask()->IsEnd();
 
@@ -296,7 +304,7 @@ void PauseGameplayState::OnInputLeft(InputEventData data)
  *
  * @param[in] data	入力イベントデータ
  */
-void PauseGameplayState::OnInputRight(InputEventData data)
+void PauseGameplayState::OnInputRight(const InputEventData& data)
 {
 	bool isEndTransition = GetOwner()->GetCommonResources()->GetTransitionMask()->IsEnd();
 
@@ -309,7 +317,7 @@ void PauseGameplayState::OnInputRight(InputEventData data)
  *
  * @param[in] data	入力イベントデータ
  */
-void PauseGameplayState::OnInputUp(InputEventData data)
+void PauseGameplayState::OnInputUp(const InputEventData& data)
 {
 	bool isEndTransition = GetOwner()->GetCommonResources()->GetTransitionMask()->IsEnd();
 
@@ -322,7 +330,7 @@ void PauseGameplayState::OnInputUp(InputEventData data)
  *
  * @param[in] data	入力イベントデータ
  */
-void PauseGameplayState::OnInputDown(InputEventData data)
+void PauseGameplayState::OnInputDown(const InputEventData& data)
 {
 	bool isEndTransition = GetOwner()->GetCommonResources()->GetTransitionMask()->IsEnd();
 
@@ -335,7 +343,7 @@ void PauseGameplayState::OnInputDown(InputEventData data)
  *
  * @param[in] data	入力イベントデータ
  */
-void PauseGameplayState::OnInputConfirm(InputEventData data)
+void PauseGameplayState::OnInputConfirm(const InputEventData& data)
 {
 	bool isEndTransition = GetOwner()->GetCommonResources()->GetTransitionMask()->IsEnd();
 
@@ -353,7 +361,7 @@ void PauseGameplayState::OnInputConfirm(InputEventData data)
  *
  * @param[in] data	入力イベントデータ
  */
-void PauseGameplayState::OnInputExit(InputEventData data)
+void PauseGameplayState::OnInputExit(const InputEventData& data)
 {
 	bool isEndTransition = GetOwner()->GetCommonResources()->GetTransitionMask()->IsEnd();
 

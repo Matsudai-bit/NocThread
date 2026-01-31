@@ -69,11 +69,11 @@ public:
 	void DrawSprite(DirectX::SpriteBatch* pSpriteBatch) override;
 
 	// ‰E‚ª“®‚©‚·
-	void OnMoveUpRight(InputEventData data);
+	void OnMoveUpRight(const InputEventData& data);
 	// ¶‚ª“®‚©‚·
-	void OnMoveDownLeft(InputEventData data);
+	void OnMoveDownLeft(const InputEventData& data);
 	// ‘I‘ğ‚·‚é
-	void OnSelect(InputEventData data);
+	void OnSelect(const InputEventData& data);
 
 
 // æ“¾/İ’è

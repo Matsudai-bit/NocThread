@@ -143,18 +143,19 @@ private:
 	// 紐づけの解除をする
 	void UnBindCallbackToInput();
 
+
 	// 左入力された時に呼ばれる
-	void OnInputLeft	(InputEventData data);
+	void OnInputLeft	(const InputEventData& data);
 	// 右入力された時に呼ばれる
-	void OnInputRight	(InputEventData data);
+	void OnInputRight(const InputEventData& data);
 	// 上入力された時に呼ばれる
-	void OnInputUp		(InputEventData data);
+	void OnInputUp(const InputEventData& data);
 	// 下入力された時に呼ばれる
-	void OnInputDown	(InputEventData data);
+	void OnInputDown(const InputEventData& data);
 	// 決定入力された時に呼ばれる
-	void OnInputConfirm	(InputEventData data);
+	void OnInputConfirm(const InputEventData& data);
 	// 戻るが入力された時に呼ばれる
-	void OnInputExit(InputEventData data);
+	void OnInputExit(const InputEventData& data);
 	// メニューアイテムイベントの作成
 	void CreateMenuItemEvent();
 

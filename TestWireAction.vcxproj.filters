@@ -533,6 +533,15 @@
     <Filter Include="Game\Common\Framework\Input\InputActionMap">
       <UniqueIdentifier>{6e338503-610d-4be3-8c93-b6e1e2b76954}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\UI\Gameplay">
+      <UniqueIdentifier>{bc7e5146-5d38-4059-a9bd-5a8b9c329109}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Common\GameplayLogic\PauseNavigator">
+      <UniqueIdentifier>{585e5f47-0621-490e-afee-a8e6565c6f39}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\UI\Gameplay\PauseGuideUI">
+      <UniqueIdentifier>{2f3d08d1-a1c2-4020-ba6c-7c0c59a4186c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -1023,6 +1032,12 @@
     <ClInclude Include="Game\Common\Framework\Input\InputActionMap\InputActionMap.h">
       <Filter>Game\Common\Framework\Input\InputActionMap</Filter>
     </ClInclude>
+    <ClInclude Include="Game\UI\Gameplay\PauseGuideUI\PauseGuideUI.h">
+      <Filter>Game\UI\Gameplay\PauseGuideUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Common\GameplayLogic\PauseNavigator\PauseNavigator.h">
+      <Filter>Game\Common\GameplayLogic\PauseNavigator</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -1431,6 +1446,12 @@
     </ClCompile>
     <ClCompile Include="Game\Common\Framework\Input\InputActionMap\InputActionMap.cpp">
       <Filter>Game\Common\Framework\Input\InputActionMap</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\UI\Gameplay\PauseGuideUI\PauseGuideUI.cpp">
+      <Filter>Game\UI\Gameplay\PauseGuideUI</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Common\GameplayLogic\PauseNavigator\PauseNavigator.cpp">
+      <Filter>Game\Common\GameplayLogic\PauseNavigator</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
