@@ -34,7 +34,7 @@
 #include "Game/Common/Framework/ResourceManager/ResourceManager.h"
 #include "Game/Common/Framework/SoundManager/SoundManager.h"
 #include "Game/Common/Framework/Input/InputActionMap/InputActionMap.h"
-#include "Game/Common/Framework/Input/InputManager/InputManager.h"
+#include "Game/Common/Framework/Input/InputSystem/InputSystem.h"
 
 // グラフィック関連
 #include "Game/Common/Graphics/TransitionMask/TransitionMask.h"
@@ -207,10 +207,10 @@ Canvas* ResultScene::GetCanvas() const
  */
 void ResultScene::RegisterBindCallbackToInput()
 {	
-	// 入力管理の取得
-	auto pInputManager = GetCommonResources()->GetInputManager();
+	// 入力システムの取得
+	auto pInputSystem = GetCommonResources()->GetInputSystem();
 	// 次に行くの入力
-	pInputManager->GetInputActionMap(InputActionID::UI::MAP_NAME)->BindInputEvent(InputActionID::UI::CONFIRM, this,
+	pInputSystem->GetInputActionMap(InputActionID::UI::MAP_NAME)->BindInputEvent(InputActionID::UI::CONFIRM, this,
 		[this](const InputEventData& data) { OnInputExit(data); });
 }
 
@@ -220,10 +220,10 @@ void ResultScene::RegisterBindCallbackToInput()
  */
 void ResultScene::UnBindCallbackToInput()
 {
-	// 入力管理の取得
-	auto pInputManager = GetCommonResources()->GetInputManager();
+	// 入力システムの取得
+	auto pInputSystem = GetCommonResources()->GetInputSystem();
 
-	pInputManager->GetInputActionMap(InputActionID::UI::MAP_NAME)->UnBindAllInputEvent(InputActionID::UI::CONFIRM, this);
+	pInputSystem->GetInputActionMap(InputActionID::UI::MAP_NAME)->UnBindAllInputEvent(InputActionID::UI::CONFIRM, this);
 }
 
 /**

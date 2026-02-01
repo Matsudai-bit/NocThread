@@ -32,7 +32,7 @@
 #include "Game/Common/Framework/CommonResources/CommonResources.h"
 #include "Game/Common/Framework/ResourceManager/ResourceManager.h"
 #include "Game/Common/Framework/SoundManager/SoundManager.h"
-#include "Game/Common/Framework/Input/InputManager/InputManager.h"
+#include "Game/Common/Framework/Input/InputSystem/InputSystem.h"
 
 // ゲームプレイロジック関連
 #include "Game/Common/GameplayLogic/StageManager/StageManager.h"
@@ -246,10 +246,10 @@ void PauseGameplayState::OnCloseTutorialWindow()
  */
 void PauseGameplayState::RegisterBindCallbackToInput()
 {
-	// 入力管理の取得
-	auto pInputManager	= GetOwner()->GetCommonResources()->GetInputManager();
+	// 入力システムの取得
+	auto pInputSystem	= GetOwner()->GetCommonResources()->GetInputSystem();
 	// アクションマップの取得
-	auto uiActionMap	= pInputManager->GetInputActionMap(InputActionID::UI::MAP_NAME);
+	auto uiActionMap	= pInputSystem->GetInputActionMap(InputActionID::UI::MAP_NAME);
 	// 上入力
 	uiActionMap->BindInputEvent(InputActionID::UI::UP_MOVE, this,
 		[this](const InputEventData& data) { OnInputUp(data); });
@@ -275,10 +275,10 @@ void PauseGameplayState::RegisterBindCallbackToInput()
  */
 void PauseGameplayState::UnBindCallbackToInput()
 {
-	// 入力管理の取得
-	auto pInputManager = GetOwner()->GetCommonResources()->GetInputManager();
+	// 入力システムの取得
+	auto pInputSystem = GetOwner()->GetCommonResources()->GetInputSystem();
 	// アクションマップの取得
-	auto uiActionMap = pInputManager->GetInputActionMap(InputActionID::UI::MAP_NAME);
+	auto uiActionMap = pInputSystem->GetInputActionMap(InputActionID::UI::MAP_NAME);
 	uiActionMap->UnBindAllInputEvent(InputActionID::UI::UP_MOVE,	this);
 	uiActionMap->UnBindAllInputEvent(InputActionID::UI::LEFT_MOVE,	this);
 	uiActionMap->UnBindAllInputEvent(InputActionID::UI::RIGHT_MOVE, this);

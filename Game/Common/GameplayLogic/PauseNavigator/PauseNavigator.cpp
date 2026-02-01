@@ -11,7 +11,7 @@
 #include "PauseNavigator.h"
 
 // フレームワーク関連
-#include "Game/Common/Framework/Input/InputManager/InputManager.h"
+#include "Game/Common/Framework/Input/InputSystem/InputSystem.h"
 #include "Game/Common/Framework/Input/InputActionMap/InputActionMap.h"
 #include "Game/Common/Framework/Input/InputActionType/InputActionType.h"
 
@@ -30,7 +30,7 @@
  */
 PauseNavigator::PauseNavigator()
 	: m_pCanvas			{ nullptr }
-	, m_pInputManager	{ nullptr }
+	, m_pInputSystem	{ nullptr }
 {
 
 }
@@ -44,8 +44,8 @@ PauseNavigator::~PauseNavigator()
 {
 	m_pCanvas->RemoveSprite(m_pauseGuideUI.get());
 
-	// 入力管理の取得
-	m_pInputManager->GetInputActionMap(InputActionID::System::MAP_NAME)->UnBindAllInputEvent(InputActionID::System::PAUSE, this);
+	// 入力システムの取得
+	m_pInputSystem->GetInputActionMap(InputActionID::System::MAP_NAME)->UnBindAllInputEvent(InputActionID::System::PAUSE, this);
 }
 
 
@@ -57,13 +57,13 @@ PauseNavigator::~PauseNavigator()
  * @param[in] pResourceManager			 リソース管理
  * @param[in] pInputDeviceSpriteResolver 入力デバイス毎の切り替え器
  * @param[in] pCanvas					 キャンバス
- * @param[in] pInputManager				 入力管理
+ * @param[in] pInputSystem				 入力システム
  */
 void PauseNavigator::Initialize(
 	ResourceManager* pResourceManager, 
 	InputDeviceSpriteResolver* pInputDeviceSpriteResolver,
 	Canvas* pCanvas,
-	InputManager* pInputManager)
+	InputSystem* pInputSystem)
 {
 	// ポーズガイドUIの作成
 	m_pauseGuideUI = std::make_unique<PauseGuideUI>(pResourceManager, pInputDeviceSpriteResolver);
@@ -74,8 +74,8 @@ void PauseNavigator::Initialize(
 	// キャンバスに追加
 	m_pCanvas->AddSprite(m_pauseGuideUI.get());
 
-	// 入力管理の設定
-	m_pInputManager = pInputManager;
+	// 入力システムの設定
+	m_pInputSystem = pInputSystem;
 }
 
 /**
@@ -86,7 +86,7 @@ void PauseNavigator::Initialize(
 void PauseNavigator::SetInputCallback(const std::function<void(const InputEventData&)>& callback)
 {
 	// システムアクションマップの取得
-	auto systemActionMap = m_pInputManager->GetInputActionMap(InputActionID::System::MAP_NAME);
+	auto systemActionMap = m_pInputSystem->GetInputActionMap(InputActionID::System::MAP_NAME);
 	// ポーズ入力の登録
 	systemActionMap->BindInputEvent(InputActionID::System::PAUSE, this,	callback);
 }

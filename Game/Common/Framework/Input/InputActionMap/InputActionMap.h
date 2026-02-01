@@ -16,7 +16,7 @@
 
 
 
-// クラスの前方宣言 ===================================================
+// 前方宣言 ===================================================
 namespace Input
 {
 	enum class Option;
@@ -48,6 +48,14 @@ private:
 
 
 
+	// メンバ変数
+private:
+	std::string m_mapName;									///< アクションマップ名
+
+	std::unordered_map<std::string, ActionData> m_inputMap;	///< 入力情報
+
+
+
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
 public:
@@ -58,26 +66,30 @@ public:
 	~InputActionMap();
 
 // 操作
-public:
-	std::string m_mapName;
-
-	std::unordered_map<std::string, ActionData> m_inputMap;	///< 入力情報
-
-public:
+public:	
+	// アクションの追加
 	void AddAction(std::string actionName, InputData  inputData);
 
+	// イベントとアクションを紐づける
 	void BindInputEvent(std::string actionName, void* owner, std::function<void(InputEventData)> callback);
 
 	// 自分が登録したアクションをすべて解除する
 	void UnBindAllInputEvent(const std::string& actionName, void* owner);
 	
+// 取得・設定
+public:
+	// アクションマップの取得
 	std::unordered_map<std::string, ActionData>& GetActionMap() ;
-
+	// アクションマップ名の取得
 	const std::string& GetActionMapName() const { return m_mapName; }
+	// アクションマップ名の設定
 	void SetActionMapName(const std::string& name) { m_mapName = name; }
 
 };
 
+/**
+ * @brief 入力に関するもの
+ */
 namespace Input
 {
 
@@ -139,14 +151,19 @@ namespace Input
 }
 
 
-
+/**
+ * @brief 入力情報
+ */
 struct InputData
 {
-	std::vector<DirectX::Keyboard::Keys> keys; // 判定キー
-	std::vector<Input::MouseButtons> mouseButtons;
-	std::vector<Input::GamePadButtons> gamePadButtons;
+	std::vector<DirectX::Keyboard::Keys> keys;			// 判定キー
+	std::vector<Input::MouseButtons> mouseButtons;		// マウスボタン
+	std::vector<Input::GamePadButtons> gamePadButtons;	// ゲームパッドボタン
 };
 
+/**
+ * @brief 入力オプション情報
+ */
 struct InputOptionData
 {
 	bool pressed;
@@ -158,6 +175,9 @@ struct InputOptionData
 	{}
 };
 
+/**
+ * @brief 入力イベントデータ
+ */
 struct InputEventData
 {
 	std::string actionMapName;	// アクションマップの名前
@@ -165,6 +185,9 @@ struct InputEventData
 	InputOptionData inputOption;
 };
 
+/**
+ * @brief コールバックのエントリーデータ
+ */
 struct CallbackEntry 
 {
 	void* owner; // 誰が登録したか (thisポインタ)
@@ -176,6 +199,9 @@ struct CallbackEntry
 	{	}
 };
 
+/**
+ * @brief 動作情報
+ */
 struct ActionData
 {
 	bool isInput;

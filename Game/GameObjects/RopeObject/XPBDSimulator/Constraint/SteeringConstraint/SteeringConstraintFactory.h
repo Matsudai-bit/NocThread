@@ -21,7 +21,6 @@
 #include "Game/Common/Factory/InputBindingFactory/InputBindingFactory.h"
 
 // フレームワーク関連
-#include "Game/Common/Framework/Input/InputSystem/InputSystem.h"
 
 // ユーティリティ関連
 #include "Game/GameObjects/RopeObject/XPBDSimulator/XPBDSimulator.h"
@@ -55,7 +54,7 @@ private:
 
 	ElapsedTimeCounter m_elapsedTimeCounter;	///< 経過時間カウンター
 
-	std::unique_ptr<InputSystem<InputActionType::PlyayerActionID>> m_playerInput; ///< プレイヤー入力
+	DirectX::SimpleMath::Vector3 m_rawInput;
 
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
@@ -89,5 +88,10 @@ private:
 		const DirectX::SimpleMath::Vector3& particleRootPosition,
 		const SimParticle& particle,
 		const float& inertiaDamping) const;
+
+	// 入力のコールバックの登録
+	void RegisterBindCallbackToInput();
+	// 紐づけの解除をする
+	void UnBindCallbackToInput();
 
 };

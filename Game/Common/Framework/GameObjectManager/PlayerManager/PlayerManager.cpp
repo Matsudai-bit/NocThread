@@ -142,7 +142,7 @@ void PlayerManager::OnGameFlowEvent(GameFlowEventID eventID)
 		m_isStoppingUpdate = false;
 
 		// プレイヤーコントローラの初期化処理
-		m_playerController->Initialize(m_pPlayerCamera, m_player.get(), m_pCommonResources->GetInputManager());
+		m_playerController->Initialize(m_pPlayerCamera, m_player.get(), m_pCommonResources->GetInputSystem());
 		m_player->RequestStep();
 
 		break;

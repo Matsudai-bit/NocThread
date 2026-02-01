@@ -23,7 +23,7 @@ class ResourceManager;			// リソース管理
 class InputDeviceSpriteResolver;// 入力デバイス毎の切り替え器
 class PauseGuideUI;				// ポーズガイドUI
 class Canvas;					// キャンバス
-class InputManager;				// 入力管理
+class InputSystem;				// 入力システム
 struct InputEventData;
 
 // クラスの定義 ===============================================================
@@ -44,7 +44,7 @@ private:
 
 	Canvas* m_pCanvas; ///< キャンバス
 
-	InputManager* m_pInputManager; ///< 入力管理
+	InputSystem* m_pInputSystem; ///< 入力システム
 
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
@@ -63,7 +63,7 @@ public:
 		ResourceManager* pResourceManager, 
 		InputDeviceSpriteResolver* pInputDeviceSpriteResolver, 
 		Canvas* pCanvas,
-		InputManager* pInputManager);
+		InputSystem* pInputSystem);
 
 	// ポーズ画面への入力コールバックの設定
 	void SetInputCallback(const std::function<void(const InputEventData&)>& callback);

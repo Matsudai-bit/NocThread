@@ -29,6 +29,7 @@
 
 // ユーティリティ関連
 #include "Game/Common/Utillities/ElapsedTimeCounter/ElapsedTimeCounter.h"
+#include "Game/Common/Utillities/DxTween/DxTween.h"
 
 // クラスの宣言 ===============================================================
 class CommonResources;  // 共通リソース
@@ -47,7 +48,7 @@ class TitleScene : public MyLib::Scene<CommonResources>
 // クラス定数の宣言 -------------------------------------------------
 public:
 
-	static constexpr float LOGO_EASING_TIME = 3.0f; ///< ロゴの透過アニメーションのイージング時間 (秒)
+	static constexpr float LOGO_EASING_TIME = 1.5f; ///< ロゴの透過アニメーションのイージング時間 (秒)
 
     // --- 座標オフセット関連 ---
     static constexpr float LOGO_POS_OFFSET_X	= 300.0f;	///< ロゴスプライトの右端からのX座標オフセット
@@ -82,6 +83,7 @@ private:
 
 	// 演出系
 	ElapsedTimeCounter m_ElapsedTimeCounter; ///< 経過時間カウンター
+	DxTween<float>		m_logoOpacityTween;	///< ロゴの透過率のイージング
 
 	// サウンド
 	int m_bgmSoundID;

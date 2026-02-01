@@ -14,13 +14,12 @@
 
 // ヘッダファイルの読み込み ===================================================
 #include <memory>
-#include "Game/Common/Framework/Input/InputSystem/InputSystem.h"
 #include "Game/Common/Framework/Input/InputActionType/InputActionType.h"
 
 // クラスの前方宣言 ===================================================
 class Player;		// プレイヤー
 class Camera;		// カメラ
-class InputManager; // 入力管理
+class InputSystem; // 入力システム
 // クラスの定義 ===============================================================
 /**
  * @brief プレイヤーのコントローラ
@@ -38,7 +37,7 @@ private:
 	
 	Player* m_pPlayer;
 
-	InputManager* m_pInputManager; ///< 入力管理
+	InputSystem* m_pInputSystem; ///< 入力システム
 
 	DirectX::SimpleMath::Vector3 m_movementDirection;
 
@@ -60,7 +59,7 @@ public:
 // 操作
 public:
 	// 初期化処理
-	void Initialize(const Camera* pCamera, Player* pPlayer, InputManager* pInputManager);
+	void Initialize(const Camera* pCamera, Player* pPlayer, InputSystem* pInputSystem);
 
 	// 更新処理
 	void Update(float deltaTime);

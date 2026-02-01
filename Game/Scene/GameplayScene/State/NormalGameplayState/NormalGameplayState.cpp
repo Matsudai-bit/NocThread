@@ -119,7 +119,7 @@ void NormalGameplayState::CreatePauseNavigator()
 		GetOwner()->GetCommonResources()->GetResourceManager(),
 		GetOwner()->GetCommonResources()->GetInputDeviceSpriteResolver(),
 		GetOwner()->GetCanvas(),
-		GetOwner()->GetCommonResources()->GetInputManager());
+		GetOwner()->GetCommonResources()->GetInputSystem());
 
 	m_pauseNavigator->SetInputCallback([this](const InputEventData& data) {OnOpenPause(data); });
 }

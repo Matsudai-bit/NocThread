@@ -33,7 +33,7 @@
 #include "Game/Common/Framework/CommonResources/CommonResources.h"
 #include "Game/Common/Framework/ResourceManager/ResourceManager.h"
 #include "Game/Common/Framework/SoundManager/SoundManager.h"
-#include "Game/Common/Framework/Input/InputManager/InputManager.h"
+#include "Game/Common/Framework/Input/InputSystem/InputSystem.h"
 #include "Game/Common/Framework/Input/InputActionMap/InputActionMap.h"
 #include "Game/Common/Framework/Input/InputActionType/InputActionType.h"
 
@@ -116,6 +116,9 @@ void TitleScene::Initialize()
 
 	m_ElapsedTimeCounter.Reset();
 
+	m_logoOpacityTween.Initialize(0.0f, 1.0f, LOGO_EASING_TIME);
+	m_logoOpacityTween.SetDelay(1.0f);
+
 	SoundManager::GetInstance()->RemoveAll();
 	m_bgmSoundID = SoundManager::GetInstance()->Play(SoundDatabase::SOUND_CLIP_MAP.at(SoundDatabase::BGM_TITLE), true);
 
@@ -129,6 +132,7 @@ void TitleScene::Initialize()
 	RegisterBindCallbackToInput();
 	// メニューアイテムイベントの作成
 	CreateMenuItemEvent();
+
 }
 
 
@@ -254,19 +258,9 @@ void TitleScene::OnCloseTutorialWindow()
  */
 void TitleScene::UpdateLogoOpacity(float deltaTime)
 {
-	float ratio = m_ElapsedTimeCounter.GetElapsedTime() / LOGO_EASING_TIME;
-	float opacity = MyLib::EaseInOutQuint(ratio);
-
-	if (m_ElapsedTimeCounter.GetElapsedTime() <= LOGO_EASING_TIME)
-	{
-		m_ElapsedTimeCounter.UpperTime(deltaTime);
-	}
-	else
-	{
-		opacity = 1.0f;
-	}
-
-	m_logoSprite->SetOpacity(opacity);
+	m_logoOpacityTween.Update(deltaTime);
+	
+	m_logoSprite->SetOpacity(m_logoOpacityTween.GetValue());
 }
 
 /**
@@ -289,26 +283,33 @@ void TitleScene::UpdateTitleMenu(float deltaTime)
  */
 void TitleScene::RegisterBindCallbackToInput()
 {
-	// 入力管理の取得
-	auto pInputManager = GetCommonResources()->GetInputManager();
+	// 入力システムの取得
+	auto pInputSystem	= GetCommonResources()->GetInputSystem();
+	auto uiActionMap	= pInputSystem->GetInputActionMap(InputActionID::UI::MAP_NAME);
 
 	// 上入力
-	pInputManager->GetInputActionMap(InputActionID::UI::MAP_NAME)->BindInputEvent(InputActionID::UI::UP_MOVE, this,
+	uiActionMap->BindInputEvent(
+		InputActionID::UI::UP_MOVE,		this,
 		[this](const InputEventData& data) { OnInputUp(data); });
 	// 下入力
-	pInputManager->GetInputActionMap(InputActionID::UI::MAP_NAME)->BindInputEvent(InputActionID::UI::DOWN_MOVE, this,
+	uiActionMap->BindInputEvent(
+		InputActionID::UI::DOWN_MOVE,	this,
 		[this](const InputEventData& data) { OnInputDown(data); });
 	// 左入力
-	pInputManager->GetInputActionMap(InputActionID::UI::MAP_NAME)->BindInputEvent(InputActionID::UI::LEFT_MOVE, this,
+	uiActionMap->BindInputEvent(
+		InputActionID::UI::LEFT_MOVE,	this,
 		[this](const InputEventData& data) { OnInputLeft(data); });
 	// 右入力
-	pInputManager->GetInputActionMap(InputActionID::UI::MAP_NAME)->BindInputEvent(InputActionID::UI::RIGHT_MOVE, this,
+	uiActionMap->BindInputEvent(
+		InputActionID::UI::RIGHT_MOVE,	this,
 		[this](const InputEventData& data) { OnInputRight(data); });
 	// 決定入力
-	pInputManager->GetInputActionMap(InputActionID::UI::MAP_NAME)->BindInputEvent(InputActionID::UI::CONFIRM, this,
+	uiActionMap->BindInputEvent(
+		InputActionID::UI::CONFIRM,		this,
 		[this](const InputEventData& data) { OnInputConfirm(data); });
 	// 戻る入力
-	pInputManager->GetInputActionMap(InputActionID::UI::MAP_NAME)->BindInputEvent(InputActionID::UI::CANCEL, this,
+	uiActionMap->BindInputEvent(
+		InputActionID::UI::CANCEL,		this,
 		[this](const InputEventData& data) { OnInputExit(data); });
 }
 
@@ -317,15 +318,16 @@ void TitleScene::RegisterBindCallbackToInput()
  */
 void TitleScene::UnBindCallbackToInput()
 {
-	// 入力管理の取得
-	auto pInputManager = GetCommonResources()->GetInputManager();
+	// 入力システムの取得
+	auto pInputSystem = GetCommonResources()->GetInputSystem();
+	auto uiActionMap = pInputSystem->GetInputActionMap(InputActionID::UI::MAP_NAME);
 
-	pInputManager->GetInputActionMap(InputActionID::UI::MAP_NAME)->UnBindAllInputEvent(InputActionID::UI::UP_MOVE, this);
-	pInputManager->GetInputActionMap(InputActionID::UI::MAP_NAME)->UnBindAllInputEvent(InputActionID::UI::LEFT_MOVE, this);
-	pInputManager->GetInputActionMap(InputActionID::UI::MAP_NAME)->UnBindAllInputEvent(InputActionID::UI::RIGHT_MOVE, this);
-	pInputManager->GetInputActionMap(InputActionID::UI::MAP_NAME)->UnBindAllInputEvent(InputActionID::UI::DOWN_MOVE, this);
-	pInputManager->GetInputActionMap(InputActionID::UI::MAP_NAME)->UnBindAllInputEvent(InputActionID::UI::CONFIRM, this);
-	pInputManager->GetInputActionMap(InputActionID::UI::MAP_NAME)->UnBindAllInputEvent(InputActionID::UI::CANCEL, this);
+	uiActionMap->UnBindAllInputEvent(InputActionID::UI::UP_MOVE,	this);
+	uiActionMap->UnBindAllInputEvent(InputActionID::UI::LEFT_MOVE,	this);
+	uiActionMap->UnBindAllInputEvent(InputActionID::UI::RIGHT_MOVE, this);
+	uiActionMap->UnBindAllInputEvent(InputActionID::UI::DOWN_MOVE,	this);
+	uiActionMap->UnBindAllInputEvent(InputActionID::UI::CONFIRM,	this);
+	uiActionMap->UnBindAllInputEvent(InputActionID::UI::CANCEL,		this);
 
 }
 

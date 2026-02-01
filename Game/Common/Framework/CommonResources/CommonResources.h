@@ -31,7 +31,7 @@ namespace MyLib
 class ResourceManager;	// リソース管理
 class TransitionMask;	// シーン遷移マスク表示クラス
 class InputDeviceSpriteResolver; // 入力デバイス毎のスプライトの表記を切り替え器
-class InputManager;		// 入力管理
+class InputSystem;		// 入力システム
 
 
 // クラスの定義 ===============================================================
@@ -64,7 +64,7 @@ private:
 
 	InputDeviceSpriteResolver*	m_pInputDeviceSpriteResolver;	///< 入力デバイス毎のスプライトの表記を切り替え器
 
-	InputManager*				m_pInputManager;	///< 入力管理
+	InputSystem*				m_pInputSystem;	///< 入力システム
 
 	// ---- 仮実装 ----
 	DX::RenderTexture* m_pCopyRenderTexture;			///< 画面をコピーしたテクスチャ
@@ -87,7 +87,7 @@ public:
 		DX::RenderTexture*						pCopyRenderTexture,
 		TransitionMask* pTransitionMask,
 		InputDeviceSpriteResolver*	pInputDeviceSpriteResolver,
-		InputManager*				pInputManager);
+		InputSystem*				pInputSystem);
 
 
 	// デストラクタ
@@ -127,8 +127,8 @@ public:
 	// 入力デバイス毎のスプライトの表記を切り替え器の取得
 	InputDeviceSpriteResolver* GetInputDeviceSpriteResolver() const;
 
-	// 入力管理の取得
-	InputManager* GetInputManager() const;
+	// 入力システムの取得
+	InputSystem* GetInputSystem() const;
 
 	// 画面をコピーしたテクスチャの取得
 	DX::RenderTexture* GetCopyScreenTexture() const { return m_pCopyRenderTexture; }

@@ -17,7 +17,6 @@
 
 // フレームワーク関連
 #include "Game/Common/Framework/StateMachine/StateBase/StateBase.h"
-#include "Game/Common/Framework/Input/InputSystem/InputSystem.h"
 #include "Game/Common/Framework/Input/InputActionType/InputActionType.h"
 
 // クラスの前方宣言 ===================================================

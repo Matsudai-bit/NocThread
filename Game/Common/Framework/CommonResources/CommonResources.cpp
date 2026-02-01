@@ -29,7 +29,7 @@ using namespace DirectX;
  * @param[in] pCopyRenderTexture画面をコピーしたテクスチャ
  * @param[in] pTransitionMask	シーン遷移表示用マスク
  * @param[in] pInputDeviceSpriteResolver	入力デバイス毎のスプライトの表記を切り替え器
- * @param[in] pInputManager		入力管理
+ * @param[in] pInputSystem		入力システム
 
  */
 CommonResources::CommonResources(
@@ -44,7 +44,7 @@ CommonResources::CommonResources(
 	DX::RenderTexture*				pCopyRenderTexture,
 	TransitionMask*					pTransitionMask,
 	InputDeviceSpriteResolver*		pInputDeviceSpriteResolver,
-	InputManager*					pInputManager)
+	InputSystem*					pInputSystem)
 
 	: m_pStepTimer		{pStepTimer}
 	, m_pDeviceResources{pDeviceResources}
@@ -58,7 +58,7 @@ CommonResources::CommonResources(
 	, m_copyScreenRequest{ false }
 	, m_pTransitionMask{ pTransitionMask }
 	, m_pInputDeviceSpriteResolver	{ pInputDeviceSpriteResolver }
-	, m_pInputManager				{ pInputManager }
+	, m_pInputSystem				{ pInputSystem }
 
 {
 
@@ -175,13 +175,13 @@ InputDeviceSpriteResolver* CommonResources::GetInputDeviceSpriteResolver() const
 }
 
 /**
- * @brief 入力管理の取得
+ * @brief 入力システムの取得
  * 
- * @return 入力管理のポインタ
+ * @return 入力システムのポインタ
  */
-InputManager* CommonResources::GetInputManager() const
+InputSystem* CommonResources::GetInputSystem() const
 {
-	return m_pInputManager;
+	return m_pInputSystem;
 }
 
 

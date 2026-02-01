@@ -143,13 +143,13 @@ void Game::Initialize(HWND window, int width, int height)
     // 入力デバイス毎のスプライトの表記を切り替え器の作成
     m_inputDeviceSpriteResolver = std::make_unique<InputDeviceSpriteResolver>(m_keyboardStateTracker.get(), m_gamePadStateTracker.get());
 
-    // 入力管理の作成
-    m_inputManager = std::make_unique<InputManager>(m_keyboardStateTracker.get(), m_mouseStateTracker.get(), m_gamePadStateTracker.get());
+    // 入力システムの作成
+    m_InputSystem = std::make_unique<InputSystem>(m_keyboardStateTracker.get(), m_mouseStateTracker.get(), m_gamePadStateTracker.get());
 
-    // 入力管理の設定
-    m_inputManager->AddActionMap(std::move(InputActionMapFactory::PlayerInputMapFactory().Create(DefaultSpawnDesc())));
-    m_inputManager->AddActionMap(std::move(InputActionMapFactory::UIInputMapFactory().Create(DefaultSpawnDesc())));
-    m_inputManager->AddActionMap(std::move(InputActionMapFactory::SystemInputMapFactory().Create(DefaultSpawnDesc())));
+    // 入力システムの設定
+    m_InputSystem->AddActionMap(std::move(InputActionMapFactory::PlayerInputMapFactory().Create(DefaultSpawnDesc())));
+    m_InputSystem->AddActionMap(std::move(InputActionMapFactory::UIInputMapFactory().Create(DefaultSpawnDesc())));
+    m_InputSystem->AddActionMap(std::move(InputActionMapFactory::SystemInputMapFactory().Create(DefaultSpawnDesc())));
 
     // 共通リソースの生成
     m_commonResources = std::make_unique<CommonResources>(
@@ -164,7 +164,7 @@ void Game::Initialize(HWND window, int width, int height)
         m_copyRenderTexture.get(),
         m_transitionMask.get(),
         m_inputDeviceSpriteResolver.get(),
-        m_inputManager.get()
+        m_InputSystem.get()
     );
 
   
@@ -247,7 +247,7 @@ void Game::Update(DX::StepTimer const& timer)
     // シーン管理の更新処理
     m_sceneManager->Update(deltaTime);
 
-    m_inputManager->Update();
+    m_InputSystem->Update();
 
     
 #ifdef GAME_MODE

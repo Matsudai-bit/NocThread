@@ -210,7 +210,6 @@
     <ClInclude Include="Game\Common\Framework\GameObjectRegistry\GameObjectRegistry.h" />
     <ClInclude Include="Game\Common\Framework\Input\InputActionMap\InputActionMap.h" />
     <ClInclude Include="Game\Common\Framework\Input\InputActionType\InputActionType.h" />
-    <ClInclude Include="Game\Common\Framework\Input\InputManager\InputManager.h" />
     <ClInclude Include="Game\Common\Framework\Input\InputSystem\InputSystem.h" />
     <ClInclude Include="Game\Common\Framework\ResourceManager\ResourceManager.h" />
     <ClInclude Include="Game\Common\Framework\SoundManager\SoundManager.h" />
@@ -367,7 +366,6 @@
     <ClCompile Include="Game\Common\Framework\GameObjectRegistry\GameObjectRegistry.cpp" />
     <ClCompile Include="Game\Common\Framework\Input\InputActionMap\InputActionMap.cpp" />
     <ClCompile Include="Game\Common\Framework\Input\InputActionType\InputActionType.cpp" />
-    <ClCompile Include="Game\Common\Framework\Input\InputManager\InputManager.cpp" />
     <ClCompile Include="Game\Common\Framework\Input\InputSystem\InputSystem.cpp" />
     <ClCompile Include="Game\Common\Framework\ResourceManager\ResourceManager.cpp" />
     <ClCompile Include="Game\Common\Framework\SoundManager\SoundManager.cpp" />

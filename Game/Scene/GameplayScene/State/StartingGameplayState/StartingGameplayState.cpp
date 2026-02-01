@@ -26,7 +26,7 @@
 #include "Game/Common/Framework/TaskManager/TaskManager.h"
 #include "Game/Common/Framework/ResourceManager/ResourceManager.h"
 #include "Game/Common/Framework/Input/InputActionMap/InputActionMap.h"
-#include "Game/Common/Framework/Input/InputManager/InputManager.h"
+#include "Game/Common/Framework/Input/InputSystem/InputSystem.h"
 
 // ゲームプレイロジック関連
 #include "Game/Common/GameplayLogic/PauseNavigator/PauseNavigator.h"
@@ -171,8 +171,8 @@ void StartingGameplayState::OnExitState()
  */
 void StartingGameplayState::RegisterBindCallbackToInput()
 {	// 戻る入力
-	auto pInputManager = GetOwner()->GetCommonResources()->GetInputManager();
-	pInputManager->GetInputActionMap(InputActionID::Player::MAP_NAME)->BindInputEvent(InputActionID::Player::STEPPING, this,
+	auto pInputSystem = GetOwner()->GetCommonResources()->GetInputSystem();
+	pInputSystem->GetInputActionMap(InputActionID::Player::MAP_NAME)->BindInputEvent(InputActionID::Player::STEPPING, this,
 		[this](const InputEventData& data) { if(this)OnInputStartGame(data); });
 }
 
@@ -181,10 +181,10 @@ void StartingGameplayState::RegisterBindCallbackToInput()
  */
 void StartingGameplayState::UnBindCallbackToInput()
 {
-	// 入力管理の取得
-	auto pInputManager = GetOwner()->GetCommonResources()->GetInputManager();
+	// 入力システムの取得
+	auto pInputSystem = GetOwner()->GetCommonResources()->GetInputSystem();
 
-	pInputManager->GetInputActionMap(InputActionID::Player::MAP_NAME)->UnBindAllInputEvent(InputActionID::Player::STEPPING, this);
+	pInputSystem->GetInputActionMap(InputActionID::Player::MAP_NAME)->UnBindAllInputEvent(InputActionID::Player::STEPPING, this);
 }
 
 /**
@@ -201,7 +201,7 @@ void StartingGameplayState::CreatePauseNavigator()
 		GetOwner()->GetCommonResources()->GetResourceManager(),
 		GetOwner()->GetCommonResources()->GetInputDeviceSpriteResolver(),
 		GetOwner()->GetCanvas(),
-		GetOwner()->GetCommonResources()->GetInputManager());
+		GetOwner()->GetCommonResources()->GetInputSystem());
 
 	m_pauseNavigator->SetInputCallback([this](const InputEventData& data) {OnOpenPause(data); });
 }

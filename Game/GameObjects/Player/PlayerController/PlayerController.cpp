@@ -17,7 +17,7 @@
 #include "Game/GameObjects/Player/Player.h"
 
 // フレームワーク関連
-#include "Game/Common/Framework/Input/InputManager/InputManager.h"
+#include "Game/Common/Framework/Input/InputSystem/InputSystem.h"
 #include "Game/Common/Framework/Input/InputActionMap/InputActionMap.h"
 #include "Game/Common/Framework/Input/InputActionType/InputActionType.h"
 
@@ -36,7 +36,7 @@ using namespace DirectX;
 PlayerController::PlayerController()
 	: m_pCamera			 { nullptr }
 	, m_pPlayer			 { nullptr }
-	, m_pInputManager	 { nullptr }
+	, m_pInputSystem	 { nullptr }
 	, m_isSteppingRequest{ false }
 	, m_isJumpingRequest { false }
 	, m_isReleaseWireRequested{ false }
@@ -62,13 +62,13 @@ PlayerController::~PlayerController()
  *
  * @return なし
  */
-void PlayerController::Initialize(const Camera* pCamera, Player* pPlayer, InputManager* pInputManager)
+void PlayerController::Initialize(const Camera* pCamera, Player* pPlayer, InputSystem* pInputSystem)
 {
 	m_pCamera = pCamera;
 
 	m_pPlayer = pPlayer;
 
-	m_pInputManager = pInputManager;
+	m_pInputSystem = pInputSystem;
 	RegisterBindCallbackToInput();
 
 }
@@ -194,9 +194,9 @@ void PlayerController::RegisterBindCallbackToInput()
 {
 	using namespace SimpleMath;
 
-	// 入力管理の取得
+	// 入力システムの取得
 	// アクションマップの取得
-	auto playerActionMap = m_pInputManager->GetInputActionMap(InputActionID::Player::MAP_NAME);
+	auto playerActionMap = m_pInputSystem->GetInputActionMap(InputActionID::Player::MAP_NAME);
 	// 上入力
 	playerActionMap->BindInputEvent(InputActionID::Player::FRONT_MOVE, this,
 		[this](const InputEventData& data) { UNREFERENCED_PARAMETER(data);  AddMoveDirection(Vector3::Forward); });
@@ -231,16 +231,20 @@ void PlayerController::RegisterBindCallbackToInput()
  */
 void PlayerController::UnBindCallbackToInput()
 {
-	// 入力管理の取得
+	// 入力システムの取得
 	// アクションマップの取得
-	auto playerActionMap = m_pInputManager->GetInputActionMap(InputActionID::Player::MAP_NAME);
-	playerActionMap->UnBindAllInputEvent(InputActionID::Player::FRONT_MOVE, this);
-	playerActionMap->UnBindAllInputEvent(InputActionID::Player::BACK_MOVE,	this);
-	playerActionMap->UnBindAllInputEvent(InputActionID::Player::LEFT_MOVE,	this);
-	playerActionMap->UnBindAllInputEvent(InputActionID::Player::RIGHT_MOVE, this);
-	playerActionMap->UnBindAllInputEvent(InputActionID::Player::STEPPING,	this);
-	playerActionMap->UnBindAllInputEvent(InputActionID::Player::JUMPING,	this);
-	playerActionMap->UnBindAllInputEvent(InputActionID::Player::RELEASE_WIRE,this);
+	if (m_pInputSystem)
+	{
+		auto playerActionMap = m_pInputSystem->GetInputActionMap(InputActionID::Player::MAP_NAME);
+		playerActionMap->UnBindAllInputEvent(InputActionID::Player::FRONT_MOVE,		this);
+		playerActionMap->UnBindAllInputEvent(InputActionID::Player::BACK_MOVE,		this);
+		playerActionMap->UnBindAllInputEvent(InputActionID::Player::LEFT_MOVE,		this);
+		playerActionMap->UnBindAllInputEvent(InputActionID::Player::RIGHT_MOVE,		this);
+		playerActionMap->UnBindAllInputEvent(InputActionID::Player::STEPPING,		this);
+		playerActionMap->UnBindAllInputEvent(InputActionID::Player::JUMPING,		this);
+		playerActionMap->UnBindAllInputEvent(InputActionID::Player::RELEASE_WIRE,	this);
+	}
+
 }
 
 
