@@ -69,6 +69,12 @@ PlayerCamera::PlayerCamera(int windowWidth, int windowHeight,  DirectX::Mouse::B
 
 }
 
+PlayerCamera::~PlayerCamera()
+{
+	// 衝突管理から削除
+	GetCommonResources()->GetCollisionManager()->RemoveCollisionObjectData(this, m_sphereCollider.get());
+}
+
 /**
  * @brief 初期化処理
  *

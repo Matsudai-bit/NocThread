@@ -32,7 +32,7 @@ class ResourceManager;	// リソース管理
 class TransitionMask;	// シーン遷移マスク表示クラス
 class InputDeviceSpriteResolver; // 入力デバイス毎のスプライトの表記を切り替え器
 class InputSystem;		// 入力システム
-
+class CollisionManager;	// 衝突管理
 
 // クラスの定義 ===============================================================
 /**
@@ -66,6 +66,8 @@ private:
 
 	InputSystem*				m_pInputSystem;	///< 入力システム
 
+	CollisionManager*			m_pCollisionManager;///< 衝突管理
+
 	// ---- 仮実装 ----
 	DX::RenderTexture* m_pCopyRenderTexture;			///< 画面をコピーしたテクスチャ
 	bool m_copyScreenRequest;
@@ -87,7 +89,8 @@ public:
 		DX::RenderTexture*						pCopyRenderTexture,
 		TransitionMask* pTransitionMask,
 		InputDeviceSpriteResolver*	pInputDeviceSpriteResolver,
-		InputSystem*				pInputSystem);
+		InputSystem*				pInputSystem,
+		CollisionManager*			pCollisionManager);
 
 
 	// デストラクタ
@@ -129,6 +132,9 @@ public:
 
 	// 入力システムの取得
 	InputSystem* GetInputSystem() const;
+
+	// 衝突管理の取得
+	CollisionManager* GetCollisionManager() const;
 
 	// 画面をコピーしたテクスチャの取得
 	DX::RenderTexture* GetCopyScreenTexture() const { return m_pCopyRenderTexture; }

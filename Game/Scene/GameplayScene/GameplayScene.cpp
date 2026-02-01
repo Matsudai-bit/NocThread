@@ -158,7 +158,6 @@ void GameplayScene::Finalize()
 {
 	
 	m_stateMachine->ClearState();
-	m_collisionManager->Finalize();
 }
 
 /**
@@ -277,9 +276,6 @@ void GameplayScene::CreatePlatform()
 
 	// ゲーム進行の監督の作成
 	m_gameDirector = std::make_unique<GameDirector>();
-
-	// 衝突管理の生成
-	m_collisionManager = std::make_unique<CollisionManager>();
 	// 衝突検知表の生成
 	m_collisionMatrix = CollisionMatrixFactory::StageCollisionMatrix().Create(DefaultSpawnDesc());
 
@@ -312,10 +308,10 @@ void GameplayScene::CreatePlatform()
 void GameplayScene::SetupPlatform()
 {
 	// ステージの初期化処理
-	m_stageManager->Initialize(m_spawnManager.get(), m_collisionManager.get(), m_taskManager.get());
+	m_stageManager->Initialize(m_spawnManager.get(), GetCommonResources()->GetCollisionManager(), m_taskManager.get());
 
 	// 衝突管理に衝突検知表を設定
-	m_collisionManager->SetCollisionMatrix(m_collisionMatrix.get());
+	GetCommonResources()->GetCollisionManager()->SetCollisionMatrix(m_collisionMatrix.get());
 
 	// ゲームディレクターの初期化処理
 	m_gameDirector->Initialize(GetCommonResources());
@@ -323,7 +319,7 @@ void GameplayScene::SetupPlatform()
 	// 現在使用するエフェクト管理の取得
 	GameEffectController::GetInstance()->SetGameEffectManager(m_gameEffectManager.get());
 	// 出現管理の初期化処理
-	m_spawnManager->Initialize(GetCommonResources(), m_collisionManager.get());
+	m_spawnManager->Initialize(GetCommonResources(), GetCommonResources()->GetCollisionManager());
 
 	// 一番手前にする
 	m_canvas->SetOt(0);
@@ -334,7 +330,7 @@ void GameplayScene::SetupPlatform()
  * */
 void GameplayScene::CreateStage()
 {
-	m_stageManager->CreateStage( m_collisionManager.get());
+	m_stageManager->CreateStage(GetCommonResources()->GetCollisionManager());
 }
 
 /**
@@ -348,7 +344,6 @@ void GameplayScene::CreateTask()
 	m_taskManager->AddTask(m_stageManager.get());		// StageManager
 	m_taskManager->AddTask(m_spawnManager.get());		// SpawnManager
 	m_taskManager->AddTask(m_stageManager->GetPlayerCamera());		// SpawnManager
-	m_taskManager->AddTask(m_collisionManager.get());	// CollisionManager
 	m_taskManager->AddTask(m_gameEffectManager.get());	// EffectManager
 	m_taskManager->AddTask(m_miniMap.get());			// Minimap
 	m_taskManager->AddTask(m_canvas.get());				// Canvas

@@ -79,7 +79,6 @@ private:
 
     // システム
 	std::unique_ptr<GameDirector>		m_gameDirector;		///< ゲーム進行の監督
-    std::unique_ptr<CollisionManager>   m_collisionManager; ///< 衝突管理
 	std::unique_ptr<GameEffectManager>	m_gameEffectManager;///< ゲームエフェクト管理
 	std::unique_ptr<TaskManager>		m_taskManager;		///< タスク管理
 	std::unique_ptr<SpawnManager>		m_spawnManager;		///< 出現管理

@@ -13,8 +13,13 @@
 
 
 #include <vector>
+#include <thread>
+#include <mutex>
 
 // ヘッダファイルの読み込み ===================================================
+
+// ライブラリ関連 
+#include "Library/MyLib/IdPool/IdPool.h"
 
 // ユーティリティ関連
 #include "Game/Common/Utillities/Collision/Collision.h"
@@ -35,12 +40,12 @@
  */
   // 前置宣言
 class GameObject;
-
 /**
  * @brief 衝突情報
  */
 class CollisionInfo
 {
+
 public:
 	ICollider*	pOtherCollider;	// 相手のコライダー
 	GameObject* pOtherObject;	// 相手のオブジェクト
@@ -71,26 +76,27 @@ struct BroadCollision
  */
 struct CollisionData
 {
-	GameObject* pGameObject;
-	ICollider* pCollider;
+	GameObject* pGameObject;	///< ゲームオブジェクト
+	ICollider* pCollider;		///< コライダー
 
-	uint32_t	tagBitIndex;
+	int			id;			///< 衝突データ固有のID
+	uint32_t	tagBitIndex;	///< 衝突マトリックス時に使用（毎フレーム計算すると重いためのキャッシュ）
 
-	std::vector<CollisionData> children;
+	std::vector<int> children;
 
 	CollisionData()
 		: pGameObject	{ nullptr }
 		, pCollider		{ nullptr }
 		, tagBitIndex	{ 0 }
-		, children{}
+		, children		{}
+		, id			{ -1 }
 	{}
 
-	CollisionData(GameObject* pGameObject, ICollider* pCollider, std::vector<CollisionData> children = std::vector<CollisionData>())
+	CollisionData(GameObject* pGameObject, ICollider* pCollider)
 		: CollisionData{}
 	{
 		this->pGameObject	= pGameObject;
 		this->pCollider		= pCollider;
-		this->children		= children;
 		if (pGameObject)
 		{
 			unsigned long index;
@@ -102,6 +108,8 @@ struct CollisionData
 	}
 
 };
+
+
 class CollisionManager
 	: public Task
 {
@@ -115,9 +123,66 @@ private:
 	 */
 	struct DetectedCollisonData
 	{
-		const CollisionData* pCollisionDataA;
-		const CollisionData* pCollisionDataB;
+		int collisionDataIdA;
+		int collisionDataIdB;
+
+	/*	DetectedCollisonData()
+			: collisionDataIdA{ -1 }
+			, collisionDataIdB{ -1 }
+		{}*/
+
 	};
+
+	struct ThreadCollisionObjectProxy
+	{
+		bool isActive;
+		GameObjectTag tag;
+		uint32_t	tagBitIndex;
+
+		int id;
+		std::unique_ptr<ICollider> collider;
+		std::vector<ThreadCollisionObjectProxy> children;
+
+		ThreadCollisionObjectProxy()
+			: id{-1}
+			, tag{ GameObjectTag::DEFAULT }
+			, tagBitIndex{ }
+			, isActive{ false }
+
+		{ }
+
+		ThreadCollisionObjectProxy(const ThreadCollisionObjectProxy& origin)
+			: id{ origin.id }
+			, collider{ }
+			, children{ origin.children }
+			, tag{ origin.tag }
+			, tagBitIndex{origin.tagBitIndex }
+			, isActive{origin.isActive}
+		{
+			if (origin.collider)
+			{
+				collider = origin.collider->GetClone();
+			}
+		}
+		ThreadCollisionObjectProxy& operator=(const ThreadCollisionObjectProxy& origin)
+		{
+			if (this != &origin) {
+				id = origin.id;
+				tag = origin.tag;
+				tagBitIndex = origin.tagBitIndex;
+				isActive = origin.isActive;
+				children = origin.children;
+				if (origin.collider) {
+					collider = origin.collider->GetClone();
+				}
+				else {
+					collider.reset();
+				}
+			}
+			return *this;
+		}
+	};
+
 
 	// エイリアス宣言
 public:
@@ -126,11 +191,27 @@ public:
 private:
 
 	// 衝突判定リスト
-	std::vector<CollisionData>	m_collisionData;
+	std::vector<UINT>	m_rootCollisionDataId;
+	std::unordered_map<UINT, CollisionData>	m_collisionIdLookupTable; ///< 早期アクセス用衝突データ群
+
 	std::vector<BroadCollision> m_broadCollisionData;
 
 	const CollisionMatrix* m_pCollisionMatrix;
 
+	MyLib::IdPool<UINT> m_idPool;
+
+	std::vector<ThreadCollisionObjectProxy> m_proxy;
+
+	std::mutex m_mutex;
+	std::unique_ptr< std::thread> m_detectionThread;
+	std::vector<DetectedCollisonData> m_detectionResults;
+
+	std::atomic<bool>	m_isCalculating = true;
+	std::atomic<bool>	m_stopThread = false;
+
+	std::atomic<bool> m_applyThread;
+
+	std::condition_variable m_cv;
 	// メンバ関数の宣言 -------------------------------------------------
 	// コンストラクタ/デストラクタ
 public:
@@ -158,9 +239,10 @@ public:
 	// 衝突判定をするオブジェクトの追加
 	//void AddCollisionObjectData(GameObject* pAddGameObject, ICollider* pCollider, ICollider* pBroadCollider = nullptr);
 	void AddCollisionData(const CollisionData& collisionData);
-	void AddCollisionData(const CollisionData& collisionData, ICollider* parent);
+	void AddCollisionData(const CollisionData& childCollisionData, ICollider* parent);
 	// 削除
 	void RemoveCollisionObjectData(GameObject* pAddGameObject, ICollider* pCollider);
+	void RemoveAll();
 
 	// 何かのオブジェクトと当たったかどうか
 	bool IsCollisionWithAnyObject(const ICollider& checkCollider);
@@ -174,6 +256,7 @@ public:
 	// 指定したコライダーの衝突情報を取得する
 	bool RetrieveCollisionData(const ICollider* pCheckCollider, std::vector<const GameObject*>* pHitGameObjects, std::vector<const ICollider*>* pHitColliders = nullptr);
 
+	void StartThread();
 
 	// 取得/設定
 public:
@@ -187,7 +270,7 @@ private:
 	// 衝突判定直前の処理
 	void PreCollision();
 	// 衝突の検知
-	void UpdateDetection(std::vector<DetectedCollisonData>* pOutResults);
+	void UpdateDetection(const std::vector<ThreadCollisionObjectProxy>* proxy, std::vector<DetectedCollisonData>* pOutResults);
 
 	// 衝突の通知
 	void NotifyCollisionEvents(std::vector<DetectedCollisonData>* pDetectedCollisions);
@@ -197,7 +280,15 @@ private:
 
 
 	// ペアの衝突チェック
-	void CheckCollisionPair(const CollisionData& collisionDataA, const CollisionData& collisionDataB, std::vector<DetectedCollisonData>* pOutResults);
+	void CheckCollisionPair(const ThreadCollisionObjectProxy& collisionDataA, const ThreadCollisionObjectProxy& collisionDataB, std::vector<DetectedCollisonData>* pOutResults);
 
+	// 早期アクセス用テーブルに登録する
+	UINT RegisterIdLookUpTable(CollisionData data);
+	// 早期アクセス用テーブルから削除する
+	void UnregisterIdLookUpTable(int dataID);
+
+
+	void CreateThreadCollisionObjectProxy(std::vector<ThreadCollisionObjectProxy>* collisionObjectProxy);
+	bool CreateProxy(ThreadCollisionObjectProxy* pProxy, const CollisionData& collisionData);
 	
 };

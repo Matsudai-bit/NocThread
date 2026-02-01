@@ -116,6 +116,7 @@ public:
 
 	// コンストラクタ
 	PlayerCamera(int windowWidth, int windowHeight,  DirectX::Mouse::ButtonStateTracker* pMouseTracker);
+	~PlayerCamera();
 
 	// 初期化処理
 	void Initialize(const CommonResources* pCommonResources, CollisionManager* pCollisionManager);

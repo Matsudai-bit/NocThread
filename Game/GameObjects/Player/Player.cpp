@@ -92,6 +92,8 @@ Player::Player()
  */
 Player::~Player()
 {
+	// Õ“ËŠÇ—‚©‚çíœ
+	GetCommonResources()->GetCollisionManager()->RemoveCollisionObjectData(this, m_collider.get());
 }
 
 /**

@@ -49,6 +49,13 @@ Building::Building()
  */
 Building::~Building()
 {
+	// Õ“ËŠÇ—‚©‚çíœ
+	for (auto& collider : m_collider)
+	{
+		GetCommonResources()->GetCollisionManager()->RemoveCollisionObjectData(this,collider.get());
+	}
+		GetCommonResources()->GetCollisionManager()->RemoveCollisionObjectData(&m_parentColliderObject, m_parentColliderObject.GetCollider());
+	
 
 }
 

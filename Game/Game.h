@@ -23,6 +23,7 @@
 #include "Game/Scene/SceneManager.h"         // シーン管理
 #include "Game/Common/Framework/Input/InputSystem/InputSystem.h"
 #include "Game/Common/Framework/Input/InputActionMap/InputActionMap.h"
+#include "Game/Common/GameplayLogic/CollisionManager/CollisionManager.h"
 
 // グラフィック関連
 #include "Game/Common/Graphics/TransitionMask/TransitionMask.h"      // トランジションマスク
@@ -66,6 +67,7 @@ private:
     std::unique_ptr<TransitionMask>     m_transitionMask;   ///< トランジションマスク
     std::unique_ptr<MyLib::SceneManager<CommonResources>>  m_sceneManager;     ///< シーン管理
     std::unique_ptr<InputDeviceSpriteResolver>  m_inputDeviceSpriteResolver;    ///< 入力デバイス毎のスプライトの表記を切り替え器
+    std::unique_ptr<CollisionManager>   m_collisionManager; ///< 衝突管理
 
 
     std::unique_ptr<InputSystem> m_InputSystem;

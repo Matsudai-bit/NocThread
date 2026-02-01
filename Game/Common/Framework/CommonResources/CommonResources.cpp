@@ -30,6 +30,7 @@ using namespace DirectX;
  * @param[in] pTransitionMask	シーン遷移表示用マスク
  * @param[in] pInputDeviceSpriteResolver	入力デバイス毎のスプライトの表記を切り替え器
  * @param[in] pInputSystem		入力システム
+ * @param[in] pInputSystem		衝突管理
 
  */
 CommonResources::CommonResources(
@@ -44,7 +45,8 @@ CommonResources::CommonResources(
 	DX::RenderTexture*				pCopyRenderTexture,
 	TransitionMask*					pTransitionMask,
 	InputDeviceSpriteResolver*		pInputDeviceSpriteResolver,
-	InputSystem*					pInputSystem)
+	InputSystem*					pInputSystem,
+	CollisionManager*				pCollisionManager)
 
 	: m_pStepTimer		{pStepTimer}
 	, m_pDeviceResources{pDeviceResources}
@@ -59,6 +61,7 @@ CommonResources::CommonResources(
 	, m_pTransitionMask{ pTransitionMask }
 	, m_pInputDeviceSpriteResolver	{ pInputDeviceSpriteResolver }
 	, m_pInputSystem				{ pInputSystem }
+	, m_pCollisionManager			{ pCollisionManager }
 
 {
 
@@ -182,6 +185,16 @@ InputDeviceSpriteResolver* CommonResources::GetInputDeviceSpriteResolver() const
 InputSystem* CommonResources::GetInputSystem() const
 {
 	return m_pInputSystem;
+}
+
+/**
+ * @brief 衝突管理の取得
+ * 
+ * @return 衝突管理のポインタ
+ */
+CollisionManager* CommonResources::GetCollisionManager() const
+{
+	return m_pCollisionManager;
 }
 
 

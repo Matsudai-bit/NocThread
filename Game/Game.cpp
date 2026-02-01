@@ -88,6 +88,7 @@ Game::~Game()
     m_sceneManager->Finalize();
 
 
+    m_collisionManager->Finalize();
     // 3. 全ての unique_ptr を明示的に破棄する（宣言の逆順が望ましい）
     m_sceneManager.reset();    // シーンを消す（TitleSceneなどもここで消える）
     m_transitionMask.reset();
@@ -131,7 +132,8 @@ void Game::Initialize(HWND window, int width, int height)
     SoundManager::GetInstance()->SetResourceManager(m_resourceManager.get());
 
    // **** 生成 ****
-   
+    m_collisionManager = std::make_unique<CollisionManager>();
+
    // シーンの生成
    m_sceneManager = std::make_unique<MyLib::SceneManager<CommonResources>>();
 
@@ -164,8 +166,10 @@ void Game::Initialize(HWND window, int width, int height)
         m_copyRenderTexture.get(),
         m_transitionMask.get(),
         m_inputDeviceSpriteResolver.get(),
-        m_InputSystem.get()
+        m_InputSystem.get(),
+        m_collisionManager.get()
     );
+
 
   
 
@@ -238,16 +242,26 @@ void Game::Update(DX::StepTimer const& timer)
     auto gamePad = GamePad::Get().GetState(0);
     m_gamePadStateTracker->Update(gamePad);
 
-    // 入力デバイス切り替え器の更新処理
-    m_inputDeviceSpriteResolver->Update();
-
     // トランジションマスクの更新処理
     m_transitionMask->Update(deltaTime);
 
     // シーン管理の更新処理
     m_sceneManager->Update(deltaTime);
 
+    if (m_keyboardStateTracker->GetLastState().P)
+    {
+        m_collisionManager->RemoveAll();
+    }
+
+    m_collisionManager->StartThread();
+
+
+    // 入力デバイス切り替え器の更新処理
+    m_inputDeviceSpriteResolver->Update();
+
     m_InputSystem->Update();
+
+    m_collisionManager->UpdateTask(deltaTime);
 
     
 #ifdef GAME_MODE
@@ -294,14 +308,14 @@ void Game::Render()
 
     }
 
-    //// FPSを取得する
-    //uint32_t fps = m_timer.GetFramesPerSecond();
+    // FPSを取得する
+    uint32_t fps = m_timer.GetFramesPerSecond();
 
-    //// FPSの表示
-    //m_debugFont->AddString(0, 0, Colors::White, L"FPS=%d", fps);
+    // FPSの表示
+    m_debugFont->AddString(0, 0, Colors::White, L"FPS=%d", fps);
 
-    //// デバッグフォントの描画
-    //m_debugFont->Render(m_states.get());
+    // デバッグフォントの描画
+    m_debugFont->Render(m_states.get());
 
        // ****  ImGuiの描画処理 ****
 
