@@ -100,12 +100,14 @@ public:
 	// 座標の取得
 	DirectX::SimpleMath::Vector3 GetPosition() const;
 
+
+	// クローンの取得
+	std::unique_ptr<ICollider> GetClone() const override;
+
 	// 半径の取得
 	float GetRadius() const;
 	// 半径の設定
 	void SetRadius(const float& radius);
-
-	void Draw(ID3D11DeviceContext1* context, const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& projection);
 
 	// コライダーの種類の取得
 	ColliderType GetColliderType() const override;
@@ -151,6 +153,11 @@ public:
 
 // 取得/設定
 public:
+
+
+	// クローンの取得
+	std::unique_ptr<ICollider> GetClone() const override;
+
 	// 平面情報の取得
 	DirectX::SimpleMath::Vector4 GetVector4() const;
 
@@ -190,12 +197,6 @@ private:
 	std::vector<DirectX::SimpleMath::Vector3>	m_parentPos;	///< 親となる三点座標
 	Plane										m_plane;	///< 平面
 
-	// 描画関係
-	DirectX::PrimitiveBatch<DirectX::VertexPositionColor>	m_primitiveBatch;			///< プリミティブバッチ
-	DirectX::VertexPositionColor							m_vertexes[VERTEX_NUM];		///< 頂点データ
-	DirectX::BasicEffect									m_basicEffect;				///< エフェクト
-	Microsoft::WRL::ComPtr<ID3D11InputLayout>				m_inputLayout;				///< 入力
-	DX::DeviceResources* m_pDeviceResources;
 
 // コンストラクタ
 public:
@@ -204,8 +205,7 @@ public:
 	Triangle(
 		const DirectX::SimpleMath::Vector3& posA,
 		const DirectX::SimpleMath::Vector3& posB,
-		const DirectX::SimpleMath::Vector3& posC,
-		DX::DeviceResources* pDeviceResources);
+		const DirectX::SimpleMath::Vector3& posC);
 	
 
 
@@ -221,8 +221,6 @@ public:
 	// 三角形上のの指定点に最も近い点を求める
 	static DirectX::SimpleMath::Vector3 CalcClosestPoint(const DirectX::SimpleMath::Vector3& point, const Triangle& triangle) ;
 
-	// 描画
-	void Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& projection);
 
 // 衝突判定
 public:
@@ -234,6 +232,9 @@ public:
 
 // 取得・設定
 public :
+
+	// クローンの取得
+	std::unique_ptr<ICollider> GetClone() const override;
 
 	// コライダーの種類の取得
 	ColliderType GetColliderType() const override;
@@ -265,10 +266,15 @@ public :
 class Box2D :
 	public ICollider
 {
+	// 定数
+public:
+
+	static constexpr int TRIANGLE_NUM = 2;
+
 	// データメンバの宣言
 private:
 
-	std::vector<std::unique_ptr<Triangle>> m_triangles;					///< 二つの三角形
+	Triangle m_triangles[TRIANGLE_NUM];					///< 二つの三角形
 	
 	DirectX::SimpleMath::Vector3 m_rotate;	///< 回転
 
@@ -281,8 +287,7 @@ public:
 		const DirectX::SimpleMath::Vector3& posA,
 		const DirectX::SimpleMath::Vector3& posB,
 		const DirectX::SimpleMath::Vector3& posC,
-		const DirectX::SimpleMath::Vector3& posD,
-		DX::DeviceResources* pDeviceResources);
+		const DirectX::SimpleMath::Vector3& posD);
 
 	~Box2D() = default;
 
@@ -304,6 +309,9 @@ public:
 	// 取得・設定
 public:
 
+	// クローンの取得
+	std::unique_ptr<ICollider> GetClone() const override;
+
 	// コライダーの種類の取得
 	ColliderType GetColliderType() const override;
 
@@ -314,16 +322,13 @@ public:
 			const DirectX::SimpleMath::Vector3& posD);
 
 	// 三角形の取得
-	const std::vector<std::unique_ptr<Triangle>>& GetTriangle() const;
+	const std::array<Triangle, TRIANGLE_NUM>& GetTriangle() const;
 
 	// 平面情報の取得
 	const Plane& GetPlane() const;
 
 	// 回転角を設定
 	void Rotate(DirectX::SimpleMath::Vector3 rotate);
-
-	// 描画処理
-	void Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& projection);
 
 };
 
@@ -371,6 +376,9 @@ public:
 
 // 設定・取得
 public:
+
+	// クローンの取得
+	std::unique_ptr<ICollider> GetClone() const override;
 
 	// コライダーの種類の取得
 	ColliderType GetColliderType() const override;
@@ -423,6 +431,8 @@ public:
 
 public:
 
+	// クローンの取得
+	std::unique_ptr<ICollider> GetClone() const override;
 	// コライダーの種類の取得
 	ColliderType GetColliderType() const override;
 
@@ -447,7 +457,6 @@ public:
 	// 内部に点が位置するかどうか
 	bool IsPointInside(const DirectX::SimpleMath::Vector3& point) const;
 
-	void Draw(ID3D11DeviceContext1* context, const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& projection);
 };
 
 /**
@@ -487,6 +496,9 @@ public:
 
 
 public:
+
+	// クローンの取得
+	std::unique_ptr<ICollider> GetClone() const override;
 
 	// コライダーの種類の取得
 	ColliderType GetColliderType() const override;
@@ -553,7 +565,8 @@ public:
 
 
 public:
-
+	// クローンの取得
+	std::unique_ptr<ICollider> GetClone() const override;
 	// コライダーの種類の取得
 	ColliderType GetColliderType() const override;
 

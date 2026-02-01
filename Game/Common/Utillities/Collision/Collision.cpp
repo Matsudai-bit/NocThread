@@ -174,6 +174,11 @@ DirectX::SimpleMath::Vector3 Sphere::GetPosition() const
 	return m_pos;
 }
 
+std::unique_ptr<ICollider> Sphere::GetClone() const
+{
+	return std::make_unique<Sphere>(*this);
+}
+
 /**
  * @brief 半径の取得
  * 
@@ -192,12 +197,6 @@ float Sphere::GetRadius() const
 void Sphere::SetRadius(const float& radius)
 {
 	m_radius = radius;
-}
-
-void Sphere::Draw(ID3D11DeviceContext1* context, const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& projection)
-{
-	std::unique_ptr<GeometricPrimitive>  a = GeometricPrimitive::CreateSphere(context, m_radius * 2.0f);
-	a->Draw(SimpleMath::Matrix::CreateTranslation(m_pos), view, projection, Colors::White, nullptr ,true);
 }
 
 /**
@@ -267,6 +266,16 @@ bool Plane::CheckHit(const Sphere& shere) const
 bool Plane::CheckHit(const Segment& segment) const
 {
 	return IsHit(*this, segment);
+}
+
+/**
+ * @brief クローンの取得
+ * 
+ * @return クローン
+ */
+std::unique_ptr<ICollider> Plane::GetClone() const
+{
+	return std::make_unique<Plane>(*this);
 }
 
 /**
@@ -352,37 +361,16 @@ ColliderType Plane::GetColliderType() const
 Triangle::Triangle(
 	const DirectX::SimpleMath::Vector3& posA,
 	const DirectX::SimpleMath::Vector3& posB,
-	const DirectX::SimpleMath::Vector3& posC,
-	DX::DeviceResources* pDeviceResources)
+	const DirectX::SimpleMath::Vector3& posC)
 	: m_pos{ 3 }
 	, m_plane{posA, posB, posC}
-	, m_vertexes{}
-	, m_primitiveBatch{pDeviceResources->GetD3DDeviceContext()}
-	, m_inputLayout{}
-	, m_basicEffect{pDeviceResources->GetD3DDevice()}
-	, m_pDeviceResources{pDeviceResources}
-
 {
-
-	// ライト(OFF)
-	m_basicEffect.SetLightingEnabled(false);
-	// 頂点カラー(ON)
-	m_basicEffect.SetVertexColorEnabled(true);
-	// テクスチャ(OFF)
-	m_basicEffect.SetTextureEnabled(false);
-
-	// 入力レイアウト作成
-	DX::ThrowIfFailed(
-		CreateInputLayoutFromEffect<VertexPositionColor>(
-			pDeviceResources->GetD3DDevice(), &m_basicEffect, m_inputLayout.ReleaseAndGetAddressOf())
-	);
 
 	// 3頂点座標の設定
 	Set(posA, posB, posC);
 
 
 }
-
 
 /**
  * @brief 任意の点が三角形内に存在するかどうか
@@ -578,6 +566,11 @@ bool Triangle::CheckHit(const Segment& segment) const
 	return IsHit(*this, segment);
 }
 
+std::unique_ptr<ICollider> Triangle::GetClone() const
+{
+	return std::make_unique<Triangle>(*this);
+}
+
 /**
  * @brief コライダーの種類の取得
  * 
@@ -608,12 +601,6 @@ void Triangle::Set(
 	m_pos[1] = posB;
 	m_pos[2] = posC;
 
-	for (int i = 0; i < VERTEX_NUM; i++)
-	{
-		m_vertexes[i].position	= m_pos[i];
-		m_vertexes[i].color = COLOR;
-	}
-	
 
 	// 平面の設定
 	m_plane.Set(posA, posB, posC);
@@ -659,45 +646,12 @@ void Triangle::Rotate(DirectX::SimpleMath::Vector3 rotate)
 	m_pos[1] = SimpleMath::Vector3::TransformNormal(m_parentPos[1], rotationMatrix);
 	m_pos[2] = SimpleMath::Vector3::TransformNormal(m_parentPos[2], rotationMatrix);
 
-	for (int i = 0; i < VERTEX_NUM; i++)
-	{
-		m_vertexes[i].position = m_pos[i];
-	}
-
 	// 平面ベクトルの設定
 	m_plane.Set(m_pos[0], m_pos[1], m_pos[2]);
 }
 
 
 
-
-/**
- * @brief 描画処理
- * 
- */
-void Triangle::Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& projection)
-{
-	auto context = m_pDeviceResources->GetD3DDeviceContext();
-
-	// 入力レイアウト
-	context->IASetInputLayout(m_inputLayout.Get());
-
-	m_basicEffect.SetWorld(SimpleMath::Matrix::Identity);
-
-	m_basicEffect.SetView(view);
-	m_basicEffect.SetProjection(projection);
-
-	// 適用
-	m_basicEffect.Apply(context);
-
-	// プリミティブバッチの描画
-	m_primitiveBatch.Begin();
-
-	// 三角形の描画
-	m_primitiveBatch.DrawIndexed(D3D11_PRIMITIVE_TOPOLOGY_LINESTRIP, INDEXES, 3, m_vertexes, 3);
-
-	m_primitiveBatch.End();
-}
 
 // *************** 線分 ****************************
 
@@ -822,6 +776,16 @@ SimpleMath::Vector3 Segment::GetClosestPoint(const SimpleMath::Vector3& point, c
 	return CalcClosestPointOnSegment(segStart, segEnd, point);
 }
 
+
+/**
+ * @brief クローンの取得
+ * 
+ * @return コピーされたオブジェクト
+ */
+std::unique_ptr<ICollider> Segment::GetClone() const
+{
+	return std::make_unique<Segment>(*this);
+}
 
 /**
  * @brief コライダーの種類の取得
@@ -1089,8 +1053,8 @@ bool IsHit(const Triangle& triangle, const Segment& segment)
 bool IsHit(const Box2D& box, const Sphere& sphere)
 {
 	return (
-		box.GetTriangle()[0]->CheckHit(sphere) || 
-		box.GetTriangle()[1]->CheckHit(sphere));
+		box.GetTriangle()[0].CheckHit(sphere) || 
+		box.GetTriangle()[1].CheckHit(sphere));
 }
 
 /**
@@ -1103,8 +1067,8 @@ bool IsHit(const Box2D& box, const Sphere& sphere)
 bool IsHit(const Box2D& box, const Segment& segment)
 {
 	return (
-		box.GetTriangle()[0]->CheckHit(segment) ||
-		box.GetTriangle()[1]->CheckHit(segment));
+		box.GetTriangle()[0].CheckHit(segment) ||
+		box.GetTriangle()[1].CheckHit(segment));
 }
 
 /**
@@ -1980,7 +1944,7 @@ DirectX::SimpleMath::Vector3 CalcOverlap(const Triangle& triangle, const Sphere&
 DirectX::SimpleMath::Vector3 CalcOverlap(const Box2D& box2D, const Sphere& sphere)
 {
 	// 衝突した三角形を取得
-	const Triangle* pHitTri = (box2D.GetTriangle()[0]->CheckHit(sphere)) ? box2D.GetTriangle()[0].get() : box2D.GetTriangle()[1].get();
+	const Triangle* pHitTri = (box2D.GetTriangle()[0].CheckHit(sphere)) ? &box2D.GetTriangle()[0] : &box2D.GetTriangle()[1];
 
 	// 三角形の成分の取得
 	const auto& triPos = pHitTri->GetPosition();
@@ -2435,12 +2399,9 @@ Box2D::Box2D(
 	const DirectX::SimpleMath::Vector3& posA, 
 	const DirectX::SimpleMath::Vector3& posB,
 	const DirectX::SimpleMath::Vector3& posC, 
-	const DirectX::SimpleMath::Vector3& posD,
-	DX::DeviceResources* pDeviceResources)
-	: m_triangles{2}
+	const DirectX::SimpleMath::Vector3& posD)
+	: m_triangles{Triangle(posA, posB, posC), Triangle(posC, posD, posA) }
 {
-	m_triangles[0] = std::make_unique<Triangle>(posA, posB, posC, pDeviceResources);
-	m_triangles[1] = std::make_unique<Triangle>(posC, posD, posA, pDeviceResources);
 
 	Set(posA, posB, posC, posD);
 }
@@ -2454,7 +2415,7 @@ Box2D::Box2D(
  */
 bool Box2D::CheckInner(const DirectX::SimpleMath::Vector3& pos) const
 {
-	return (m_triangles[0]->CheckInner(pos) || m_triangles[1]->CheckInner(pos));
+	return (m_triangles[0].CheckInner(pos) || m_triangles[1].CheckInner(pos));
 }
 
 /**
@@ -2479,6 +2440,16 @@ bool Box2D::CheckHit(const Sphere& sphere) const
 bool Box2D::CheckHit(const Segment& segment) const
 {
 	return IsHit(*this, segment);
+}
+
+/**
+ * @brief クローンの取得
+ * 
+ * @return コピーされたユニークポインタ
+ */
+std::unique_ptr<ICollider> Box2D::GetClone() const
+{
+	return std::make_unique<Box2D>(*this);
 }
 
 /**
@@ -2507,8 +2478,8 @@ void Box2D::Set(
 	const DirectX::SimpleMath::Vector3& posC,
 	const DirectX::SimpleMath::Vector3& posD)
 {
-	m_triangles[0]->Set(posA, posB, posC);
-	m_triangles[1]->Set(posC, posD, posA);
+	m_triangles[0].Set(posA, posB, posC);
+	m_triangles[1].Set(posC, posD, posA);
 
 }
 
@@ -2517,10 +2488,11 @@ void Box2D::Set(
  * 
  * @return 三角形
  */
-const std::vector<std::unique_ptr<Triangle>>& Box2D::GetTriangle() const
+const std::array<Triangle, Box2D::TRIANGLE_NUM>& Box2D::GetTriangle() const
 {
+	std::array< Triangle, Box2D::TRIANGLE_NUM> result{ m_triangles[0], m_triangles[1] };
 
-	return m_triangles;
+	return result;
 }
 
 /**
@@ -2530,26 +2502,15 @@ const std::vector<std::unique_ptr<Triangle>>& Box2D::GetTriangle() const
  */
 const Plane& Box2D::GetPlane() const
 {
-	return m_triangles[0]->GetPlane();
+	return m_triangles[0].GetPlane();
 }
 
 void Box2D::Rotate(DirectX::SimpleMath::Vector3 rotate)
 {
-	m_triangles[0]->Rotate(rotate);
-	m_triangles[1]->Rotate(rotate);
+	m_triangles[0].Rotate(rotate);
+	m_triangles[1].Rotate(rotate);
 }
 
-/**
- * @brief 描画処理
- * 
- */
-void Box2D::Draw(const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& projection)
-{
-	for (auto& triangle : m_triangles)
-	{
-		triangle->Draw(view, projection);
-	}
-}
 
 /**
  * @brief コンストラクタ
@@ -2588,6 +2549,16 @@ bool AABB::CheckHit(const Cylinder& cylinder) const
 bool AABB::CheckHit(const Capsule& capsule) const
 {
 	return IsHit(capsule, *this);
+}
+
+/**
+ * @brief クローンの取得
+ * 
+ * @return コピーされたオブジェクト
+ */
+std::unique_ptr<ICollider> AABB::GetClone() const
+{
+	return std::make_unique<AABB>(*this);
 }
 
 ColliderType AABB::GetColliderType() const
@@ -2750,15 +2721,6 @@ bool AABB::IsPointInside(const SimpleMath::Vector3& point) const
 	return true;
 }
 
-void AABB::Draw(ID3D11DeviceContext1* context, const DirectX::SimpleMath::Matrix& view, const DirectX::SimpleMath::Matrix& projection)
-{
-	std::unique_ptr<GeometricPrimitive> box = GeometricPrimitive::CreateBox(context, m_extend);
-
-
-
-	box->Draw(SimpleMath::Matrix::CreateTranslation(m_center), view, projection, Colors::Red, nullptr, true);
-}
-
 /**
  * @brief コンストラクタ
  *
@@ -2787,6 +2749,16 @@ Cylinder::Cylinder()
 bool Cylinder::CheckHit(const AABB& aabb) const
 {
 	return IsHit(*this, aabb);
+}
+
+/**
+ * @brief クローンの取得
+ * 
+ * @return コピーされたオブジェクト
+ */
+std::unique_ptr<ICollider> Cylinder::GetClone() const
+{
+	return std::make_unique<Cylinder>(*this);
 }
 
 ColliderType Cylinder::GetColliderType() const
@@ -2965,6 +2937,16 @@ bool Capsule::CheckHit(const AABB& aabb) const
 bool Capsule::CheckHit(const Sphere& sphere) const
 {
 	return IsHit(*this, sphere);
+}
+
+/**
+ * @brief クローンの取得
+ * 
+ * @return コピーされたオブジェクト
+ */
+std::unique_ptr<ICollider> Capsule::GetClone() const
+{
+	return std::make_unique<Capsule>(*this);
 }
 
 ColliderType Capsule::GetColliderType() const

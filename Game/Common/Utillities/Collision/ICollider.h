@@ -53,7 +53,8 @@ public:
 
 // 取得/設定
 public:
-
+	// クローンの取得
+	virtual std::unique_ptr<ICollider> GetClone() const = 0;
 	// コライダーの種類の取得
 	virtual  ColliderType GetColliderType() const = 0;
 

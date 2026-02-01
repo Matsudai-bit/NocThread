@@ -110,20 +110,20 @@ void Wall::Initialize(
     // コライダーの設定
     // 前面
     if (wallData.facadeFace)
-        m_collider.push_back(std::make_unique<Box2D>(m_vertexes[0].position, m_vertexes[1].position, m_vertexes[2].position, m_vertexes[3].position, pCommonResources->GetDeviceResources()));
+        m_collider.push_back(std::make_unique<Box2D>(m_vertexes[0].position, m_vertexes[1].position, m_vertexes[2].position, m_vertexes[3].position));
     // 後面
     if (wallData.backFace)
-        m_collider.push_back(std::make_unique<Box2D>(m_vertexes[4].position, m_vertexes[5].position, m_vertexes[6].position, m_vertexes[7].position, pCommonResources->GetDeviceResources()));
+        m_collider.push_back(std::make_unique<Box2D>(m_vertexes[4].position, m_vertexes[5].position, m_vertexes[6].position, m_vertexes[7].position));
     // 左面
     if (wallData.leftFace)
-         m_collider.push_back(std::make_unique<Box2D>(m_vertexes[8].position, m_vertexes[9].position, m_vertexes[10].position, m_vertexes[11].position, pCommonResources->GetDeviceResources()));
+         m_collider.push_back(std::make_unique<Box2D>(m_vertexes[8].position, m_vertexes[9].position, m_vertexes[10].position, m_vertexes[11].position));
     // 右面
     if (wallData.rightFace)
-        m_collider.push_back(std::make_unique<Box2D>(m_vertexes[12].position, m_vertexes[13].position, m_vertexes[14].position, m_vertexes[15].position, pCommonResources->GetDeviceResources()));
+        m_collider.push_back(std::make_unique<Box2D>(m_vertexes[12].position, m_vertexes[13].position, m_vertexes[14].position, m_vertexes[15].position));
     // 上面
-    m_collider.push_back(std::make_unique<Box2D>(m_vertexes[16].position, m_vertexes[17].position, m_vertexes[18].position, m_vertexes[19].position, pCommonResources->GetDeviceResources()));
+    m_collider.push_back(std::make_unique<Box2D>(m_vertexes[16].position, m_vertexes[17].position, m_vertexes[18].position, m_vertexes[19].position));
     // 底面
-    m_collider.push_back(std::make_unique<Box2D>(m_vertexes[20].position, m_vertexes[21].position, m_vertexes[22].position, m_vertexes[23].position, pCommonResources->GetDeviceResources()));
+    m_collider.push_back(std::make_unique<Box2D>(m_vertexes[20].position, m_vertexes[21].position, m_vertexes[22].position, m_vertexes[23].position));
     //m_collider[5].Set(m_vertexes[20].position, m_vertexes[21].position, m_vertexes[22].position, m_vertexes[23].position);
 
         // 衝突判定管理への登録
