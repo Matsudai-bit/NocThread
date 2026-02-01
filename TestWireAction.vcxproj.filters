@@ -545,6 +545,9 @@
     <Filter Include="Game\Common\Framework\Input\InputSystem">
       <UniqueIdentifier>{d714962d-11ec-4bad-95b7-222a44019061}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\Common\Utillities\Collision\ColliderDraw">
+      <UniqueIdentifier>{7d01f3e1-8118-47c4-841a-6b4f5baa62b7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -1038,6 +1041,9 @@
     <ClInclude Include="Game\Common\Framework\Input\InputSystem\InputSystem.h">
       <Filter>Game\Common\Framework\Input\InputSystem</Filter>
     </ClInclude>
+    <ClInclude Include="Game\Common\Utillities\Collision\ColliderDraw\ColliderDrawer.h">
+      <Filter>Game\Common\Utillities\Collision\ColliderDraw</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -1357,9 +1363,6 @@
     <ClCompile Include="Game\Common\GameplayLogic\GameDirector\GameDirector.cpp">
       <Filter>Game\Common\GameplayLogic\GameDirector</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Common\GameplayLogic\GameProgressData\GameProgressData.cpp">
-      <Filter>Game\Common\GameplayLogic\GameProgressData</Filter>
-    </ClCompile>
     <ClCompile Include="Game\Common\GameplayLogic\ResultData\ResultData.cpp">
       <Filter>Game\Common\GameplayLogic\ResultData</Filter>
     </ClCompile>
@@ -1449,6 +1452,12 @@
     </ClCompile>
     <ClCompile Include="Game\Common\Framework\Input\InputSystem\InputSystem.cpp">
       <Filter>Game\Common\Framework\Input\InputSystem</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Common\GameplayLogic\GameProgressData\GameProgressData.cpp">
+      <Filter>Game\Common\GameplayLogic\GameProgressData</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Common\Utillities\Collision\ColliderDraw\ColliderDrawer.cpp">
+      <Filter>Game\Common\Utillities\Collision\ColliderDraw</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

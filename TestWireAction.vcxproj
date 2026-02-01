@@ -250,6 +250,7 @@
     <ClInclude Include="Game\Common\UserInterfaceTool\Sprite\ISprite2D.h" />
     <ClInclude Include="Game\Common\UserInterfaceTool\Sprite\Sprite.h" />
     <ClInclude Include="Game\Common\UserInterfaceTool\TimeUI\TimeUI.h" />
+    <ClInclude Include="Game\Common\Utillities\Collision\ColliderDraw\ColliderDrawer.h" />
     <ClInclude Include="Game\Common\Utillities\Collision\Collision.h" />
     <ClInclude Include="Game\Common\Utillities\Collision\ICollider.h" />
     <ClInclude Include="Game\Common\Utillities\Collision\ICollision.h" />
@@ -405,6 +406,7 @@
     <ClCompile Include="Game\Common\UserInterfaceTool\SpriteNumber\SpriteNumber.cpp" />
     <ClCompile Include="Game\Common\UserInterfaceTool\Sprite\Sprite.cpp" />
     <ClCompile Include="Game\Common\UserInterfaceTool\TimeUI\TimeUI.cpp" />
+    <ClCompile Include="Game\Common\Utillities\Collision\ColliderDraw\ColliderDrawer.cpp" />
     <ClCompile Include="Game\Common\Utillities\Collision\Collision.cpp" />
     <ClCompile Include="Game\Common\Utillities\ElapsedTimeCounter\ElapsedTimeCounter.cpp" />
     <ClCompile Include="Game\Common\Utillities\Helper\MovementHelper\MovementHelper.cpp" />
