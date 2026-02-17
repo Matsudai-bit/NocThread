@@ -763,7 +763,9 @@ void CollisionManager::UpdateDetection(const std::vector<ThreadCollisionObjectPr
         
 		OutputDebugString(L"!!!! 計算終了 !!!!\n");
         m_isCalculating = false; // 計算終了
-		
+		m_notifyCV.notify_one();
+
+
 	
 	}
 }
@@ -779,13 +781,15 @@ void CollisionManager::NotifyCollisionEvents(std::vector<DetectedCollisonData>* 
 	{
 		DetectedCollisonData data;
 		{
-			std::lock_guard<std::mutex> lock(m_mutex);
+			std::unique_lock<std::mutex> lock(m_mutex);
 
-			// 1. データが空なら、計算中かどうかで続行か終了か決める
-			if (pDetectedCollisions->empty()) {
-				if (!m_isCalculating) break; // 計算も終わっていて空なら終了
-				std::this_thread::yield();   // まだ計算中なら少し待って再トライ
-				continue;
+			m_notifyCV.wait(lock, [this, pDetectedCollisions] {
+				return !pDetectedCollisions->empty() || !m_isCalculating;
+			});
+				
+			// 終了条件：計算が終わっていて、データも空
+			if (pDetectedCollisions->empty() && !m_isCalculating) {
+				break;
 			}
 
 			// 2. 安全にデータを取り出す
@@ -870,10 +874,12 @@ void CollisionManager::CheckCollisionPair(const ThreadCollisionObjectProxy& coll
 			m_debugCount[1]++;
 		}*/
 
-		m_mutex.lock();
-		// 衝突検知された情報を登録
-		pOutResults->push_back({ collisionDataA.id, collisionDataB.id });
-		m_mutex.unlock();
+		{
+			std::lock_guard<std::mutex> lock(m_mutex);
+			pOutResults->push_back({ collisionDataA.id, collisionDataB.id });
+		}
+		m_notifyCV.notify_one();
+
 
 		// 子を持っている場合その子も検知する
 		for (auto& child : collisionDataA.children)

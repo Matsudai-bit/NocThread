@@ -213,6 +213,7 @@ private:
 	std::atomic<bool> m_applyThread;
 
 	std::condition_variable m_cv;
+	std::condition_variable m_notifyCV;
 
 	int m_debugCount[2];
 	// ƒƒ“ƒoŠÖ”‚ÌéŒ¾ -------------------------------------------------
