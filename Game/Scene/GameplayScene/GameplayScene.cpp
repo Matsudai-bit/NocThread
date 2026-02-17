@@ -228,6 +228,7 @@ void GameplayScene::OnGameFlowEvent(GameFlowEventID eventID)
 // シーンの終了
 void GameplayScene::OnEndScene()
 {
+	GetCommonResources()->GetCollisionManager()->RemoveAll();
 	// ゲームオブジェクトの登録簿のクリア
 	GameObjectRegistry::GetInstance()->Clear();
 	// ゲームフロー通知の監視者の全削除
@@ -310,8 +311,10 @@ void GameplayScene::SetupPlatform()
 	// ステージの初期化処理
 	m_stageManager->Initialize(m_spawnManager.get(), GetCommonResources()->GetCollisionManager(), m_taskManager.get());
 
+	auto collisionManager = GetCommonResources()->GetCollisionManager();
+
 	// 衝突管理に衝突検知表を設定
-	GetCommonResources()->GetCollisionManager()->SetCollisionMatrix(m_collisionMatrix.get());
+	collisionManager->SetCollisionMatrix(m_collisionMatrix.get());
 
 	// ゲームディレクターの初期化処理
 	m_gameDirector->Initialize(GetCommonResources());

@@ -332,9 +332,7 @@ void XPBDSimulator::IterateConstraints(float deltaTime)
 
 	// 制約を集約する
 	std::vector<IConstraint*> constraints;
-	//constraints.resize(m_constraints.size() + m_ropeSegments.size());
-	// コピーを取って使う
-	//constraints.reserve(m_ropeSegments.size() + m_constraints.size());
+
 
 	for (auto& con : m_dynamicConstraints)
 	{
@@ -351,11 +349,8 @@ void XPBDSimulator::IterateConstraints(float deltaTime)
 	int i = 0;
 	while (i < m_parameter.iterations)
 	{
-		for (auto& constraint : constraints) // m_ropeSegments の代わりに m_constraints をループ
+		for (auto& constraint : constraints) 
 		{
-			// 固定されているパーティクルに関わる制約はスキップ (制約内でチェック済みなら不要)
-			// SimParticle内でFixedなパーティクルはSetXiなどをスキップするようにしても良い
-
 			// 制約の取得
 			ConstraintParam cParam = constraint->GetConstraintParam();
 
@@ -363,13 +358,8 @@ void XPBDSimulator::IterateConstraints(float deltaTime)
 			float C = constraint->EvaluateConstraint();
 
 			// 貫通していない（または規定の範囲内）であればスキップ
-			// (これは特に衝突制約で重要)
-			if (C <= 0.0f) // 0以下であれば制約違反なしとみなす（貫通していない）
-			{
-				// ここで摩擦などを考慮する場合は別途処理が必要
-				continue;
-			}
-	
+			// 0以下であれば制約違反なしとみなす（貫通していない）
+			if (C <= 0.0f) { continue; }
 
 			// Δλの計算
 			float Δλ = constraint->ComputeLambdaCorrection(deltaTime, C);
@@ -378,7 +368,6 @@ void XPBDSimulator::IterateConstraints(float deltaTime)
 			cParam.λ = cParam.λ + Δλ;
 			constraint->SetConstraintParam(cParam);
 
-			// 位置の補正ベクトル Δx の計算
 
 			// 各制約が自身に関わるパーティクルに補正を適用する
 			constraint->ApplyPositionCorrection(Δλ); 

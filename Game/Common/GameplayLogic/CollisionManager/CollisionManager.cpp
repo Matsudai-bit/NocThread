@@ -75,6 +75,7 @@ bool CollisionManager::UpdateTask(float deltaTime)
 	UNREFERENCED_PARAMETER(deltaTime);
 	// 1. 開始時刻の記録
 	auto start = std::chrono::high_resolution_clock::now();
+	OutputDebugString(L"============ 衝突管理の更新処理 ============\n");
 
 	
 	// 衝突を通知する
@@ -84,18 +85,23 @@ bool CollisionManager::UpdateTask(float deltaTime)
 	// 事後処理
 	FinalizeCollision();
 
-	//// 3. 終了時刻の記録
-auto end = std::chrono::high_resolution_clock::now();
+		//// 3. 終了時刻の記録
+	auto end = std::chrono::high_resolution_clock::now();
 
-	// 4. 処理時間の計算と表示
-// duration_cast で希望の単位に変換（ここではマイクロ秒 ?s）
-auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+		// 4. 処理時間の計算と表示
+	 //duration_cast で希望の単位に変換（ここではマイクロ秒 ?s）
+	auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
 
-wchar_t buffer[64];
-swprintf_s(buffer, L"duration : %lld us\n", duration.count());
+	wchar_t buffer[64];
+	swprintf_s(buffer, L"duration : %lld us\n", duration.count());
 
-// 3. Send to the Output window
-OutputDebugString(buffer);
+
+
+	// 3. Send to the Output window
+	OutputDebugString(buffer);
+
+
+
 	// タスクを継続する
 	return true;
 }
@@ -177,36 +183,36 @@ void CollisionManager::AddCollisionData(const CollisionData& childCollisionData,
  */
 void CollisionManager::RemoveCollisionObjectData(GameObject* pAddGameObject, ICollider* pCollider)
 {
-	RemoveAll();
-	//if (!pAddGameObject || !pCollider) return;
+	//RemoveAll();
+	if (!pAddGameObject || !pCollider) return;
 
-	//// ここで一回だけロック！
-	//std::lock_guard<std::mutex> lock{ m_mutex };
+	// ここで一回だけロック！
+	std::lock_guard<std::mutex> lock{ m_mutex };
 
-	//auto findIt = std::find_if(m_rootCollisionDataId.begin(), m_rootCollisionDataId.end(),
-	//	[&](const UINT& id) {
-	//		auto it = m_collisionIdLookupTable.find(id);
-	//		if (it == m_collisionIdLookupTable.end()) return false;
-	//		return (pAddGameObject == it->second.pGameObject && pCollider == it->second.pCollider);
-	//	});
+	auto findIt = std::find_if(m_rootCollisionDataId.begin(), m_rootCollisionDataId.end(),
+		[&](const UINT& id) {
+			auto it = m_collisionIdLookupTable.find(id);
+			if (it == m_collisionIdLookupTable.end()) return false;
+			return (pAddGameObject == it->second.pGameObject && pCollider == it->second.pCollider);
+		});
 
-	//if (findIt != m_rootCollisionDataId.end()) {
-	//	UINT idToRemove = *findIt;
+	if (findIt != m_rootCollisionDataId.end()) {
+		UINT idToRemove = *findIt;
 
-	//	// 内部用関数を呼ぶ（再帰の中で二重ロックしないように）
-	//	UnregisterIdLookUpTable(idToRemove);
+		// 内部用関数を呼ぶ（再帰の中で二重ロックしないように）
+		UnregisterIdLookUpTable(idToRemove);
 
-	//	// IDのリサイクル（※本来は遅延返却が望ましい）
-	//	m_idPool.RecycleID(idToRemove);
-	//}
+		// IDのリサイクル（※本来は遅延返却が望ましい）
+		m_idPool.RecycleID(idToRemove);
+	}
 }
 
 void CollisionManager::RemoveAll()
 {
 	std::lock_guard<std::mutex> lock{ m_mutex };
-
 	m_collisionIdLookupTable.clear();
 	m_rootCollisionDataId.clear();
+
 }
 
 
@@ -621,28 +627,64 @@ bool CollisionManager::IsCollidingWithObjectType(const ICollider* pCheckCollider
  */
 bool CollisionManager::RetrieveCollisionData(const ICollider* pCheckCollider, std::vector<const GameObject*>* pHitGameObjects, std::vector<const ICollider*>* pHitColliders)
 {
+	if (!pCheckCollider) return false;
+
 	bool isHit = false;
 
-	//for (auto& collInfo : m_rootCollisionDataId)
-	//{
-	//	// 衝突判定
-	//	if (DetectCollision(collInfo.pCollider, pCheckCollider))
-	//	{
-	//		// 登録
-	//		if (pHitGameObjects)
-	//			pHitGameObjects->push_back(collInfo.pGameObject);
-	//		if (pHitColliders)
-	//			pHitColliders->push_back(collInfo.pCollider);
+	// テーブル参照中の変更を防ぐためロックを取得
+	std::lock_guard<std::mutex> lock(m_mutex);
 
-	//		isHit = true;
-	//	}
-	//}
+	// 再帰的に衝突を調べるラムダ関数
+	auto retrieveRecursive = [&](auto& self, const CollisionData& currentData) -> void {
+		// オブジェクトの有効性・活動状態のチェック
+		if (!currentData.pGameObject || !currentData.pCollider) return;
+		if (!currentData.pGameObject->IsActive()) return;
+
+		// 衝突判定を実行
+		if (DetectCollision(currentData.pCollider, pCheckCollider))
+		{
+			isHit = true;
+
+			// ポインタが渡されている場合のみ、情報をリストに追加
+			if (pHitGameObjects)
+			{
+				pHitGameObjects->push_back(currentData.pGameObject);
+			}
+			if (pHitColliders)
+			{
+				pHitColliders->push_back(currentData.pCollider);
+			}
+		}
+
+		// 子オブジェクトに対しても同様に判定を行う
+		for (const auto& childId : currentData.children)
+		{
+			auto itChild = m_collisionIdLookupTable.find(childId);
+			if (itChild != m_collisionIdLookupTable.end())
+			{
+				self(self, itChild->second);
+			}
+		}
+		};
+
+	// ルートリストに登録されているすべてのオブジェクトから走査開始
+	for (const auto& id : m_rootCollisionDataId)
+	{
+		auto it = m_collisionIdLookupTable.find(id);
+		if (it != m_collisionIdLookupTable.end())
+		{
+			retrieveRecursive(retrieveRecursive, it->second);
+		}
+	}
 
 	return isHit;
 }
 
 void CollisionManager::StartThread()
 {
+	OutputDebugString(L"============ スレッドの開始処理 ============\n");
+	m_debugCount[0] = 0;
+	m_debugCount[1] = 0;
 	// 衝突判定の流れ
 // 衝突判定->衝突処理->押し出し
 	if (m_rootCollisionDataId.empty() || m_rootCollisionDataId.size() == 0) return ;
@@ -660,6 +702,8 @@ void CollisionManager::StartThread()
 		m_proxy = std::move(nextProxy); // 共有変数へムーブ
 		m_detectionResults.clear();
 		m_applyThread = true;
+		OutputDebugString(L"============ スレッドの開始要求 ============\n");
+
 	}
 	m_cv.notify_one(); // サブスレッドを起こす
 }
@@ -695,6 +739,8 @@ void CollisionManager::UpdateDetection(const std::vector<ThreadCollisionObjectPr
             // 「仕事が来る(m_applyThread)」か「終了する(m_stopThread)」までスリープ
             m_cv.wait(lock, [this] { return m_applyThread || m_stopThread; });
 
+			OutputDebugString(L"============ 仕事の受け取った ============\n");
+
             if (m_stopThread) break;
 
             // 判定に使うデータをローカルにコピー（メインスレッドとの干渉を防ぐ）
@@ -715,6 +761,7 @@ void CollisionManager::UpdateDetection(const std::vector<ThreadCollisionObjectPr
             }
         }
         
+		OutputDebugString(L"!!!! 計算終了 !!!!\n");
         m_isCalculating = false; // 計算終了
 		
 	
@@ -794,6 +841,7 @@ void CollisionManager::FinalizeCollision()
 void CollisionManager::CheckCollisionPair(const ThreadCollisionObjectProxy& collisionDataA, const ThreadCollisionObjectProxy& collisionDataB, std::vector<DetectedCollisonData>* pOutResults)
 {
 	if (collisionDataA.id == collisionDataB.id) return;
+
 	
 	// 活動していなければ飛ばす
 	if (collisionDataA.isActive == false) return;
@@ -802,18 +850,26 @@ void CollisionManager::CheckCollisionPair(const ThreadCollisionObjectProxy& coll
 
 
 
-
-	// ゲームオブジェクトタグのビットインデックス
-	uint32_t gameObjectTagIndexA = collisionDataA.tagBitIndex;
 	// 衝突検知をするかどうか
-	if ( m_pCollisionMatrix &&
-		!m_pCollisionMatrix->ShouldCollide(gameObjectTagIndexA, collisionDataB.tag)) {
+	if (!CanDetect(collisionDataA, collisionDataB)) 
+	{
 		return;
 	}
 
+	m_debugCount[0]++;
 	// 衝突しているかどうか
 	if (DetectCollision(collisionDataA.collider.get(), collisionDataB.collider.get()))
 	{
+	/*	if (collisionDataA.tag == GameObjectTag::DEFAULT && collisionDataB.tag == GameObjectTag::WIRE_GRAPPING_AREA)
+		{
+			m_debugCount[0]++;
+		}
+
+		if (collisionDataA.tag == GameObjectTag::BUILDING && collisionDataB.tag == GameObjectTag::WIRE_GRAPPING_AREA)
+		{
+			m_debugCount[1]++;
+		}*/
+
 		m_mutex.lock();
 		// 衝突検知された情報を登録
 		pOutResults->push_back({ collisionDataA.id, collisionDataB.id });
@@ -872,10 +928,11 @@ void CollisionManager::UnregisterIdLookUpTable(int dataID)
 
 void CollisionManager::CreateThreadCollisionObjectProxy(std::vector<ThreadCollisionObjectProxy>* collisionObjectProxy)
 {
-		std::lock_guard<std::mutex> lock(m_mutex);
 	std::vector<ThreadCollisionObjectProxy> localProxies;
+	OutputDebugString(L"============ プロキシの作成処理 ============\n");
 
 	{
+		std::lock_guard<std::mutex> lock(m_mutex);
 		// 読み取りを開始する前にロックを取得！
 		localProxies.reserve(m_rootCollisionDataId.size());
 
@@ -898,16 +955,22 @@ void CollisionManager::CreateThreadCollisionObjectProxy(std::vector<ThreadCollis
 bool CollisionManager::CreateProxy(ThreadCollisionObjectProxy* pProxy, const CollisionData& collisionData)
 {
 	// オブジェクトが死んでいたら失敗
-	if (collisionData.pGameObject	== nullptr) return false;
 	if (collisionData.pCollider		== nullptr) return false;
 
-	pProxy->id = collisionData.id;
-	pProxy->tag = collisionData.pGameObject->GetTag();
-	pProxy->collider = collisionData.pCollider->GetClone(); // moveすると元のデータが壊れるので注意！
+
+	pProxy->id			= collisionData.id;
+	pProxy->collider	= collisionData.pCollider->GetClone(); // moveすると元のデータが壊れるので注意！
 	pProxy->tagBitIndex = collisionData.tagBitIndex;
-	pProxy->isActive = collisionData.pGameObject->IsActive();
+
+	pProxy->tag			= (collisionData.pGameObject) ? collisionData.pGameObject->GetTag() : GameObjectTag::DEFAULT;
+	pProxy->isActive	= (collisionData.pGameObject) ? collisionData.pGameObject->IsActive() : true;
 
 	pProxy->children.reserve(collisionData.children.size());
+
+	//if (pProxy->tag == GameObjectTag::WIRE_GRAPPING_AREA && collisionData.children.size() > 0)
+	//{
+	//	m_debugCount[0]++;
+	//}
 
 	for (auto& childId : collisionData.children)
 	{
@@ -922,6 +985,26 @@ bool CollisionManager::CreateProxy(ThreadCollisionObjectProxy* pProxy, const Col
 		}
 	}
 	return true;
+}
+
+
+/**
+ * @brief 衝突検知できるかどうか
+ * 
+ * @param[in] collisionDataA　衝突データA
+ * @param[in] collisionDataB　衝突データB
+ * 
+ * @returns true 可能
+ * @returns false 不可能
+ */
+bool CollisionManager::CanDetect(
+	 const ThreadCollisionObjectProxy& collisionDataA,
+	 const ThreadCollisionObjectProxy& collisionDataB)
+{
+	// ゲームオブジェクトタグのビットインデックス
+	uint32_t gameObjectTagIndexA = collisionDataA.tagBitIndex;
+	// 衝突検知をするかどうか
+	return m_pCollisionMatrix && m_pCollisionMatrix->ShouldCollide(gameObjectTagIndexA, collisionDataB.tag);
 }
 
 

@@ -161,7 +161,7 @@ void WireTargetFinder::OnCollision(const CollisionInfo& info)
 	SimpleMath::Vector3 targetPosition;
 
 	auto capsule = dynamic_cast<const Capsule*>(info.pMyCollider);
-
+	if (!capsule) { return; }
 	// ñ⁄ïWç¿ïWÇÃéZèo
 	if (CalcWireTargetPosition(&targetPosition, *capsule, info.pOtherObject, info.pOtherCollider))
 	{
@@ -463,7 +463,7 @@ std::vector<DirectX::SimpleMath::Vector3> WireTargetFinder::GetTargetPositionCan
 	m_broadCollider.Transform(playerPosition);
 	if (registry)
 	{
-		CollisionData data{ nullptr, &m_broadCollider };
+		CollisionData data{ this, &m_broadCollider };
 		m_pCollisionManager->AddCollisionData(data);
 		for (auto& capsule : m_capsules)
 		{

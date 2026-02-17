@@ -45,7 +45,7 @@ void CollisionMatrix::ClearMatrix()
  * @brief 衝突を検知するかどうか
  * 
  * @param[in] tagA  調べるタグA
- * @param[in] tagB	調べるタグB
+ * @param[in] maskB	マスクB
  * 
  * @returns true　検知する
  * @returns false 検知しない

@@ -106,6 +106,7 @@ struct CollisionData
 			}
 		}
 	}
+	
 
 };
 
@@ -212,6 +213,8 @@ private:
 	std::atomic<bool> m_applyThread;
 
 	std::condition_variable m_cv;
+
+	int m_debugCount[2];
 	// メンバ関数の宣言 -------------------------------------------------
 	// コンストラクタ/デストラクタ
 public:
@@ -291,4 +294,6 @@ private:
 	void CreateThreadCollisionObjectProxy(std::vector<ThreadCollisionObjectProxy>* collisionObjectProxy);
 	bool CreateProxy(ThreadCollisionObjectProxy* pProxy, const CollisionData& collisionData);
 	
+	// 検知できるかどうか
+	bool CanDetect(const ThreadCollisionObjectProxy& collisionDataA, const ThreadCollisionObjectProxy& collisionDataB);
 };
