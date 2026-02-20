@@ -59,7 +59,7 @@ private:
 public:
 
 	// 上下左右に広がるグリッドを想定したサンプリング
-	static constexpr int	SEARCH_DIRECTION_NUM = 1;		// 各軸の探索方向数 (中心 + 両端)
+	static constexpr int	SEARCH_DIRECTION_NUM = 4;		// 各軸の探索方向数 (中心 + 両端)
 	static constexpr float	SEARCH_ANGLE_STEP_YAW = 9.0f;	// 探索角度のステップ (ヨー方向:横)
 	static constexpr float	SEARCH_ANGLE_STEP_PITCH = 10.0f;// 探索角度のステップ (ピッチ方向:縦)
 

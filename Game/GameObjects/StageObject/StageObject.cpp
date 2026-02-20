@@ -83,7 +83,7 @@ void StageObject::Initialize(CommonResources* pCommonResources, CollisionManager
 	// コライダの作成
 	m_collider = std::make_unique<Sphere>(GetTransform()->GetPosition(), GetTransform()->GetScale().x);
 
-	pCollisionManager->AddCollisionData(CollisionData(this, m_collider.get()));
+	pCollisionManager->AddCollisionData(CollisionData(this, m_collider.get(), false));
 
 	// モデルの取得
 	m_model = GetCommonResources()->GetResourceManager()->CreateModel(STAGE_OBJECT_MODEL_FILE_NAME);

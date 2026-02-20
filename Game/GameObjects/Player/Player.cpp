@@ -125,7 +125,7 @@ void Player::Initialize(const CommonResources* pCommonResources, CollisionManage
 	// ƒRƒ‰ƒCƒ_‚Ìì¬
 	m_collider = std::make_unique<Sphere>(GetTransform()->GetPosition(), GetTransform()->GetScale().x * PlayerParameter::DEFAULT_COLLIDER_RADIUS_FACTOR);
 
-	pCollisionManager->AddCollisionData(CollisionData(this, m_collider.get()));
+	pCollisionManager->AddCollisionData(CollisionData(this, m_collider.get(), false));
 
 	m_basicEffect = std::make_unique<BasicEffect>(device);
 	m_basicEffect->SetVertexColorEnabled(true);

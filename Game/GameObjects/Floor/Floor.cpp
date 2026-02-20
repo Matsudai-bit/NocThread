@@ -97,7 +97,7 @@ void Floor::Initialize(const DirectX::SimpleMath::Vector3& pos, const CommonReso
     }
 
     // Õ“Ë”»’èŠÇ—‚Ö‚Ì“o˜^
-    pCollisionManager->AddCollisionData(CollisionData(this, m_collider.get()));
+    pCollisionManager->AddCollisionData(CollisionData(this, m_collider.get(), false));
 
     GetTransform()->SetPosition(SimpleMath::Vector3::Zero);
 

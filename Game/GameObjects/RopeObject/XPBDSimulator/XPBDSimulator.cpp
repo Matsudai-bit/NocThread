@@ -295,23 +295,24 @@ void XPBDSimulator::GenerateConstraints()
 	m_dynamicConstraints.clear();
 
 	
-	// “®“I‚È§–ñ‚Ì¶¬
+	// “®“I‚È§–ñ‚Ìì¬
 	for (auto& constraintFactory : m_constraintFactories)
 	{
 		if (!constraintFactory->IsDynamic()) { continue; }
-		// ¶¬‚µ‚½§–ñ‚ÌŠi”[”z—ñ
-		std::vector<std::unique_ptr<IConstraint>> creationConstraints;
 
-		// ¶¬
-		creationConstraints = constraintFactory->CreateConstraint(&m_particles, m_parameter);
+		// “®“I§–ñ‚Ìì¬
+		auto creationConstraints = constraintFactory->CreateConstraint(&m_particles, m_parameter);
+		if (creationConstraints.empty()) { continue; }
 
-		// ¶¬‚µ‚½§–ñ‚ğ“o˜^‚·‚é
-		for (int i = 0; i < creationConstraints.size(); i++)
-		{
-			m_dynamicConstraints.push_back(std::move(creationConstraints[i]));
-		}
+		// ‚ ‚ç‚©‚¶‚ß—Ìˆæ‚ÌŠm•Û
+		m_dynamicConstraints.reserve(m_dynamicConstraints.size() + creationConstraints.size());
 
-		
+		// “®“I§–ñ‚Ì“o˜^
+		m_dynamicConstraints.insert(
+			m_dynamicConstraints.end(),
+			std::make_move_iterator(creationConstraints.begin()),
+			std::make_move_iterator(creationConstraints.end())
+		);
 	}
 
 }

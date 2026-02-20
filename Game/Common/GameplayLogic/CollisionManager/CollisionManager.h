@@ -84,17 +84,21 @@ struct CollisionData
 
 	std::vector<int> children;
 
+	bool isStatic; ///< 静的かどうか
+
 	CollisionData()
 		: pGameObject	{ nullptr }
 		, pCollider		{ nullptr }
 		, tagBitIndex	{ 0 }
 		, children		{}
 		, id			{ -1 }
+		, isStatic		{ false }
 	{}
 
-	CollisionData(GameObject* pGameObject, ICollider* pCollider)
+	CollisionData(GameObject* pGameObject, ICollider* pCollider, bool isStatic)
 		: CollisionData{}
 	{
+		this->isStatic = isStatic;
 		this->pGameObject	= pGameObject;
 		this->pCollider		= pCollider;
 		if (pGameObject)
@@ -215,6 +219,10 @@ private:
 	std::condition_variable m_cv;
 	std::condition_variable m_notifyCV;
 
+	std::vector<ThreadCollisionObjectProxy> m_staticProxies;
+
+	long long m_totalDuration;
+
 	int m_debugCount[2];
 	// メンバ関数の宣言 -------------------------------------------------
 	// コンストラクタ/デストラクタ
@@ -262,6 +270,9 @@ public:
 
 	void StartThread();
 
+	// 事前にプロキシを作る
+	void PreCreateProxy();
+
 	// 取得/設定
 public:
 
@@ -293,8 +304,9 @@ private:
 
 
 	void CreateThreadCollisionObjectProxy(std::vector<ThreadCollisionObjectProxy>* collisionObjectProxy);
-	bool CreateProxy(ThreadCollisionObjectProxy* pProxy, const CollisionData& collisionData);
-	
+	bool CreateProxy(ThreadCollisionObjectProxy* pProxy, const CollisionData& collisionData, bool isStaticCreation);
+	bool CreateStaticProxy(std::vector<ThreadCollisionObjectProxy>* collisionObjectProxy);
+
 	// 検知できるかどうか
 	bool CanDetect(const ThreadCollisionObjectProxy& collisionDataA, const ThreadCollisionObjectProxy& collisionDataB);
 };

@@ -75,7 +75,7 @@ bool CollisionManager::UpdateTask(float deltaTime)
 	UNREFERENCED_PARAMETER(deltaTime);
 	// 1. 開始時刻の記録
 	auto start = std::chrono::high_resolution_clock::now();
-	OutputDebugString(L"============ 衝突管理の更新処理 ============\n");
+	//OutputDebugString(L"============ 衝突管理の更新処理 ============\n");
 
 	
 	// 衝突を通知する
@@ -100,6 +100,7 @@ bool CollisionManager::UpdateTask(float deltaTime)
 	// 3. Send to the Output window
 	OutputDebugString(buffer);
 
+	//OutputDebugString(L"============ 衝突管理の終了 ============\n");
 
 
 	// タスクを継続する
@@ -682,12 +683,15 @@ bool CollisionManager::RetrieveCollisionData(const ICollider* pCheckCollider, st
 
 void CollisionManager::StartThread()
 {
-	OutputDebugString(L"============ スレッドの開始処理 ============\n");
+	//OutputDebugString(L"============ スレッドの開始処理 ============\n");
 	m_debugCount[0] = 0;
 	m_debugCount[1] = 0;
 	// 衝突判定の流れ
 // 衝突判定->衝突処理->押し出し
 	if (m_rootCollisionDataId.empty() || m_rootCollisionDataId.size() == 0) return ;
+
+	// 1. 開始時刻の記録
+	auto start = std::chrono::high_resolution_clock::now();
 
 
 	// 事前処理
@@ -697,15 +701,37 @@ void CollisionManager::StartThread()
 	std::vector<ThreadCollisionObjectProxy> nextProxy;
 	CreateThreadCollisionObjectProxy(&nextProxy);
 
+	//// 3. 終了時刻の記録
+	auto end = std::chrono::high_resolution_clock::now();
+
+	// 4. 処理時間の計算と表示
+	//duration_cast で希望の単位に変換（ここではマイクロ秒 ?s）
+	auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+	m_totalDuration = 0;
+	m_totalDuration += duration.count();
+
+	// 静的オブジェクトをコピー
+	nextProxy.insert(nextProxy.end(), m_staticProxies.begin(), m_staticProxies.end());
+
 	{
 		std::lock_guard<std::mutex> lock(m_mutex);
-		m_proxy = std::move(nextProxy); // 共有変数へムーブ
+
+		// 2. 「コピー」ではなく「移動代入」を使う
+		// これにより、m_proxy の中身が一瞬で nextProxy と入れ替わります ($O(1)$)
+		m_proxy = std::move(nextProxy);
+
 		m_detectionResults.clear();
 		m_applyThread = true;
-		OutputDebugString(L"============ スレッドの開始要求 ============\n");
 
+		//OutputDebugString(L"============ スレッドの開始要求 ============\n");
 	}
 	m_cv.notify_one(); // サブスレッドを起こす
+}
+
+void CollisionManager::PreCreateProxy()
+{
+	m_staticProxies.clear();
+	CreateStaticProxy(&m_staticProxies);
 }
 
 /**
@@ -731,6 +757,9 @@ void CollisionManager::PreCollision()
  */
 void CollisionManager::UpdateDetection(const std::vector<ThreadCollisionObjectProxy>* proxy, std::vector<DetectedCollisonData>* pOutResults)
 {
+	// サブスレッド内だけで使う「完全なローカル」スタック
+	std::vector<DetectedCollisonData> localBuffer;
+	localBuffer.reserve(256); // あらかじめある程度確保しておく
 	while (!m_stopThread)
 	{
 		std::vector<ThreadCollisionObjectProxy> localProxy;
@@ -739,7 +768,7 @@ void CollisionManager::UpdateDetection(const std::vector<ThreadCollisionObjectPr
             // 「仕事が来る(m_applyThread)」か「終了する(m_stopThread)」までスリープ
             m_cv.wait(lock, [this] { return m_applyThread || m_stopThread; });
 
-			OutputDebugString(L"============ 仕事の受け取った ============\n");
+			//OutputDebugString(L"============ 仕事を受け取った ============\n");
 
             if (m_stopThread) break;
 
@@ -749,24 +778,44 @@ void CollisionManager::UpdateDetection(const std::vector<ThreadCollisionObjectPr
             m_applyThread = false; // 受付完了
         }
 
-        // --- ロックの外で重い判定処理を実行 ---
-        if (localProxy.size() >= 2)
-        {
-            for (size_t i = 0; i < localProxy.size() - 1; i++)
-            {
-                for (size_t j = i + 1; j < localProxy.size(); j++)
-                {
-                    CheckCollisionPair(localProxy[i], localProxy[j], pOutResults);
-                }
-            }
-        }
-        
-		OutputDebugString(L"!!!! 計算終了 !!!!\n");
-        m_isCalculating = false; // 計算終了
-		m_notifyCV.notify_one();
+		if (localProxy.size() >= 2)
+		{
+			for (size_t i = 0; i < localProxy.size() - 1; i++)
+			{
+				for (size_t j = i + 1; j < localProxy.size(); j++)
+				{
+					// 1. ロックを一切気にせず、ローカルバッファにどんどん溜める
+					CheckCollisionPair(localProxy[i], localProxy[j], &localBuffer);
 
+					// 2. バッファが一定数ったら一気に共有メモリへ
+					if (localBuffer.size() >= 50)
+					{
+						//OutputDebugString(L"=========== データ更新待機 ========== \n");
 
-	
+						std::lock_guard<std::mutex> lock(m_mutex);
+						// std::copy よりも insert が効率的
+						pOutResults->insert(pOutResults->end(), localBuffer.begin(), localBuffer.end());
+						localBuffer.clear();
+						//OutputDebugString(L"!!!! 衝突データの更新 !!!! \n");
+						//OutputDebugString(L"=========== データ更新 ========== \n");
+						m_notifyCV.notify_one();
+					}
+				}
+			}
+		}
+
+		// 3. ループ終了後に、残っているデータをすべて転送
+		if (!localBuffer.empty())
+		{
+			std::lock_guard<std::mutex> lock(m_mutex);
+			pOutResults->insert(pOutResults->end(), localBuffer.begin(), localBuffer.end());
+			localBuffer.clear();
+		}
+
+		m_isCalculating = false;
+		//OutputDebugString(L"!!!! 衝突処理の終了 !!!! \n");
+
+		m_notifyCV.notify_one(); // 完了通知
 	}
 }
 
@@ -777,43 +826,63 @@ void CollisionManager::UpdateDetection(const std::vector<ThreadCollisionObjectPr
  */
 void CollisionManager::NotifyCollisionEvents(std::vector<DetectedCollisonData>* pDetectedCollisions)
 {
+	// 一時的にデータを溜めるローカルバッファ
+	std::vector<DetectedCollisonData> localWorkList;
+
 	while (true)
 	{
-		DetectedCollisonData data;
 		{
 			std::unique_lock<std::mutex> lock(m_mutex);
+			//OutputDebugString(L"=========== 衝突データがくるまで待機 ========== \n");
 
+			// データが空かつ計算中なら待機
 			m_notifyCV.wait(lock, [this, pDetectedCollisions] {
 				return !pDetectedCollisions->empty() || !m_isCalculating;
-			});
-				
-			// 終了条件：計算が終わっていて、データも空
+				});
+
+			// 終了判定
 			if (pDetectedCollisions->empty() && !m_isCalculating) {
 				break;
 			}
 
-			// 2. 安全にデータを取り出す
-			data = pDetectedCollisions->back();
-			pDetectedCollisions->pop_back();
-		}
+			// 【高速化の肝】個別に pop_back せず、中身を丸ごと move する
+			// これにより、ロックを保持する時間を一瞬にする
+			localWorkList = std::move(*pDetectedCollisions);
+			pDetectedCollisions->clear();
+		} // ここでロックが解除される
 
-		// 3. IDがまだ存在するか「find」でチェック（[]は厳禁）
-		auto itA = m_collisionIdLookupTable.find(data.collisionDataIdA);
-		auto itB = m_collisionIdLookupTable.find(data.collisionDataIdB);
+		//OutputDebugString(L"=========== 衝突通知 ========== \n");
 
-		if (itA != m_collisionIdLookupTable.end() && itB != m_collisionIdLookupTable.end())
+		// --- ここからロックの外 ---
+		// まとめて取得したデータを一気に処理
+		for (const auto& data : localWorkList)
 		{
-			CollisionData& collA = itA->second;
-			CollisionData& collB = itB->second;
+			// IDから実体を取得 (ここは読み取り専用なら lock 外でも OK。
+			// ただしテーブルが他スレッドで書き換わるなら lock が必要)
+			// 安全策をとるなら、ここだけ最小限の lock をかける
 
-			if (collA.pGameObject && collB.pGameObject)
+			auto itA = m_collisionIdLookupTable.find(data.collisionDataIdA);
+			auto itB = m_collisionIdLookupTable.find(data.collisionDataIdB);
+
+			if (itA != m_collisionIdLookupTable.end() && itB != m_collisionIdLookupTable.end())
 			{
-				// ここでようやく発火
-				collA.pGameObject->OnCollision(CollisionInfo(collB.pCollider, collB.pGameObject, collA.pCollider));
-				collB.pGameObject->OnCollision(CollisionInfo(collA.pCollider, collA.pGameObject, collB.pCollider));
+				CollisionData& collA = itA->second;
+				CollisionData& collB = itB->second;
+
+				if (collA.pGameObject && collB.pGameObject)
+				{
+					// ユーザー定義の重い処理を呼び出し
+					collA.pGameObject->OnCollision(CollisionInfo(collB.pCollider, collB.pGameObject, collA.pCollider));
+					collB.pGameObject->OnCollision(CollisionInfo(collA.pCollider, collA.pGameObject, collB.pCollider));
+				}
 			}
 		}
+
+		localWorkList.clear(); // 次のバッチのためにクリア
 	}
+
+	//OutputDebugString(L"=========== 衝突通知終了 ========== \n");
+
 }
 
 /**
@@ -842,7 +911,7 @@ void CollisionManager::FinalizeCollision()
  * 
  * @param[out] pOutResults 検知された衝突を格納する
  */
-void CollisionManager::CheckCollisionPair(const ThreadCollisionObjectProxy& collisionDataA, const ThreadCollisionObjectProxy& collisionDataB, std::vector<DetectedCollisonData>* pOutResults)
+void CollisionManager::CheckCollisionPair(const ThreadCollisionObjectProxy& collisionDataA, const ThreadCollisionObjectProxy& collisionDataB, std::vector<DetectedCollisonData>* pOutResultStack )
 {
 	if (collisionDataA.id == collisionDataB.id) return;
 
@@ -874,21 +943,19 @@ void CollisionManager::CheckCollisionPair(const ThreadCollisionObjectProxy& coll
 			m_debugCount[1]++;
 		}*/
 
-		{
-			std::lock_guard<std::mutex> lock(m_mutex);
-			pOutResults->push_back({ collisionDataA.id, collisionDataB.id });
-		}
-		m_notifyCV.notify_one();
+		
+		pOutResultStack->push_back({ collisionDataA.id, collisionDataB.id });
+
 
 
 		// 子を持っている場合その子も検知する
 		for (auto& child : collisionDataA.children)
 		{
-			CheckCollisionPair( child, collisionDataB, pOutResults);
+			CheckCollisionPair( child, collisionDataB, pOutResultStack);
 		}
 		for (auto& child : collisionDataB.children)
 		{
-			CheckCollisionPair(child, collisionDataA, pOutResults);
+			CheckCollisionPair(child, collisionDataA, pOutResultStack);
 		}
 	}
 
@@ -935,8 +1002,7 @@ void CollisionManager::UnregisterIdLookUpTable(int dataID)
 void CollisionManager::CreateThreadCollisionObjectProxy(std::vector<ThreadCollisionObjectProxy>* collisionObjectProxy)
 {
 	std::vector<ThreadCollisionObjectProxy> localProxies;
-	OutputDebugString(L"============ プロキシの作成処理 ============\n");
-
+	//OutputDebugString(L"============ 動的プロキシの作成処理 ============\n");
 	{
 		std::lock_guard<std::mutex> lock(m_mutex);
 		// 読み取りを開始する前にロックを取得！
@@ -948,7 +1014,7 @@ void CollisionManager::CreateThreadCollisionObjectProxy(std::vector<ThreadCollis
 
 			ThreadCollisionObjectProxy proxy;
 			// CreateProxy内でも find を使うため、このスコープ内で一気に処理する
-			if (CreateProxy(&proxy, it->second)) {
+			if (CreateProxy(&proxy, it->second, false)) {
 				localProxies.emplace_back(std::move(proxy));
 			}
 		}
@@ -958,8 +1024,10 @@ void CollisionManager::CreateThreadCollisionObjectProxy(std::vector<ThreadCollis
 	} // ここでアンロック
 }
 
-bool CollisionManager::CreateProxy(ThreadCollisionObjectProxy* pProxy, const CollisionData& collisionData)
+bool CollisionManager::CreateProxy(ThreadCollisionObjectProxy* pProxy, const CollisionData& collisionData, bool isStaticCreation)
 {
+	if (collisionData.isStatic != isStaticCreation) { return false; }
+
 	// オブジェクトが死んでいたら失敗
 	if (collisionData.pCollider		== nullptr) return false;
 
@@ -973,10 +1041,7 @@ bool CollisionManager::CreateProxy(ThreadCollisionObjectProxy* pProxy, const Col
 
 	pProxy->children.reserve(collisionData.children.size());
 
-	//if (pProxy->tag == GameObjectTag::WIRE_GRAPPING_AREA && collisionData.children.size() > 0)
-	//{
-	//	m_debugCount[0]++;
-	//}
+
 
 	for (auto& childId : collisionData.children)
 	{
@@ -985,7 +1050,7 @@ bool CollisionManager::CreateProxy(ThreadCollisionObjectProxy* pProxy, const Col
 		if (it == m_collisionIdLookupTable.end()) continue;
 
 		ThreadCollisionObjectProxy childProxy;
-		if (CreateProxy(&childProxy, it->second))
+		if (CreateProxy(&childProxy, it->second, isStaticCreation))
 		{
 			pProxy->children.emplace_back(std::move(childProxy));
 		}
@@ -993,6 +1058,31 @@ bool CollisionManager::CreateProxy(ThreadCollisionObjectProxy* pProxy, const Col
 	return true;
 }
 
+bool CollisionManager::CreateStaticProxy(std::vector<ThreadCollisionObjectProxy>* collisionObjectProxy)
+{
+	std::vector<ThreadCollisionObjectProxy> localProxies;
+	//OutputDebugString(L"============ 静的プロキシの作成処理 ============\n");
+	{
+		std::lock_guard<std::mutex> lock(m_mutex);
+		// 読み取りを開始する前にロックを取得！
+		localProxies.reserve(m_rootCollisionDataId.size());
+
+		for (auto& id : m_rootCollisionDataId) {
+			auto it = m_collisionIdLookupTable.find(id);
+			if (it == m_collisionIdLookupTable.end()) continue;
+
+			ThreadCollisionObjectProxy proxy;
+			// CreateProxy内でも find を使うため、このスコープ内で一気に処理する
+			if (CreateProxy(&proxy, it->second, true)) {
+				localProxies.emplace_back(std::move(proxy));
+			}
+		}
+
+		// そのまま共有データへ代入
+		*collisionObjectProxy = std::move(localProxies);
+	} // ここでアンロック}
+	return true;
+}
 
 /**
  * @brief 衝突検知できるかどうか

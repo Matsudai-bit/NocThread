@@ -229,6 +229,7 @@ void Game::Tick()
 void Game::Update(DX::StepTimer const& timer)
 {
     float deltaTime = float(timer.GetElapsedSeconds());
+    m_collisionManager->UpdateTask(deltaTime);
 
     // キーボードトラッカーの更新処理
     auto kb = Keyboard::Get().GetState();
@@ -248,20 +249,15 @@ void Game::Update(DX::StepTimer const& timer)
     // シーン管理の更新処理
     m_sceneManager->Update(deltaTime);
 
-    if (m_keyboardStateTracker->GetLastState().P)
-    {
-        m_collisionManager->RemoveAll();
-    }
 
     m_collisionManager->StartThread();
 
 
-    // 入力デバイス切り替え器の更新処理
-    m_inputDeviceSpriteResolver->Update();
+        // 入力デバイス切り替え器の更新処理
+        m_inputDeviceSpriteResolver->Update();
 
     m_InputSystem->Update();
 
-    m_collisionManager->UpdateTask(deltaTime);
 
     
 #ifdef GAME_MODE
@@ -309,10 +305,10 @@ void Game::Render()
     }
 
     // FPSを取得する
-    uint32_t fps = m_timer.GetFramesPerSecond();
+    //uint32_t fps = m_timer.GetFramesPerSecond();
 
-    // FPSの表示
-    m_debugFont->AddString(0, 0, Colors::White, L"FPS=%d", fps);
+    //// FPSの表示
+    //m_debugFont->AddString(0, 0, Colors::White, L"FPS=%d", fps);
 
     // デバッグフォントの描画
     m_debugFont->Render(m_states.get());

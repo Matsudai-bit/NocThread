@@ -218,7 +218,8 @@ void GameplayScene::OnGameFlowEvent(GameFlowEventID eventID)
 				});
 		});
 		break;
-
+	case GameFlowEventID::GAME_SETUP_FINISH:
+		GetCommonResources()->GetCollisionManager()->PreCreateProxy();
 	default:
 		break;
 	}

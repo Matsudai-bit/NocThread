@@ -463,12 +463,12 @@ std::vector<DirectX::SimpleMath::Vector3> WireTargetFinder::GetTargetPositionCan
 	m_broadCollider.Transform(playerPosition);
 	if (registry)
 	{
-		CollisionData data{ this, &m_broadCollider };
+		CollisionData data{ this, &m_broadCollider , false };
 		m_pCollisionManager->AddCollisionData(data);
 		for (auto& capsule : m_capsules)
 		{
 		//	data.children.push_back(CollisionData(this, &capsule));
-			m_pCollisionManager->AddCollisionData(CollisionData(this, &capsule), data.pCollider);
+			m_pCollisionManager->AddCollisionData(CollisionData(this, &capsule, false), data.pCollider);
 		}
 	}
 	return targetPositions;

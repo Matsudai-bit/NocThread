@@ -235,12 +235,12 @@ void Building::RegisterToCollisionManager(CollisionManager* pCollisionManager)
 	if (!pCollisionManager || !m_parentColliderObject.GetCollider()) return;
 
 	// e‚ð“o˜^
-	pCollisionManager->AddCollisionData(CollisionData(&m_parentColliderObject, m_parentColliderObject.GetCollider()));
+	pCollisionManager->AddCollisionData(CollisionData(&m_parentColliderObject, m_parentColliderObject.GetCollider(), true));
 
 	// ŽqiŠe•”ˆÊj‚ðe‚É•R•t‚¯‚Ä“o˜^
 	for (auto& collider : m_collider)
 	{
-		pCollisionManager->AddCollisionData(CollisionData(this, collider.get()), m_parentColliderObject.GetCollider());
+		pCollisionManager->AddCollisionData(CollisionData(this, collider.get(), true), m_parentColliderObject.GetCollider());
 	}
 }
 

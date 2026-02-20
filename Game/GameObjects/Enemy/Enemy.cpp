@@ -95,7 +95,7 @@ void Enemy::Initialize(const CommonResources* pCommonResources, CollisionManager
 
 	m_collider = std::make_unique<Sphere>(GetTransform()->GetPosition() + SimpleMath::Vector3(0.0f, 0.5f, 0.0f), 1.0f);
 
-	pCollisionManager->AddCollisionData(CollisionData(this,m_collider.get()));
+	pCollisionManager->AddCollisionData(CollisionData(this,m_collider.get(), false));
 
 	m_deltaTime = 0.0f;
 
