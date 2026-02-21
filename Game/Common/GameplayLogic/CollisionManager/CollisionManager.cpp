@@ -39,7 +39,7 @@ CollisionManager::CollisionManager()
 
 	 m_collisionDetectionWorker = std::make_unique<CollisionDetectionWorker>();
 
-	m_detectionThread = std::make_unique<std::thread>(&CollisionManager::UpdateDetection, this, &m_detectionResults);
+	//m_detectionThread = std::make_unique<std::thread>(&CollisionManager::UpdateDetection, this, &m_detectionResults);
 
 }
 
@@ -73,8 +73,11 @@ bool CollisionManager::UpdateTask(float deltaTime)
 	OutputDebugString(L"============ 衝突管理の更新処理 ============\n");
 # endif 
 	
+	m_collisionDetectionWorker->WaitForEndCalculation();
+	auto detectionResults = std::move(m_collisionDetectionWorker->GetDetectionResults());
+	
 	// 衝突を通知する
-	DynamicNotifyCollisionEvents(&m_detectionResults);
+	StaticNotifyCollisionEvents(&detectionResults);
 
 	// 事後処理
 	FinalizeCollision();
@@ -132,9 +135,13 @@ void CollisionManager::Finalize()
 	m_rootCollisionDataId.clear();
 	m_collisionIdLookupTable.clear();
 
-	m_stopThread = true;
-	m_cv.notify_one();
-	m_detectionThread->join();
+	if (m_detectionThread)
+	{
+		m_stopThread = true;
+		m_cv.notify_one();
+		m_detectionThread->join();
+	}
+
 
 }
 
@@ -639,7 +646,7 @@ void CollisionManager::StartThread()
 	PreCollision();
 
 	// 判定用データの作成（ここはメインスレッドで安全に行う）
-	std::unique_ptr<std::vector<ThreadCollisionObjectProxy>> nextProxy;
+	auto nextProxy = std::make_unique<std::vector<ThreadCollisionObjectProxy>>();
 	CreateThreadCollisionObjectProxy(nextProxy.get());
 
 #ifdef COLLISIONMANAGER_DEBUG	
@@ -678,6 +685,11 @@ void CollisionManager::PreCreateProxy()
 {
 	m_staticProxies.clear();
 	CreateStaticProxy(&m_staticProxies);
+}
+
+void CollisionManager::SetCollisionMatrix(const CollisionMatrix* pCollisionMatrix)
+{
+	m_collisionDetectionWorker->SetCollisionMatrix(*pCollisionMatrix);
 }
 
 /**

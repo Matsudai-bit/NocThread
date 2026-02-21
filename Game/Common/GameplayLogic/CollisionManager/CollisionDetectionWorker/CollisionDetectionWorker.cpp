@@ -36,8 +36,10 @@
  */
 CollisionDetectionWorker::CollisionDetectionWorker()
 	: m_detectionResults{}
+	, m_isCalculating{ false }
+	, m_isReady{ false }
 {
-
+	m_collisionMatrix = std::make_unique<CollisionMatrix>();
 }
 
 
@@ -47,7 +49,12 @@ CollisionDetectionWorker::CollisionDetectionWorker()
  */
 CollisionDetectionWorker::~CollisionDetectionWorker()
 {
-
+	if (m_workerThread)
+	{
+		m_stopThread = true;
+		m_cv.notify_one();
+		m_workerThread->join();
+	}
 }
 
 void CollisionDetectionWorker::StartAsync(std::unique_ptr<std::vector<ThreadCollisionObjectProxy>> proxies)
@@ -59,6 +66,7 @@ void CollisionDetectionWorker::StartAsync(std::unique_ptr<std::vector<ThreadColl
 
 	{
 		std::lock_guard<std::mutex> lock(m_mutex);
+		m_detectionResults.clear();
 		m_proxies = std::move(proxies);
 		m_isReady = true;       // 仕事の準備完了
 		m_isCalculating = true; // 計算中にする
@@ -70,7 +78,11 @@ void CollisionDetectionWorker::WaitForEndCalculation()
 {
 	std::unique_lock<std::mutex> lock(m_mutex);
 
-	m_cv.wait(lock, [this] { return !m_isCalculating; });
+	if (m_workerThread)
+	{
+		m_cv.wait(lock, [this] { return !m_isCalculating; });
+
+	}
 }
 
 std::vector<DetectedCollisonData> CollisionDetectionWorker::GetDetectionResults()
@@ -78,6 +90,11 @@ std::vector<DetectedCollisonData> CollisionDetectionWorker::GetDetectionResults(
 	std::unique_lock<std::mutex> lock(m_mutex);
 
 	return m_detectionResults;
+}
+
+void CollisionDetectionWorker::SetCollisionMatrix(const CollisionMatrix& matrix)
+{
+	*m_collisionMatrix = matrix;
 }
 
 void CollisionDetectionWorker::DetectionThreadLoop()
@@ -110,37 +127,15 @@ void CollisionDetectionWorker::DetectionThreadLoop()
 				for (size_t j = i + 1; j < m_proxies->size(); j++)
 				{
 					// 1. ロックを一切気にせず、ローカルバッファにどんどん溜める
-					CheckDetectionPair((*m_proxies)[i], (*m_proxies)[j], &localBuffer);
-
-					// 2. バッファが一定数ったら一気に共有メモリへ
-					if (localBuffer.size() >= 50)
-					{
-#ifdef COLLISIONMANAGER_DEBUG	
-						OutputDebugString(L"=========== データ更新待機 ========== \n");
-#endif 
-
-						std::lock_guard<std::mutex> lock(m_mutex);
-						// std::copy よりも insert が効率的
-						m_detectionResults.insert(m_detectionResults.end(), localBuffer.begin(), localBuffer.end());
-						localBuffer.clear();
-
-#ifdef COLLISIONMANAGER_DEBUG	
-						OutputDebugString(L"!!!! 衝突データの更新 !!!! \n");
-#endif 
+					CheckDetectionPair((*m_proxies)[i], (*m_proxies)[j], &m_detectionResults);
 
 						m_cv.notify_one();
-					}
+					
 				}
 			}
 		}
 
-		// 3. ループ終了後に、残っているデータをすべて転送
-		if (!localBuffer.empty())
-		{
-			std::lock_guard<std::mutex> lock(m_mutex);
-			m_detectionResults.insert(m_detectionResults.end(), localBuffer.begin(), localBuffer.end());
-			localBuffer.clear();
-		}
+		
 
 		m_isCalculating = false;
 
@@ -183,7 +178,10 @@ void CollisionDetectionWorker::CheckDetectionPair(
 	// 衝突しているかどうか
 	if (CollisionManager::DetectCollision(collisionDataA.collider.get(), collisionDataB.collider.get()))
 	{
-		pOutResultStack->push_back({ collisionDataA.id, collisionDataB.id });
+		{
+			std::unique_lock<std::mutex> lock(m_mutex);
+			pOutResultStack->push_back({ collisionDataA.id, collisionDataB.id });
+		}
 
 		// 子を持っている場合その子も検知する
 		for (auto& child : collisionDataA.children)

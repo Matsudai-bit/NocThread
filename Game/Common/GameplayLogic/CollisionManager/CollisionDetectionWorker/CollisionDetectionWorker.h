@@ -75,6 +75,8 @@ public:
 	// Õ“ËŒŸ’mŒ‹‰Ê‚Ìæ“¾
 	std::vector<DetectedCollisonData> GetDetectionResults();
 
+	void SetCollisionMatrix(const CollisionMatrix& matrix);
+
 
 // “à•”À‘•
 private:

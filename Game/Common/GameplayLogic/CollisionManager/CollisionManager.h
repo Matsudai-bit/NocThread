@@ -274,7 +274,7 @@ public:
 public:
 
 	// Õ“ËŒŸ’m•\‚Ìİ’è
-	void SetCollisionMatrix(const CollisionMatrix* pCollisionMatrix) {m_pCollisionMatrix = pCollisionMatrix;}
+	void SetCollisionMatrix(const CollisionMatrix* pCollisionMatrix);
 
 	// “à•”À‘•
 private:
