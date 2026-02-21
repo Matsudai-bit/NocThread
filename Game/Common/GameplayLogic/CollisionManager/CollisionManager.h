@@ -185,12 +185,12 @@ public:
 
 	// 構造体の宣言
 private:
-	
+
 
 
 	// エイリアス宣言
 public:
-	
+
 	// データメンバの宣言 -----------------------------------------------
 private:
 
@@ -206,27 +206,14 @@ private:
 
 	std::unique_ptr<CollisionDetectionWorker> m_collisionDetectionWorker;
 
-	std::vector<ThreadCollisionObjectProxy> m_proxy;
-
-	std::mutex m_mutex;
-	std::unique_ptr< std::thread> m_detectionThread;
-	std::vector<DetectedCollisonData> m_detectionResults;
-
-	std::atomic<bool>	m_isCalculating = true;
-	std::atomic<bool>	m_stopThread = false;
-
-	std::atomic<bool> m_applyThread;
-
-	std::condition_variable m_cv;
-	std::condition_variable m_notifyCV;
 
 	std::vector<ThreadCollisionObjectProxy> m_staticProxies;
 
 
-	#ifdef COLLISIONMANAGER_DEBUG
+#ifdef COLLISIONMANAGER_DEBUG
 	long long m_totalDuration;
 
-	# endif 
+# endif 
 
 
 	// メンバ関数の宣言 -------------------------------------------------
@@ -252,15 +239,13 @@ public:
 	void Finalize();
 
 	// 衝突判定をするオブジェクトの追加
-	//void AddCollisionObjectData(GameObject* pAddGameObject, ICollider* pCollider, ICollider* pBroadCollider = nullptr);
 	void AddCollisionData(const CollisionData& collisionData);
 	void AddCollisionData(const CollisionData& childCollisionData, ICollider* parent);
 	// 削除
 	void RemoveCollisionObjectData(GameObject* pAddGameObject, ICollider* pCollider);
 	void RemoveAll();
 
-	// 衝突判定
-	static bool DetectCollision(const ICollider* pColliderA, const ICollider* pColliderB);
+
 
 	// 指定したコライダーの衝突情報を取得する
 	bool RetrieveCollisionData(const ICollider* pCheckCollider, std::vector<const GameObject*>* pHitGameObjects, std::vector<const ICollider*>* pHitColliders = nullptr);
@@ -281,19 +266,14 @@ private:
 
 	// 衝突判定直前の処理
 	void PreCollision();
-	// 衝突の検知
-	void UpdateDetection(std::vector<DetectedCollisonData>* pOutResults);
 
 	// 衝突の通知
-	void DynamicNotifyCollisionEvents(std::vector<DetectedCollisonData>* pDetectedCollisions);
 	void StaticNotifyCollisionEvents(std::vector<DetectedCollisonData>* pDetectedCollisions);
 
 	// 事後処理
 	void FinalizeCollision();
 
 
-	// ペアの衝突チェック
-	void CheckCollisionPair(const ThreadCollisionObjectProxy& collisionDataA, const ThreadCollisionObjectProxy& collisionDataB, std::vector<DetectedCollisonData>* pOutResults);
 
 	// 早期アクセス用テーブルに登録する
 	UINT RegisterIdLookUpTable(CollisionData data);
@@ -304,7 +284,4 @@ private:
 	void CreateThreadCollisionObjectProxy(std::vector<ThreadCollisionObjectProxy>* collisionObjectProxy);
 	bool CreateProxy(ThreadCollisionObjectProxy* pProxy, const CollisionData& collisionData, bool isStaticCreation);
 	bool CreateStaticProxy(std::vector<ThreadCollisionObjectProxy>* collisionObjectProxy);
-
-	// 検知できるかどうか
-	bool CanDetect(const ThreadCollisionObjectProxy& collisionDataA, const ThreadCollisionObjectProxy& collisionDataB);
 };

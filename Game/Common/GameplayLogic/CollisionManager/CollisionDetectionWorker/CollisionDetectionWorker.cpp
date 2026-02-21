@@ -13,6 +13,7 @@
 #include "CollisionDetectionWorker.h"
 #include "Game/Common/GameplayLogic/CollisionManager/CollisionManager.h"
 #include "Game/Common/GameplayLogic/CollisionMatrix/CollisionMatrix.h"
+#include "../../CollisionDispatcher/CollisionDispatcher.h"
 
 
 // ƒ‰ƒCƒuƒ‰ƒŠ
@@ -176,7 +177,7 @@ void CollisionDetectionWorker::CheckDetectionPair(
 	}
 
 	// Õ“Ë‚µ‚Ä‚¢‚é‚©‚Ç‚¤‚©
-	if (CollisionManager::DetectCollision(collisionDataA.collider.get(), collisionDataB.collider.get()))
+	if (CollisionDispatcher::DetectCollision(collisionDataA.collider.get(), collisionDataB.collider.get()))
 	{
 		{
 			std::unique_lock<std::mutex> lock(m_mutex);
