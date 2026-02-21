@@ -924,12 +924,6 @@
     <ClInclude Include="Game\Common\Framework\TaskManager\TaskManager.h">
       <Filter>Game\Common\Framework\TaskManager</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Common\GameplayLogic\CollisionMatrix\CollisionMatrix.h">
-      <Filter>Game\Common\Framework\Collision\CollisionMatrix</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Common\GameplayLogic\CollisionManager\CollisionManager.h">
-      <Filter>Game\Common\Framework\Collision\CollisionManager</Filter>
-    </ClInclude>
     <ClInclude Include="Game\Common\GameplayLogic\Behaviour\SteeringBehavior\SteeringBehavior.h">
       <Filter>Game\Common\GameplayLogic\Behaviour</Filter>
     </ClInclude>
@@ -1056,13 +1050,19 @@
     <ClInclude Include="Game\Common\Utillities\Collision\ColliderDraw\ColliderDrawer.h">
       <Filter>Game\Common\Utillities\Collision\ColliderDraw</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Common\GameplayLogic\CollisionManager\CollisionDetectionWorker\CollisionDetectionWorker.h">
-      <Filter>Game\Common\Framework\Collision\CollisionManager\CollisionDetectionWorker</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\Common\GameplayLogic\CollisionDispatcher\CollisionDispatcher.h">
+    <ClInclude Include="Game\Common\Framework\Collision\CollisionDispatcher\CollisionDispatcher.h">
       <Filter>Game\Common\Framework\Collision\CollisionDispatcher</Filter>
     </ClInclude>
-    <ClInclude Include="Game\Common\GameplayLogic\CollisionManager\CollisionTypes\CollisionTypes.h">
+    <ClInclude Include="Game\Common\Framework\Collision\CollisionManager\CollisionManager.h">
+      <Filter>Game\Common\Framework\Collision\CollisionManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Common\Framework\Collision\CollisionMatrix\CollisionMatrix.h">
+      <Filter>Game\Common\Framework\Collision\CollisionMatrix</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Common\Framework\Collision\CollisionManager\CollisionDetectionWorker\CollisionDetectionWorker.h">
+      <Filter>Game\Common\Framework\Collision\CollisionManager\CollisionDetectionWorker</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Common\Framework\Collision\CollisionManager\CollisionTypes\CollisionTypes.h">
       <Filter>Game\Common\Framework\Collision\CollisionManager\CollisionTypes</Filter>
     </ClInclude>
   </ItemGroup>
@@ -1366,12 +1366,6 @@
     <ClCompile Include="Game\Common\Framework\TaskManager\TaskManager.cpp">
       <Filter>Game\Common\Framework\TaskManager</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Common\GameplayLogic\CollisionMatrix\CollisionMatrix.cpp">
-      <Filter>Game\Common\Framework\Collision\CollisionMatrix</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Common\GameplayLogic\CollisionManager\CollisionManager.cpp">
-      <Filter>Game\Common\Framework\Collision\CollisionManager</Filter>
-    </ClCompile>
     <ClCompile Include="Game\Common\GameplayLogic\Behaviour\SteeringBehavior\SteeringBehavior.cpp">
       <Filter>Game\Common\GameplayLogic\Behaviour</Filter>
     </ClCompile>
@@ -1480,11 +1474,17 @@
     <ClCompile Include="Game\Common\Utillities\Collision\ColliderDraw\ColliderDrawer.cpp">
       <Filter>Game\Common\Utillities\Collision\ColliderDraw</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Common\GameplayLogic\CollisionManager\CollisionDetectionWorker\CollisionDetectionWorker.cpp">
-      <Filter>Game\Common\Framework\Collision\CollisionManager\CollisionDetectionWorker</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Common\GameplayLogic\CollisionDispatcher\CollisionDispatcher.cpp">
+    <ClCompile Include="Game\Common\Framework\Collision\CollisionDispatcher\CollisionDispatcher.cpp">
       <Filter>Game\Common\Framework\Collision\CollisionDispatcher</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Common\Framework\Collision\CollisionManager\CollisionManager.cpp">
+      <Filter>Game\Common\Framework\Collision\CollisionManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Common\Framework\Collision\CollisionMatrix\CollisionMatrix.cpp">
+      <Filter>Game\Common\Framework\Collision\CollisionMatrix</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Common\Framework\Collision\CollisionManager\CollisionDetectionWorker\CollisionDetectionWorker.cpp">
+      <Filter>Game\Common\Framework\Collision\CollisionManager\CollisionDetectionWorker</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

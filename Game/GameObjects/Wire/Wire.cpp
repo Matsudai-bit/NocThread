@@ -23,9 +23,7 @@
 #include "Game/Common/Framework/ResourceManager/ResourceManager.h"
 #include "Game/Common/Framework/Event/WireSystemObserver/WireSystemSubject.h"
 #include "Game/Common/Framework/Event/WireSystemObserver/IWireEventObserver.h"
-
-// ゲームプレイロジック関連
-#include "Game/Common/GameplayLogic/CollisionManager/CollisionManager.h"
+#include "Game/Common/Framework/Collision/CollisionManager/CollisionManager.h"
 
 // グラフィック関連
 #include "Game/Common/Graphics/Camera/Camera.h"

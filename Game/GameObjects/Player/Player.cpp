@@ -27,6 +27,8 @@
 #include "Game/Common/Framework/Event/WireSystemObserver/WireSystemSubject.h"
 #include "Game/Common/Framework/Event/WireSystemObserver/IWireEventObserver.h"
 #include "Game/Common/Framework/Event/Messenger/GameFlowMessenger/GameFlowMessenger.h"
+#include "Game/Common/Framework/Collision/CollisionManager/CollisionManager.h"
+
 
 // グラフィック関連
 #include "Game/Common/Graphics/SimpleModel/SimpleModel.h"
@@ -39,7 +41,6 @@
 
 // ゲームプレイロジック関連
 #include "Game/Common/GameplayLogic/WireTargetFinder/WireTargetFinder.h"
-#include "Game/Common/GameplayLogic/CollisionManager/CollisionManager.h"
 
 // ゲームオブジェクト
 #include "Game/GameObjects/Wire/Wire.h"
@@ -93,7 +94,7 @@ Player::Player()
 Player::~Player()
 {
 	// 衝突管理から削除
-	GetCommonResources()->GetCollisionManager()->RemoveCollisionObjectData(this, m_collider.get());
+	//GetCommonResources()->GetCollisionManager()->RemoveCollisionObjectData(this, m_collider.get());
 }
 
 /**

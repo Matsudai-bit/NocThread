@@ -194,6 +194,11 @@
     <ClInclude Include="Game\Common\Factory\FactoryBase.h" />
     <ClInclude Include="Game\Common\Factory\InputBindingFactory\InputBindingFactory.h" />
     <ClInclude Include="Game\Common\Factory\PlayerFactory\PlayerFactory.h" />
+    <ClInclude Include="Game\Common\Framework\Collision\CollisionDispatcher\CollisionDispatcher.h" />
+    <ClInclude Include="Game\Common\Framework\Collision\CollisionManager\CollisionDetectionWorker\CollisionDetectionWorker.h" />
+    <ClInclude Include="Game\Common\Framework\Collision\CollisionManager\CollisionManager.h" />
+    <ClInclude Include="Game\Common\Framework\Collision\CollisionManager\CollisionTypes\CollisionTypes.h" />
+    <ClInclude Include="Game\Common\Framework\Collision\CollisionMatrix\CollisionMatrix.h" />
     <ClInclude Include="Game\Common\Framework\CommonResources\CommonResources.h" />
     <ClInclude Include="Game\Common\Framework\EventSystem\EventData\EventData.h" />
     <ClInclude Include="Game\Common\Framework\EventSystem\EventSystem.h" />
@@ -218,11 +223,6 @@
     <ClInclude Include="Game\Common\Framework\TaskManager\TaskManager.h" />
     <ClInclude Include="Game\Common\GameplayLogic\Behaviour\SteeringBehavior\SteeringBehavior.h" />
     <ClInclude Include="Game\Common\GameplayLogic\Behaviour\SteeringBehavior\SteeringParameters.h" />
-    <ClInclude Include="Game\Common\GameplayLogic\CollisionDispatcher\CollisionDispatcher.h" />
-    <ClInclude Include="Game\Common\GameplayLogic\CollisionManager\CollisionDetectionWorker\CollisionDetectionWorker.h" />
-    <ClInclude Include="Game\Common\GameplayLogic\CollisionManager\CollisionManager.h" />
-    <ClInclude Include="Game\Common\GameplayLogic\CollisionManager\CollisionTypes\CollisionTypes.h" />
-    <ClInclude Include="Game\Common\GameplayLogic\CollisionMatrix\CollisionMatrix.h" />
     <ClInclude Include="Game\Common\GameplayLogic\ExitController\ExitController.h" />
     <ClInclude Include="Game\Common\GameplayLogic\GameDirector\GameDirector.h" />
     <ClInclude Include="Game\Common\GameplayLogic\GameProgressData\GameProgressData.h" />
@@ -358,6 +358,10 @@
     <ClCompile Include="Game\Common\Factory\EnemyFactory\EnemyFactory.cpp" />
     <ClCompile Include="Game\Common\Factory\InputBindingFactory\InputBindingFactory.cpp" />
     <ClCompile Include="Game\Common\Factory\PlayerFactory\PlayerFactory.cpp" />
+    <ClCompile Include="Game\Common\Framework\Collision\CollisionDispatcher\CollisionDispatcher.cpp" />
+    <ClCompile Include="Game\Common\Framework\Collision\CollisionManager\CollisionDetectionWorker\CollisionDetectionWorker.cpp" />
+    <ClCompile Include="Game\Common\Framework\Collision\CollisionManager\CollisionManager.cpp" />
+    <ClCompile Include="Game\Common\Framework\Collision\CollisionMatrix\CollisionMatrix.cpp" />
     <ClCompile Include="Game\Common\Framework\CommonResources\CommonResources.cpp" />
     <ClCompile Include="Game\Common\Framework\EventSystem\EventData\EventData.cpp" />
     <ClCompile Include="Game\Common\Framework\EventSystem\EventSystem.cpp" />
@@ -378,10 +382,6 @@
     <ClCompile Include="Game\Common\Framework\TaskManager\TaskManager.cpp" />
     <ClCompile Include="Game\Common\GameplayLogic\Behaviour\SteeringBehavior\SteeringBehavior.cpp" />
     <ClCompile Include="Game\Common\GameplayLogic\Behaviour\SteeringBehavior\SteeringParameters.cpp" />
-    <ClCompile Include="Game\Common\GameplayLogic\CollisionDispatcher\CollisionDispatcher.cpp" />
-    <ClCompile Include="Game\Common\GameplayLogic\CollisionManager\CollisionDetectionWorker\CollisionDetectionWorker.cpp" />
-    <ClCompile Include="Game\Common\GameplayLogic\CollisionManager\CollisionManager.cpp" />
-    <ClCompile Include="Game\Common\GameplayLogic\CollisionMatrix\CollisionMatrix.cpp" />
     <ClCompile Include="Game\Common\GameplayLogic\ExitController\ExitController.cpp" />
     <ClCompile Include="Game\Common\GameplayLogic\GameDirector\GameDirector.cpp" />
     <ClCompile Include="Game\Common\GameplayLogic\GameProgressData\GameProgressData.cpp" />

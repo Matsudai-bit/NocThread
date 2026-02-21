@@ -21,13 +21,10 @@
 // フレームワーク関連
 #include "Game/Common/Framework/CommonResources/CommonResources.h"
 #include "Game/Common/Framework/Event/Messenger/GameFlowMessenger/GameFlowMessenger.h"
+#include "Game/Common/Framework/Collision/CollisionManager/CollisionManager.h"
 
 // ゲームオブジェクト関連 
 #include "Game/GameObjects/Player/Player.h"
-
-// ゲームプレイロジック関連
-#include "Game/Common/GameplayLogic//CollisionManager/CollisionManager.h"
-
 
 
 using namespace DirectX;

@@ -11,23 +11,11 @@
 // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "CollisionDetectionWorker.h"
-#include "Game/Common/GameplayLogic/CollisionManager/CollisionManager.h"
-#include "Game/Common/GameplayLogic/CollisionMatrix/CollisionMatrix.h"
 #include "../../CollisionDispatcher/CollisionDispatcher.h"
 
-
-// ライブラリ
-
-// ファクトリー関連
-
-// データベース関連
-
 // フレームワーク関連
-
-// ゲームプレイロジック関連
-
-// グラフィック関連
-
+#include "Game/Common/Framework/Collision/CollisionManager/CollisionManager.h"
+#include "Game/Common/Framework/Collision/CollisionMatrix/CollisionMatrix.h"
 
 // メンバ関数の定義 ===========================================================
 /**
@@ -58,6 +46,11 @@ CollisionDetectionWorker::~CollisionDetectionWorker()
 	}
 }
 
+/**
+ * @brief 非同期処理の開始
+ * 
+ * @param[in] proxies　プロキシ
+ */
 void CollisionDetectionWorker::StartAsync(std::unique_ptr<std::vector<ThreadCollisionObjectProxy>> proxies)
 {
 	if (!m_workerThread)
@@ -75,17 +68,28 @@ void CollisionDetectionWorker::StartAsync(std::unique_ptr<std::vector<ThreadColl
 	m_cv.notify_one(); // 待機中のスレッドを叩き起こす
 }
 
+/**
+ * @brief 終了まで待機
+ */
 void CollisionDetectionWorker::WaitForEndCalculation()
 {
 	std::unique_lock<std::mutex> lock(m_mutex);
 
-	if (m_workerThread)
+	if (m_workerThread && m_isCalculating)
 	{
+#ifdef COLLISIONMANAGER_DEBUG	
+		OutputDebugString(L"============ 計算が終わるまで待機 ============\n");
+#endif 
 		m_cv.wait(lock, [this] { return !m_isCalculating; });
 
 	}
 }
 
+/**
+ * @brief 衝突検知結果の取得
+ * 
+ * @return 結果
+ */
 std::vector<DetectedCollisonData> CollisionDetectionWorker::GetDetectionResults()
 {
 	std::unique_lock<std::mutex> lock(m_mutex);
@@ -93,11 +97,19 @@ std::vector<DetectedCollisonData> CollisionDetectionWorker::GetDetectionResults(
 	return m_detectionResults;
 }
 
+/**
+ * @brief 衝突対応表の設定
+ * 
+ * @param[in] matrix 衝突対応表
+ */
 void CollisionDetectionWorker::SetCollisionMatrix(const CollisionMatrix& matrix)
 {
 	*m_collisionMatrix = matrix;
 }
 
+/**
+ * @brief 検知するスレッドのループ
+ */
 void CollisionDetectionWorker::DetectionThreadLoop()
 {
 	// サブスレッド内だけで使う「完全なローカル」スタック

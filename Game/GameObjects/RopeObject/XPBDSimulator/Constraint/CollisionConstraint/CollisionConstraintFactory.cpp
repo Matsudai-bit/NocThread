@@ -13,8 +13,9 @@
 // ライブラリ関連
 #include "Library/MyLib/MathUtils/MathUtils.h"
 
-// ゲームプレイロジック関連
-#include "Game/Common/GameplayLogic/CollisionManager/CollisionManager.h"
+// フレームワーク関連
+#include "Game/Common/Framework/Collision/CollisionManager/CollisionManager.h"
+
 
 // ユーティリティ関連
 #include "Game/GameObjects/RopeObject/XPBDSimulator/Constraint/CollisionConstraint/CollisionConstraint.h"

@@ -11,7 +11,7 @@
  // 多重インクルードの防止 =====================================================
 #pragma once
 
-#define COLLISIONMANAGER_DEBUG
+//#define COLLISIONMANAGER_DEBUG
 
 #include <vector>
 #include <thread>
@@ -33,10 +33,10 @@
 #include "Game/Common/Framework/TaskManager/TaskManager.h"
 
 // ゲームプレイロジック関連
-#include "Game/Common/GameplayLogic/CollisionMatrix/CollisionMatrix.h"
 #include "CollisionTypes/CollisionTypes.h"
 
 class CollisionDetectionWorker;
+class CollisionMatrix;
 
 // クラスの定義 ===============================================================
 /**
