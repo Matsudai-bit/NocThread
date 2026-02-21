@@ -18,9 +18,7 @@
 
 // フレームワーク関連
 #include "Game/Common/Framework/CommonResources/CommonResources.h"
-
-// ゲームプレイロジック関連
-#include "Game/Common/GameplayLogic/CollisionManager/CollisionManager.h"
+#include "Game/Common/Framework/Collision/CollisionManager/CollisionManager.h"
 
 // グラフィック関連
 #include "Game/Common/Graphics/Camera/Camera.h"

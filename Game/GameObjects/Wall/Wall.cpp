@@ -14,10 +14,7 @@
 // フレームワーク関連
 #include "Game/Common/Framework/CommonResources/CommonResources.h"
 #include "Game/Common/Framework/ResourceManager/ResourceManager.h"
-
-// ゲームプレイロジック関連
-#include "Game/Common/GameplayLogic/CollisionManager/CollisionManager.h"
-
+#include "Game/Common/Framework/Collision/CollisionManager/CollisionManager.h"
 
 
 using namespace DirectX;

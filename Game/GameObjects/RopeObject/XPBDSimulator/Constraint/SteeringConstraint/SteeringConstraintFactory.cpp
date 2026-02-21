@@ -21,9 +21,7 @@
 #include "Game/GameObjects/RopeObject/XPBDSimulator/SimParticle/SimParticle.h"
 #include "Game/Common/Framework/Input/InputSystem/InputSystem.h"
 #include "Game/Common/Framework/Input/InputActionType/InputActionType.h"
-
-// ゲームプレイロジック関連
-#include "Game/Common/GameplayLogic/CollisionManager/CollisionManager.h"
+#include "Game/Common/Framework/Collision/CollisionManager/CollisionManager.h"
 
 // グラフィック関連
 #include "Game/Common/Graphics/Camera/MainCamera/MainCamera.h"

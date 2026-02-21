@@ -10,8 +10,8 @@
 #include "pch.h"
 #include "CollisionMatrixFactory.h"
 
-// ゲームプレイロジック関連
-#include "Game/Common/GameplayLogic/CollisionMatrix/CollisionMatrix.h"
+// フレームワーク関連
+#include "Game/Common/Framework/Collision/CollisionMatrix/CollisionMatrix.h"
 
 // ゲームオブジェクト関連
 #include "Game/GameObjects/Common/GameObject.h"

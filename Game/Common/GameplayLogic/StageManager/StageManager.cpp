@@ -27,6 +27,8 @@
 #include "Game//Common/Framework/GameObjectRegistry/GameObjectRegistry.h"
 #include "Game/Common/Framework/Event/Messenger/GameFlowMessenger/GameFlowMessenger.h"
 #include "Game/Common/Framework/TaskManager/TaskManager.h"
+#include "Game/Common/Framework/Collision/CollisionManager/CollisionManager.h"
+
 
 // グラフィック関連
 #include "Game/Common/Graphics/Camera/MainCamera/MainCamera.h"
@@ -35,7 +37,6 @@
 
 // ゲームプレイロジック関連
 #include "Game/Common/GameplayLogic/ResultData/ResultData.h"
-#include "Game/Common/GameplayLogic/CollisionManager/CollisionManager.h"
 #include "Game/Common/GameplayLogic/SpawnManager/SpawnManager.h"
 
 // ユーティリティ関連

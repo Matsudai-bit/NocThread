@@ -29,14 +29,15 @@
 #include "Game/Common/Framework/TaskManager/TaskManager.h"
 #include "Game//Common/Framework/GameObjectRegistry/GameObjectRegistry.h"
 #include "Game/Common/Framework/Event/Messenger/GameFlowMessenger/GameFlowMessenger.h"
+#include "Game/Common/Framework/Collision/CollisionManager/CollisionManager.h"
+#include "Game/Common/Framework/Collision/CollisionMatrix/CollisionMatrix.h"
+
 
 // ゲームプレイロジック関連
 #include "Game/Common/GameplayLogic/ResultData/ResultData.h"
-#include "Game/Common/GameplayLogic/CollisionManager/CollisionManager.h"
 #include "Game/Common/GameplayLogic/StageManager/StageManager.h"
 #include "Game/Common/GameplayLogic/SpawnManager/SpawnManager.h"
 #include "Game/Common/GameplayLogic/GameDirector/GameDirector.h"
-#include "Game/Common/GameplayLogic/CollisionMatrix/CollisionMatrix.h"
 
 // グラフィック関連
 #include "Game/Common/Graphics/GameEffect/GameEffectController.h"
@@ -219,7 +220,7 @@ void GameplayScene::OnGameFlowEvent(GameFlowEventID eventID)
 		});
 		break;
 	case GameFlowEventID::GAME_SETUP_FINISH:
-		GetCommonResources()->GetCollisionManager()->PreCreateProxy();
+		GetCommonResources()->GetCollisionManager()->CreateStaticProxy();
 	default:
 		break;
 	}

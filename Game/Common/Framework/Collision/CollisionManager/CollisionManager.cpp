@@ -74,11 +74,11 @@ bool CollisionManager::UpdateTask(float deltaTime)
 	// 事前処理
 	PreCollision();
 	
-	m_collisionDetectionWorker->WaitForEndCalculation();
-	auto detectionResults = std::move(m_collisionDetectionWorker->GetDetectionResults());
+	// 同期して衝突結果の取得
+	auto results = SyncAndFetchResults();
 	
 	// 衝突を通知する
-	StaticNotifyCollisionEvents(&detectionResults);
+	NotifyCollisionEvents(&results);
 
 	// 事後処理
 	FinalizeCollision();
@@ -106,24 +106,6 @@ bool CollisionManager::UpdateTask(float deltaTime)
 	return true;
 }
 
-
-
-
-/**
- * @brief 描画処理
- *
- * @param[in] なし
- *
- * @return なし
- */
-void CollisionManager::Draw()
-{
-
-}
-
-
-
-
 /**
  * @brief 終了処理
  *
@@ -138,7 +120,11 @@ void CollisionManager::Finalize()
 
 }
 
-
+/**
+ * @brief 衝突データの追加
+ * 
+ * @param[in] collisionData　衝突データ
+ */
 void CollisionManager::AddCollisionData(const CollisionData& collisionData)
 {
 
@@ -148,6 +134,12 @@ void CollisionManager::AddCollisionData(const CollisionData& collisionData)
 
 }
 
+/**
+ * @brief 衝突データの追加
+ * 
+ * @param[in] childCollisionData	子データ
+ * @param[in] parent				登録されている親コライダー
+ */
 void CollisionManager::AddCollisionData(const CollisionData& childCollisionData, ICollider* parent)
 {
 	if (parent)
@@ -172,21 +164,19 @@ void CollisionManager::AddCollisionData(const CollisionData& childCollisionData,
 /**
  * @brief 削除
  *
- * @param[in] pAddGameObject
- * @param[in] pCollider
+ * @param[in] pRemoveGameObject 削除するゲームオブジェクトのポインタ
+ * @param[in] pCollider			削除するコライダーのポインタ
  */
-void CollisionManager::RemoveCollisionObjectData(GameObject* pAddGameObject, ICollider* pCollider)
+void CollisionManager::RemoveCollisionObjectData(GameObject* pRemoveGameObject, ICollider* pCollider)
 {
-	//RemoveAll();
-	if (!pAddGameObject || !pCollider) return;
+	if (!pRemoveGameObject || !pCollider) return;
 
-	// ここで一回だけロック！
 
 	auto findIt = std::find_if(m_rootCollisionDataId.begin(), m_rootCollisionDataId.end(),
 		[&](const UINT& id) {
 			auto it = m_collisionIdLookupTable.find(id);
 			if (it == m_collisionIdLookupTable.end()) return false;
-			return (pAddGameObject == it->second.pGameObject && pCollider == it->second.pCollider);
+			return (pRemoveGameObject == it->second.pGameObject && pCollider == it->second.pCollider);
 		});
 
 	if (findIt != m_rootCollisionDataId.end()) {
@@ -200,6 +190,9 @@ void CollisionManager::RemoveCollisionObjectData(GameObject* pAddGameObject, ICo
 	}
 }
 
+/**
+ * @brief 全て削除
+ */
 void CollisionManager::RemoveAll()
 {
 	m_collisionIdLookupTable.clear();
@@ -269,26 +262,33 @@ bool CollisionManager::RetrieveCollisionData(const ICollider* pCheckCollider, st
 	return isHit;
 }
 
-void CollisionManager::StartThread()
+/**
+ * @brief 非同期当たり判定の開始（判定タスクの発注）
+ */
+void CollisionManager::RequestCollisionDetection()
 {
 
 #ifdef COLLISIONMANAGER_DEBUG	
 	OutputDebugString(L"============ スレッドの開始処理 ============\n");
-#endif 
-
-	// 衝突判定の流れ
-// 衝突判定->衝突処理->押し出し
-	if (m_rootCollisionDataId.empty()) return ;
 
 	// 1. 開始時刻の記録
 	auto start = std::chrono::high_resolution_clock::now();
+#endif 
 
-
+	if (m_rootCollisionDataId.empty()) return ;
 
 
 	// 判定用データの作成（ここはメインスレッドで安全に行う）
 	auto nextProxy = std::make_unique<std::vector<ThreadCollisionObjectProxy>>();
-	CreateThreadCollisionObjectProxy(nextProxy.get());
+
+	// プロキシの作成
+	CreateWorkerProxy(nextProxy.get(), false);
+
+	// オブジェクトをコピー
+	nextProxy->insert(nextProxy->end(), m_staticProxies.begin(), m_staticProxies.end());
+	// 検知処理の開始
+	m_collisionDetectionWorker->StartAsync(std::move(nextProxy));
+
 
 #ifdef COLLISIONMANAGER_DEBUG	
 
@@ -303,26 +303,34 @@ void CollisionManager::StartThread()
 
 #endif 
 
-	// 静的オブジェクトをコピー
-	nextProxy->insert(nextProxy->end(), m_staticProxies.begin(), m_staticProxies.end());
-	m_collisionDetectionWorker->StartAsync(std::move(nextProxy));
-	
-
-#ifdef COLLISIONMANAGER_DEBUG	
-		OutputDebugString(L"============ スレッドの開始要求 ============\n");
-#endif 
-	
 }
 
-void CollisionManager::PreCreateProxy()
+/**
+ * @brief 事前に静的なプロキシの作成
+ */
+void CollisionManager::CreateStaticProxy()
 {
 	m_staticProxies.clear();
-	CreateStaticProxy(&m_staticProxies);
+	CreateWorkerProxy(&m_staticProxies, true);
 }
 
+/**
+ * @brief 衝突対応表の設定
+ * 
+ * @param[in] pCollisionMatrix　衝突対応表
+ */
 void CollisionManager::SetCollisionMatrix(const CollisionMatrix* pCollisionMatrix)
 {
 	m_collisionDetectionWorker->SetCollisionMatrix(*pCollisionMatrix);
+}
+
+/**
+ * @brief 同期してリザルトデータを更新
+ */
+std::vector<DetectedCollisonData> CollisionManager::SyncAndFetchResults()
+{
+	m_collisionDetectionWorker->WaitForEndCalculation();
+	return  std::move(m_collisionDetectionWorker->GetDetectionResults());
 }
 
 /**
@@ -342,8 +350,12 @@ void CollisionManager::PreCollision()
 }
 
 
-
-void CollisionManager::StaticNotifyCollisionEvents(std::vector<DetectedCollisonData>* pDetectedCollisions)
+/**
+ * @brief 衝突通知
+ * 
+ * @param[in] pDetectedCollisions　衝突が検知されたデータ
+ */
+void CollisionManager::NotifyCollisionEvents(std::vector<DetectedCollisonData>* pDetectedCollisions)
 {
 	// ここにはもうロックも wait も不要。純粋な通知ロジックのみ。
 	for (const auto& data : (*pDetectedCollisions))
@@ -392,7 +404,7 @@ UINT CollisionManager::RegisterIdLookUpTable(CollisionData data)
 
 
 
-	m_collisionIdLookupTable[data.id]  = data;
+	m_collisionIdLookupTable[data.id] = data;
 
 	return newId;
 
@@ -423,12 +435,12 @@ void CollisionManager::UnregisterIdLookUpTable(UINT dataID)
 }
 
 
-void CollisionManager::CreateThreadCollisionObjectProxy(std::vector<ThreadCollisionObjectProxy>* collisionObjectProxy)
+void CollisionManager::CreateWorkerProxy(std::vector<ThreadCollisionObjectProxy>* collisionObjectProxy, bool isStaticProxy)
 {
 	std::vector<ThreadCollisionObjectProxy> localProxies;
 
 #ifdef COLLISIONMANAGER_DEBUG	
-	OutputDebugString(L"============ 動的プロキシの作成処理 ============\n");
+	OutputDebugString(L"============ プロキシの作成処理 ============\n");
 #endif 
 	
 	// 読み取りを開始する前にロックを取得！
@@ -440,7 +452,7 @@ void CollisionManager::CreateThreadCollisionObjectProxy(std::vector<ThreadCollis
 
 		ThreadCollisionObjectProxy proxy;
 		// CreateProxy内でも find を使うため、このスコープ内で一気に処理する
-		if (CreateProxy(&proxy, it->second, false)) {
+		if (CreateProxy(&proxy, it->second, isStaticProxy)) {
 			localProxies.emplace_back(std::move(proxy));
 		}
 	}
@@ -483,36 +495,6 @@ bool CollisionManager::CreateProxy(ThreadCollisionObjectProxy* pProxy, const Col
 	}
 	return true;
 }
-
-bool CollisionManager::CreateStaticProxy(std::vector<ThreadCollisionObjectProxy>* collisionObjectProxy)
-{
-	std::vector<ThreadCollisionObjectProxy> localProxies;
-
-#ifdef COLLISIONMANAGER_DEBUG	
-	OutputDebugString(L"============ 静的プロキシの作成処理 ============\n");
-#endif 
-	
-	// 読み取りを開始する前にロックを取得！
-	localProxies.reserve(m_rootCollisionDataId.size());
-
-	for (auto& id : m_rootCollisionDataId) {
-		auto it = m_collisionIdLookupTable.find(id);
-		if (it == m_collisionIdLookupTable.end()) continue;
-
-		ThreadCollisionObjectProxy proxy;
-		// CreateProxy内でも find を使うため、このスコープ内で一気に処理する
-		if (CreateProxy(&proxy, it->second, true)) {
-			localProxies.emplace_back(std::move(proxy));
-		}
-	}
-
-	// そのまま共有データへ代入
-	*collisionObjectProxy = std::move(localProxies);
-	// ここでアンロック}
-	return true;
-}
-
-
 
 
 

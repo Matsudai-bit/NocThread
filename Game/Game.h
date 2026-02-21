@@ -23,7 +23,7 @@
 #include "Game/Scene/SceneManager.h"         // シーン管理
 #include "Game/Common/Framework/Input/InputSystem/InputSystem.h"
 #include "Game/Common/Framework/Input/InputActionMap/InputActionMap.h"
-#include "Game/Common/GameplayLogic/CollisionManager/CollisionManager.h"
+#include "Game/Common/Framework/Collision/CollisionManager/CollisionManager.h"
 
 // グラフィック関連
 #include "Game/Common/Graphics/TransitionMask/TransitionMask.h"      // トランジションマスク

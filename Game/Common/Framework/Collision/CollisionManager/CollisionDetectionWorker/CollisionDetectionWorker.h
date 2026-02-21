@@ -16,7 +16,7 @@
 
 // ヘッダファイルの読み込み ===================================================
 #include <thread>
-#include "Game/Common/GameplayLogic/CollisionManager/CollisionManager.h"
+#include "Game/Common/Framework/Collision/CollisionManager/CollisionManager.h"
 
 
 // クラスの前方宣言 ===================================================
@@ -64,6 +64,7 @@ public:
 
 // 操作
 public:
+	// 非道気処理の開始
 	void StartAsync(std::unique_ptr<std::vector<ThreadCollisionObjectProxy>> proxies);
 	// 終了まで待機
 	void WaitForEndCalculation();
@@ -75,14 +76,17 @@ public:
 	// 衝突検知結果の取得
 	std::vector<DetectedCollisonData> GetDetectionResults();
 
+	// 衝突対応表の設定
 	void SetCollisionMatrix(const CollisionMatrix& matrix);
 
 
 // 内部実装
 private:
 
+	// 検知するスレッドのループ
 	void DetectionThreadLoop();
 
+	// ペアの衝突チェック
 	void CheckDetectionPair(const ThreadCollisionObjectProxy& collisionDataA, const ThreadCollisionObjectProxy& collisionDataB, std::vector<DetectedCollisonData>* pOutResults);
 
 	// 検知できるかどうか

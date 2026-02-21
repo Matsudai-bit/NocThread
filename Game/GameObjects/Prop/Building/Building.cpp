@@ -16,13 +16,10 @@
 // フレームワーク関連
 #include "Game/Common/Framework/ResourceManager/ResourceManager.h"
 #include "Game/Common/Framework/CommonResources/CommonResources.h"
+#include "Game/Common/Framework/Collision/CollisionManager/CollisionManager.h"
 
 // グラフィック関連
 #include "Game/Common/Graphics/Camera/Camera.h"
-
-// ユーティリティ関連
-#include "Game/Common/GameplayLogic/CollisionManager/CollisionManager.h"
-
 
 using namespace DirectX;
 
@@ -38,28 +35,15 @@ Building::Building()
 
 }
 
-
-
-
-
-
-
 /**
  * @brief デストラクタ
  */
 Building::~Building()
 {
-	// 衝突管理から削除
-	for (auto& collider : m_collider)
-	{
-		GetCommonResources()->GetCollisionManager()->RemoveCollisionObjectData(this,collider.get());
-	}
-		GetCommonResources()->GetCollisionManager()->RemoveCollisionObjectData(&m_parentColliderObject, m_parentColliderObject.GetCollider());
+
 	
 
 }
-
-
 
 
 /**

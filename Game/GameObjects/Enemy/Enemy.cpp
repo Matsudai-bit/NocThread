@@ -29,13 +29,14 @@
 #include "Game/Common/Framework/CommonResources/CommonResources.h"
 #include "Game/Common/Framework/ResourceManager/ResourceManager.h"
 #include "Game/Common/Framework/Event/WireSystemObserver/WireEventData.h"
+#include "Game/Common/Framework/Collision/CollisionManager/CollisionManager.h"
+
 
 // グラフィック関連
 #include "Game/Common/Screen.h"
 #include "Game/Common/Graphics/Camera/Camera.h"
 
 // ゲームプレイロジック関連
-#include "Game/Common/GameplayLogic/CollisionManager/CollisionManager.h"
 #include "Game/Common/GameplayLogic/ResultData/ResultData.h"
 
 
