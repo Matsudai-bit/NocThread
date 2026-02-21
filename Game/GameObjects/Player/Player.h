@@ -21,14 +21,13 @@
 
 
 
-#include "Game/Common/StateMachine/StateMachine.h"
+#include "Game/Common/Framework/StateMachine/StateMachine.h"
 
 #include "Game/GameObjects/Wire/IWireHolder/IWireHolder.h"
-#include "Game/Common/Event/Messenger/GameFlowMessenger/IGameFlowObserver.h"
-#include "Game/Common/Input/InputActionType/InputActionType.h"
+#include "Game/Common/Framework/Event/Messenger/GameFlowMessenger/IGameFlowObserver.h"
+#include "Game/Common/Framework/Input/InputActionType/InputActionType.h"
 
-#include "Game/Common/Input/InputSystem/InputSystem.h"
-#include "Game/Common/SoundManager/SoundManager.h"
+#include "Game/Common/Framework/SoundManager/SoundManager.h"
 #include "Game/Common/Database/SoundDatabase.h"
 #include "Library/DirectXFramework/Animation.h"
 
@@ -101,7 +100,6 @@ private:
 	// システム
 	CollisionManager* m_pCollisionManager;
 	std::unique_ptr<StateMachine<Player>>	m_stateMachine;	///< ステートマシーン
-	InputSystem<InputActionType::PlyayerActionID>* m_pPlayerInput;	///< プレイヤーの入力機構
 
 	// イベントに関するモノ
 	DirectX::SimpleMath::Vector3 m_requestedMove;			///<　リクエストされた移動ベクトル
@@ -123,7 +121,9 @@ private:
 	// フラグ関連
 	bool m_isGround;
 	bool m_isActive;
-	bool m_canStep; ///< ステップ可能かどうか
+	bool m_canStep;				///< ステップ可能かどうか
+	bool m_releaseWireRequested;	///< ワイヤーを離すよう要求
+	bool m_shootWireRequested;	///< ワイヤーを飛ばすよう要求
 
 	// 状態
 	State m_state;
@@ -149,7 +149,7 @@ public:
 // 操作
 public:
 	// 初期化処理
-	void Initialize(const CommonResources* pCommonResources, CollisionManager* pCollisionManager, const PlayerCamera* pPlayerCamera, InputSystem<InputActionType::PlyayerActionID>* pPlayerInput);
+	void Initialize(const CommonResources* pCommonResources, CollisionManager* pCollisionManager, const PlayerCamera* pPlayerCamera);
 
 	// 更新処理
 	void Update(float deltaTime);
@@ -181,6 +181,10 @@ public:
 	bool RequestJump();
 	// ステップ要求
 	bool RequestStep();
+	// ワイヤーを離すよう要求
+	bool RequestReleaseWire(bool isReleased);
+	// ワイヤーを飛ばすように要求
+	bool RequestShootWire(bool isShooting);
 
 // 動作処理関連
 public:
@@ -257,6 +261,11 @@ public:
 	// 活動しているかどうか
 	bool IsActive() const override					{ return m_isActive; }
 
+	// ワイヤーを離すよう要求されているかどうか
+	bool IsReleaseWireRequested() const 			{ return m_releaseWireRequested; }
+	// ワイヤーを飛ばすよう要求されているかどうか
+	bool IsShootWireRequested() const				{ return m_shootWireRequested; }
+
 	// カメラの取得
 	const PlayerCamera* GetCamera() const			{ return m_pPlayerCamera; }
 
@@ -281,10 +290,6 @@ public:
 	// ワイヤーを発射できるかどうか
 	bool CanShootWire() const;
 
-
-	// プレイヤー入力の取得
-	InputSystem<InputActionType::PlyayerActionID>* GetPlayerInput() { return m_pPlayerInput; }
-
 	// ワイヤーの衝突時に呼ぶ関数を設定する
 	void SetWireCollisionFunction(std::function<void(const GameObject*)> collisionWire);
 
@@ -298,12 +303,5 @@ private:
 
 	// 空気抵抗の適用
 	void ApplyDrag(float deltaTime);
-
-
-
-	//// ワイヤーの作成
-	//void CreateRope(const DirectX::SimpleMath::Vector3& origin, const DirectX::SimpleMath::Vector3& direction, const  int& particleNum, const float& length, const XPBDSimulator::Parameter& param);
-
-	//void CreateRope(const DirectX::SimpleMath::Vector3& origin, const DirectX::SimpleMath::Vector3& targetPoint,  const XPBDSimulator::Parameter& param, float particleDistance);
 
 };

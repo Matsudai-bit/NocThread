@@ -11,13 +11,25 @@
 #include "StageObject.h"
 #include <typeindex>
 
+// ゲームオブジェクト関連
 #include "Game/GameObjects/StageObject/State/IdleStageObjectState.h"
+
+// 状態関連
 #include "Game/GameObjects/StageObject/State/ThrownStageObjectState/ThrownStageObjectState.h"
-#include "Game/Common/Collision/CollisionManager/CollisionManager.h"
-#include "Game/Common/CommonResources/CommonResources.h"
-#include "Game/Common/ResourceManager/ResourceManager.h"
-#include "Game/Common/Event/WireSystemObserver/WireEventData.h"
-#include "Game/Common/Camera/Camera.h"
+
+// データベース関連
+#include "Game/Common/Database/PhysicsParameter.h"
+
+// フレームワーク関連
+#include "Game/Common/Framework/CommonResources/CommonResources.h"
+#include "Game/Common/Framework/ResourceManager/ResourceManager.h"
+#include "Game/Common/Framework/Event/WireSystemObserver/WireEventData.h"
+
+// ゲームプレイロジック関連
+#include "Game/Common/GameplayLogic/CollisionManager/CollisionManager.h"
+
+// グラフィック関連
+#include "Game/Common/Graphics/Camera/Camera.h"
 
 
 using namespace DirectX;
@@ -71,7 +83,7 @@ void StageObject::Initialize(CommonResources* pCommonResources, CollisionManager
 	// コライダの作成
 	m_collider = std::make_unique<Sphere>(GetTransform()->GetPosition(), GetTransform()->GetScale().x);
 
-	pCollisionManager->AddCollisionData(CollisionData(this, m_collider.get()));
+	pCollisionManager->AddCollisionData(CollisionData(this, m_collider.get(), false));
 
 	// モデルの取得
 	m_model = GetCommonResources()->GetResourceManager()->CreateModel(STAGE_OBJECT_MODEL_FILE_NAME);
@@ -190,7 +202,7 @@ void StageObject::ApplyGravity(const float& deltaTime)
 
 	// 重力を加える
 	SimpleMath::Vector3 velocity = GetVelocity();
-	velocity += GRAVITY_ACCELERATION * deltaTime;
+	velocity += PhysicsParameter::GRAVITY_ACCELERATION * deltaTime;
 
 	SetVelocity(velocity);
 }

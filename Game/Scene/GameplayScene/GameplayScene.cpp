@@ -14,44 +14,50 @@
 #include "GameplayScene.h"
 
 // ライブラリ
-#include "Game/Common/TaskManager/TaskManager.h"
-// DirectX系
 #include "Library/DirectXFramework/DeviceResources.h"
 
-#include "Game/Common/Camera/PlayerCamera/PlayerCamera.h"
-
-// ファクトリー
+// ファクトリー関連
 #include "Game/Common/Factory/CollisionMatrixFactory/CollisionMatrixFactory.h"
 
-// ゲームデータ
-#include "Game/Common/ResultData/ResultData.h"
-#include "Game/Common/CommonResources/CommonResources.h"
-
-// 基盤システム
-#include "Game/Common/GameDirector/GameDirector.h"
-#include "Game/Common/ResourceManager/ResourceManager.h"
-#include "Game/Common/Collision/CollisionManager/CollisionManager.h"
-#include "Game/Common/Collision/CollisionMatrix/CollisionMatrix.h"
-#include "Game/Common/SoundManager/SoundManager.h"
+// データベース関連
 #include "Game/Common/Database/SoundDatabase.h"
-#include "Game/Scene/Loading/LoadingScreen.h"
-#include "Game/Common/GameEffect/GameEffectController.h"
-#include "Game/Common/SpawnManager/SpawnManager.h"
 
-// ミニマップ
+// フレームワーク関連
+#include "Game/Common/Framework/CommonResources/CommonResources.h"
+#include "Game/Common/Framework/ResourceManager/ResourceManager.h"
+#include "Game/Common/Framework/SoundManager/SoundManager.h"
+#include "Game/Common/Framework/TaskManager/TaskManager.h"
+#include "Game//Common/Framework/GameObjectRegistry/GameObjectRegistry.h"
+#include "Game/Common/Framework/Event/Messenger/GameFlowMessenger/GameFlowMessenger.h"
+
+// ゲームプレイロジック関連
+#include "Game/Common/GameplayLogic/ResultData/ResultData.h"
+#include "Game/Common/GameplayLogic/CollisionManager/CollisionManager.h"
+#include "Game/Common/GameplayLogic/StageManager/StageManager.h"
+#include "Game/Common/GameplayLogic/SpawnManager/SpawnManager.h"
+#include "Game/Common/GameplayLogic/GameDirector/GameDirector.h"
+#include "Game/Common/GameplayLogic/CollisionMatrix/CollisionMatrix.h"
+
+// グラフィック関連
+#include "Game/Common/Graphics/GameEffect/GameEffectController.h"
+#include "Game/Common/Graphics/TransitionMask/TransitionMask.h"
+#include "Game/Common/Graphics/Camera/PlayerCamera/PlayerCamera.h"
+#include "Game/Common/Graphics/GameEffect/Effects/ConcentrationLines/ConcentrationLines.h"
+
+// ミニマップ関連
 #include "Game/Common/MiniMap/MiniMap.h"
 
-// 管理系
-#include "Game//Common/GameObjectRegistry/GameObjectRegistry.h"
-#include "Game/Common/Event/Messenger/GameFlowMessenger/GameFlowMessenger.h"
-#include "Game/Manager/StageManager/StageManager.h"
+// UIツール関連
+#include "Game/Common/UserInterfaceTool/Canvas/Canvas.h"
 
-// 状態
+// プレイシーンの状態関連
 #include "Game/Scene/GameplayScene/State/NormalGameplayState/NormalGameplayState.h"
-#include "Game/Scene/GameplayScene/State/PoseGameplayState/PoseGameplayState.h"
-// シーン
+#include "Game/Scene/GameplayScene/State/PoseGameplayState/PauseGameplayState.h"
+#include "Game/Scene/GameplayScene/State/StartingGameplayState/StartingGameplayState.h"
+
+// シーン関連
 #include "Game/Scene/ResultScene/ResultScene.h"
-#include "Game/Common/TransitionMask/TransitionMask.h"
+#include "Game/Scene/Loading/LoadingScreen.h"
 
 using namespace DirectX;
 
@@ -152,7 +158,6 @@ void GameplayScene::Finalize()
 {
 	
 	m_stateMachine->ClearState();
-	m_collisionManager->Finalize();
 }
 
 /**
@@ -161,7 +166,7 @@ void GameplayScene::Finalize()
  */
 void GameplayScene::ResolveEvents()
 {
-	auto copy = m_eventStack;
+	std::vector <std::function<void()>> copy = m_eventStack;
 
 	m_eventStack.clear();
 	// イベントスタックの解消(仮実装)
@@ -213,7 +218,8 @@ void GameplayScene::OnGameFlowEvent(GameFlowEventID eventID)
 				});
 		});
 		break;
-
+	case GameFlowEventID::GAME_SETUP_FINISH:
+		GetCommonResources()->GetCollisionManager()->PreCreateProxy();
 	default:
 		break;
 	}
@@ -223,6 +229,7 @@ void GameplayScene::OnGameFlowEvent(GameFlowEventID eventID)
 // シーンの終了
 void GameplayScene::OnEndScene()
 {
+	GetCommonResources()->GetCollisionManager()->RemoveAll();
 	// ゲームオブジェクトの登録簿のクリア
 	GameObjectRegistry::GetInstance()->Clear();
 	// ゲームフロー通知の監視者の全削除
@@ -263,14 +270,14 @@ void GameplayScene::SetUpForGameStart()
  */
 void GameplayScene::CreatePlatform()
 {
+	auto context = GetCommonResources()->GetDeviceResources()->GetD3DDeviceContext();
+	auto states = GetCommonResources()->GetCommonStates();
+
 	// ステートマシーンの作成
 	m_stateMachine = std::make_unique <StateMachine<GameplayScene>>(this);
 
 	// ゲーム進行の監督の作成
 	m_gameDirector = std::make_unique<GameDirector>();
-
-	// 衝突管理の生成
-	m_collisionManager = std::make_unique<CollisionManager>();
 	// 衝突検知表の生成
 	m_collisionMatrix = CollisionMatrixFactory::StageCollisionMatrix().Create(DefaultSpawnDesc());
 
@@ -289,6 +296,9 @@ void GameplayScene::CreatePlatform()
 	// ミニマップの作成
 	m_miniMap = std::make_unique<Minimap>(GetCommonResources());
 
+	// キャンバスの作成
+	m_canvas = std::make_unique<Canvas>(context, states);
+
 	// 基盤のセットアップ
 	SetupPlatform();
 }
@@ -300,10 +310,12 @@ void GameplayScene::CreatePlatform()
 void GameplayScene::SetupPlatform()
 {
 	// ステージの初期化処理
-	m_stageManager->Initialize(m_spawnManager.get(), m_collisionManager.get(), m_taskManager.get());
+	m_stageManager->Initialize(m_spawnManager.get(), GetCommonResources()->GetCollisionManager(), m_taskManager.get());
+
+	auto collisionManager = GetCommonResources()->GetCollisionManager();
 
 	// 衝突管理に衝突検知表を設定
-	m_collisionManager->SetCollisionMatrix(m_collisionMatrix.get());
+	collisionManager->SetCollisionMatrix(m_collisionMatrix.get());
 
 	// ゲームディレクターの初期化処理
 	m_gameDirector->Initialize(GetCommonResources());
@@ -311,8 +323,10 @@ void GameplayScene::SetupPlatform()
 	// 現在使用するエフェクト管理の取得
 	GameEffectController::GetInstance()->SetGameEffectManager(m_gameEffectManager.get());
 	// 出現管理の初期化処理
-	m_spawnManager->Initialize(GetCommonResources(), m_collisionManager.get());
+	m_spawnManager->Initialize(GetCommonResources(), GetCommonResources()->GetCollisionManager());
 
+	// 一番手前にする
+	m_canvas->SetOt(0);
 }
 
 /**
@@ -320,7 +334,7 @@ void GameplayScene::SetupPlatform()
  * */
 void GameplayScene::CreateStage()
 {
-	m_stageManager->CreateStage( m_collisionManager.get());
+	m_stageManager->CreateStage(GetCommonResources()->GetCollisionManager());
 }
 
 /**
@@ -334,12 +348,11 @@ void GameplayScene::CreateTask()
 	m_taskManager->AddTask(m_stageManager.get());		// StageManager
 	m_taskManager->AddTask(m_spawnManager.get());		// SpawnManager
 	m_taskManager->AddTask(m_stageManager->GetPlayerCamera());		// SpawnManager
-	m_taskManager->AddTask(m_collisionManager.get());	// CollisionManager
 	m_taskManager->AddTask(m_gameEffectManager.get());	// EffectManager
 	m_taskManager->AddTask(m_miniMap.get());			// Minimap
+	m_taskManager->AddTask(m_canvas.get());				// Canvas
 }
 
-#include "Game/Common/GameEffect/Effects/ConcentrationLines/ConcentrationLines.h"
 /**
  * @brief ゲームを開始する
  */
@@ -350,7 +363,7 @@ void GameplayScene::StartGame()
 
 
 	// **** 最初の状態 ****
-	m_stateMachine->ChangeState<NormalGameplayState>();
+	m_stateMachine->ChangeState<StartingGameplayState>();
 	// **** BGMを鳴らす ****
 	SoundManager::GetInstance()->RemoveAll();
 	SoundManager::GetInstance()->Play(SoundDatabase::SOUND_CLIP_MAP.at(SoundDatabase::BGM_INGAME), true);

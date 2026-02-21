@@ -12,32 +12,43 @@
 #include "pch.h"
 #include "TitleScene.h"
 
-// ライブラリ関連
-#include "Game/Scene/Loading/LoadingScreen.h"
+#include <string>
+#include <typeinfo>
 
-#include "Game/Common/CommonResources/CommonResources.h"
-#include "Game/Common/ResourceManager/ResourceManager.h"
+// ライブラリ関連
 #include "Library/MyLib/DirectXMyToolKit/DebugFont/DebugFont.h"
 #include "Library/DirectXFramework/DeviceResources.h"
 #include "Library/MyLib/EasingKit/EasingKit.h"
+#include "Library/DebugHelper.h"
 
+// シーン関連
+#include "Game/Scene/Loading/LoadingScreen.h"
 #include "Game/Scene/GameplayScene/GameplayScene.h"
 
-#include "Game/Common/UserInterfaceTool/Sprite/Sprite.h"
-#include "Game/Common/UserInterfaceTool/Canvas/Canvas.h"
-
-#include "Game/Common/SoundManager/SoundManager.h"
-#include "Game/Common/Database/SoundDatabase.h"
-
-#include "Game/UI/TutorialWindow/TutorialWindow.h"
-#include "Game/Common/TransitionMask/TransitionMask.h"
-
 // データベース関連
+#include "Game/Common/Database/SoundDatabase.h"
 #include "Game/Common/Database/TextureDatabase.h"
 
-#include "Library/DebugHelper.h"
-#include <string>
-#include <typeinfo>
+// フレームワーク関連
+#include "Game/Common/Framework/CommonResources/CommonResources.h"
+#include "Game/Common/Framework/ResourceManager/ResourceManager.h"
+#include "Game/Common/Framework/SoundManager/SoundManager.h"
+#include "Game/Common/Framework/Input/InputSystem/InputSystem.h"
+#include "Game/Common/Framework/Input/InputActionMap/InputActionMap.h"
+#include "Game/Common/Framework/Input/InputActionType/InputActionType.h"
+
+// グラフィック関連
+#include "Game/Common/Graphics/TransitionMask/TransitionMask.h"
+
+// UIツール関連
+#include "Game/Common/UserInterfaceTool/Sprite/Sprite.h"
+#include "Game/Common/UserInterfaceTool/Canvas/Canvas.h"
+#include "Game/Common/UserInterfaceTool/InputDeviceSpriteResolver/InputDeviceSpriteResolver.h"
+
+// UIメニュー関連
+#include "Game/UI/TutorialWindow/TutorialWindow.h"
+
+
 using namespace DirectX;
 
 
@@ -47,7 +58,6 @@ using namespace DirectX;
  */
 TitleScene::TitleScene()
 	: m_bgmSoundID{}
-	, m_isDisplayingTutorialWindow{ false }
 	, m_isPrevConnectedGamepad{ false }
 	, m_isQuit{false}
 {
@@ -61,7 +71,6 @@ TitleScene::TitleScene()
  */
 TitleScene::~TitleScene()
 {
-	OutputDebugStringA("--- TitleScene Destructor Called ---\n");
 }
 
 
@@ -78,30 +87,18 @@ void TitleScene::Initialize()
 	auto context = GetCommonResources()->GetDeviceResources()->GetD3DDeviceContext();
 	auto states = GetCommonResources()->GetCommonStates();
 
-	auto screen = Screen::Get();
-	// スプライトの作成
-	m_backgroundSprite = std::make_unique<Sprite>();
-	m_alphaSprite = std::make_unique<Sprite>();
-	m_logoSprite = std::make_unique<Sprite>();
-	m_manualSprite = std::make_unique<Sprite>();
-
 	// ***** 後に状態で分ける ****
 	// タイトルメニューの作成
 	m_titleMenu = std::make_unique<TitleMenu>();
 	// チュートリアルウィンドウの作成
 	m_tutorialWindow = std::make_unique<TutorialWindow>();
 
-	// 処理用変数
-	auto pResourceManager = GetCommonResources()->GetResourceManager();
+	// スプライトの作成
+	CreateSprites();
 
-	using namespace TextureDatabase;
-	{
-		
-		m_backgroundSprite->Initialize(pResourceManager->CreateTexture(TEXTURE_PATH_MAP.at(TextureID::BACKGROUND_TITLE)));
-		m_alphaSprite->		Initialize(pResourceManager->CreateTexture(TEXTURE_PATH_MAP.at(TextureID::BACKGROUND_TITLE_ALPHA_MASK)));
-		m_logoSprite->		Initialize(pResourceManager->CreateTexture(TEXTURE_PATH_MAP.at(TextureID::BACKGROUND_TITLE_LOGO)));
-		m_manualSprite->	Initialize(pResourceManager->CreateTexture(TEXTURE_PATH_MAP.at(TextureID::UI_GUIDE_UI_KEYBOARD)));
-	}
+	// デバイス毎の切り替えに登録
+	GetCommonResources()->GetInputDeviceSpriteResolver()->AddKeyboardSprite(m_keyboardManualSprite.get());
+	GetCommonResources()->GetInputDeviceSpriteResolver()->AddGamePadSprite(m_gamePadManualSprite.get());
 	
 	// キャンバスの作成
 	m_canvas = std::make_unique<Canvas>(context, states);
@@ -110,39 +107,32 @@ void TitleScene::Initialize()
 	m_canvas->AddSprite(m_backgroundSprite.get());
 	m_canvas->AddSprite(m_alphaSprite.get());
 	m_canvas->AddSprite(m_logoSprite.get());
-	m_canvas->AddSprite(m_manualSprite.get());
+	m_canvas->AddSprite(m_keyboardManualSprite.get());
+	m_canvas->AddSprite(m_gamePadManualSprite.get());
 
-	m_titleMenu->		Initialize(m_canvas.get(), GetCommonResources(), [this](TitleMenu::MenuItem menuItem) { OnPushMenuItem(menuItem); });
-	m_tutorialWindow->	Initialize(GetCommonResources()->GetResourceManager(), [this]() {OnCloseTutorialWindow(); });
+	m_titleMenu			->Initialize(m_canvas.get(), GetCommonResources(), [this](TitleMenu::MenuItem menuItem) { OnPushMenuItem(menuItem); });
+	m_tutorialWindow	->Initialize(GetCommonResources()->GetResourceManager(), [this]() {OnCloseTutorialWindow(); });
 
-	// スプライトの座標の設定
-	// 背景スプライト: 画面中央
-	m_backgroundSprite->SetPosition(SimpleMath::Vector2(screen->GetCenterXF(), screen->GetCenterYF()));
-	// アルファマスクスプライト
-	m_alphaSprite->		SetPosition(SimpleMath::Vector2(screen->GetLeftF() + m_alphaSprite->GetSpriteWidth() / 2.0f * screen->GetScreenScale(), screen->GetCenterYF()));
-	// ロゴスプライト
-	m_logoSprite->		SetPosition(SimpleMath::Vector2(screen->GetRightF() - LOGO_POS_OFFSET_X * screen->GetScreenScale(), screen->GetTopF() + LOGO_POS_OFFSET_Y * screen->GetScreenScale()));
-	// マニュアルスプライト
-	m_manualSprite->	SetPosition(SimpleMath::Vector2(screen->GetRightF() - MANUAL_POS_OFFSET_X * screen->GetScreenScale(), screen->GetBottomF() - MANUAL_POS_OFFSET_Y * screen->GetScreenScale()));
-
-
-	// スプライトの拡大率
-	m_backgroundSprite->SetScale(BACKGROUND_SCALE * screen->GetScreenScale());
-	m_alphaSprite->		SetScale(ALPHA_SCALE * screen->GetScreenScale());
-	m_logoSprite->		SetScale(LOGO_SCALE * screen->GetScreenScale());
-	m_manualSprite->	SetScale(MANUAL_SCALE * screen->GetScreenScale());
 
 	m_ElapsedTimeCounter.Reset();
 
+	m_logoOpacityTween.Initialize(0.0f, 1.0f, LOGO_EASING_TIME);
+	m_logoOpacityTween.SetDelay(1.0f);
+
 	SoundManager::GetInstance()->RemoveAll();
 	m_bgmSoundID = SoundManager::GetInstance()->Play(SoundDatabase::SOUND_CLIP_MAP.at(SoundDatabase::BGM_TITLE), true);
-	//m_bgmSound->Play(true);
 
-	//m_bgmSound->SetVolume(0.5f);
+	m_tutorialWindow->SetVisible(false);
 
 	m_isPrevConnectedGamepad = false;
 
 	GetCommonResources()->GetTransitionMask()->Open();
+
+	// 入力に対するコールバックを登録
+	RegisterBindCallbackToInput();
+	// メニューアイテムイベントの作成
+	CreateMenuItemEvent();
+
 }
 
 
@@ -156,45 +146,14 @@ void TitleScene::Initialize()
  */
 void TitleScene::Update(float deltaTime)
 {
-	UNREFERENCED_PARAMETER(deltaTime);
+	// イベントの消化
+	m_onPushMenuItemEvent->ApplyEvents();
 
-	// ロゴの透過イージング
-	float opacity = MyLib::EaseInOutQuint(m_ElapsedTimeCounter.GetElapsedTime() / LOGO_EASING_TIME);
-	if (m_ElapsedTimeCounter.GetElapsedTime() <= LOGO_EASING_TIME)
-	{
-		m_ElapsedTimeCounter.UpperTime(deltaTime);
-	}
-	else
-	{
-		opacity = 1.0f;
-	}
-
-	m_logoSprite->SetOpacity(opacity);
-
-	// 座標の算出
-	SimpleMath::Vector2 fontSpritePos = SimpleMath::Vector2::Zero;
-
-
-	if (m_isDisplayingTutorialWindow == false)
-	{
-		if (GetCommonResources()->GetTransitionMask()->IsEnd())
-		{
-			// タイトルメニューの更新処理
-			m_titleMenu->Update(deltaTime);
-
-		}
-	}
-	else
-	{
-		m_tutorialWindow->Update(
-			deltaTime,
-			GetCommonResources()->GetKeyboardTracker(),
-			GetCommonResources()->GetMouseTracker(),
-			GetCommonResources()->GetGamePadTracker());
-	}
-
-	// ガイドUIの変更を試みる
-	TryChangeCurrentGuideUI();
+	// ロゴの演出更新
+	UpdateLogoOpacity(deltaTime);
+	
+	// メインコンテンツの更新
+	UpdateTitleMenu(deltaTime);
 }
 
 
@@ -208,17 +167,18 @@ void TitleScene::Update(float deltaTime)
  */
 void TitleScene::Render()
 {
+	// 終了していなければ強制退避
 	if (m_isQuit && GetCommonResources()->GetTransitionMask()->IsEnd())
 	{
 		return;
 	}
 
+	// キャンバスの描画
 	m_canvas->DrawContents();
+	// メインコンテンツの描画
+	m_titleMenu->Draw();
 
-	if (m_isDisplayingTutorialWindow == false)
-	{
-		m_titleMenu->Draw();
-	}
+	
 
 }
 
@@ -234,6 +194,13 @@ void TitleScene::Render()
 void TitleScene::Finalize()
 {
 	SoundManager::GetInstance()->RemoveAll();
+
+	// 入力とコールバックの紐づけを解除する
+	UnBindCallbackToInput();
+
+	// デバイス毎の切り替を削除する
+	GetCommonResources()->GetInputDeviceSpriteResolver()->RemoveGamePadSprite(m_gamePadManualSprite.get());
+	GetCommonResources()->GetInputDeviceSpriteResolver()->RemoveGamePadSprite(m_keyboardManualSprite.get());
 }
 
 // 中心の算出
@@ -270,39 +237,7 @@ DirectX::SimpleMath::Vector2 TitleScene::CalcCenterOrigin(ID3D11ShaderResourceVi
  */
 void TitleScene::OnPushMenuItem(TitleMenu::MenuItem menuItem)
 { 
-	switch (menuItem)
-	{
-	case TitleMenu::MenuItem::PLAY:
-	{// SEの再生
-		SoundManager::GetInstance()->Play(SoundDatabase::SOUND_CLIP_MAP.at(SoundDatabase::SE_BUTTON_CLICK_GAMESTART), false);
-		std::string newStateName = "Change GameplayScene";
-		OutputDebugString(L"%ls\n", std::wstring(newStateName.begin(), newStateName.end()).c_str());
-
-
-		GetCommonResources()->GetTransitionMask()->Close([&]() {ChangeScene<GameplayScene, LoadingScreen>(); });
-	}
-	break;
-	case TitleMenu::MenuItem::TUTORIAL:
-	
-		// SEの再生
-		SoundManager::GetInstance()->Play(SoundDatabase::SOUND_CLIP_MAP.at(SoundDatabase::SE_DECIDE), false);
-		// キャンバスに追加
-		m_canvas->AddSprite(m_tutorialWindow.get());
-		m_isDisplayingTutorialWindow = true;
-		break;
-	case TitleMenu::MenuItem::SETTING:
-		
-		break;
-	case TitleMenu::MenuItem::QUIT:
-		// SEの再生
-		SoundManager::GetInstance()->Play(SoundDatabase::SOUND_CLIP_MAP.at(SoundDatabase::SE_DECIDE), false);
-		m_isQuit = true;
-		GetCommonResources()->GetTransitionMask()->Close([&]() {PostQuitMessage(0);; });
-
-		break;
-	default:
-		break;
-	}
+	m_onPushMenuItemEvent->FireEvent(menuItem);
 }
 
 /**
@@ -310,63 +245,254 @@ void TitleScene::OnPushMenuItem(TitleMenu::MenuItem menuItem)
  */
 void TitleScene::OnCloseTutorialWindow()
 {
-	m_isDisplayingTutorialWindow = false;
+	m_tutorialWindow->SetVisible(false);
+	m_titleMenu->SetActive(true);
 	m_canvas->RemoveSprite(m_tutorialWindow.get());
 }
 
+
 /**
- * @brief 現在のガイドガイドUIの変更を試みる
+ * @brief ロゴの透過イージングの更新処理
  *
- * 簡易実装用の後にクラス化する
- *
- * @returns true 成功
- * @returns false 失敗
+ * @param[in] deltaTime 経過時間
  */
-bool TitleScene::TryChangeCurrentGuideUI()
+void TitleScene::UpdateLogoOpacity(float deltaTime)
 {
-	bool requestChange = false;
-	bool changePC = true;;
+	m_logoOpacityTween.Update(deltaTime);
+	
+	m_logoSprite->SetOpacity(m_logoOpacityTween.GetValue());
+}
 
-	// ゲームパッドの接続されたらパッドガイドにに切り替える
-	if (!m_isPrevConnectedGamepad && GetCommonResources()->GetGamePadTracker()->GetLastState().IsConnected())
+/**
+ * @brief タイトルメニューの更新処理
+ *
+ * @param[in] deltaTime 経過時間
+ */
+void TitleScene::UpdateTitleMenu(float deltaTime)
+{
+	// 画面遷移（フェードなど）が終わっているか確認
+	if (!GetCommonResources()->GetTransitionMask()->IsEnd())
 	{
-		changePC = false;
-		requestChange = true;
-		m_isPrevConnectedGamepad = true;
+		return;
 	}
 
-	// ゲームパッドが接続されなくなったらPCガイドに切り替える
-	if (m_isPrevConnectedGamepad && !GetCommonResources()->GetGamePadTracker()->GetLastState().IsConnected())
-	{
-		changePC = true;
-		requestChange = true;
-		m_isPrevConnectedGamepad = false;
+	m_titleMenu->Update(deltaTime);
+}
+/**
+ * @brief 入力に対するコールバックを登録
+ */
+void TitleScene::RegisterBindCallbackToInput()
+{
+	// 入力システムの取得
+	auto pInputSystem	= GetCommonResources()->GetInputSystem();
+	auto uiActionMap	= pInputSystem->GetInputActionMap(InputActionID::UI::MAP_NAME);
 
+	// 上入力
+	uiActionMap->BindInputEvent(
+		InputActionID::UI::UP_MOVE,		this,
+		[this](const InputEventData& data) { OnInputUp(data); });
+	// 下入力
+	uiActionMap->BindInputEvent(
+		InputActionID::UI::DOWN_MOVE,	this,
+		[this](const InputEventData& data) { OnInputDown(data); });
+	// 左入力
+	uiActionMap->BindInputEvent(
+		InputActionID::UI::LEFT_MOVE,	this,
+		[this](const InputEventData& data) { OnInputLeft(data); });
+	// 右入力
+	uiActionMap->BindInputEvent(
+		InputActionID::UI::RIGHT_MOVE,	this,
+		[this](const InputEventData& data) { OnInputRight(data); });
+	// 決定入力
+	uiActionMap->BindInputEvent(
+		InputActionID::UI::CONFIRM,		this,
+		[this](const InputEventData& data) { OnInputConfirm(data); });
+	// 戻る入力
+	uiActionMap->BindInputEvent(
+		InputActionID::UI::CANCEL,		this,
+		[this](const InputEventData& data) { OnInputExit(data); });
+}
+
+/**
+ * @brief 紐づけの解除をする
+ */
+void TitleScene::UnBindCallbackToInput()
+{
+	// 入力システムの取得
+	auto pInputSystem = GetCommonResources()->GetInputSystem();
+	auto uiActionMap = pInputSystem->GetInputActionMap(InputActionID::UI::MAP_NAME);
+
+	uiActionMap->UnBindAllInputEvent(InputActionID::UI::UP_MOVE,	this);
+	uiActionMap->UnBindAllInputEvent(InputActionID::UI::LEFT_MOVE,	this);
+	uiActionMap->UnBindAllInputEvent(InputActionID::UI::RIGHT_MOVE, this);
+	uiActionMap->UnBindAllInputEvent(InputActionID::UI::DOWN_MOVE,	this);
+	uiActionMap->UnBindAllInputEvent(InputActionID::UI::CONFIRM,	this);
+	uiActionMap->UnBindAllInputEvent(InputActionID::UI::CANCEL,		this);
+
+}
+
+/**
+ * @brief 左入力された時に呼ばれる
+ *
+ * @param[in] data	入力イベントデータ
+ */
+void TitleScene::OnInputLeft(const InputEventData& data)
+{
+	if (m_tutorialWindow && m_tutorialWindow->IsVisible() && GetCommonResources()->GetTransitionMask()->IsEnd())
+		m_tutorialWindow->OnMoveDownLeft(data);
+}
+
+/**
+ * @brief 右入力された時に呼ばれる
+ *
+ * @param[in] data	入力イベントデータ
+ */
+void TitleScene::OnInputRight(const InputEventData& data)
+{
+	if (m_tutorialWindow && m_tutorialWindow->IsVisible() && GetCommonResources()->GetTransitionMask()->IsEnd())
+		m_tutorialWindow->OnMoveUpRight(data);
+}
+
+/**
+ * @brief 上入力された時に呼ばれる
+ *
+ * @param[in] data	入力イベントデータ
+ */
+void TitleScene::OnInputUp(const InputEventData& data)
+{
+	if (m_titleMenu && m_titleMenu->IsActive() && GetCommonResources()->GetTransitionMask()->IsEnd())
+		m_titleMenu->OnMoveUpSelector(data);
+}
+
+/**
+ * @brief 下入力された時に呼ばれる
+ *
+ * @param[in] data	入力イベントデータ
+ */
+void TitleScene::OnInputDown(const InputEventData& data)
+{
+	if (m_titleMenu && m_titleMenu->IsActive() && GetCommonResources()->GetTransitionMask()->IsEnd())
+		m_titleMenu->OnMoveDownSelector(data);
+}
+
+/**
+ * @brief 決定入力された時に呼ばれる
+ *
+ * @param[in] data	入力イベントデータ
+ */
+void TitleScene::OnInputConfirm(const InputEventData& data)
+{
+	if (GetCommonResources()->GetTransitionMask()->IsEnd())
+	{
+		if (m_titleMenu && m_titleMenu->IsActive())
+			m_titleMenu->OnSelect(data);
+
+		if (m_tutorialWindow && m_tutorialWindow->IsVisible())
+			m_tutorialWindow->OnSelect(data);
 	}
 
-	if (requestChange)
-	{
-		std::string filePath;
+}
+/**
+ * @brief 出る入力された時に呼ばれる
+ *
+ * @param[in] data	入力イベントデータ
+ */
+void TitleScene::OnInputExit(const InputEventData& data)
+{
+	
 
-		if (changePC)
+	if (m_tutorialWindow->IsVisible() && GetCommonResources()->GetTransitionMask()->IsEnd())
+		m_tutorialWindow->OnSelect(data);
+}
+
+/**
+ * @brief メニューアイテムを押された時のイベントの作成
+ *
+ */
+void TitleScene::CreateMenuItemEvent()
+{
+	m_onPushMenuItemEvent = std::make_unique<EventSystem<TitleMenu::MenuItem>>();
+
+	// プレイボタンを押したとき
+	m_onPushMenuItemEvent->AddListener(TitleMenu::MenuItem::PLAY, [&]()
 		{
-			filePath = TextureDatabase::TEXTURE_PATH_MAP.at(TextureDatabase::TextureID::UI_GUIDE_UI_KEYBOARD);
-		}
+			// SEの再生
+			SoundManager::GetInstance()->Play(SoundDatabase::SOUND_CLIP_MAP.at(SoundDatabase::SE_BUTTON_CLICK_GAMESTART), false);
+			std::string newStateName = "Change GameplayScene";
+			OutputDebugString(L"%ls\n", std::wstring(newStateName.begin(), newStateName.end()).c_str());
 
-		else
+			GetCommonResources()->GetTransitionMask()->Close([&]() {ChangeScene<GameplayScene, LoadingScreen>(); });
+
+		});
+
+	// チュートリアルボタンをを押したとき
+	m_onPushMenuItemEvent->AddListener(TitleMenu::MenuItem::TUTORIAL, [&]()
 		{
-			filePath = TextureDatabase::TEXTURE_PATH_MAP.at(TextureDatabase::TextureID::UI_GUIDE_UI_GAMEPAD);
-		}
+			// SEの再生
+			SoundManager::GetInstance()->Play(SoundDatabase::SOUND_CLIP_MAP.at(SoundDatabase::SE_DECIDE), false);
+			// キャンバスに追加
+			m_canvas->AddSprite(m_tutorialWindow.get());
+			m_tutorialWindow->SetVisible(true);
+			m_titleMenu->SetActive(false);
+		});
+	m_onPushMenuItemEvent->AddListener(TitleMenu::MenuItem::SETTING, [&]() {});
+			
+	// 終了ボタンを押したとき
+	m_onPushMenuItemEvent->AddListener(TitleMenu::MenuItem::QUIT, [&]() 
+		{
+			// SEの再生
+			SoundManager::GetInstance()->Play(SoundDatabase::SOUND_CLIP_MAP.at(SoundDatabase::SE_DECIDE), false);
+			m_isQuit = true;
+			GetCommonResources()->GetTransitionMask()->Close([&]() {PostQuitMessage(0);; });
 
-		// 拡大率と座標を保持する
-		float scale = m_manualSprite->GetScale();
-		SimpleMath::Vector2 position = m_manualSprite->GetPosition();
-		m_manualSprite->Initialize(GetCommonResources()->GetResourceManager()->CreateTexture(filePath));
-		m_manualSprite->SetScale(scale);
-		m_manualSprite->SetPosition(position);
+		});
+	
+}
 
-		return true;
+/**
+ * @brief スプライトの作成
+ */
+void TitleScene::CreateSprites()
+{
+
+	auto screen = Screen::Get();
+
+	// スプライトの作成
+	m_backgroundSprite	= std::make_unique<Sprite>();
+	m_alphaSprite		= std::make_unique<Sprite>();
+	m_logoSprite		= std::make_unique<Sprite>();
+	m_keyboardManualSprite	= std::make_unique<Sprite>();
+	m_gamePadManualSprite	= std::make_unique<Sprite>();
+
+	// 処理用変数
+	auto pResourceManager = GetCommonResources()->GetResourceManager();
+
+	using namespace TextureDatabase;
+	{
+
+		m_backgroundSprite	  ->Initialize(pResourceManager->CreateTexture(TEXTURE_PATH_MAP.at(TextureID::BACKGROUND_TITLE)));
+		m_alphaSprite		  ->Initialize(pResourceManager->CreateTexture(TEXTURE_PATH_MAP.at(TextureID::BACKGROUND_TITLE_ALPHA_MASK)));
+		m_logoSprite		  ->Initialize(pResourceManager->CreateTexture(TEXTURE_PATH_MAP.at(TextureID::BACKGROUND_TITLE_LOGO)));
+		m_keyboardManualSprite->Initialize(pResourceManager->CreateTexture(TEXTURE_PATH_MAP.at(TextureID::UI_GUIDE_UI_KEYBOARD)));
+		m_gamePadManualSprite ->Initialize(pResourceManager->CreateTexture(TEXTURE_PATH_MAP.at(TextureID::UI_GUIDE_UI_GAMEPAD)));
 	}
 
-	return false;
+	// スプライトの座標の設定
+	// 背景スプライト: 画面中央
+	m_backgroundSprite->SetPosition(SimpleMath::Vector2(screen->GetCenterXF(), screen->GetCenterYF()));
+	// アルファマスクスプライト
+	m_alphaSprite->SetPosition(SimpleMath::Vector2(screen->GetLeftF() + m_alphaSprite->GetSpriteWidth() / 2.0f * screen->GetScreenScale(), screen->GetCenterYF()));
+	// ロゴスプライト
+	m_logoSprite->SetPosition(SimpleMath::Vector2(screen->GetRightF() - LOGO_POS_OFFSET_X * screen->GetScreenScale(), screen->GetTopF() + LOGO_POS_OFFSET_Y * screen->GetScreenScale()));
+	// マニュアルスプライト
+	m_keyboardManualSprite->SetPosition(SimpleMath::Vector2(screen->GetRightF() - MANUAL_POS_OFFSET_X * screen->GetScreenScale(), screen->GetBottomF() - MANUAL_POS_OFFSET_Y * screen->GetScreenScale()));
+	m_gamePadManualSprite->SetPosition(SimpleMath::Vector2(screen->GetRightF() - MANUAL_POS_OFFSET_X * screen->GetScreenScale(), screen->GetBottomF() - MANUAL_POS_OFFSET_Y * screen->GetScreenScale()));
+
+
+	// スプライトの拡大率
+	m_backgroundSprite->SetScale(BACKGROUND_SCALE * screen->GetScreenScale());
+	m_alphaSprite->SetScale(ALPHA_SCALE * screen->GetScreenScale());
+	m_logoSprite->SetScale(LOGO_SCALE * screen->GetScreenScale());
+	m_keyboardManualSprite->SetScale(MANUAL_SCALE * screen->GetScreenScale());
+	m_gamePadManualSprite->SetScale(MANUAL_SCALE * screen->GetScreenScale());
 }

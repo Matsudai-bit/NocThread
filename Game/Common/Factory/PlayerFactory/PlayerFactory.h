@@ -13,10 +13,15 @@
 
 
 // ヘッダファイルの読み込み ===================================================
+
+// ファクトリー関連
 #include "Game/Common/Factory/FactoryBase.h"
+
+// フレームワーク関連
+#include "Game/Common/Framework/Input/InputActionType/InputActionType.h"
+
+// ゲームオブジェクト関連
 #include "Game/GameObjects/Enemy/Enemy.h"
-#include "Game/Common/Input/InputActionType/InputActionType.h"
-#include "Game/Common/Input/InputSystem/InputSystem.h"
 
 // クラスの前方宣言 ===================================================
 class Player;
@@ -34,7 +39,6 @@ namespace PlayerFactory
         CollisionManager*       pCollisionManager;
         int                     tileNumber;
         const BuildingManager&  buildingManager;
-        InputSystem<InputActionType::PlyayerActionID>* pPlayerInput;
         PlayerCamera*           pPlayerCamera;
 
 
@@ -43,14 +47,12 @@ namespace PlayerFactory
             CollisionManager*       pCollisionManager,
             const BuildingManager&  buildingManager,
             int                     tileNumber,
-            InputSystem<InputActionType::PlyayerActionID>* pPlayerInput,
             PlayerCamera*           pPlayerCamera
         )
             : commonResources(commonResources)      
             , pCollisionManager(pCollisionManager)  
             , tileNumber(tileNumber)                
             , buildingManager(buildingManager)      
-            , pPlayerInput(pPlayerInput)            
             , pPlayerCamera(pPlayerCamera)          
 
         {

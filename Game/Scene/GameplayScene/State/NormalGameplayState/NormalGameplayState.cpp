@@ -10,26 +10,45 @@
 #include "pch.h"
 #include "NormalGameplayState.h"
 
-
-#include "Game/Scene/GameplayScene/GameplayScene.h"
-#include "Game/Scene/GameplayScene/State/PoseGameplayState/PoseGameplayState.h"
-#include "Game/Common/CommonResources/CommonResources.h"
-#include "Game/Common/Input/InputBindingFactory/InputBindingFactory.h"
-
-#include "Game/Common/UserInterfaceTool/Canvas/Canvas.h"
-#include "Game/Common/UserInterfaceTool/Sprite/Sprite.h"
-#include "Game/Common/Screen.h"
-#include "Game/Common/ResourceManager/ResourceManager.h"
-
-#include "Game/Manager/StageManager/StageManager.h"
+// ライブラリ関連
 #include "Library/DirectXFramework/DeviceResources.h"
-#include "Game/Common/Camera/MainCamera/MainCamera.h"
-#include "Game/Common/GameEffect/GameEffectController.h"
-
-#include "Game/Common/TransitionMask/TransitionMask.h"
 
 // データベース関連
 #include "Game/Common/Database/TextureDatabase.h"
+
+// シーン関連
+#include "Game/Scene/GameplayScene/GameplayScene.h"
+
+// シーンの状態関連
+#include "Game/Scene/GameplayScene/State/PoseGameplayState/PauseGameplayState.h"
+
+// ファクトリー関連
+#include "Game/Common/Factory/InputBindingFactory/InputBindingFactory.h"
+
+// フレームワーク関連
+#include "Game/Common/Framework/ResourceManager/ResourceManager.h"
+#include "Game/Common/Framework/CommonResources/CommonResources.h"
+#include "Game/Common/Framework/Input/InputActionMap/InputActionMap.h"
+
+// ゲームプレイロジック関連
+#include "Game/Common/GameplayLogic/StageManager/StageManager.h"
+#include "Game/Common/GameplayLogic/PauseNavigator/PauseNavigator.h"
+
+// UIツール関連
+#include "Game/Common/UserInterfaceTool/Canvas/Canvas.h"
+#include "Game/Common/UserInterfaceTool/Sprite/Sprite.h"
+#include "Game/Common/UserInterfaceTool/InputDeviceSpriteResolver/InputDeviceSpriteResolver.h"
+
+
+// グラフィック関連
+#include "Game/Common/Screen.h"
+#include "Game/Common/Graphics/TransitionMask/TransitionMask.h"
+#include "Game/Common/Graphics/Camera/MainCamera/MainCamera.h"
+#include "Game/Common/Graphics/GameEffect/GameEffectController.h"
+
+
+
+
 
 using namespace DirectX;
 
@@ -40,7 +59,6 @@ using namespace DirectX;
  * @param[in] なし
  */
 NormalGameplayState::NormalGameplayState()
-	: m_isPrevConnectedGamepad{ false }
 {
 
 }
@@ -53,81 +71,27 @@ NormalGameplayState::~NormalGameplayState()
 
 }
 
+/**
+ * @brief 状態の開始
+ */
 void NormalGameplayState::OnStartState()
 {
-	auto screen = Screen::Get();
-	auto context = GetOwner()->GetCommonResources()->GetDeviceResources()->GetD3DDeviceContext();
-
-	// 入力の作成
-	m_systemInput = InputBindingFactory::CreateSystemInput();
-
-	m_manualSprite = std::make_unique<Sprite>();
-
-	// キャンバスの作成
-	m_canvas = std::make_unique<Canvas>(context, GetOwner()->GetCommonResources()->GetCommonStates());
-
-	// キャンバスへ登録
-	m_canvas->AddSprite(m_manualSprite.get());
-	m_canvas->SetOt(0);  // 一番手前にする
-
-	// スプライトのテクスチャ設定
-	m_manualSprite->Initialize(GetOwner()->GetCommonResources()->GetResourceManager()->CreateTexture(
-		TextureDatabase::TEXTURE_PATH_MAP.at(TextureDatabase::TextureID::UI_GUIDE_INGAME_KEYBOARD)));
-
-
-	// スプライトの座標設定
-	m_manualSprite->SetPosition(SimpleMath::Vector2(screen->GetLeftF() + 200.0f * screen->GetScreenScale(), screen->GetBottomF() - 40.0f * screen->GetScreenScale()));
-
-	// スプライトの拡大率設定
-	m_manualSprite->SetScale(0.2f * screen->GetScreenScale());
-	
-	// ゲームパッドへの接続されているかどうかの初期化
-	m_isPrevConnectedGamepad = false;
-
-	// **** タスク管理へ登録 ****
-	GetOwner()->GetTaskManager()->AddTask(m_canvas.get());
-
+	// ナビゲーターの作成
+	CreatePauseNavigator();
 	// ステージ管理の更新を開始する
 	GetOwner()->GetStageManager()->StartUpdating();
-
 }
 
-void NormalGameplayState::OnExitState()
-{
-	// キャンバスから削除
-	m_canvas->RemoveSprite(m_manualSprite.get());
-	// キャンバスタスクの削除
-	GetOwner()->GetTaskManager()->DeleteTask(m_canvas.get());
 
-
-}
-
+/**
+ * @brief 状態の更新処理
+ * 
+ * @param[in] deltaTime　前フレームからの経過時間
+ */
 void NormalGameplayState::OnUpdate(float deltaTime)
 {
-	
-	// 入力の更新処理
-	m_systemInput->Update(
-	GetOwner()->GetCommonResources()->GetKeyboardTracker(), 
-	GetOwner()->GetCommonResources()->GetMouseTracker(), 
-	GetOwner()->GetCommonResources()->GetGamePadTracker());
-
-
 	// タスク管理の更新処理
 	GetOwner()->GetTaskManager()->Update(deltaTime);
-
-
-	if (m_systemInput->IsInput(InputActionType::SystemActionID::PAUSE, InputSystem<InputActionType::SystemActionID>::InputOption::PRESSED))
-	{
-		// ポーズ状態にする
-		GetStateMachine()->ChangeState<PauseGameplayState>();
-		GetOwner()->GetCommonResources()->SetCopyScreenRequest(true);
-	}
-
-	// ガイドUIの変更を試みる
-	TryChangeCurrentGuideUI();
-
-
-	
 }
 
 void NormalGameplayState::OnDraw()
@@ -143,58 +107,36 @@ void NormalGameplayState::OnDraw()
 }
 
 /**
- * @brief 現在のガイドガイドUIの変更を試みる 
- * 
- * 簡易実装用の後にクラス化する
- * 
- * @returns true 成功
- * @returns false 失敗
+ * @brief ナビゲーターの作成
  */
-bool NormalGameplayState::TryChangeCurrentGuideUI()
+void NormalGameplayState::CreatePauseNavigator()
 {
-	bool requestChange = false;
-	bool changePC = true;;
+	// ポーズナビゲーターの作成
+	m_pauseNavigator = std::make_unique<PauseNavigator>();
 
-	// ゲームパッドの接続されたらパッドガイドにに切り替える
-	if (!m_isPrevConnectedGamepad &&  GetOwner()->GetCommonResources()->GetGamePadTracker()->GetLastState().IsConnected())
+	// ポーズナビゲーターの初期化処理
+	m_pauseNavigator->Initialize(
+		GetOwner()->GetCommonResources()->GetResourceManager(),
+		GetOwner()->GetCommonResources()->GetInputDeviceSpriteResolver(),
+		GetOwner()->GetCanvas(),
+		GetOwner()->GetCommonResources()->GetInputSystem());
+
+	m_pauseNavigator->SetInputCallback([this](const InputEventData& data) {OnOpenPause(data); });
+}
+
+/**
+ * @brief ポーズ画面を開く処理
+ * 
+ * @param[in] data 入力イベントデータ
+ */
+void NormalGameplayState::OnOpenPause(const InputEventData& data)
+{
+	if (data.inputOption.pressed)
 	{
-		changePC = false;
-		requestChange = true;
-		m_isPrevConnectedGamepad = true;
+		// ポーズ状態にする
+		GetStateMachine()->ChangeState<PauseGameplayState>();
+		GetOwner()->GetCommonResources()->SetCopyScreenRequest(true);
+
 	}
-
-	// ゲームパッドが接続されなくなったらPCガイドに切り替える
-	if (m_isPrevConnectedGamepad && !GetOwner()->GetCommonResources()->GetGamePadTracker()->GetLastState().IsConnected())
-	{
-		changePC = true;
-		requestChange = true;
-		m_isPrevConnectedGamepad = false;
-	}
-
-	if (requestChange)
-	{
-		std::string filePath;
-
-		if (changePC)
-		{
-			filePath = TextureDatabase::TEXTURE_PATH_MAP.at(TextureDatabase::TextureID::UI_GUIDE_INGAME_KEYBOARD);
-		}
-
-		else 
-		{
-			filePath = TextureDatabase::TEXTURE_PATH_MAP.at(TextureDatabase::TextureID::UI_GUIDE_INGAME_GAMEPAD);
-		}
-
-		// 拡大率と座標を保持する
-		float scale = m_manualSprite->GetScale();
-		SimpleMath::Vector2 position = m_manualSprite->GetPosition();
-		m_manualSprite->Initialize(GetOwner()->GetCommonResources()->GetResourceManager()->CreateTexture(filePath));
-		m_manualSprite->SetScale(scale);
-		m_manualSprite->SetPosition(position);
-
-		return true;
-	}
-
-	return false;
 }
 

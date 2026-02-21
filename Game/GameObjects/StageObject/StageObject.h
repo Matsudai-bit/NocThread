@@ -13,12 +13,18 @@
 
 
 // ヘッダファイルの読み込み ===================================================
-#include "Game/Common/Event/WireSystemObserver/IWireEventObserver.h"
+
+// フレームワーク関連
+#include "Game/Common/Framework/Event/WireSystemObserver/IWireEventObserver.h"
+#include "Game/Common/Framework/StateMachine/StateMachine.h"
+
+// ユーティリティ関連
+#include "Game/Common/Utillities/Collision/Collision.h"
+
+// ゲームオブジェクト関連
 #include "Game/GameObjects/Common/GameObject.h"
-#include "Game/Common/StateMachine/StateMachine.h"
 #include "Game/GameObjects/Common/MovableObject/MovableObject.h"
 
-#include "Game/Common/Collision/Collision.h"
 
 
 // クラスの前方宣言 ===================================================

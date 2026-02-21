@@ -16,17 +16,27 @@
 
 
 // ヘッダファイルの読み込み ===================================================
-#include "Game/Manager/SceneManager/SceneManager.h"
+#include "Game/Scene/SceneManager.h"
 
+// フレームワーク関連
+#include "Game/Common/Framework/EventSystem/EventSystem.h"
+
+// UIメニュー関連
 #include "Game/UI/Title/TitleMenu/TitleMenu.h"
-#include "Game/Common/Line2D/Line2D.h"
-#include "Game/Common/ElapsedTimeCounter/ElapsedTimeCounter.h"
+
+// グラフィック関連
+#include "Game/Common/Graphics/Line2D/Line2D.h"
+
+// ユーティリティ関連
+#include "Game/Common/Utillities/ElapsedTimeCounter/ElapsedTimeCounter.h"
+#include "Game/Common/Utillities/DxTween/DxTween.h"
 
 // クラスの宣言 ===============================================================
 class CommonResources;  // 共通リソース
 class Canvas;			// キャンバス
 class Sprite;			// スプライト
 class TitleMenu;		// タイトルメニュー
+struct InputEventData;	// 入力イベントデータ
 class TutorialWindow;	// チュートリアルウィンドウ
 
 // クラスの定義 ===============================================================
@@ -38,7 +48,7 @@ class TitleScene : public MyLib::Scene<CommonResources>
 // クラス定数の宣言 -------------------------------------------------
 public:
 
-	static constexpr float LOGO_EASING_TIME = 3.0f; ///< ロゴの透過アニメーションのイージング時間 (秒)
+	static constexpr float LOGO_EASING_TIME = 1.5f; ///< ロゴの透過アニメーションのイージング時間 (秒)
 
     // --- 座標オフセット関連 ---
     static constexpr float LOGO_POS_OFFSET_X	= 300.0f;	///< ロゴスプライトの右端からのX座標オフセット
@@ -56,24 +66,24 @@ public:
 private:
 	// システム関連
 	std::unique_ptr<Canvas> m_canvas; ///< UI表示キャンバス
+	std::unique_ptr<EventSystem<TitleMenu::MenuItem>> m_onPushMenuItemEvent; // メニューアイテムが押された時のイベント
 
 	// オブジェクト関連
 
 	// UI
-	std::unique_ptr<Sprite>				m_backgroundSprite;	///< 背景スプライト
+	std::unique_ptr<Sprite>				m_backgroundSprite;		///< 背景スプライト
 
-	std::unique_ptr<Sprite>				m_alphaSprite;		///< 透過フィルタースプライト
-	std::unique_ptr<Sprite>				m_logoSprite;		///< ロゴスプライト
-	std::unique_ptr<Sprite>				m_manualSprite;		///< 操作説明スプライト
+	std::unique_ptr<Sprite>				m_alphaSprite;			///< 透過フィルタースプライト
+	std::unique_ptr<Sprite>				m_logoSprite;			///< ロゴスプライト
+	std::unique_ptr<Sprite>				m_keyboardManualSprite;	///< 操作説明スプライト(キーボード）
+	std::unique_ptr<Sprite>				m_gamePadManualSprite;	///< 操作説明スプライト(ゲームパッド）
 	
 	std::unique_ptr<TitleMenu>			m_titleMenu;		///< タイトルメニュー
 	std::unique_ptr<TutorialWindow>		m_tutorialWindow;	///< チュートリアルウィンドウ
 
 	// 演出系
 	ElapsedTimeCounter m_ElapsedTimeCounter; ///< 経過時間カウンター
-
-	// 簡易フラグ
-	bool m_isDisplayingTutorialWindow; ///< チュートリアルウィンドウを表示しているかどうか
+	DxTween<float>		m_logoOpacityTween;	///< ロゴの透過率のイージング
 
 	// サウンド
 	int m_bgmSoundID;
@@ -124,7 +134,33 @@ private:
 	// チュートリアルウィンドウを閉じる際の処理
 	void OnCloseTutorialWindow();
 
-	// 現在のガイドUIの変更を試みる
-	bool TryChangeCurrentGuideUI();
+	// ロゴの不透明度を更新する
+	void UpdateLogoOpacity(float deltaTime);
 
+	// タイトルメニューの更新処理
+	void UpdateTitleMenu(float deltaTime);
+
+	// 入力のコールバックの登録
+	void RegisterBindCallbackToInput();
+	// 紐づけの解除をする
+	void UnBindCallbackToInput();
+
+
+	// 左入力された時に呼ばれる
+	void OnInputLeft	(const InputEventData& data);
+	// 右入力された時に呼ばれる
+	void OnInputRight(const InputEventData& data);
+	// 上入力された時に呼ばれる
+	void OnInputUp(const InputEventData& data);
+	// 下入力された時に呼ばれる
+	void OnInputDown(const InputEventData& data);
+	// 決定入力された時に呼ばれる
+	void OnInputConfirm(const InputEventData& data);
+	// 戻るが入力された時に呼ばれる
+	void OnInputExit(const InputEventData& data);
+	// メニューアイテムイベントの作成
+	void CreateMenuItemEvent();
+
+	// スプライトの作成
+	void CreateSprites();
 };

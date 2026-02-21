@@ -10,19 +10,26 @@
 #include "pch.h"
 #include "IdlePlayerState.h"
 
-#include "Game/GameObjects/Player/Player.h"
+// データベース関連
+#include "Game/Common/Database/PlayerParameter.h"
 
+// ライブラリ関連
+#include "Library/MyLib/DirectXMyToolKit/DebugFont/DebugFont.h"
+
+// フレームワーク関連
+#include "Game/Common/Framework/CommonResources/CommonResources.h"
+
+// ゲームプレイロジック関連
+#include "Game/Common/GameplayLogic/WireTargetFinder/WireTargetFinder.h"
+
+// ゲームオブジェクト関連
+#include "Game/GameObjects/Player/Player.h"
+#include "Game/GameObjects/Wire/Wire.h"
+
+// プレイヤーの状態関連
 #include "Game/GameObjects/Player/State/WalkPlayerState/WalkPlayerState.h"
 #include "Game/GameObjects/Player/State/WireActionPlayerState/WireActionPlayerState.h"
 #include "Game/GameObjects/Player/State/ShootingWireState/ShootingWirePlayerState.h"
-#include "Library/MyLib/DirectXMyToolKit/DebugFont/DebugFont.h"
-
-#include "Game/Common/CommonResources/CommonResources.h"
-#include "Game/GameObjects/Wire/Wire.h"
-#include "Game/Common/WireTargetFinder/WireTargetFinder.h"
-
-// パラメータ
-#include "Game/Common/Database/PlayerParameter.h"
 
 using namespace DirectX;
 
@@ -77,11 +84,8 @@ void IdlePlayerState::OnUpdate(float deltaTime)
 		GetOwner()->GetStateMachine()->ChangeState<WalkPlayerState>();
 	}
 
-	// プレイヤーの入力機構の取得
-	auto inputSystem = GetOwner()->GetPlayerInput();
-
 	// ワイヤー発射の入力がされたかどうか
-	if (inputSystem->IsInput(InputActionType::PlyayerActionID::WIRE_SHOOTING))
+	if (GetOwner()->IsShootWireRequested())
 	{
 		// ワイヤー発射が可能かどうか
 		if (!GetOwner()->IsGround() && GetOwner()->CanShootWire())

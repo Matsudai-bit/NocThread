@@ -13,12 +13,19 @@
 
 
 // ヘッダファイルの読み込み ===================================================
-#include "Game/Common/StateMachine/StateBase/StateBase.h"
+
+// ライブラリ関連
+#include "Library/MyLib/EasingKit/EasingKit.h"
+
+// フレームワーク関連
+#include "Game/Common/Framework/StateMachine/StateBase/StateBase.h"
+
+// UIツール関連
 #include "Game/Common/UserInterfaceTool/TimeUI/TimeUI.h"
 #include "Game/Common/UserInterfaceTool/SpriteNumber/SpriteNumber.h"
 
-#include "Game/Common/ElapsedTimeCounter/ElapsedTimeCounter.h"
-#include "Library/MyLib/EasingKit/EasingKit.h"
+// ユーティリティ関連
+#include "Game/Common/Utillities/ElapsedTimeCounter/ElapsedTimeCounter.h"
 
 // クラスの前方宣言 ===================================================
 class ResultScene;	// リザルトシーン

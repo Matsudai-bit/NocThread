@@ -16,7 +16,7 @@
 #include <memory>
 
 #include "Game/GameObjects/Common/GameObject.h"
-#include "Game/Common/Collision/Collision.h"
+#include "Game/Common/Utillities/Collision/Collision.h"
 
 // ƒNƒ‰ƒX‚Ì‘O•ûéŒ¾ ===================================================
 class CollisionManager; // Õ“ËŠÇ—

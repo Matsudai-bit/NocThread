@@ -11,7 +11,8 @@
 
 #include "GameObject.h"
 
-#include "Game/Common/GameObjectRegistry/GameObjectRegistry.h"
+//　フレームワーク関連
+#include "Game/Common/Framework/GameObjectRegistry/GameObjectRegistry.h"
 
 
 using namespace DirectX;
@@ -43,7 +44,7 @@ GameObject::GameObject()
  */
 GameObject::~GameObject()
 {
-
+	
 }
 
 

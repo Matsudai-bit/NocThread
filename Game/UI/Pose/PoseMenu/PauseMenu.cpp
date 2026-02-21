@@ -1,0 +1,251 @@
+/*****************************************************************//**
+ * @file   PauseMenu.h
+ * @brief  ポーズメニューに関するソースファイル
+ *
+ * @author 松下大暉
+ * @date   2025/09/14
+ *********************************************************************/
+
+ // ヘッダファイルの読み込み ===================================================
+#include "pch.h"
+#include "PauseMenu.h"
+
+
+#include "Library/MyLib/MathUtils/MathUtils.h"
+#include "Game/Common/Screen.h"
+#include "Game/Common/Framework/CommonResources/CommonResources.h"
+#include "Game/Common/Framework/ResourceManager/ResourceManager.h"
+#include "Game/Common/UserInterfaceTool/Sprite/Sprite.h"
+#include "Game/Common/UserInterfaceTool/Canvas/Canvas.h"
+#include "Game/Common/Factory/InputBindingFactory/InputBindingFactory.h"
+
+#include "Library/MyLib/EasingKit/EasingKit.h"
+#include "Game/Common/Framework/SoundManager/SoundManager.h"
+
+// データベース関連
+#include "Game/Common/Database/SoundDatabase.h"
+#include "Game/Common/Database/TextureDatabase.h"
+
+using namespace DirectX;
+
+// メンバ関数の定義 ===========================================================
+/**
+ * @brief コンストラクタ
+ *
+ * @param[in] なし
+ */
+PauseMenu::PauseMenu()
+	: m_currentSelectItemForInt{}
+	, m_pCommonResources{ nullptr }
+	, m_pCanvas{ nullptr }
+	, m_isActive{ false }
+{
+
+}
+
+
+
+/**
+ * @brief デストラクタ
+ */
+PauseMenu::~PauseMenu()
+{
+
+}
+
+
+
+/**
+ * @brief 初期化処理
+ *
+ * @param[in] なし
+ *
+ * @return なし
+ */
+void PauseMenu::Initialize(Canvas* pCanvas, const CommonResources* pCommonResources, std::function<void(MenuItem)> pushButtonFunc)
+{
+	using namespace TextureDatabase;
+	auto screen = Screen::Get();
+
+	m_pCanvas = pCanvas;
+
+	m_pauseFontSprites.resize(static_cast<int>(MenuItem::NUM));
+	std::for_each(m_pauseFontSprites.begin(), m_pauseFontSprites.end(), [&](std::unique_ptr<Sprite>& sprite)
+		{sprite = std::make_unique<Sprite>(); }
+	);
+
+	// フォント類
+	auto pResourceManager = pCommonResources->GetResourceManager();
+	m_pauseFontSprites[0]->Initialize(pResourceManager->CreateTexture(TEXTURE_PATH_MAP.at(TextureID::UI_PAUSE_FONT_CONTINUE)));
+	m_pauseFontSprites[1]->Initialize(pResourceManager->CreateTexture(TEXTURE_PATH_MAP.at(TextureID::UI_PAUSE_FONT_TUTORIAL)));
+	m_pauseFontSprites[2]->Initialize(pResourceManager->CreateTexture(TEXTURE_PATH_MAP.at(TextureID::UI_PAUSE_FONT_SETTING)));
+	m_pauseFontSprites[3]->Initialize(pResourceManager->CreateTexture(TEXTURE_PATH_MAP.at(TextureID::UI_PAUSE_FONT_RETURNTILTE)));
+
+	// キャンバスにスプライトの登録
+	std::for_each(m_pauseFontSprites.begin(), m_pauseFontSprites.end(), [&](std::unique_ptr<Sprite>& sprite)
+		{
+			pCanvas->AddSprite(sprite.get()); 
+		});
+
+	// フォント類の各種設定
+	std::for_each(m_pauseFontSprites.begin(), m_pauseFontSprites.end(), [&](std::unique_ptr<Sprite>& sprite)
+		{sprite->SetScale(FONT_SPRITE_SCALE * screen->GetScreenScale()); });
+
+	// 画面のスケールと余白の計算
+	auto margin = SimpleMath::Vector2(MENU_MARGIN_X, MENU_MARGIN_Y) * screen->GetScreenScale();
+	// スプライト群全体の高さを計算
+	float totalHeight = (m_pauseFontSprites[0]->GetSpriteHeight() * m_pauseFontSprites.size()) + (margin.y * (m_pauseFontSprites.size() - 1));
+	// スプライト群の中心が画面中央に来るように、最初のスプライトのY座標の始点を計算
+	float displayOriginY = screen->GetCenterYF() - (totalHeight / 2.0f);
+
+	auto fixedMargin = SimpleMath::Vector2(FIXED_POS_X_OFFSET, FIXED_POS_Y_OFFSET) * screen->GetScreenScale();
+
+	// 座標の設定
+	for (int i = 0; i < m_pauseFontSprites.size(); i++)
+	{
+		// 各スプライトのY座標を計算
+		auto position = SimpleMath::Vector2(screen->GetLeftF() + fixedMargin.x + margin.x * i, displayOriginY + (m_pauseFontSprites[i]->GetSpriteHeight() + margin.y) * i + fixedMargin.y);
+		m_pauseFontSprites[i]->SetPosition(position);
+	}
+
+	m_pauseFontSprites.back()->SetPosition(SimpleMath::Vector2(screen->GetLeftF() + (fixedMargin.x) + RETURN_TITLE_OFFSET_X * screen->GetScreenScale(), (displayOriginY)+RETURN_TITLE_OFFSET_Y * screen->GetScreenScale()));
+
+	// ボタンを押した際の処理を設定
+	m_pushButtonFunc = pushButtonFunc;
+
+	m_pCommonResources = pCommonResources;
+
+	m_line.Initialize(pCommonResources->GetDeviceResources());
+
+	m_ElapsedTimeCounter.Reset();
+
+	m_isActive = true;
+}
+
+
+
+/**
+ * @brief 更新処理
+ *
+ * @param[in] deltaTime 経過時間
+ *
+ * @return なし
+ */
+void PauseMenu::Update(float deltaTime)
+{
+
+	// 加算
+	m_ElapsedTimeCounter.UpperTime(deltaTime);
+
+	Sprite* currentSelectElementOfSprite = m_pauseFontSprites[m_currentSelectItemForInt].get();
+
+	float ratio = MyLib::EaseOutSine(m_ElapsedTimeCounter.GetElapsedTime() / EASING_TIME);
+	float width = static_cast<float>(currentSelectElementOfSprite->GetSpriteWidth()) + SELECTOR_WIDTH_OFFSET * Screen::Get()->GetScreenScale();
+
+	width = MAX_SELECTOR_LENGTH;
+	float length = width * SELECTOR_MIN_LENGTH_RATIO + (width - width * SELECTOR_MIN_LENGTH_RATIO) * Screen::Get()->GetScreenScale() * ratio;
+
+	if (m_ElapsedTimeCounter.GetElapsedTime() >= EASING_TIME)
+	{
+		m_ElapsedTimeCounter.Reset();
+	}
+	m_line.SetLength(length);
+
+}
+
+
+
+/**
+ * @brief 描画処理
+ *
+ * @param[in] なし
+ *
+ * @return なし
+ */
+void PauseMenu::Draw()
+{
+	if (!m_isActive) { return; }
+
+	auto screen = Screen::Get();
+
+	Sprite* currentSelectElementOfSprite = m_pauseFontSprites[m_currentSelectItemForInt].get();
+
+	SimpleMath::Vector2 cursorPosition = currentSelectElementOfSprite->GetPosition();
+
+	cursorPosition.y = cursorPosition.y + currentSelectElementOfSprite->GetSpriteHeight() / 2.0f - SELECTOR_CURSOR_Y_OFFSET * screen->GetScreenScale();
+
+	//m_line.SetLength(300.0f * screen->GetScreenScale());
+	m_line.SetThickness(SELECTOR_LINE_THICKNESS * screen->GetScreenScale());
+	m_line.SetPosition(cursorPosition);
+
+	m_line.Draw(m_pCommonResources->GetCommonStates(), screen->GetWidthF(), screen->GetHeightF());
+}
+
+
+
+/**
+ * @brief 終了処理
+ *
+ * @param[in] なし
+ *
+ * @return なし
+ */
+void PauseMenu::Finalize()
+{
+	// キャンバスから削除
+	std::for_each(m_pauseFontSprites.begin(), m_pauseFontSprites.end(), [&](std::unique_ptr<Sprite>& sprite)
+		{
+			m_pCanvas->RemoveSprite(sprite.get());
+		});
+}
+
+/**
+ * @brief 上にセレクターを動かす
+ * 
+ * @param[in] data　入力イベントデータ
+ */
+void PauseMenu::OnMoveUpSelector(const InputEventData& data)
+{
+	if (data.inputOption.pressed)
+	{
+		// SEの再生
+		SoundManager::GetInstance()->Play(SoundDatabase::SOUND_CLIP_MAP.at(SoundDatabase::SE_CURSOR_MOVING), false);
+		// 加算する
+		m_currentSelectItemForInt--;
+		// 最後にクランプする
+		m_currentSelectItemForInt = (m_currentSelectItemForInt + static_cast<int>(MenuItem::NUM)) % static_cast<int>(MenuItem::NUM);
+	}
+
+}
+
+/**
+ * @brief 上にセレクターを動かす
+ *
+ * @param[in] data　入力イベントデータ
+ */
+void PauseMenu::OnMoveDownSelector(const InputEventData& data)
+{
+	if (data.inputOption.pressed)
+	{
+		// SEの再生
+		SoundManager::GetInstance()->Play(SoundDatabase::SOUND_CLIP_MAP.at(SoundDatabase::SE_CURSOR_MOVING), false);
+		// 減算する
+		m_currentSelectItemForInt++;
+		// 最後にクランプする
+		m_currentSelectItemForInt = (m_currentSelectItemForInt + static_cast<int>(MenuItem::NUM)) % static_cast<int>(MenuItem::NUM);
+	}
+}
+
+/**
+ * @brief 上にセレクターを動かす
+ *
+ * @param[in] data　入力イベントデータ
+ */
+void PauseMenu::OnSelect(const InputEventData& data)
+{
+	if (data.inputOption.pressed)
+	{
+		m_pushButtonFunc(static_cast<MenuItem>(m_currentSelectItemForInt));
+	}
+}
+

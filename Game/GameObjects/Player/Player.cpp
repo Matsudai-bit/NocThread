@@ -11,27 +11,41 @@
 
 #include "Player.h"
 
-// ゲームプレイシーン関連
+// シーン関連
 #include "Game/Scene/GameplayScene/GameplayScene.h"
 
-// 共通ライブラリ・コンポーネント
-#include "Game/Common/CommonResources/CommonResources.h"
-#include "Game/Common/ResourceManager/ResourceManager.h"
-#include "Game/Common/SimpleModel/SimpleModel.h"
+// ライブラリ関連
+#include "Library/DirectXFramework/DebugDraw.h"
+#include "Library/MyLib/DirectXMyToolKit/DebugFont/DebugFont.h"
+#include "Library/MyLib/DirectXMyToolKit/DirectXUtils.h"
+#include "Library/MyLib/Ray/Ray.h"
 #include "Library/DirectXFramework/DeviceResources.h"
-#include "Game/Common/Collision/Collision.h"
-#include "Game/Common/Collision/CollisionManager/CollisionManager.h"
-#include "Game/Common/Camera/PlayerCamera/PlayerCamera.h"
-#include "Game/Common/Helper/MovementHelper/MovementHelper.h"
-#include "Game/Common//Helper/PhysicsHelper/PhysicsHelper.h"
-#include "Game/Common/WireTargetFinder/WireTargetFinder.h"
 
-// イベントシステム
-#include "Game/Common/Event/WireSystemObserver/WireSystemSubject.h"
-#include "Game/Common/Event/WireSystemObserver/IWireEventObserver.h"
-#include "Game/Common/Event/Messenger/GameFlowMessenger/GameFlowMessenger.h"
+// フレームワーク関連
+#include "Game/Common/Framework/CommonResources/CommonResources.h"
+#include "Game/Common/Framework/ResourceManager/ResourceManager.h"
+#include "Game/Common/Framework/Event/WireSystemObserver/WireSystemSubject.h"
+#include "Game/Common/Framework/Event/WireSystemObserver/IWireEventObserver.h"
+#include "Game/Common/Framework/Event/Messenger/GameFlowMessenger/GameFlowMessenger.h"
 
-// プレイヤーの状態 (ステートパターン)
+// グラフィック関連
+#include "Game/Common/Graphics/SimpleModel/SimpleModel.h"
+#include "Game/Common/Graphics/Camera/PlayerCamera/PlayerCamera.h"
+
+// ユーティリティ関連
+#include "Game/Common/Utillities/Collision/Collision.h"
+#include "Game/Common/Utillities/Helper/MovementHelper/MovementHelper.h"
+#include "Game/Common/Utillities/Helper/PhysicsHelper/PhysicsHelper.h"
+
+// ゲームプレイロジック関連
+#include "Game/Common/GameplayLogic/WireTargetFinder/WireTargetFinder.h"
+#include "Game/Common/GameplayLogic/CollisionManager/CollisionManager.h"
+
+// ゲームオブジェクト
+#include "Game/GameObjects/Wire/Wire.h"
+#include "Game/Common/Framework/GameObjectRegistry/GameObjectRegistry.h"
+
+// プレイヤーの状態関連
 #include "Game/GameObjects/Player/State/IdlePlayerState/IdlePlayerState.h"
 #include "Game/GameObjects/Player/State/WalkPlayerState/WalkPlayerState.h"
 #include "Game/GameObjects/Player/State/JumpingPlayerState/JumpingPlayerState.h"
@@ -41,18 +55,10 @@
 #include "Game/GameObjects/Player/State/WireThrowing/WireThrowingPlayerState.cpp.h"
 #include "Game/GameObjects/Player/State/ShootingWireState/ShootingWirePlayerState.h"
 
-// ゲームオブジェクト
-#include "Game/GameObjects/Wire/Wire.h"
-#include "Game/Common/GameObjectRegistry/GameObjectRegistry.h"
-
-// 外部ライブラリ・ツール
-#include "Library/DirectXFramework/DebugDraw.h"
-#include "Library/MyLib/DirectXMyToolKit/DebugFont/DebugFont.h"
-#include "Library/MyLib/DirectXMyToolKit/DirectXUtils.h"
-#include "Library/MyLib/Ray/Ray.h"
 
 // パラメータ
 #include "Game/Common/Database/PlayerParameter.h"
+#include "Game/Common/Database/PhysicsParameter.h"
 
 using namespace DirectX;
 
@@ -65,15 +71,16 @@ using namespace DirectX;
  * @param[in] なし
  */
 Player::Player()
-	: m_pCollisionManager{ nullptr }
-	, m_pPlayerCamera{ nullptr }
-	, m_isGround{false}
-	, m_isActive{ true }
-	, m_canStep{ true }
-	, m_state{ State::IDLE }
-	, m_pPlayerInput{ nullptr }
+	: m_pCollisionManager	{ nullptr }
+	, m_pPlayerCamera		{ nullptr }
+	, m_isGround			{ false }
+	, m_isActive			{ true }
+	, m_canStep				{ true }
+	, m_state				{ State::IDLE }
+	, m_releaseWireRequested{ false }
+	, m_shootWireRequested	{ false }
 {
-	m_cursorPos = DirectX::SimpleMath::Vector2(Screen::Get()->GetCenterXF(), Screen::Get()->GetCenterYF() -  PlayerParameter::CURSOR_Y_OFFSET_SCALE * Screen::Get()->GetScreenScale());
+	m_cursorPos = DirectX::SimpleMath::Vector2(Screen::Get()->GetCenterXF(), Screen::Get()->GetCenterYF() - PlayerParameter::CURSOR_Y_OFFSET_SCALE * Screen::Get()->GetScreenScale());
 	// メッセージへの登録
 	GameFlowMessenger::GetInstance()->RegistryObserver(this);
 }
@@ -85,23 +92,22 @@ Player::Player()
  */
 Player::~Player()
 {
+	// 衝突管理から削除
+	GetCommonResources()->GetCollisionManager()->RemoveCollisionObjectData(this, m_collider.get());
 }
 
 /**
  * @brief 初期化処理
- * 
+ *
  * @param[in] pCommonResources	共通リソース
  * @param[in] pCollisionManager	衝突管理
  * @param[in] pPlayerCamera		プレイヤーカメラ
  * @param[in] pPlayerInput		プレイヤー入力
  */
-void Player::Initialize(const CommonResources* pCommonResources, CollisionManager* pCollisionManager, const PlayerCamera* pPlayerCamera, InputSystem<InputActionType::PlyayerActionID>* pPlayerInput)
+void Player::Initialize(const CommonResources* pCommonResources, CollisionManager* pCollisionManager, const PlayerCamera* pPlayerCamera)
 {
 	using namespace SimpleMath;
 	m_pPlayerCamera = pPlayerCamera;
-
-	// プレイヤー入力の取得
-	m_pPlayerInput = pPlayerInput;
 
 	// 共通リソースの設定
 	SetCommonResources(pCommonResources);
@@ -119,7 +125,7 @@ void Player::Initialize(const CommonResources* pCommonResources, CollisionManage
 	// コライダの作成
 	m_collider = std::make_unique<Sphere>(GetTransform()->GetPosition(), GetTransform()->GetScale().x * PlayerParameter::DEFAULT_COLLIDER_RADIUS_FACTOR);
 
-	pCollisionManager->AddCollisionData(CollisionData(this, m_collider.get()));
+	pCollisionManager->AddCollisionData(CollisionData(this, m_collider.get(), false));
 
 	m_basicEffect = std::make_unique<BasicEffect>(device);
 	m_basicEffect->SetVertexColorEnabled(true);
@@ -135,7 +141,7 @@ void Player::Initialize(const CommonResources* pCommonResources, CollisionManage
 
 	// ワイヤー照準検出器の作成
 	m_wireTargetFinder = std::make_unique<WireTargetFinder>();
-	m_wireTargetFinder->Initialize(GetCommonResources(), pCollisionManager,  this, m_pPlayerCamera);
+	m_wireTargetFinder->Initialize(GetCommonResources(), pCollisionManager, this, m_pPlayerCamera);
 
 	XPBDSimulator::Parameter param;
 	// 剛性（柔軟力）
@@ -148,7 +154,7 @@ void Player::Initialize(const CommonResources* pCommonResources, CollisionManage
 
 	// ワイヤーの初期化処理　
 	// ワイヤーの長さは余裕をもつため1.5倍までとする
-	m_wire->Initialize(pCommonResources, pCollisionManager, param, PlayerParameter::WIRE_LENGTH  * 1.5f, this, this, this, m_wireSystemSubject.get());
+	m_wire->Initialize(pCommonResources, pCollisionManager, param, PlayerParameter::WIRE_LENGTH * 1.5f, this, this, this, m_wireSystemSubject.get());
 
 
 	// デフォルト回転の初期化
@@ -184,7 +190,7 @@ void Player::Initialize(const CommonResources* pCommonResources, CollisionManage
 
 /**
  * @brief 更新処理
- * 
+ *
  * @param[in] deltaTime	経過時間
  * @param[in] camera		カメラ
  */
@@ -222,14 +228,14 @@ void Player::Update(float deltaTime)
 	// ワイヤー照準検出器の設定
 	m_wireTargetFinder->SetSearchParameters(GetWireShootingRay().direction, PlayerParameter::WIRE_LENGTH, 0.5f);
 	m_wireTargetFinder->Update();
-		
+
 }
 
 
 
 /**
  * @brief 描画処理
- * 
+ *
  * @param[in] view　ビュー行列
  * @param[in] projection　射影行列
  */
@@ -342,7 +348,7 @@ void Player::Finalize()
 
 /**
  * @brief 衝突処理
- * 
+ *
  * @param[in] info 衝突情報
  */
 void Player::OnCollision(const CollisionInfo& info)
@@ -351,7 +357,7 @@ void Player::OnCollision(const CollisionInfo& info)
 	{
 		OnCollisionWithBuilding(info.pOtherObject, info.pOtherCollider);
 	}
-	
+
 	// 壁と衝突した場合
 	else if (info.pOtherObject->GetTag() == GameObjectTag::WALL)
 	{
@@ -374,7 +380,7 @@ void Player::OnCollision(const CollisionInfo& info)
 
 /**
  * @brief 所持するワイヤーが衝突した時に呼ばれる
- * 
+ *
  * @param[in] pHitGameObject 衝突したもの
  */
 void Player::OnCollisionWire(GameObject* pHitObject)
@@ -506,7 +512,7 @@ void Player::PostCollision()
 }
 /**
  * @brief ワイヤーが掴んだ時に呼ばれる
- * 
+ *
  * @param[in] pGrabGameObject　掴まれたオブジェクト
  */
 void Player::OnWireGrabbed(GameObject* pGrabGameObject)
@@ -520,7 +526,7 @@ void Player::OnWireGrabbed(GameObject* pGrabGameObject)
 
 /**
  * @brief イベントメッセージを受け取る
- * 
+ *
  * @param[in] eventID　イベントID
  */
 void Player::OnGameFlowEvent(GameFlowEventID eventID)
@@ -561,8 +567,11 @@ void Player::OnGameFlowEvent(GameFlowEventID eventID)
 
 /**
  * @brief 移動の設定
- * 
+ *
  * @param[in] moveDirection
+ *
+  * @returns true  成功
+ * @returns false 失敗
  */
 bool Player::RequestedMovement(DirectX::SimpleMath::Vector3 moveDirection)
 {
@@ -578,7 +587,7 @@ bool Player::RequestedMovement(DirectX::SimpleMath::Vector3 moveDirection)
 
 /**
  * @brief 移動の適用
- * 
+ *
  * @param[in] deltaTime　経過時間
  */
 void Player::Move(const float& deltaTime)
@@ -598,18 +607,18 @@ void Player::Move(const float& deltaTime)
 
 /**
  * @brief シミュレータの更新処理
- * 
+ *
  * @param[in] deltaTime　経過時間
  */
 void Player::ApplyWireSimulator(const float& deltaTime)
 {
-	m_wire->ApplyWireSimulator(deltaTime );
+	m_wire->ApplyWireSimulator(deltaTime);
 
 }
 
 /**
  * @brief 移動要求されているかどうか
- * 
+ *
  * @returns true  要求されている
  * @returns false 要求されていない
  */
@@ -620,7 +629,7 @@ bool Player::IsMovingRequested()
 
 /**
  * @brief 物理的な移動
- * 
+ *
  * @param[in] deltaTime
  */
 void Player::ApplyPhysic(const float& deltaTime)
@@ -633,13 +642,13 @@ void Player::ApplyPhysic(const float& deltaTime)
 		// 摩擦を加える
 		ApplyFriction(deltaTime);
 	}
-	
+
 	// 空気抵抗の適用
 	ApplyDrag(deltaTime);
-	
+
 	// 回転する
 	RotateForMoveDirection(deltaTime);
-	
+
 }
 
 /**
@@ -648,7 +657,7 @@ void Player::ApplyPhysic(const float& deltaTime)
 void Player::ApplyFriction(float deltaTime)
 {
 	// 摩擦を加える
-	SimpleMath::Vector3 velocity = PhysicsHelper::CalculateFrictionVelocity(GetVelocity(), deltaTime, PlayerParameter::FRICTION, GameObject::GRAVITY_ACCELERATION.Length());
+	SimpleMath::Vector3 velocity = PhysicsHelper::CalculateFrictionVelocity(GetVelocity(), deltaTime, PlayerParameter::FRICTION, PhysicsParameter::GRAVITY_ACCELERATION.Length());
 
 	SetVelocity(velocity);
 }
@@ -668,7 +677,7 @@ void Player::ApplyDrag(float deltaTime)
 
 /**
  * @brief 移動方向へ回転する
- * 
+ *
  */
 void Player::RotateForMoveDirection(const float& deltaTime)
 {
@@ -676,7 +685,7 @@ void Player::RotateForMoveDirection(const float& deltaTime)
 
 
 	GetTransform()->SetRotation(MovementHelper::RotateForMoveDirection(
-		deltaTime, 
+		deltaTime,
 		GetTransform()->GetRotation(),
 		GetTransform()->GetForward(),
 		GetVelocity(),
@@ -691,26 +700,26 @@ void Player::ReleaseWire()
 	if (m_wire->IsActive())
 		SetVelocity(m_wire->GetStartVelocity() * PlayerParameter::WIRE_RELEASE_VELOCITY_MULTIPLIER);
 	m_wire->Reset();
-	
+
 }
 
 /**
  * @brief 重力を適用
- * 
+ *
  * @param[in] deltaTime　経過時間
  */
 void Player::ApplyGravity(const float& deltaTime)
 {
 	SimpleMath::Vector3 accel = SimpleMath::Vector3::Zero;
 
-	accel = GRAVITY_ACCELERATION * deltaTime ;
+	accel = PhysicsParameter::GRAVITY_ACCELERATION * deltaTime;
 
 	AddForceToVelocity(accel);
 }
 
 /**
  * @brief 移動入力の適用
- * 
+ *
  * @param[in] deltaTime
  */
 void Player::ApplyMoveInput(const float& deltaTime)
@@ -722,12 +731,12 @@ void Player::ApplyMoveInput(const float& deltaTime)
 	float maxMoveSpeed = (IsGround()) ? PlayerParameter::MAX_MOVE_SPEED : PlayerParameter::MAX_FLYING_MOVE_SPEED;
 	// XZ平面の速度をクランプした移動要求に基づいて更新
 	auto newVelocity = MovementHelper::ClampedMovement(
-								GetVelocity() * Vector3(1.0f, 0.0f, 1.0f),
-								m_requestedMove,
-								deltaTime,
-								PlayerParameter::ACCELERATION, 
-								PlayerParameter::DECELERATION,
-								maxMoveSpeed);
+		GetVelocity() * Vector3(1.0f, 0.0f, 1.0f),
+		m_requestedMove,
+		deltaTime,
+		PlayerParameter::ACCELERATION,
+		PlayerParameter::DECELERATION,
+		maxMoveSpeed);
 	// Y軸の速度はそのまま保持
 	AddForceToVelocity(newVelocity);
 
@@ -753,7 +762,7 @@ bool Player::CanShootWire() const
 
 /**
  * @brief ワイヤー衝突時に呼ぶ関数を登録する
- * 
+ *
  * @param[in] wireCollision　衝突関数
  */
 void Player::SetWireCollisionFunction(std::function<void(const GameObject*)> wireCollision)
@@ -763,7 +772,7 @@ void Player::SetWireCollisionFunction(std::function<void(const GameObject*)> wir
 
 void Player::ChangeAnimation(const std::string& animationFilePath)
 {
-	
+
 	std::wstring fileString = std::wstring(animationFilePath.begin(), animationFilePath.end());
 	const wchar_t* name = fileString.c_str();
 
@@ -782,9 +791,9 @@ void Player::ChangeAnimation(const std::string& animationFilePath)
 
 /**
  * @brief ワイヤーアクション挙動
- * 
+ *
  * @param[in] 経過時間
- * 
+ *
  */
 void Player::BehaviourWireAction(const float& deltaTime, const float& speed)
 {
@@ -804,7 +813,7 @@ void Player::BehaviourWireAction(const float& deltaTime, const float& speed)
  *
  */
 void Player::ShootWire(const DirectX::SimpleMath::Vector3& targetPosition)
-{	
+{
 	auto eyePos = m_pPlayerCamera->GetEye();
 
 	// テスト ------------------------------------------------------
@@ -828,12 +837,12 @@ void Player::ShootWire(const DirectX::SimpleMath::Vector3& targetPosition)
 
 }
 
- /**
-  * @brief 押し出しと反射の解消
-  *
-  * @param[in] overlap      押し出しベクトル
-  * @param[in] restitution  反発係数（バウンドする強さ）　0.0 = 全くバウンドしない、1.0 = 完全反射
-  */
+/**
+ * @brief 押し出しと反射の解消
+ *
+ * @param[in] overlap      押し出しベクトル
+ * @param[in] restitution  反発係数（バウンドする強さ）　0.0 = 全くバウンドしない、1.0 = 完全反射
+ */
 void Player::ResolvePushOutAndBounce(DirectX::SimpleMath::Vector3 overlap, const float& restitution)
 {
 	PushOut(overlap);
@@ -868,8 +877,9 @@ void Player::Jump(float deltaTime)
 
 /**
  * @brief ジャンプに挑戦
- * 
- * @return 成功かどうか
+ *
+ * @returns true  成功
+ * @returns false 失敗
  */
 bool Player::RequestJump()
 {
@@ -879,7 +889,9 @@ bool Player::RequestJump()
 		m_state == State::WIRE_GRABBING ||
 		m_state == State::WIRE_THROWING ||
 		m_state == State::JUMPING)
-	{ return false; }
+	{
+		return false;
+	}
 
 	m_stateMachine->ChangeState<JumpingPlayerState>();
 	return true;
@@ -888,10 +900,13 @@ bool Player::RequestJump()
 
 /**
  * @brief ステップ要求
+ *
+ * @returns true  成功
+ * @returns false 失敗
  */
 bool Player::RequestStep()
 {
-	if (m_canStep && !m_isGround )
+	if (m_canStep && !m_isGround)
 	{
 		m_stateMachine->ChangeState<SteppingPlayerState>();
 		m_canStep = false;
@@ -899,6 +914,32 @@ bool Player::RequestStep()
 	}
 
 	return false;
+}
+
+/**
+ * @brief ワイヤーを離すよう要求
+ *
+ * @returns true  成功
+ * @returns false 失敗
+ */
+bool Player::RequestReleaseWire(bool isReleased)
+{
+	m_releaseWireRequested = isReleased;
+
+	return true;
+}
+
+/**
+ * @brief ワイヤーを飛ばすように要求
+ * 
+ * @returns true  成功
+ * @returns false 失敗 
+ */
+bool Player::RequestShootWire(bool isShooting)
+{
+	m_shootWireRequested = isShooting;
+
+	return true;
 }
 
 /**

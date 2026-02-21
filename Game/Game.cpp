@@ -9,17 +9,23 @@
 
 #define GAME_MODE
 
-
-
 #include "Game.h"
+
+// シーン関連
 #include "Game/Scene/TitleScene/TitleScene.h"
 #include "Game/Scene/GameplayScene/GameplayScene.h"
 #include "Game/Scene/ResultScene/ResultScene.h"
 #include "Game/Scene/Loading/LoadingScreen.h"
 #include "Game/Common/Screen.h"
 
-#include "Game/Common/SoundManager/SoundManager.h"
-#include "Game/Common/GameEffect/GameEffectController.h"
+// ファクトリー関連
+#include "Game/Common/Factory/InputBindingFactory/InputBindingFactory.h"
+
+// フレームワーク関連
+#include "Game/Common/Framework/SoundManager/SoundManager.h"
+
+// グラフィック関連
+#include "Game/Common/Graphics/GameEffect/GameEffectController.h"
 
 // ImGui系のヘッダーのインクルード
 #include "Library/ImGui/imgui.h"
@@ -47,15 +53,7 @@ Game::Game() noexcept(false)
 
 Game::~Game()
 {
-    //// 例：デバイスを取得している場合
-    //ID3D11Debug* d3dDebug = nullptr;
-    //HRESULT hr = m_deviceResources->GetD3DDevice()->QueryInterface(__uuidof(ID3D11Debug), (void**)&d3dDebug);
-    //if (SUCCEEDED(hr) && d3dDebug)
-    //{
-    //    // 以下のフラグを指定することで、より詳細な情報を出力できる
-    //    d3dDebug->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL | D3D11_RLDO_SUMMARY);
-    //    d3dDebug->Release();
-    //}
+
     // フルスクリーン状態であれば、ウィンドウモードに戻す
     if (m_fullscreen && m_deviceResources->GetSwapChain())
     {
@@ -90,6 +88,7 @@ Game::~Game()
     m_sceneManager->Finalize();
 
 
+    m_collisionManager->Finalize();
     // 3. 全ての unique_ptr を明示的に破棄する（宣言の逆順が望ましい）
     m_sceneManager.reset();    // シーンを消す（TitleSceneなどもここで消える）
     m_transitionMask.reset();
@@ -133,7 +132,8 @@ void Game::Initialize(HWND window, int width, int height)
     SoundManager::GetInstance()->SetResourceManager(m_resourceManager.get());
 
    // **** 生成 ****
-   
+    m_collisionManager = std::make_unique<CollisionManager>();
+
    // シーンの生成
    m_sceneManager = std::make_unique<MyLib::SceneManager<CommonResources>>();
 
@@ -141,6 +141,17 @@ void Game::Initialize(HWND window, int width, int height)
     m_keyboardStateTracker  = std::make_unique<Keyboard::KeyboardStateTracker>();
     m_mouseStateTracker     = std::make_unique<Mouse::ButtonStateTracker>();
     m_gamePadStateTracker   = std::make_unique<GamePad::ButtonStateTracker>();
+
+    // 入力デバイス毎のスプライトの表記を切り替え器の作成
+    m_inputDeviceSpriteResolver = std::make_unique<InputDeviceSpriteResolver>(m_keyboardStateTracker.get(), m_gamePadStateTracker.get());
+
+    // 入力システムの作成
+    m_InputSystem = std::make_unique<InputSystem>(m_keyboardStateTracker.get(), m_mouseStateTracker.get(), m_gamePadStateTracker.get());
+
+    // 入力システムの設定
+    m_InputSystem->AddActionMap(std::move(InputActionMapFactory::PlayerInputMapFactory().Create(DefaultSpawnDesc())));
+    m_InputSystem->AddActionMap(std::move(InputActionMapFactory::UIInputMapFactory().Create(DefaultSpawnDesc())));
+    m_InputSystem->AddActionMap(std::move(InputActionMapFactory::SystemInputMapFactory().Create(DefaultSpawnDesc())));
 
     // 共通リソースの生成
     m_commonResources = std::make_unique<CommonResources>(
@@ -153,17 +164,23 @@ void Game::Initialize(HWND window, int width, int height)
         m_mouseStateTracker.get(),
         m_gamePadStateTracker.get(),
         m_copyRenderTexture.get(),
-        m_transitionMask.get()
+        m_transitionMask.get(),
+        m_inputDeviceSpriteResolver.get(),
+        m_InputSystem.get(),
+        m_collisionManager.get()
     );
 
+
+  
+
     // **** 初期化処理 ****
-    
     // シーンの共通リソースの設定
     m_sceneManager->SetCommonResources(m_commonResources.get());
 
     // 開始シーンの設定
     m_sceneManager->RequestSceneChange<TitleScene, LoadingScreen>();
 
+	// 画面クリア
     context->ClearRenderTargetView(m_deviceResources->GetRenderTargetView(), Colors::Black);
 
 
@@ -212,6 +229,7 @@ void Game::Tick()
 void Game::Update(DX::StepTimer const& timer)
 {
     float deltaTime = float(timer.GetElapsedSeconds());
+    m_collisionManager->UpdateTask(deltaTime);
 
     // キーボードトラッカーの更新処理
     auto kb = Keyboard::Get().GetState();
@@ -230,6 +248,16 @@ void Game::Update(DX::StepTimer const& timer)
 
     // シーン管理の更新処理
     m_sceneManager->Update(deltaTime);
+
+
+    m_collisionManager->StartThread();
+
+
+        // 入力デバイス切り替え器の更新処理
+        m_inputDeviceSpriteResolver->Update();
+
+    m_InputSystem->Update();
+
 
     
 #ifdef GAME_MODE
@@ -266,26 +294,24 @@ void Game::Render()
     // シーン管理の描画処理
     m_sceneManager->Render();
 
-    if (m_commonResources->IsCopyScreenRequest())
-    {
-        auto renderTarget = m_deviceResources->GetRenderTarget();
-        context->CopyResource(m_copyRenderTexture->GetRenderTarget(), renderTarget);
+	// 画面コピー要求の処理
+    TryCopyScreen(context);
 
-        m_commonResources->SetCopyScreenRequest(false);
-    }
+    // 終了していない場合描画する
     if (!m_transitionMask->IsEnd())
     {
         m_transitionMask->Draw(context, m_states.get(), m_copyRenderTexture->GetShaderResourceView(), m_deviceResources->GetOutputSize());
 
     }
-    //// FPSを取得する
-    //uint32_t fps = m_timer.GetFramesPerSecond();
 
-    //// FPSの表示
-    //m_debugFont->AddString(0, 0, Colors::White, L"FPS=%d", fps);
+    // FPSを取得する
+    uint32_t fps = m_timer.GetFramesPerSecond();
 
-    //// デバッグフォントの描画
-    //m_debugFont->Render(m_states.get());
+    // FPSの表示
+    m_debugFont->AddString(0, 0, Colors::White, L"FPS=%d", fps);
+
+    // デバッグフォントの描画
+    m_debugFont->Render(m_states.get());
 
        // ****  ImGuiの描画処理 ****
 
@@ -445,6 +471,24 @@ void Game::CreateWindowSizeDependentResources()
     m_copyRenderTexture->SetWindow(rect);
 
 
+}
+
+// 画面コピー要求がある場合、画面をコピーする
+bool Game::TryCopyScreen(ID3D11DeviceContext1* context)
+{
+
+    // 画面コピー要求がある場合、画面をコピーする
+    if (m_commonResources->IsCopyScreenRequest())
+    {
+        auto renderTarget = m_deviceResources->GetRenderTarget();
+        context->CopyResource(m_copyRenderTexture->GetRenderTarget(), renderTarget);
+
+        m_commonResources->SetCopyScreenRequest(false);
+
+		return true;
+    }
+
+	return false;
 }
 
 void Game::OnDeviceLost()

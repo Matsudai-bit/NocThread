@@ -11,35 +11,47 @@
 // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "ResultScene.h"
+
+// シーン関連
 #include "Game/Scene/TitleScene/TitleScene.h"
+#include "Game/Scene/GameplayScene/GameplayScene.h"
+
 
 // ライブラリ関連
 #include "Library/MyLib/DirectXMyToolKit/DebugFont/DebugFont.h"
 #include "Library/DirectXFramework/DeviceResources.h"
 #include "Game/Scene/Loading/LoadingScreen.h"
 
-#include "Game/Common/CommonResources/CommonResources.h"
-#include "Game/Common/ResourceManager/ResourceManager.h"
+// ファクトリー関連
+#include "Game/Common/Factory/InputBindingFactory/InputBindingFactory.h"
 
-#include "Game/Scene/GameplayScene/GameplayScene.h"
+// データベース関連
+#include "Game/Common/Database/SoundDatabase.h"
+#include "Game/Common/Database/TextureDatabase.h"
 
+// フレームワーク関連
+#include "Game/Common/Framework/CommonResources/CommonResources.h"
+#include "Game/Common/Framework/ResourceManager/ResourceManager.h"
+#include "Game/Common/Framework/SoundManager/SoundManager.h"
+#include "Game/Common/Framework/Input/InputActionMap/InputActionMap.h"
+#include "Game/Common/Framework/Input/InputSystem/InputSystem.h"
+
+// グラフィック関連
+#include "Game/Common/Graphics/TransitionMask/TransitionMask.h"
+
+// UIツール関連
 #include "Game/Common/UserInterfaceTool/Sprite/Sprite.h"
 #include "Game/Common/UserInterfaceTool/Canvas/Canvas.h"
 
-#include "Game/Common/SoundManager/SoundManager.h"
-#include "Game/Common/Database/SoundDatabase.h"
-
-#include "Game/Common/ResultData/ResultData.h"
-
-#include "Game/Common/Input/InputBindingFactory/InputBindingFactory.h"
+// ゲームプレイロジック関連
+#include "Game/Common/GameplayLogic/ResultData/ResultData.h"
 
 // 状態
 #include "Game/Scene/ResultScene/State/SuccessResultState/SuccessResultState.h"
 #include "Game/Scene/ResultScene/State/FailureResultState/FailureResultState.h"
 
-#include "Game/Common/Database/TextureDatabase.h"
 
-#include "Game/Common/TransitionMask/TransitionMask.h"
+
 
 using namespace DirectX;
 
@@ -116,8 +128,12 @@ void ResultScene::Initialize()
 	m_backgroundAlphaFilterSprite->SetScale(1.60f * Screen::Get()->GetScreenScale());
 
 	SoundManager::GetInstance()->Play(SoundDatabase::SOUND_CLIP_MAP.at(SoundDatabase::BGM_RESULT), true);
-	// 入力システムの作成
-	m_inputSystem = InputBindingFactory::CreateUIInput();
+
+	// 入力とコールバックの紐づけ
+	RegisterBindCallbackToInput();
+
+	GetCommonResources()->GetTransitionMask()->Open();
+
 }
 
 
@@ -133,23 +149,9 @@ void ResultScene::Update(float deltaTime)
 {
 	UNREFERENCED_PARAMETER(deltaTime);
 
-	// 終了していなければ強制退避
-	if (!GetCommonResources()->GetTransitionMask()->IsEnd())
-	{
-		return;
-	}
-
-	m_inputSystem->Update(GetCommonResources()->GetKeyboardTracker(), GetCommonResources()->GetMouseTracker(), GetCommonResources()->GetGamePadTracker());
-
 
 	// ステートマシーンの更新処理
 	m_stateMachine->Update(deltaTime);
-
-	if (m_inputSystem->IsInput(InputActionType::UIActionID::CONFIRM))
-	{
-		ChangeScene<TitleScene, LoadingScreen>();
-	}
-
 }
 
 
@@ -185,6 +187,9 @@ void ResultScene::Render()
 void ResultScene::Finalize()
 {
 	SoundManager::GetInstance()->RemoveAll();
+
+	// コールバックの紐づけを解除する
+	UnBindCallbackToInput();
 }
 
 /**
@@ -195,6 +200,45 @@ void ResultScene::Finalize()
 Canvas* ResultScene::GetCanvas() const
 {
 	return m_canvas.get();
+}
+
+/**
+ * @brief 入力とコールバックの紐づけ
+ */
+void ResultScene::RegisterBindCallbackToInput()
+{	
+	// 入力システムの取得
+	auto pInputSystem = GetCommonResources()->GetInputSystem();
+	// 次に行くの入力
+	pInputSystem->GetInputActionMap(InputActionID::UI::MAP_NAME)->BindInputEvent(InputActionID::UI::CONFIRM, this,
+		[this](const InputEventData& data) { OnInputExit(data); });
+}
+
+/**
+ * @brief 入力とコールバックの紐づけを解除する
+ * 
+ */
+void ResultScene::UnBindCallbackToInput()
+{
+	// 入力システムの取得
+	auto pInputSystem = GetCommonResources()->GetInputSystem();
+
+	pInputSystem->GetInputActionMap(InputActionID::UI::MAP_NAME)->UnBindAllInputEvent(InputActionID::UI::CONFIRM, this);
+}
+
+/**
+ * @brief 出る
+ * 
+ * @param[in] data　入力イベントデータ
+ */
+void ResultScene::OnInputExit(const InputEventData& data)
+{
+	if (GetCommonResources()->GetTransitionMask()->IsEnd() && data.inputOption.pressed)
+	{
+		GetCommonResources()->GetTransitionMask()->Close([&]() {ChangeScene<TitleScene, LoadingScreen>();; });
+
+		
+	}
 }
 
 // 中心の算出

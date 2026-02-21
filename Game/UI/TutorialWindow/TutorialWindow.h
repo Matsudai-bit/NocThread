@@ -14,8 +14,7 @@
 
 // ヘッダファイルの読み込み ===================================================
 #include "Game/Common/UserInterfaceTool/Sprite/ISprite2D.h"
-#include "Game/Common/Input/InputSystem/InputSystem.h"
-#include "Game/Common/Input/InputActionType/InputActionType.h"
+
 
 #include <memory>
 #include <vector>
@@ -23,6 +22,7 @@
 // クラスの前方宣言 ===================================================
 class Sprite;
 class ResourceManager;
+struct InputEventData;
 // クラスの定義 ===============================================================
 /**
  * @brief チュートリアルウィンドウ
@@ -47,7 +47,7 @@ private:
 
 	std::function<void()> m_closeWindow;
 
-	std::unique_ptr < InputSystem<InputActionType::UIActionID>> m_uiInput; ///< UI入力
+	bool m_isActive; ///< 見えるかどうか
 
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
@@ -63,30 +63,29 @@ public:
 public:
 	// 初期化処理
 	void Initialize(ResourceManager* pResourceManager, std::function<void()> closeWindow);
-
-	// 更新処理
-	void Update(
-		float deltaTime,
-		const DirectX::Keyboard::KeyboardStateTracker* pKeyboardStateTracker,
-		const DirectX::Mouse::ButtonStateTracker* pMouseStateTracker,
-		const DirectX::GamePad::ButtonStateTracker* pGamePadStateTracker);
-	// 描画処理
-	void Draw();
 	// 終了処理
 	void Finalize();
 	// スプライト描画
 	void DrawSprite(DirectX::SpriteBatch* pSpriteBatch) override;
 
+	// 右が動かす
+	void OnMoveUpRight(const InputEventData& data);
+	// 左が動かす
+	void OnMoveDownLeft(const InputEventData& data);
+	// 選択する
+	void OnSelect(const InputEventData& data);
+
+
 // 取得/設定
 public:
+	// 見えるかどうか
+	void SetVisible(bool isVisible) { m_isActive = isVisible; }
+	bool IsVisible() const override { return m_isActive; }
 
 
 // 内部実装
 private:
 
-	// 右に動くことが出来るかどうか
-	bool CanMoveRight() const;
-	// 上に動くことが出来るかどうか
-	bool CanMoveLeft() const;
+
 
 };

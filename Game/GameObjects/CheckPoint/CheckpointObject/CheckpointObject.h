@@ -15,9 +15,16 @@
 // ヘッダファイルの読み込み ===================================================
 #include <unordered_map>
 #include <memory>
+
+// ライブラリ関連
 #include "Library/MyLib/DirectXMyToolKit/ModelPart/ModelPart.h"
+
+// フレームワーク関連
+#include "Game/Common/Framework/EventSystem/EventSystem.h"
+
+// ゲームオブジェクト関連
 #include "Game/GameObjects/Common/Transform/Transform.h"
-#include "Game/Common/EventSystem/EventSystem.h"
+
 
 // クラスの前方宣言 ===================================================
 class ResourceManager;

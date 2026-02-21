@@ -10,20 +10,29 @@
 #include "pch.h"
 #include "SteeringConstraintFactory.h"
 
-#include "Game/Common/Collision/CollisionManager/CollisionManager.h"
-
-#include "Game/GameObjects/RopeObject/XPBDSimulator/Constraint/SteeringConstraint/SteeringConstraint.h"
-#include "Game/GameObjects/RopeObject/XPBDSimulator/SimParticle/SimParticle.h"
-
-#include "Game/Common/Camera/MainCamera/MainCamera.h"
-#include "Game/Common/Camera/Camera.h"
-
+// ライブラリ関連
 #include "Library/MyLib/MathUtils/MathUtils.h"
 #include "Library/DirectXFramework/DebugDraw.h"
 #include "Library/DirectXFramework/StepTimer.h"
 #include "Library/MyLib/DirectXMyToolKit/DebugFont/DebugFont.h"
 
-#include "Game/Common/CommonResources/CommonResources.h"
+// フレームワーク関連
+#include "Game/Common/Framework/CommonResources/CommonResources.h"
+#include "Game/GameObjects/RopeObject/XPBDSimulator/SimParticle/SimParticle.h"
+#include "Game/Common/Framework/Input/InputSystem/InputSystem.h"
+#include "Game/Common/Framework/Input/InputActionType/InputActionType.h"
+
+// ゲームプレイロジック関連
+#include "Game/Common/GameplayLogic/CollisionManager/CollisionManager.h"
+
+// グラフィック関連
+#include "Game/Common/Graphics/Camera/MainCamera/MainCamera.h"
+#include "Game/Common/Graphics/Camera/Camera.h"
+
+// ユーティリティ関連
+#include "Game/GameObjects/RopeObject/XPBDSimulator/Constraint/SteeringConstraint/SteeringConstraint.h"
+
+
 
 using namespace DirectX;
 
@@ -39,7 +48,8 @@ SteeringConstraintFactory::SteeringConstraintFactory(const CommonResources* pCom
     , m_pCommonResources{ pCommonResources }
     , m_elapsedTimeCounter{}
 {
-	m_playerInput = InputBindingFactory::CreatePlayerInput();
+    // 入力との紐づけの登録
+    RegisterBindCallbackToInput();
 }
 
 
@@ -49,7 +59,8 @@ SteeringConstraintFactory::SteeringConstraintFactory(const CommonResources* pCom
  */
 SteeringConstraintFactory::~SteeringConstraintFactory()
 {
-
+    // 入力との紐づけの解除
+    UnBindCallbackToInput();
 }
 
 /**
@@ -72,6 +83,8 @@ std::vector<std::unique_ptr<IConstraint>> SteeringConstraintFactory::CreateConst
 {
 	UNREFERENCED_PARAMETER(paramater);
     using namespace SimpleMath;
+
+    m_rawInput.Normalize();
 
     // 作成した制約
     std::vector<std::unique_ptr<IConstraint>> creationConstraints;
@@ -124,6 +137,7 @@ std::vector<std::unique_ptr<IConstraint>> SteeringConstraintFactory::CreateConst
 
 
     }
+    m_rawInput = SimpleMath::Vector3::Zero;
 
     return creationConstraints;
 
@@ -141,26 +155,12 @@ DirectX::SimpleMath::Vector3 SteeringConstraintFactory::ComputeInputSteeringForc
 {
     using namespace SimpleMath;
 
-	m_playerInput->Update(m_pCommonResources->GetKeyboardTracker(), m_pCommonResources->GetMouseTracker(), m_pCommonResources->GetGamePadTracker());
-
-    // 入力の取得
-    auto kb = Keyboard::Get().GetState();
-    Vector3 rawInput;
-
-    // 奥へ
-    if (m_playerInput->IsInput(InputActionType::PlyayerActionID::FRONT_MOVE)) { rawInput += SimpleMath::Vector3::Forward; }
-    // 手前へ
-    if (m_playerInput->IsInput(InputActionType::PlyayerActionID::BACK_MOVE)) { rawInput += SimpleMath::Vector3::Backward; }
-    // 右へ
-    if (m_playerInput->IsInput(InputActionType::PlyayerActionID::RIGHT_MOVE)) { rawInput += SimpleMath::Vector3::Right; }
-    // 左へ
-    if (m_playerInput->IsInput(InputActionType::PlyayerActionID::LEFT_MOVE)) { rawInput += SimpleMath::Vector3::Left; }
 
     Vector3 cameraRight = cameraForward.Cross(Vector3::Up);
     cameraRight.Normalize();
 
     // 入力をカメラ空間の移動方向に変換
-    Vector3 moveDirection = (rawInput.z * cameraForward) + (-rawInput.x * cameraRight);
+    Vector3 moveDirection = (m_rawInput.z * cameraForward) + (-m_rawInput.x * cameraRight);
     if (moveDirection.LengthSquared() > 0.001f) 
     {
         moveDirection.Normalize();
@@ -197,4 +197,42 @@ DirectX::SimpleMath::Vector3 SteeringConstraintFactory::ComputeCameraDirectedSte
 
     // オートオフセット：ワイヤーが進行方向の逆側に遅れてついてくるような力
     return steeringForce;
+}
+
+void SteeringConstraintFactory::RegisterBindCallbackToInput()
+{
+    using namespace SimpleMath;
+
+    // 入力システムの取得
+    // アクションマップの取得
+    auto playerActionMap = m_pCommonResources->GetInputSystem()->GetInputActionMap(InputActionID::Player::MAP_NAME);
+    // 上入力
+    playerActionMap->BindInputEvent(InputActionID::Player::FRONT_MOVE, this,
+        [this](const InputEventData& data) { UNREFERENCED_PARAMETER(data);  
+    m_rawInput + Vector3::Forward; });
+    // 下入力
+    playerActionMap->BindInputEvent(InputActionID::Player::BACK_MOVE, this,
+        [this](const InputEventData& data) { UNREFERENCED_PARAMETER(data);  m_rawInput += Vector3::Backward; });
+    // 左入力
+    playerActionMap->BindInputEvent(InputActionID::Player::LEFT_MOVE, this,
+        [this](const InputEventData& data) { UNREFERENCED_PARAMETER(data); m_rawInput += Vector3::Left; });
+    // 右入力
+    playerActionMap->BindInputEvent(InputActionID::Player::RIGHT_MOVE, this,
+        [this](const InputEventData& data) { UNREFERENCED_PARAMETER(data);  m_rawInput += Vector3::Right; });
+
+}
+
+void SteeringConstraintFactory::UnBindCallbackToInput()
+{
+    // 入力システムの取得
+// アクションマップの取得
+    if (m_pCommonResources->GetInputSystem())
+    {
+        auto playerActionMap = m_pCommonResources->GetInputSystem()->GetInputActionMap(InputActionID::Player::MAP_NAME);
+        playerActionMap->UnBindAllInputEvent(InputActionID::Player::FRONT_MOVE, this);
+        playerActionMap->UnBindAllInputEvent(InputActionID::Player::BACK_MOVE,  this);
+        playerActionMap->UnBindAllInputEvent(InputActionID::Player::LEFT_MOVE,  this);
+        playerActionMap->UnBindAllInputEvent(InputActionID::Player::RIGHT_MOVE, this);
+
+    }
 }

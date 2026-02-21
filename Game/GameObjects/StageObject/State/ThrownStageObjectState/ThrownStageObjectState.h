@@ -13,7 +13,7 @@
 
 
 // ヘッダファイルの読み込み ===================================================
-#include "Game/Common/StateMachine/StateBase/StateBase.h"
+#include "Game/Common/Framework/StateMachine/StateBase/StateBase.h"
 
 // クラスの前方宣言 ===================================================
 class StageObject;

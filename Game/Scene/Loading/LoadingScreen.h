@@ -15,7 +15,7 @@
 
 
 // ヘッダファイルの読み込み ===================================================
-#include "Game/Manager/SceneManager/SceneManager.h"
+#include "Game/Scene/SceneManager.h"
 #include "Game/Common/UserInterfaceTool/Sprite/Sprite.h"
 #include "Game/Common/UserInterfaceTool/SpriteAnimator/SpriteAnimator.h"
 

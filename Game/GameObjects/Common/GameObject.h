@@ -15,13 +15,19 @@
 // ヘッダファイルの読み込み ===================================================
 #include <typeindex>
 #include <unordered_map>
-#include "Game/Common/Collision/ICollision.h"
-#include "Game/Common/EventSystem/EventSystem.h"
-#include "Game/GameObjects/Common/GameObjectEvent/GameObjectEvent.h"
-#include "Game/Common/EntityManager/IEntity.h"
 
-#include "Game/Common/TaskManager/TaskManager.h"
+// フレームワーク関連
+#include "Game/Common/Framework/EventSystem/EventSystem.h"
+#include "Game/Common/Framework/TaskManager/TaskManager.h"
+
+// ユーティリティ関連
+#include "Game/Common/Utillities/Collision/ICollision.h"
+
+// ゲームオブジェクト関連
+#include "Game/GameObjects/Common/GameObjectEvent/GameObjectEvent.h"
+#include "Game/Common/Framework/EntityManager/IEntity.h"
 #include "Game/GameObjects/Common/Transform/Transform.h"
+
 
 
 // クラスの前方宣言 ===================================================
@@ -81,9 +87,6 @@ class GameObject
 {
 // クラス定数の宣言 -------------------------------------------------
 public:
-	static constexpr float GRAVITY_SCALE = 25.0f;						// 重力量(s)
-	static constexpr DirectX::SimpleMath::Vector3 GRAVITY_ACCELERATION =
-		DirectX::SimpleMath::Vector3(0.0f, -GRAVITY_SCALE, 0.0f);		// 重力加速度
 
 
 // データメンバの宣言 -----------------------------------------------

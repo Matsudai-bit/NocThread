@@ -154,8 +154,8 @@ int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, 
 
     g_game.reset();
 
-    #ifdef GAME_MODE
-    #else 
+    #ifdef _DEBUG
+    
      //--- すべてが空になった状態でチェック ---
 	 //メモリリークの報告
     IDXGIDebug* debugDev;

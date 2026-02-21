@@ -10,12 +10,19 @@
 #include "pch.h"
 #include "Building.h"
 
-#include "Game/Common/ResourceManager/ResourceManager.h"
-#include "Game/Common/CommonResources/CommonResources.h"
-#include "Game/Common/Collision/CollisionManager/CollisionManager.h"
-
+// ライブラリ関連
 #include "Library/DirectXFramework/DeviceResources.h"
-#include "Game/Common/Camera/Camera.h"
+
+// フレームワーク関連
+#include "Game/Common/Framework/ResourceManager/ResourceManager.h"
+#include "Game/Common/Framework/CommonResources/CommonResources.h"
+
+// グラフィック関連
+#include "Game/Common/Graphics/Camera/Camera.h"
+
+// ユーティリティ関連
+#include "Game/Common/GameplayLogic/CollisionManager/CollisionManager.h"
+
 
 using namespace DirectX;
 
@@ -42,6 +49,13 @@ Building::Building()
  */
 Building::~Building()
 {
+	// 衝突管理から削除
+	for (auto& collider : m_collider)
+	{
+		GetCommonResources()->GetCollisionManager()->RemoveCollisionObjectData(this,collider.get());
+	}
+		GetCommonResources()->GetCollisionManager()->RemoveCollisionObjectData(&m_parentColliderObject, m_parentColliderObject.GetCollider());
+	
 
 }
 
@@ -73,7 +87,7 @@ void Building::Initialize(const CommonResources* pCommonResources, CollisionMana
 	InitializeMeshColliders(totalScale);
 
 	// 3. 手動設定の追加コライダ (アンテナや装飾部分など)
-	AddManualColliders(totalScale);
+	AddManualColliders();
 
 	// 4. カリング用球体の設定 (最初のコライダを基準にする)
 	if (!m_collider.empty())
@@ -192,10 +206,8 @@ void Building::InitializeMeshColliders(const SimpleMath::Vector3& totalScale)
 
 /**
  * @brief 手動コライダの追加
- *
- * @param[in] totalScale 総合スケール
  */
-void Building::AddManualColliders(const SimpleMath::Vector3& totalScale)
+void Building::AddManualColliders()
 {
 	struct ManualColliderDef { SimpleMath::Vector3 offset; SimpleMath::Vector3 size; };
 	const ManualColliderDef extraParts[] = {
@@ -223,12 +235,12 @@ void Building::RegisterToCollisionManager(CollisionManager* pCollisionManager)
 	if (!pCollisionManager || !m_parentColliderObject.GetCollider()) return;
 
 	// 親を登録
-	pCollisionManager->AddCollisionData(CollisionData(&m_parentColliderObject, m_parentColliderObject.GetCollider()));
+	pCollisionManager->AddCollisionData(CollisionData(&m_parentColliderObject, m_parentColliderObject.GetCollider(), true));
 
 	// 子（各部位）を親に紐付けて登録
 	for (auto& collider : m_collider)
 	{
-		pCollisionManager->AddCollisionData(CollisionData(this, collider.get()), m_parentColliderObject.GetCollider());
+		pCollisionManager->AddCollisionData(CollisionData(this, collider.get(), true), m_parentColliderObject.GetCollider());
 	}
 }
 

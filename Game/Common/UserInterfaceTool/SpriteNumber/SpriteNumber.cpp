@@ -24,6 +24,7 @@ SpriteNumber::SpriteNumber()
 	: m_numberSprite{}
 	, m_scale{1.0f}
 	, m_minDigits{ -1 }
+	, m_isVisible{ true }
 
 {
 }

@@ -10,9 +10,12 @@
 #include "pch.h"
 #include "PlayerFactory.h"
 
+// ゲームオブジェクト関連
 #include "Game/GameObjects/Player/Player.h"
 #include "Game/GameObjects/Prop/Building/Building.h"
-#include "Game/Manager/BuildingManager/BuildingManager.h"
+
+// 管理関連
+#include "Game/Common/Framework/GameObjectManager/BuildingManager/BuildingManager.h"
 
 using namespace DirectX;
 
@@ -24,7 +27,7 @@ using namespace DirectX;
 void PlayerFactory::StagePlayer::Assemble(Player* instance, const PlayerDesk& desc)
 {
 	// 初期化処理
-	instance->Initialize(&desc.commonResources, desc.pCollisionManager, desc.pPlayerCamera, desc.pPlayerInput);
+	instance->Initialize(&desc.commonResources, desc.pCollisionManager, desc.pPlayerCamera);
 
 	// 出現位置の建物を取得する
 	const Building* tileBuilding = nullptr;

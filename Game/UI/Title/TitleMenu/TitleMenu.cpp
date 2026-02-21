@@ -10,21 +10,29 @@
 #include "pch.h"
 #include "TitleMenu.h"
 
-
+// ライブラリ関連
 #include "Library/MyLib/MathUtils/MathUtils.h"
-#include "Game/Common/Screen.h"
-#include "Game/Common/CommonResources/CommonResources.h"
-#include "Game/Common/ResourceManager/ResourceManager.h"
-#include "Game/Common/UserInterfaceTool/Sprite/Sprite.h"
-#include "Game/Common/UserInterfaceTool/Canvas/Canvas.h"
-#include "Game/Common/Input/InputBindingFactory/InputBindingFactory.h"
-
 #include "Library/MyLib/EasingKit/EasingKit.h"
-#include <Game\Common\SoundManager\SoundManager.h>
 
 // データベース関連
 #include "Game/Common/Database/SoundDatabase.h"
 #include "Game/Common/Database/TextureDatabase.h"
+
+// ファクトリー関連
+#include "Game/Common/Factory/InputBindingFactory/InputBindingFactory.h"
+
+// フレームワーク関連
+#include "Game/Common/Framework/CommonResources/CommonResources.h"
+#include "Game/Common/Framework/ResourceManager/ResourceManager.h"
+#include "Game/Common/Framework/SoundManager/SoundManager.h"
+#include "Game/Common/Framework/Input/InputActionMap/InputActionMap.h"
+
+// グラフィック関連
+#include "Game/Common/Screen.h"
+
+// UIツール関連
+#include "Game/Common/UserInterfaceTool/Sprite/Sprite.h"
+#include "Game/Common/UserInterfaceTool/Canvas/Canvas.h"
 
 using namespace DirectX;
 
@@ -37,6 +45,7 @@ using namespace DirectX;
 TitleMenu::TitleMenu()
 	: m_currentSelectItemForInt{}
 	, m_pCommonResources{ nullptr }
+	, m_isActive{ false }
 {
 
 }
@@ -48,7 +57,6 @@ TitleMenu::TitleMenu()
  */
 TitleMenu::~TitleMenu()
 {
-
 }
 
 
@@ -108,8 +116,10 @@ void TitleMenu::Initialize(Canvas* pCanvas, const CommonResources* pCommonResour
 
 	m_ElapsedTimeCounter.Reset();
 
-	// UI入力システムの作成
-	m_uiInput = InputBindingFactory::CreateUIInput();
+	// コールバックの登録
+	//RegisterInputCallback();
+
+	m_isActive = true;
 }
 
 
@@ -123,9 +133,6 @@ void TitleMenu::Initialize(Canvas* pCanvas, const CommonResources* pCommonResour
  */
 void TitleMenu::Update(float deltaTime)
 {
-	// 入力の更新処理
-	m_uiInput->Update(m_pCommonResources->GetKeyboardTracker(), m_pCommonResources->GetMouseTracker(), m_pCommonResources->GetGamePadTracker());
-
 	// 加算
 	m_ElapsedTimeCounter.UpperTime(deltaTime);
 
@@ -143,34 +150,6 @@ void TitleMenu::Update(float deltaTime)
 	}
 	m_line.SetLength(length);
 
-
-
-	if (CanMoveDownSelector())
-	{
-		// SEの再生
-		SoundManager::GetInstance()->Play(SoundDatabase::SOUND_CLIP_MAP.at(SoundDatabase::SE_CURSOR_MOVING), false);
-
-		
-
-		// 減算する
-		m_currentSelectItemForInt++;
-	}
-
-	if (CanMoveUpSelector())
-	{		
-		// SEの再生
-		SoundManager::GetInstance()->Play(SoundDatabase::SOUND_CLIP_MAP.at(SoundDatabase::SE_CURSOR_MOVING), false);
-		// 加算する
-		m_currentSelectItemForInt--;
-	}
-
-	// 最後にクランプする
-	m_currentSelectItemForInt = (m_currentSelectItemForInt + static_cast<int>(MenuItem::NUM)) % static_cast<int>(MenuItem::NUM);
-
-	if (CanPush() && m_pushButtonFunc)
-	{
-		m_pushButtonFunc(static_cast<MenuItem>(m_currentSelectItemForInt));
-	}
 }
 
 
@@ -185,6 +164,8 @@ void TitleMenu::Update(float deltaTime)
 void TitleMenu::Draw()
 {
 	auto screen = Screen::Get();
+
+	if (!m_isActive) { return; }
 
 	Sprite* currentSelectElementOfSprite = m_titleFontSprites[m_currentSelectItemForInt].get();
 
@@ -213,31 +194,38 @@ void TitleMenu::Finalize()
 
 }
 
-/**
- * @brief 下にセレクターが動くことが出来るかどうか
- * * @return true 可能
- */
-bool TitleMenu::CanMoveDownSelector() const
+void TitleMenu::OnMoveUpSelector(const InputEventData& data)
 {
+	if (data.inputOption.pressed && m_isActive)
+	{
+		// SEの再生
+		SoundManager::GetInstance()->Play(SoundDatabase::SOUND_CLIP_MAP.at(SoundDatabase::SE_CURSOR_MOVING), false);
+		// 減算する
+		m_currentSelectItemForInt--;
+		// 最後にクランプする
+		m_currentSelectItemForInt = (m_currentSelectItemForInt + static_cast<int>(MenuItem::NUM)) % static_cast<int>(MenuItem::NUM);
+	}
 
-	return (m_uiInput->IsInput(InputActionType::UIActionID::DOWN_MOVE, InputSystem<InputActionType::UIActionID>::InputOption::PRESSED));
 }
 
-/**
- * @brief 上にセレクターが動くことが出来るかどうか
- * * @return true 可能
- */
-bool TitleMenu::CanMoveUpSelector() const
+void TitleMenu::OnMoveDownSelector(const InputEventData& data)
 {
-
-	return (m_uiInput->IsInput(InputActionType::UIActionID::UP_MOVE, InputSystem<InputActionType::UIActionID>::InputOption::PRESSED));
+	if (data.inputOption.pressed && m_isActive)
+	{
+		// SEの再生
+		SoundManager::GetInstance()->Play(SoundDatabase::SOUND_CLIP_MAP.at(SoundDatabase::SE_CURSOR_MOVING), false);
+		// 加算する
+		m_currentSelectItemForInt++;
+		// 最後にクランプする
+		m_currentSelectItemForInt = (m_currentSelectItemForInt + static_cast<int>(MenuItem::NUM)) % static_cast<int>(MenuItem::NUM);
+	}
 }
 
-/**
- * @brief 選択することが出来るかどうか
- * * @return true 可能
- */
-bool TitleMenu::CanPush() const
+void TitleMenu::OnSelect(const InputEventData& data)
 {
-	return (m_uiInput->IsInput(InputActionType::UIActionID::CONFIRM, InputSystem<InputActionType::UIActionID>::InputOption::PRESSED));
+	if (data.inputOption.pressed && m_isActive && m_pushButtonFunc)
+	{
+		m_pushButtonFunc(static_cast<MenuItem>(m_currentSelectItemForInt));
+	}
 }
+

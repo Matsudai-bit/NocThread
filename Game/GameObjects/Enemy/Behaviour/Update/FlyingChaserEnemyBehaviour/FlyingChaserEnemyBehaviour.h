@@ -13,10 +13,15 @@
 
 
 // ヘッダファイルの読み込み ===================================================
-#include "Game/GameObjects/Enemy/Behaviour/Update/IEnemyUpdateBehaviour.h"
-#include "Game/Common/Behaviour/SteeringBehavior/SteeringBehavior.h"
 
-#include "Game/Common/ElapsedTimeCounter/ElapsedTimeCounter.h"
+// ゲームオブジェクト関連
+#include "Game/GameObjects/Enemy/Behaviour/Update/IEnemyUpdateBehaviour.h"
+
+// ゲームプレイロジック関連
+#include "Game/Common/GameplayLogic/Behaviour/SteeringBehavior/SteeringBehavior.h"
+
+// ユーティリティ関連
+#include "Game/Common/Utillities/ElapsedTimeCounter/ElapsedTimeCounter.h"
 
 // クラスの前方宣言 ===================================================
 class Player;

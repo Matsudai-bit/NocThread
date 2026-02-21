@@ -9,24 +9,38 @@
 // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "Enemy.h"
-#include "Game/Common/Helper/PhysicsHelper/PhysicsHelper.h"
 
-#include "Game/GameObjects/Enemy/Behaviour/Update/IEnemyUpdateBehaviour.h"
-#include "Game/Common/CommonResources/CommonResources.h"
-#include "Game/Common/ResourceManager/ResourceManager.h"
+// ライブラリ関連
 #include "Library/DirectXFramework/DeviceResources.h"
-#include "Game/Common/Collision/CollisionManager/CollisionManager.h"
-
-#include "Game/Common/Event/WireSystemObserver/WireEventData.h"
-#include "Game/Common/Collision/CollisionManager/CollisionManager.h"
-
-#include "Game/Common/Helper/MovementHelper/MovementHelper.h"
 #include "Library/MyLib/DirectXMyToolKit/DebugFont/DebugFont.h"
 
-#include "Game/Common/ResultData/ResultData.h"
+// データベース関連
+#include "Game/Common/Database/PhysicsParameter.h"
+#include "Game/Common/Database/EnemyParameter.h"
 
+// ユーティリティ関連
+#include "Game/Common/Utillities/Helper/PhysicsHelper/PhysicsHelper.h"
+#include "Game/Common/Utillities/Helper/MovementHelper/MovementHelper.h"
+
+// 敵挙動関連
+#include "Game/GameObjects/Enemy/Behaviour/Update/IEnemyUpdateBehaviour.h"
+
+// フレームワーク関連
+#include "Game/Common/Framework/CommonResources/CommonResources.h"
+#include "Game/Common/Framework/ResourceManager/ResourceManager.h"
+#include "Game/Common/Framework/Event/WireSystemObserver/WireEventData.h"
+
+// グラフィック関連
 #include "Game/Common/Screen.h"
-#include "Game/Common/Camera/Camera.h"
+#include "Game/Common/Graphics/Camera/Camera.h"
+
+// ゲームプレイロジック関連
+#include "Game/Common/GameplayLogic/CollisionManager/CollisionManager.h"
+#include "Game/Common/GameplayLogic/ResultData/ResultData.h"
+
+
+
+
 
 using namespace DirectX;
 
@@ -81,7 +95,7 @@ void Enemy::Initialize(const CommonResources* pCommonResources, CollisionManager
 
 	m_collider = std::make_unique<Sphere>(GetTransform()->GetPosition() + SimpleMath::Vector3(0.0f, 0.5f, 0.0f), 1.0f);
 
-	pCollisionManager->AddCollisionData(CollisionData(this,m_collider.get()));
+	pCollisionManager->AddCollisionData(CollisionData(this,m_collider.get(), false));
 
 	m_deltaTime = 0.0f;
 
@@ -130,15 +144,16 @@ void Enemy::Update(float deltaTime)
 	SimpleMath::Vector3 velocity = GetVelocity();
 
 	// 重力を加える
-	velocity += GRAVITY_ACCELERATION * deltaTime;
+	velocity += PhysicsParameter::GRAVITY_ACCELERATION * deltaTime;
 
 	if (m_isGrounded)
 	{
+		
 		// 摩擦を加える
-		velocity = PhysicsHelper::CalculateFrictionVelocity(velocity, deltaTime, FRICTION, GameObject::GRAVITY_ACCELERATION.Length());
+		velocity = PhysicsHelper::CalculateFrictionVelocity(velocity, deltaTime, EnemyParameter::FRICTION, PhysicsParameter::GRAVITY_SCALE);
 	}
 	// 適用
-	velocity = PhysicsHelper::CalculateDragVelocity(velocity, deltaTime, AIR_RESISTANCE);
+	velocity = PhysicsHelper::CalculateDragVelocity(velocity, deltaTime, EnemyParameter::AIR_RESISTANCE);
 
 
 

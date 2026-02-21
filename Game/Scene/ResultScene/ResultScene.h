@@ -15,17 +15,16 @@
 
 
 // ヘッダファイルの読み込み ===================================================
-#include "Game/Manager/SceneManager/SceneManager.h"
-#include "Game/Common/StateMachine/StateMachine.h"
+#include "Game/Scene/SceneManager.h"
+#include "Game/Common/Framework/StateMachine/StateMachine.h"
 
-#include "Game/Common/Input/InputSystem/InputSystem.h"
-#include "Game/Common/Input/InputActionType/InputActionType.h"
+#include "Game/Common/Framework/Input/InputActionType/InputActionType.h"
 
 // クラスの宣言 ===============================================================
 class CommonResources;  // 共通リソース
 class Canvas;			// キャンバス
 class Sprite;			// スプライト
-
+struct InputEventData;	// 入力イベントデータ
 
 
 // クラスの定義 ===============================================================
@@ -52,8 +51,6 @@ private:
 
 	// ステートマシーン
 	std::unique_ptr<StateMachine<ResultScene>> m_stateMachine; ///< ステートマシーン
-
-	std::unique_ptr<InputSystem<InputActionType::UIActionID>> m_inputSystem; ///< 入力システム
 
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
@@ -88,7 +85,13 @@ public:
 
 // 内部実装
 private:
+	// 入力のコールバックの登録
+	void RegisterBindCallbackToInput();
+	// 紐づけの解除をする
+	void UnBindCallbackToInput();
 
+	// 出る
+	void OnInputExit(const InputEventData& data);
 
 	// 中心の算出
 	DirectX::SimpleMath::Vector2 CalcCenterOrigin(ID3D11ShaderResourceView* pTexture);

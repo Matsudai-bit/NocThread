@@ -29,6 +29,9 @@ namespace TextureDatabase
 		UI_GUIDE_GAME_OPERATING_GAMEPAD,	// ゲーム操作ガイド（ゲームパッド）
 		UI_GUIDE_GAME_OPERATING_KEYBOARD,	// ゲーム操作ガイド（キーボード）
 
+		UI_GUIDE_KEYBOARD_SPACE,			// ゲーム操作表記(Space)
+		UI_GUIDE_GAMEPAD_A,					// ゲーム操作表記(A)
+
 		// ポーズ関連
 		BACKGROUND_PAUSE_ALPHA_MASK,	// ポーズ背景アルファマスク
 		UI_PAUSE_FONT_PAUSE,			// 「PAUSE」フォント
@@ -42,6 +45,8 @@ namespace TextureDatabase
 		// ゲームプレイ関連
 		UI_INGAME_MINIMAP_PLAYER_ICON, 	// ミニマップのプレイヤーアイコン
 		TEXTURE_FLOOR,					// 床テクスチャ
+		BACKGROUND_INGAME_STARTING,		// ゲーム開始時の背景
+		UI_ITEM_INGAME_STARTING,		// ゲーム開始時のUIアイテム
 
 		// タイトル関連
 		UI_TITLE_FONT_PLAY,			// 「PLAY」フォント
@@ -95,6 +100,8 @@ namespace TextureDatabase
 		{ TextureID::UI_GUIDE_UI_KEYBOARD,				"Guide/ui_guide_ui_keyboard.dds" },
 		{ TextureID::UI_GUIDE_GAME_OPERATING_GAMEPAD,	"Guide/ui_guide_game_operating_gamepad.dds" },
 		{ TextureID::UI_GUIDE_GAME_OPERATING_KEYBOARD,	"Guide/ui_guide_game_operating_keyboard.dds" },
+		{ TextureID::UI_GUIDE_KEYBOARD_SPACE,			"Guide/ui_guide_keyboard_space.dds" },
+		{ TextureID::UI_GUIDE_GAMEPAD_A,				"Guide/ui_guide_gamepad_A.dds" },
 		// ポーズ関連
 		{ TextureID::BACKGROUND_PAUSE_ALPHA_MASK,	"Pause/pause_background_alpha.dds" },
 		{ TextureID::UI_PAUSE_FONT_PAUSE,			"Pause/pause_font_pause.dds" },
@@ -104,8 +111,10 @@ namespace TextureDatabase
 		{ TextureID::UI_PAUSE_FONT_TUTORIAL,		"Pause/pause_font_tutorial.dds" },
 		{ TextureID::UI_PAUSE_FONT_OPERATING, 		"Pause/pause_font_operating.dds" },
 		// ゲームプレイ関連
-		{ TextureID::UI_INGAME_MINIMAP_PLAYER_ICON, 	"InGame/inGame_minimap_player_icon.dds" },
+		{ TextureID::UI_INGAME_MINIMAP_PLAYER_ICON, "InGame/inGame_minimap_player_icon.dds" },
 		{ TextureID::TEXTURE_FLOOR,					"InGame/texture_floor.dds" },
+		{ TextureID::BACKGROUND_INGAME_STARTING,	"InGame/ingame_starting_background.dds" },
+		{ TextureID::UI_ITEM_INGAME_STARTING,		"InGame/ingame_starting_item.dds" },
 		// タイトル関連
 		{ TextureID::UI_TITLE_FONT_PLAY,			"Title/title_font_play.dds" },
 		{ TextureID::UI_TITLE_FONT_TUTORIAL,		"Title/title_font_tutorial.dds" },

@@ -10,27 +10,27 @@
 #include "pch.h"
 #include "Checkpoint.h"
 
-#include "Game/Common/GameObjectRegistry/GameObjectRegistry.h"
+#include "Game/Common/Framework/GameObjectRegistry/GameObjectRegistry.h"
 // ライブラリ関連
 #include "Library/DirectXFramework/DeviceResources.h"
-// リソース関連
-#include "Game/Common/CommonResources/CommonResources.h"
-#include "Game/Common/ResourceManager/ResourceManager.h"
-// 描画関連
-#include "Game/Common/Camera/Camera.h"
-// ゲームシステム関連
-#include "Game/Common/Collision/CollisionManager/CollisionManager.h"
-#include "Game/Common/GameEffect/GameEffectController.h"
-// イベント関連
-#include "Game/Common/Event/Messenger/GameFlowMessenger/GameFlowMessenger.h"
 
+// フレームワーク関連
+#include "Game/Common/Framework/Event/Messenger/GameFlowMessenger/GameFlowMessenger.h"
+#include "Game/Common/Framework/CommonResources/CommonResources.h"
+#include "Game/Common/Framework/ResourceManager/ResourceManager.h"
+
+// ゲームプレイロジック関連
+#include "Game/Common/GameplayLogic/CollisionManager/CollisionManager.h"
+// グラフィック関連
+#include "Game/Common/Graphics/Camera/Camera.h"
+#include "Game/Common/Graphics/Camera/MainCamera/MainCamera.h"
+#include "Game/Common/Graphics/GameEffect/Effects/SimpleParticle/SimpleParticle.h"
+#include "Game/Common/Graphics/GameEffect/GameEffectController.h"
+
+// ゲームオブジェクト関連
 #include "Game/GameObjects/CheckPoint/CheckpointObject/CheckpointObject.h"
 
-// エフェクト関連
-#include "Game/Common/GameEffect/Effects/SimpleParticle/SimpleParticle.h"
-
 // カメラ
-#include "Game/Common/Camera/MainCamera/MainCamera.h"
 using namespace DirectX;
 
 // メンバ関数の定義 ===========================================================
@@ -73,7 +73,7 @@ void Checkpoint::Initialize(const CommonResources* pCommonResources, CollisionMa
 	// 共通リソースの設定
 	SetCommonResources(pCommonResources);
 
-	pCollisionManager->AddCollisionData(CollisionData(this, m_collider.get()));
+	pCollisionManager->AddCollisionData(CollisionData(this, m_collider.get(), false));
 
 	// チェックポイントを有効化する
 	m_isEnabled = true;

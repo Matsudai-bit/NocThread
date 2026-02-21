@@ -3,6 +3,9 @@
  * @brief   深度ステンシル作成のためのヘルパークラス
  *          ※MicosoftのRenderTextureクラスを参考に作成
  * 
+ *           Copyright (c) Microsoft Corporation.
+ *           Licensed under the MIT License.
+ * 
  * @author  松下大暉
  * @date    2025/11/20
  *********************************************************************/

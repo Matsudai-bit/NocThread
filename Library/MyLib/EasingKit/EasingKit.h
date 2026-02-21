@@ -94,11 +94,22 @@ namespace MyLib	// 自作ライブラリ
 	/**
 	 * @brief イージング
 	 * 
-	 * @param[in] value
-	 * @return 
+	 * @param[in] value値
+	 * @return　値
 	 */
 	inline float EaseInOutQuint(float value)
 	{
 		return value < 0.5 ? 16 * value * value * value * value * value : 1.0f - std::pow(-2.0f * value + 2.0f, 5.0f) / 2.0f;
+	}
+
+	/**
+ * @brief イージング
+ *
+* @param[in] value値
+* @return　値
+ */
+	inline float EaseOutCubic(float value)
+	{
+		return 1.0f - (1- value) * (1 - value) * (1 - value);
 	}
 }

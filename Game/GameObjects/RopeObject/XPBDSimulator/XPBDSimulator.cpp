@@ -10,21 +10,22 @@
 #include "pch.h"
 #include "XPBDSimulator.h"
 
+// ライブラリ関連
+#include "Library/MyLib\MathUtils/MathUtils.h"
+
+// ゲームプレイロジック関連
+#include "Game/Common/GameplayLogic/CollisionManager/CollisionManager.h"
+
+// ユーティリティ関連
+#include "Game/Common/Utillities/Collision/Collision.h"
+
+// XPBD制約関連
+#include "Game/GameObjects/RopeObject/XPBDSimulator/Constraint/ConstraintFactory.h"
+#include "Game/GameObjects/RopeObject/XPBDSimulator/Constraint/IConstraint.h"
+
+// ゲームオブジェクト関連
 #include "Game/GameObjects/RopeObject/RopeObject.h"
 #include "Game/GameObjects/RopeObject/XPBDSimulator/Constraint/DistanceConstraint/DistanceConstraint.h"
-
-#include "Game/GameObjects/RopeObject/XPBDSimulator/Constraint/IConstraint.h"
-#include "Game/GameObjects/RopeObject/XPBDSimulator/Constraint/CollisionConstraint/CollisionConstraint.h"
-
-#include "GeometricPrimitive.h"
-#include "Library/MyLib\MathUtils\MathUtils.h"
-
-#include "Game/Common/Collision/CollisionManager/CollisionManager.h"
-#include "Game/Common/Collision/Collision.h"
-
-// 制約生成
-#include "Game/GameObjects/RopeObject/XPBDSimulator/Constraint/CollisionConstraint/CollisionConstraintFactory.h"
-#include "Game/GameObjects/RopeObject/XPBDSimulator/Constraint/DistanceConstraint/DistanceConstraintFactory.h"
 
 using namespace DirectX;
 
@@ -294,23 +295,24 @@ void XPBDSimulator::GenerateConstraints()
 	m_dynamicConstraints.clear();
 
 	
-	// 動的な制約の生成
+	// 動的な制約の作成
 	for (auto& constraintFactory : m_constraintFactories)
 	{
 		if (!constraintFactory->IsDynamic()) { continue; }
-		// 生成した制約の格納配列
-		std::vector<std::unique_ptr<IConstraint>> creationConstraints;
 
-		// 生成
-		creationConstraints = constraintFactory->CreateConstraint(&m_particles, m_parameter);
+		// 動的制約の作成
+		auto creationConstraints = constraintFactory->CreateConstraint(&m_particles, m_parameter);
+		if (creationConstraints.empty()) { continue; }
 
-		// 生成した制約を登録する
-		for (int i = 0; i < creationConstraints.size(); i++)
-		{
-			m_dynamicConstraints.push_back(std::move(creationConstraints[i]));
-		}
+		// あらかじめ領域の確保
+		m_dynamicConstraints.reserve(m_dynamicConstraints.size() + creationConstraints.size());
 
-		
+		// 動的制約の登録
+		m_dynamicConstraints.insert(
+			m_dynamicConstraints.end(),
+			std::make_move_iterator(creationConstraints.begin()),
+			std::make_move_iterator(creationConstraints.end())
+		);
 	}
 
 }
@@ -331,9 +333,7 @@ void XPBDSimulator::IterateConstraints(float deltaTime)
 
 	// 制約を集約する
 	std::vector<IConstraint*> constraints;
-	//constraints.resize(m_constraints.size() + m_ropeSegments.size());
-	// コピーを取って使う
-	//constraints.reserve(m_ropeSegments.size() + m_constraints.size());
+
 
 	for (auto& con : m_dynamicConstraints)
 	{
@@ -350,11 +350,8 @@ void XPBDSimulator::IterateConstraints(float deltaTime)
 	int i = 0;
 	while (i < m_parameter.iterations)
 	{
-		for (auto& constraint : constraints) // m_ropeSegments の代わりに m_constraints をループ
+		for (auto& constraint : constraints) 
 		{
-			// 固定されているパーティクルに関わる制約はスキップ (制約内でチェック済みなら不要)
-			// SimParticle内でFixedなパーティクルはSetXiなどをスキップするようにしても良い
-
 			// 制約の取得
 			ConstraintParam cParam = constraint->GetConstraintParam();
 
@@ -362,13 +359,8 @@ void XPBDSimulator::IterateConstraints(float deltaTime)
 			float C = constraint->EvaluateConstraint();
 
 			// 貫通していない（または規定の範囲内）であればスキップ
-			// (これは特に衝突制約で重要)
-			if (C <= 0.0f) // 0以下であれば制約違反なしとみなす（貫通していない）
-			{
-				// ここで摩擦などを考慮する場合は別途処理が必要
-				continue;
-			}
-	
+			// 0以下であれば制約違反なしとみなす（貫通していない）
+			if (C <= 0.0f) { continue; }
 
 			// Δλの計算
 			float Δλ = constraint->ComputeLambdaCorrection(deltaTime, C);
@@ -377,7 +369,6 @@ void XPBDSimulator::IterateConstraints(float deltaTime)
 			cParam.λ = cParam.λ + Δλ;
 			constraint->SetConstraintParam(cParam);
 
-			// 位置の補正ベクトル Δx の計算
 
 			// 各制約が自身に関わるパーティクルに補正を適用する
 			constraint->ApplyPositionCorrection(Δλ); 

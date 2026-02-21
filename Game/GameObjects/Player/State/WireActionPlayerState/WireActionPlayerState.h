@@ -13,9 +13,13 @@
 
 
 // ヘッダファイルの読み込み ===================================================
-#include "Game/Common/StateMachine/StateBase/StateBase.h"
-#include "Game/Common/GameEffect/GameEffectController.h"
-#include "Game/Common/GameEffect/Effects/ConcentrationLines/ConcentrationLines.h"
+
+// フレームワーク関連
+#include "Game/Common/Framework/StateMachine/StateBase/StateBase.h"
+
+// グラフィック関連
+#include "Game/Common/Graphics/GameEffect/GameEffectController.h"
+#include "Game/Common/Graphics/GameEffect/Effects/ConcentrationLines/ConcentrationLines.h"
 
 // クラスの前方宣言 ===================================================
 class Player;

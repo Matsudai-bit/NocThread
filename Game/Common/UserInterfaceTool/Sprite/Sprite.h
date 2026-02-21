@@ -53,6 +53,7 @@ private:
 	float  m_scale;							///< 拡大率
 	float  m_rotationAngle;					///< 回転角[ラジアン]
 	float  m_opacity;						///< 不透明度
+	bool   m_isVisible;						///< 見えるかどうか
 
 	DirectX::SimpleMath::Vector2 m_centerPos;	///< テクスチャの中心座標
 	DirectX::SimpleMath::Vector2 m_position;	///< 描画座標
@@ -121,6 +122,9 @@ public:
 	// 回転の取得
 	float GetAngle() const { return m_rotationAngle; }
 
+	// 見えるかどうか
+	void SetVisible(bool isVisible) { m_isVisible = isVisible; }
+	bool IsVisible() const override { return m_isVisible; }
 
 // 内部実装
 private:

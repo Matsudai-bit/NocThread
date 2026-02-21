@@ -8,16 +8,24 @@
 
 // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
-
-#include "Game/Common/Collision/CollisionManager/CollisionManager.h"
 #include "Floor.h"
-#include "Game/Common/CommonResources/CommonResources.h"
+
+// ライブラリ関連
 #include "Library/MyLib/DirectXMyToolKit/DebugFont/DebugFont.h"
 
-#include "Game/Common/Camera/Camera.h"
-
+// データベース関連
 #include "Game/Common/Database/TextureDatabase.h"
-#include "Game/Common/ResourceManager/ResourceManager.h"
+
+// フレームワーク関連
+#include "Game/Common/Framework/CommonResources/CommonResources.h"
+#include "Game/Common/Framework/ResourceManager/ResourceManager.h"
+
+// ゲームプレイロジック関連
+#include "Game/Common/GameplayLogic/CollisionManager/CollisionManager.h"
+
+// グラフィック関連
+#include "Game/Common/Graphics/Camera/Camera.h"
+
 
 using namespace DirectX;
 
@@ -89,7 +97,7 @@ void Floor::Initialize(const DirectX::SimpleMath::Vector3& pos, const CommonReso
     }
 
     // 衝突判定管理への登録
-    pCollisionManager->AddCollisionData(CollisionData(this, m_collider.get()));
+    pCollisionManager->AddCollisionData(CollisionData(this, m_collider.get(), false));
 
     GetTransform()->SetPosition(SimpleMath::Vector3::Zero);
 

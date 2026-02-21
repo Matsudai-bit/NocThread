@@ -10,10 +10,19 @@
 #include "pch.h"
 #include "PlayerController.h"
 
-#include "Game/GameObjects/Player/Player.h"
-#include "Game/Common/Camera/Camera.h"
+// ファクトリー関連
+#include "Game/Common/Factory/InputBindingFactory/InputBindingFactory.h"
 
-#include "Game/Common/Input/InputBindingFactory/InputBindingFactory.h"
+// ゲームオブジェクト関連
+#include "Game/GameObjects/Player/Player.h"
+
+// フレームワーク関連
+#include "Game/Common/Framework/Input/InputSystem/InputSystem.h"
+#include "Game/Common/Framework/Input/InputActionMap/InputActionMap.h"
+#include "Game/Common/Framework/Input/InputActionType/InputActionType.h"
+
+// グラフィック関連
+#include "Game/Common/Graphics/Camera/Camera.h"
 
 using namespace DirectX;
 
@@ -25,6 +34,12 @@ using namespace DirectX;
  * @param[in] なし
  */
 PlayerController::PlayerController()
+	: m_pCamera			 { nullptr }
+	, m_pPlayer			 { nullptr }
+	, m_pInputSystem	 { nullptr }
+	, m_isSteppingRequest{ false }
+	, m_isJumpingRequest { false }
+	, m_isReleaseWireRequested{ false }
 {
 }
 
@@ -35,7 +50,7 @@ PlayerController::PlayerController()
  */
 PlayerController::~PlayerController()
 {
-
+	UnBindCallbackToInput();
 }
 
 
@@ -47,11 +62,14 @@ PlayerController::~PlayerController()
  *
  * @return なし
  */
-void PlayerController::Initialize(const Camera* pCamera)
+void PlayerController::Initialize(const Camera* pCamera, Player* pPlayer, InputSystem* pInputSystem)
 {
 	m_pCamera = pCamera;
 
-	m_playerInput = InputBindingFactory::CreatePlayerInput();
+	m_pPlayer = pPlayer;
+
+	m_pInputSystem = pInputSystem;
+	RegisterBindCallbackToInput();
 
 }
 
@@ -65,68 +83,27 @@ void PlayerController::Initialize(const Camera* pCamera)
  * @return なし
  */
 void PlayerController::Update(
-	float deltaTime,
-	Player* pPlayer,
-	const Keyboard::KeyboardStateTracker* pKeyboardStateTracker,
-	const Mouse::ButtonStateTracker* pMouseStateTracker, 
-	const DirectX::GamePad::ButtonStateTracker* pGamePadStateTracker)
+	float deltaTime)
 {
 	UNREFERENCED_PARAMETER(deltaTime);
 
-	m_playerInput->Update(pKeyboardStateTracker, pMouseStateTracker, pGamePadStateTracker);
 
-
-	auto kb = pKeyboardStateTracker->GetLastState();
-	auto mouse = pMouseStateTracker->GetLastState();
-
-	// 移動方向
-	SimpleMath::Vector3 movementDirection = SimpleMath::Vector3::Zero;
-
-	// 奥へ
-	if (m_playerInput->IsInput(InputActionType::PlyayerActionID::FRONT_MOVE)){	movementDirection += SimpleMath::Vector3::Forward;}
-	// 手前へ
-	if (m_playerInput->IsInput(InputActionType::PlyayerActionID::BACK_MOVE)) { movementDirection += SimpleMath::Vector3::Backward; }
-	// 右へ
-	if (m_playerInput->IsInput(InputActionType::PlyayerActionID::RIGHT_MOVE)) { movementDirection += SimpleMath::Vector3::Right; }
-	// 左へ
-	if (m_playerInput->IsInput(InputActionType::PlyayerActionID::LEFT_MOVE)) { movementDirection += SimpleMath::Vector3::Left; }
-
-	// 入力がないときは移動しない
-	if (movementDirection.LengthSquared() > 0.0f)
-	{
-		movementDirection.Normalize();
-
-		// カメラの「正面方向（XZ平面）」を取得
-		SimpleMath::Vector3 cameraForward = m_pCamera->GetTarget() - m_pCamera->GetEye();
-		cameraForward.y = 0.0f;
-		cameraForward.Normalize();
-
-		// カメラの「右方向」を取得（カメラの向き × Y軸）
-		SimpleMath::Vector3 cameraRight = cameraForward.Cross(SimpleMath::Vector3::Up);
-		cameraRight.Normalize();
-
-		// ローカル入力をカメラ空間に変換（X:右、Z:前）
-		// Z方向が正面同士の時に-の乗算になり結果敵に反対方向に向いてしまうため-で補正
-		SimpleMath::Vector3 worldMovementDir = -movementDirection.z * cameraForward + movementDirection.x * cameraRight;
-
-		worldMovementDir.Normalize();
-
-		// 移動方向の設定
-		pPlayer->RequestedMovement(worldMovementDir);
-	}
+	TryWalk();
+	
 	bool isJumpSuccess = false;
 	// ジャンプ
-	if (m_playerInput->IsInput(InputActionType::PlyayerActionID::JUMPING, InputSystem<InputActionType::PlyayerActionID>::InputOption::PRESSED))
-	{
-		isJumpSuccess = pPlayer->RequestJump();
-	}
-
+	isJumpSuccess = TryJumping();
+	
 	// ステップ
-	if (m_playerInput->IsInput(InputActionType::PlyayerActionID::STEPPING, InputSystem<InputActionType::PlyayerActionID>::InputOption::PRESSED)
-		&& !isJumpSuccess)
-	{
-		pPlayer->RequestStep();
-	}
+	TryStep(isJumpSuccess);
+
+	m_pPlayer->RequestReleaseWire(m_isReleaseWireRequested);
+	m_isReleaseWireRequested = false;
+
+	m_pPlayer->RequestShootWire(m_isShootWireRequested);
+	m_isShootWireRequested = false;
+
+	m_movementDirection = SimpleMath::Vector3::Zero;
 }
 
 
@@ -155,4 +132,129 @@ void PlayerController::Draw()
 void PlayerController::Finalize()
 {
 
+}
+
+bool PlayerController::TryStep(bool isJumping)
+{
+	if (m_isSteppingRequest	&& !isJumping)
+	{
+		m_isSteppingRequest = false;
+		return m_pPlayer->RequestStep();
+	}
+	return false;
+}
+
+bool PlayerController::TryWalk()
+{
+	// 移動方向
+
+	// 入力がないときは移動しない
+	if (m_movementDirection.LengthSquared() > 0.0f)
+	{
+		m_movementDirection.Normalize();
+
+		// カメラの「正面方向（XZ平面）」を取得
+		SimpleMath::Vector3 cameraForward = m_pCamera->GetTarget() - m_pCamera->GetEye();
+		cameraForward.y = 0.0f;
+		cameraForward.Normalize();
+
+		// カメラの「右方向」を取得（カメラの向き × Y軸）
+		SimpleMath::Vector3 cameraRight = cameraForward.Cross(SimpleMath::Vector3::Up);
+		cameraRight.Normalize();
+
+		// ローカル入力をカメラ空間に変換（X:右、Z:前）
+		// Z方向が正面同士の時に-の乗算になり結果敵に反対方向に向いてしまうため-で補正
+		SimpleMath::Vector3 worldMovementDir = -m_movementDirection.z * cameraForward + m_movementDirection.x * cameraRight;
+
+		worldMovementDir.Normalize();
+
+		// 移動方向の設定
+		return m_pPlayer->RequestedMovement(worldMovementDir);
+	}
+
+	return false;
+}
+
+bool PlayerController::TryJumping()
+{
+	// ジャンプ
+	if (m_isJumpingRequest)
+	{
+		m_isJumpingRequest = false;
+		return m_pPlayer->RequestJump();
+	}
+
+	return false;
+}
+
+/**
+ * @brief 入力のコールバックの紐づけを登録
+ */
+void PlayerController::RegisterBindCallbackToInput()
+{
+	using namespace SimpleMath;
+
+	// 入力システムの取得
+	// アクションマップの取得
+	auto playerActionMap = m_pInputSystem->GetInputActionMap(InputActionID::Player::MAP_NAME);
+	// 上入力
+	playerActionMap->BindInputEvent(InputActionID::Player::FRONT_MOVE, this,
+		[this](const InputEventData& data) { UNREFERENCED_PARAMETER(data);  AddMoveDirection(Vector3::Forward); });
+	// 下入力
+	playerActionMap->BindInputEvent(InputActionID::Player::BACK_MOVE, this,
+		[this](const InputEventData& data) { UNREFERENCED_PARAMETER(data);  AddMoveDirection(Vector3::Backward); });
+	// 左入力
+	playerActionMap->BindInputEvent(InputActionID::Player::LEFT_MOVE, this,
+		[this](const InputEventData& data) { UNREFERENCED_PARAMETER(data); AddMoveDirection(Vector3::Left); });
+	// 右入力
+	playerActionMap->BindInputEvent(InputActionID::Player::RIGHT_MOVE, this,
+		[this](const InputEventData& data) { UNREFERENCED_PARAMETER(data);  AddMoveDirection(Vector3::Right); });
+	// ステップ入力
+	playerActionMap->BindInputEvent(InputActionID::Player::STEPPING, this,
+		[this](const InputEventData& data) { if (data.inputOption.pressed) m_isSteppingRequest = true; });
+	// ジャンプ入力
+	playerActionMap->BindInputEvent(InputActionID::Player::JUMPING, this,
+		[this](const InputEventData& data) { if (data.inputOption.pressed) m_isJumpingRequest = true; });
+	// ワイヤーを離す入力
+	playerActionMap->BindInputEvent(InputActionID::Player::RELEASE_WIRE, this,
+		[this](const InputEventData& data) { if (data.inputOption.released) m_isReleaseWireRequested = true; });	
+	// ワイヤーを発射入力
+	playerActionMap->BindInputEvent(InputActionID::Player::WIRE_SHOOTING, this,
+		[this](const InputEventData& data) { if (!data.inputOption.released) m_isShootWireRequested = true; });
+
+
+}
+
+
+/**
+ * @brief 入力のコールバックの紐づけを解除
+ */
+void PlayerController::UnBindCallbackToInput()
+{
+	// 入力システムの取得
+	// アクションマップの取得
+	if (m_pInputSystem)
+	{
+		auto playerActionMap = m_pInputSystem->GetInputActionMap(InputActionID::Player::MAP_NAME);
+		playerActionMap->UnBindAllInputEvent(InputActionID::Player::FRONT_MOVE,		this);
+		playerActionMap->UnBindAllInputEvent(InputActionID::Player::BACK_MOVE,		this);
+		playerActionMap->UnBindAllInputEvent(InputActionID::Player::LEFT_MOVE,		this);
+		playerActionMap->UnBindAllInputEvent(InputActionID::Player::RIGHT_MOVE,		this);
+		playerActionMap->UnBindAllInputEvent(InputActionID::Player::STEPPING,		this);
+		playerActionMap->UnBindAllInputEvent(InputActionID::Player::JUMPING,		this);
+		playerActionMap->UnBindAllInputEvent(InputActionID::Player::RELEASE_WIRE,	this);
+	}
+
+}
+
+
+
+/**
+ * @brief 移動方向に加算する
+ * 
+ * @param[in] addDirection 加算方向
+ */
+void PlayerController::AddMoveDirection(const DirectX::SimpleMath::Vector3& addDirection)
+{
+	m_movementDirection += addDirection;
 }

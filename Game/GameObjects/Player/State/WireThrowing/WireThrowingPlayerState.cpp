@@ -10,21 +10,28 @@
 #include "pch.h"
 #include "WireThrowingPlayerState.cpp.h"
 
+// ゲームオブジェクト関連
 #include "Game/GameObjects/Player/Player.h"
+
+// プレイヤーの状態関連
 #include "Game/GameObjects/Player/State/IdlePlayerState/IdlePlayerState.h"
-#include "Game/Common/CommonResources/CommonResources.h"
 #include "Game/GameObjects/Player/State/WalkPlayerState/WalkPlayerState.h"
-#include "Game/Common/Event/WireSystemObserver/WireSystemSubject.h"
-#include "Game/Common/Event/WireSystemObserver/WireEventData.h"
 
+// ライブラリ関連
 #include "Library/MyLib/DirectXMyToolKit/DirectXUtils.h"
-
-#include "Game/Common/Camera/Camera.h"
 #include "Library/MyLib/Ray/Ray.h"
-
 #include "Library/MyLib/DirectXMyToolKit/DebugFont/DebugFont.h"
 
+// フレームワーク関連
+#include "Game/Common/Framework/CommonResources/CommonResources.h"
+#include "Game/Common/Framework/Event/WireSystemObserver/WireSystemSubject.h"
+#include "Game/Common/Framework/Event/WireSystemObserver/WireEventData.h"
+
+// グラフィック関連
+#include "Game/Common/Graphics/Camera/Camera.h"
 #include "Game/Common/Screen.h"
+
+
 
 using namespace DirectX;
 

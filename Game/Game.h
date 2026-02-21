@@ -11,18 +11,25 @@
 
 // **** 追加インクルード ****
 
-// ライブラリ
+// ライブラリ関連
 #include "Library/MyLib/DirectXMyToolKit/DebugFont/DebugFont.h" // デバックフォント
 #include "Library/DirectXFramework/RenderTexture.h"             // レンダーテクスチャ
 #include "Library/MyLib/FrameTimer/FrameTimer.h"
 
 
-// システム
-#include "Game/Common/CommonResources/CommonResources.h"    // 共通リソース
-#include "Game/Common/ResourceManager/ResourceManager.h"    // リソース管理
-#include "Game/Manager/SceneManager/SceneManager.h"         // シーン管理
-#include "Game/Common/TransitionMask/TransitionMask.h"      // トランジションマスク
+// フレームワーク関連
+#include "Game/Common/Framework/CommonResources/CommonResources.h"    // 共通リソース
+#include "Game/Common/Framework/ResourceManager/ResourceManager.h"    // リソース管理
+#include "Game/Scene/SceneManager.h"         // シーン管理
+#include "Game/Common/Framework/Input/InputSystem/InputSystem.h"
+#include "Game/Common/Framework/Input/InputActionMap/InputActionMap.h"
+#include "Game/Common/GameplayLogic/CollisionManager/CollisionManager.h"
 
+// グラフィック関連
+#include "Game/Common/Graphics/TransitionMask/TransitionMask.h"      // トランジションマスク
+
+// ユーザーインターフェースツール関連
+#include "Game/Common/UserInterfaceTool/InputDeviceSpriteResolver/InputDeviceSpriteResolver.h"
 
 // A basic game implementation that creates a D3D11 device and
 // provides a game loop.
@@ -59,7 +66,11 @@ private:
     std::unique_ptr<MyLib::FrameTimer>  m_frameTimer;
     std::unique_ptr<TransitionMask>     m_transitionMask;   ///< トランジションマスク
     std::unique_ptr<MyLib::SceneManager<CommonResources>>  m_sceneManager;     ///< シーン管理
+    std::unique_ptr<InputDeviceSpriteResolver>  m_inputDeviceSpriteResolver;    ///< 入力デバイス毎のスプライトの表記を切り替え器
+    std::unique_ptr<CollisionManager>   m_collisionManager; ///< 衝突管理
 
+
+    std::unique_ptr<InputSystem> m_InputSystem;
 
 public:
 
@@ -111,7 +122,11 @@ private:
     void CreateWindowSizeDependentResources();
 
 
+// 追加
+private:
 
+	// スクリーンコピーを試みる
+	bool TryCopyScreen(ID3D11DeviceContext1* context);
 
 
 };

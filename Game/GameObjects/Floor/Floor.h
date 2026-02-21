@@ -14,9 +14,15 @@
 
 // ヘッダファイルの読み込み ===================================================
 #include <memory>
+
+// ライブラリ関連
 #include "Library/DirectXFramework/DeviceResources.h"
+
+// ゲームオブジェクト関連
 #include "Game/GameObjects/Common/GameObject.h"
-#include "Game/Common/Collision/Collision.h"
+
+// ユーティリティ関連
+#include "Game/Common/Utillities/Collision/Collision.h"
 // クラスの前方宣言 ===================================================
 class Wall;				// 壁
 class CollisionManager;	// 衝突判定管理

@@ -13,12 +13,16 @@
 
 
 // ヘッダファイルの読み込み ===================================================
-#include "Game/Common/StateMachine/StateBase/StateBase.h"
 
-#include "Game/Common/ElapsedTimeCounter/ElapsedTimeCounter.h"
+// フレームワーク関連
+#include "Game/Common/Framework/StateMachine/StateBase/StateBase.h"
 
-#include "Game/Common/GameEffect/Effects/ConcentrationLines/ConcentrationLines.h"
-#include "Game/Common/GameEffect/GameEffectController.h"
+// グラフィック関連
+#include "Game/Common/Graphics/GameEffect/Effects/ConcentrationLines/ConcentrationLines.h"
+#include "Game/Common/Graphics/GameEffect/GameEffectController.h"
+
+// ユーティリティ関連
+#include "Game/Common/Utillities/ElapsedTimeCounter/ElapsedTimeCounter.h"
 
 // クラスの前方宣言 ===================================================
 class Player;
@@ -47,7 +51,7 @@ private:
 	DirectX::SimpleMath::Vector3	m_startPosition; ///< 開始座標
 
 	ConcentrationLines* m_pConcentrationLines; ///< 集中線エフェクト
-	float m_effectId; ///< エフェクトID
+	int m_effectId; ///< エフェクトID
 
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ

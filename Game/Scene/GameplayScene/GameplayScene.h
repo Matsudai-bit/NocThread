@@ -16,22 +16,25 @@
 
 // ヘッダファイルの読み込み ===================================================
 #include <memory>
-#include "Game/Manager/SceneManager/SceneManager.h"
+#include "Game/Scene//SceneManager.h"
 
-// ライブラリ
-#include "Library/MyLib/DirectXMyToolKit/DebugCamera/DebugCamera.h"       // デバックカメラ
-#include "Library/DirectXFramework/DebugDraw.h"         // デバック描画
+// ライブラリ関連
+#include "Library/MyLib/DirectXMyToolKit/DebugCamera/DebugCamera.h"     // デバックカメラ
+#include "Library/DirectXFramework/DebugDraw.h"							// デバック描画
 #include "Library/MyLib/DirectXMyToolKit/GridFloor/GridFloor.h"         // デバック床
 
+// フレームワーク関連
+#include "Game/Common/Framework/CommonResources/CommonResources.h"                
+#include "Game/Common/Framework/EventSystem/EventData/EventData.h"
+#include "Game/Common/Framework/EventSystem/EventSystem.h"
+#include "Game/Common/Framework/Event/Messenger/GameFlowMessenger/IGameFlowObserver.h"
+#include "Game/Common/Framework/StateMachine/StateMachine.h"
+
+// グラフィック関連
 #include "Game/Common/Screen.h"
 
-// システム
-#include "Game/Common/CommonResources/CommonResources.h"                // 共通リソース
-#include "Game/Common/EventSystem/EventData/EventData.h"
-#include "Game/Common/EventSystem/EventSystem.h"
-#include "Game/Common/Event/Messenger/GameFlowMessenger/IGameFlowObserver.h"
-#include "Game/Common/StateMachine/StateMachine.h"
-#include "Game/Common/ElapsedTimeCounter/ElapsedTimeCounter.h"
+// ユーティリティ関連
+#include "Game/Common/Utillities/ElapsedTimeCounter/ElapsedTimeCounter.h"
 
 // ゲームオブジェクト
 
@@ -46,7 +49,7 @@ class Minimap;			// ミニマップ
 class GameDirector;		// ゲーム進行の監督
 class SpawnManager;		// 出現管理
 class CollisionMatrix;	// 衝突検知する対応付け表
-
+class Canvas;			// キャンバス
 
 // クラスの定義 ===============================================================
 /**
@@ -73,24 +76,24 @@ public:
 // データメンバの宣言 -----------------------------------------------
 private:
 
-	// 状態
-	std::unique_ptr<StateMachine<GameplayScene>> m_stateMachine; ///< ステートマシーン
 
     // システム
 	std::unique_ptr<GameDirector>		m_gameDirector;		///< ゲーム進行の監督
-    std::unique_ptr<CollisionManager>   m_collisionManager; ///< 衝突管理
 	std::unique_ptr<GameEffectManager>	m_gameEffectManager;///< ゲームエフェクト管理
 	std::unique_ptr<TaskManager>		m_taskManager;		///< タスク管理
 	std::unique_ptr<SpawnManager>		m_spawnManager;		///< 出現管理
 	std::unique_ptr<CollisionMatrix>	m_collisionMatrix;	///< 出現管理
+	std::unique_ptr<Canvas>				m_canvas;			///< キャンバス(UI表示用)
 
 	// その他
-	std::unique_ptr<StageManager> m_stageManager;	///< ステージ上のオブジェクトを管理
+	std::unique_ptr<StageManager>	m_stageManager;	///< ステージ上のオブジェクトを管理
 	
-	std::unique_ptr<Minimap>	m_miniMap; ///< ミニマップ
+	std::unique_ptr<Minimap>		m_miniMap;		///< ミニマップ
 
 	std::vector <std::function<void()>> m_eventStack;
 	ElapsedTimeCounter m_gamePlayingTimeCounter;		///< ゲームのプレイ時間カウンター
+	// 状態
+	std::unique_ptr<StateMachine<GameplayScene>> m_stateMachine; ///< ステートマシーン
 
 
 // メンバ関数の宣言 -------------------------------------------------
@@ -143,6 +146,9 @@ public:
 
 	// タスク管理の取得
 	TaskManager* GetTaskManager() const { return m_taskManager.get();	}
+
+	// キャンバスの取得
+	Canvas* GetCanvas() const { return m_canvas.get(); }
 
 // 内部実装
 private:

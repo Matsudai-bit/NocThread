@@ -16,12 +16,16 @@
 #include <memory>
 #include <vector>
 
+// ゲームオブジェクト関連
 #include "Game/GameObjects/Common/MovableObject/MovableObject.h"
 #include "Game/GameObjects/Common/GameObject.h"
 #include "Game/GameObjects/Enemy/IEnemy.h"
-#include "Game/Common/Event/WireSystemObserver/IWireEventObserver.h"
 
-#include "Game/Common/Collision/Collision.h"
+// フレームワーク関連
+#include "Game/Common/Framework/Event/WireSystemObserver/IWireEventObserver.h"
+
+// ユーティリティ関連
+#include "Game/Common/Utillities/Collision/Collision.h"
 
 // クラスの前方宣言 ===================================================
 class CommonResources; // 共通リソース
@@ -35,7 +39,7 @@ class IEnemyDrawBehaviour;		// 描画処理インターフェース
 
 // クラスの定義 ===============================================================
 /**
- * @brief 敵　( 基底 )
+ * @brief 敵　(基底)
  */
 class Enemy
 	: public MovableObject
@@ -55,10 +59,6 @@ public:
 
 // クラス定数の宣言 -------------------------------------------------
 public:
-	static constexpr float FRICTION = 3.0f;		// 摩擦係数
-	static constexpr float AIR_RESISTANCE = 0.05f;  // 空気抵抗係数
-	static constexpr float ROTATION_SPEED = 1.0f;	// 回転速度(s)
-
 
 // データメンバの宣言 -----------------------------------------------
 private:

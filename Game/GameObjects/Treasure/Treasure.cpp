@@ -10,20 +10,24 @@
 #include "pch.h"
 #include "Treasure.h"
 
+// ライブラリ関連
 #include "Library/DirectXFramework/DeviceResources.h"
 
-#include "Game/Common/CommonResources/CommonResources.h"
-#include "Game/Common/ResourceManager/ResourceManager.h"
-#include "Game/Common/Collision/CollisionManager/CollisionManager.h"
+// フレームワーク関連
+#include "Game/Common/Framework/CommonResources/CommonResources.h"
+#include "Game/Common/Framework/ResourceManager/ResourceManager.h"
+#include "Game/Common/Framework/Event/Messenger/GameFlowMessenger/GameFlowMessenger.h"
 
-#include "Game/Common/Event/Messenger/GameFlowMessenger/GameFlowMessenger.h"
+// ゲームプレイロジック関連
+#include "Game/Common/GameplayLogic/CollisionManager/CollisionManager.h"
 
-#include "Game/Common/GameEffect/GameEffectManager.h"
-#include "Game/Common/GameEffect/Effects/SimpleParticle/SimpleParticle.h"
-#include "Game/Common/Camera/MainCamera/MainCamera.h"
-#include "Game/Common/GameEffect/GameEffectController.h"
+// グラフィック関連
+#include "Game/Common/Graphics/GameEffect/GameEffectManager.h"
+#include "Game/Common/Graphics/GameEffect/Effects/SimpleParticle/SimpleParticle.h"
+#include "Game/Common/Graphics/Camera/MainCamera/MainCamera.h"
+#include "Game/Common/Graphics/GameEffect/GameEffectController.h"
+#include "Game/Common/Graphics/Camera/Camera.h"
 
-#include "Game/Common/Camera/Camera.h"
 
 using namespace DirectX;
 
@@ -73,7 +77,7 @@ void Treasure::Initialize(const CommonResources* pCommonResources, CollisionMana
 	m_collider = std::make_unique<Sphere>(GetTransform()->GetPosition(), 1.0f * GetTransform()->GetScale().x);
 
 	// 衝突管理の登録
-	pCollisionManager->AddCollisionData(CollisionData(this, m_collider.get()));
+	pCollisionManager->AddCollisionData(CollisionData(this, m_collider.get(), false));
 
 	m_isActive = true;
 

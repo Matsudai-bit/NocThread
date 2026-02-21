@@ -13,8 +13,12 @@
 
 
 // ヘッダファイルの読み込み ===================================================
+
+// 建物の基底クラス
 #include "Game/GameObjects/Prop/Base/Prop.h"
-#include "Game/Common/Collision/Collision.h"
+
+// ユーティリティ関連
+#include "Game/Common/Utillities/Collision/Collision.h"
 
 // クラスの前方宣言 ===================================================
 
@@ -115,7 +119,7 @@ private:
 	// メッシュコライダの初期化
 	void InitializeMeshColliders(const DirectX::SimpleMath::Vector3& totalScale);
 	// 手動コライダの追加
-	void AddManualColliders(const DirectX::SimpleMath::Vector3& totalScale);
+	void AddManualColliders();
 
 	// 衝突管理への登録
 	void RegisterToCollisionManager(CollisionManager* pCollisionManager);

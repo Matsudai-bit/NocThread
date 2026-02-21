@@ -12,18 +12,26 @@
 #include "pch.h"
 #include "LoadingScreen.h"
 
-#include "Game/Common/CommonResources/CommonResources.h"
+// ライブラリ関連
 #include "Library/MyLib/DirectXMyToolKit/DebugFont/DebugFont.h"
 #include "Library/DirectXFramework/DeviceResources.h"
 
+// データベース関連
+#include "Game/Common/Database/TextureDatabase.h"
+
+// フレームワーク関連
+#include "Game/Common/Framework/CommonResources/CommonResources.h"
+#include "Game/Common/Framework/ResourceManager/ResourceManager.h"
+
+// グラフィック関連
+#include "Game/Common/Screen.h"
+
+// シーン関連
 #include "Game/Scene/GameplayScene/GameplayScene.h"
 
-#include "Game/Common/ResourceManager/ResourceManager.h"
-
+// UIツール関連
 #include "Game/Common/UserInterfaceTool/Canvas/Canvas.h"
 
-#include "Game/Common/Screen.h"
-#include "Game/Common/Database/TextureDatabase.h"
 using namespace DirectX;
 
 

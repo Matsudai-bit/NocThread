@@ -41,6 +41,8 @@ private:
 
 	int m_minDigits;		///< 最小限確保する桁数 負の値の時は確保制限なし
 
+	bool m_isVisible; //< 見えるかどうか
+
 // コンストラクタ・デストラクタ
 public:
 
@@ -90,6 +92,10 @@ public:
 
 	// 縦幅の取得
 	int GetHeight() const; 
+
+	// 見えるかどうか
+	void SetVisible(bool isVisible) { m_isVisible = isVisible; }
+	bool IsVisible() const override { return m_isVisible; }
 
 
 // 内部実装

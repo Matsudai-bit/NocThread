@@ -10,10 +10,15 @@
 #include "pch.h"
 #include "RopeObject.h"
 
-#include "Game/Common/CommonResources/CommonResources.h"
+// フレームワーク関連
+#include "Game/Common/Framework/CommonResources/CommonResources.h"
+#include "Game/Common/Framework/ResourceManager/ResourceManager.h"
+
+// ライブラリ関連
 #include "Library/DirectXFramework/DeviceResources.h"
-#include "Game/Common/ResourceManager/ResourceManager.h"
-#include "Game/Common/Camera/Camera.h"
+
+// グラフィック関連
+#include "Game/Common/Graphics/Camera/Camera.h"
 using namespace DirectX;
 
 

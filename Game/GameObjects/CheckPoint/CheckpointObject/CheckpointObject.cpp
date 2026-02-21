@@ -9,8 +9,13 @@
 // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "CheckpointObject.h"
-#include "Game/Common/ResourceManager/ResourceManager.h"
-#include "Game/Common/Camera/Camera.h"
+
+// フレームワーク関連
+#include "Game/Common/Framework/ResourceManager/ResourceManager.h"
+#include "Game/Common/Framework/GameObjectRegistry/GameObjectRegistry.h"
+
+// グラフィック関連
+#include "Game/Common/Graphics/Camera/Camera.h"
 
 using namespace DirectX;
 
@@ -176,7 +181,7 @@ void CheckpointObjectController::Draw(ID3D11DeviceContext1* context, DirectX::Co
 		// 目印
 		auto cylinder = DirectX::GeometricPrimitive::CreateCylinder(context, length, 0.8f);
 
-		auto world = SimpleMath::Matrix::CreateTranslation(0.0f, length / 2.0f, 0.0f) * m_modelParts[ModelPartID::HEAD]->GetWorldMatrix();
+		world = SimpleMath::Matrix::CreateTranslation(0.0f, length / 2.0f, 0.0f) * m_modelParts[ModelPartID::HEAD]->GetWorldMatrix();
 		m_basicEffect->Apply(context);
 		m_basicEffect->SetWorld(world);
 		m_basicEffect->SetView(camera.GetViewMatrix());
@@ -203,7 +208,6 @@ void CheckpointObjectController::Finalize()
 
 }
 
-#include "Game/Common/GameObjectRegistry/GameObjectRegistry.h"
 /**
  * @brief ヘリコプターみるよう要求
  * 

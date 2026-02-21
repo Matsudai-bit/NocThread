@@ -53,6 +53,6 @@ public:
 	// 内部実装
 protected:
 	// 生成したオブジェクトを組み立てる
-	virtual void Assemble(T* instance, const TDesc& desc) = 0;
+	virtual void Assemble(T* instance, const TDesc& desc ) = 0;
 
 };

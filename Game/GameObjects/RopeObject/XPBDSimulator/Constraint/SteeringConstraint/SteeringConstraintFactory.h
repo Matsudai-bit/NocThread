@@ -15,13 +15,16 @@
 // ヘッダファイルの読み込み ===================================================
 #include <memory>
 #include <vector>
+
+// ファクトリー関連
 #include "Game/GameObjects/RopeObject/XPBDSimulator/Constraint/ConstraintFactory.h"
+#include "Game/Common/Factory/InputBindingFactory/InputBindingFactory.h"
 
+// フレームワーク関連
+
+// ユーティリティ関連
 #include "Game/GameObjects/RopeObject/XPBDSimulator/XPBDSimulator.h"
-#include "Game/Common/ElapsedTimeCounter/ElapsedTimeCounter.h"
-
-#include "Game/Common/Input/InputSystem/InputSystem.h"
-#include "Game/Common/Input/InputBindingFactory/InputBindingFactory.h"
+#include "Game/Common/Utillities/ElapsedTimeCounter/ElapsedTimeCounter.h"
 
 // クラスの前方宣言 ===================================================
 class SimParticle; // シミュレーションのパーティクル
@@ -51,7 +54,7 @@ private:
 
 	ElapsedTimeCounter m_elapsedTimeCounter;	///< 経過時間カウンター
 
-	std::unique_ptr<InputSystem<InputActionType::PlyayerActionID>> m_playerInput; ///< プレイヤー入力
+	DirectX::SimpleMath::Vector3 m_rawInput;
 
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
@@ -85,5 +88,10 @@ private:
 		const DirectX::SimpleMath::Vector3& particleRootPosition,
 		const SimParticle& particle,
 		const float& inertiaDamping) const;
+
+	// 入力のコールバックの登録
+	void RegisterBindCallbackToInput();
+	// 紐づけの解除をする
+	void UnBindCallbackToInput();
 
 };

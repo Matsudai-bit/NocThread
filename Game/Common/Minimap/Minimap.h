@@ -13,11 +13,19 @@
 
 
 // ヘッダファイルの読み込み ===================================================
-#include "Game/Common/TaskManager/TaskManager.h"
+
+// ライブラリ関連
 #include "Library/DirectXFramework/RenderTexture.h"
 #include "Library/MyLib/DirectXMyToolKit/DepthStencil/DepthStencil.h"
 #include "Library/MyLib/DirectXMyToolKit/OffscreenRendering/OffscreenRendering.h"
+
+// フレームワーク関連
+#include "Game/Common/Framework/TaskManager/TaskManager.h"
+
+// UIツール関連
 #include "Game/Common/UserInterfaceTool/Sprite/Sprite.h"
+
+// ゲームオブジェクト関連
 #include "Game/GameObjects/Common/GameObject.h"
 
 // クラスの前方宣言 ===================================================
@@ -98,7 +106,7 @@ public:
 	// --- システム・描画設定 ---
 	static const std::vector<D3D11_INPUT_ELEMENT_DESC>	INPUT_LAYOUT;		// インプットレイアウト定義
 	static constexpr int								VERTEX_NUM = 4;		// 頂点数
-	static constexpr int								MAX_INSTANCE = 1000;// 最大インスタンス数
+	static constexpr int								MAX_INSTANCE = 1100;// 最大インスタンス数
 
 	// --- 画面配置・スケール ---
 	static constexpr DirectX::SimpleMath::Vector2	RENDERING_SIZE{ 800.0f, 800.0f };	// レンダリングサイズ
