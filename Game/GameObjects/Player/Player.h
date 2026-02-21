@@ -16,20 +16,23 @@
 #include <memory>
 #include <functional>
 
-#include "Game/GameObjects/Common/GameObject.h"
-#include "Game/GameObjects/Common/MovableObject/MovableObject.h"
+// ライブラリ関連
+#include "Library/DirectXFramework/Animation.h"
 
-
-
+// フレームワーク関連
 #include "Game/Common/Framework/StateMachine/StateMachine.h"
-
-#include "Game/GameObjects/Wire/IWireHolder/IWireHolder.h"
 #include "Game/Common/Framework/Event/Messenger/GameFlowMessenger/IGameFlowObserver.h"
 #include "Game/Common/Framework/Input/InputActionType/InputActionType.h"
-
 #include "Game/Common/Framework/SoundManager/SoundManager.h"
+
+// データベース関連
 #include "Game/Common/Database/SoundDatabase.h"
-#include "Library/DirectXFramework/Animation.h"
+
+// ゲームオブジェクト関連
+#include "Game/GameObjects/Common/GameObject.h"
+#include "Game/GameObjects/Common/MovableObject/MovableObject.h"
+#include "Game/GameObjects/Wire/IWireHolder/IWireHolder.h"
+
 
 // クラスの前方宣言 ===================================================
 class SimpleModel;		// モデル

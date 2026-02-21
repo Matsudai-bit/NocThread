@@ -221,6 +221,7 @@
     <ClInclude Include="Game\Common\GameplayLogic\CollisionDispatcher\CollisionDispatcher.h" />
     <ClInclude Include="Game\Common\GameplayLogic\CollisionManager\CollisionDetectionWorker\CollisionDetectionWorker.h" />
     <ClInclude Include="Game\Common\GameplayLogic\CollisionManager\CollisionManager.h" />
+    <ClInclude Include="Game\Common\GameplayLogic\CollisionManager\CollisionTypes\CollisionTypes.h" />
     <ClInclude Include="Game\Common\GameplayLogic\CollisionMatrix\CollisionMatrix.h" />
     <ClInclude Include="Game\Common\GameplayLogic\ExitController\ExitController.h" />
     <ClInclude Include="Game\Common\GameplayLogic\GameDirector\GameDirector.h" />

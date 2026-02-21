@@ -124,7 +124,7 @@ public:
 public:
 	
 	// ü‚Ì’·‚³‚Ì”{—¦İ’è
-	void SetLineLengthRate(float lineLengthRate) { m_lineLengthRate = lineLengthRate; }
+	void SetLineLengthRate(float lineLengthRate) { m_lineLengthRate =  std::min(lineLengthRate, 1.5f); }
 	// ‘¬“xİ’è
 	void SetSpeed(float speed) { m_speed = speed; }
 

@@ -88,12 +88,6 @@ void WireActionPlayerState::OnUpdate(float deltaTime)
 	// ワイヤーアクション挙動
 	GetOwner()->BehaviourWireAction(deltaTime, 1.4f);
 
-	// 物理の適用
-	//GetOwner()->ApplyPhysic(deltaTime);
-
-	// 移動入力の適用
-	//GetOwner()->ApplyMoveInput(deltaTime);
-
 	GetOwner()->RotateForMoveDirection(deltaTime);
 	m_pConcentrationLines->SetLineLengthRate(GetOwner()->GetVelocity().LengthSquared()/ 3100.f);
 	GetOwner()->ResetVelocity();
@@ -103,11 +97,9 @@ void WireActionPlayerState::OnUpdate(float deltaTime)
 
 	if (GetOwner()->IsReleaseWireRequested())
 	{
-		//GetOwner()->GetWire()->Reset();
 		GetOwner()->GetStateMachine()->ChangeState<WalkPlayerState>();
 
 	}
-	//GetOwner()->GetCommonResources()->GetDebugFont()->AddString(10, 90, Colors::White, L"WireAction");
 
 }
 

@@ -512,12 +512,6 @@
     <Filter Include="Game\Common\GameplayLogic\ResultData">
       <UniqueIdentifier>{6cb8f038-3210-4c03-80d7-7d397b98cee4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Game\Common\GameplayLogic\CollisionManager">
-      <UniqueIdentifier>{f5cf191d-ae94-4e1b-b468-77e553e983ba}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\Common\GameplayLogic\CollisionMatrix">
-      <UniqueIdentifier>{6d6c8f23-a426-4a1a-a39c-1b6a26219de0}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Game\Common\Graphics\GameEffect\Interface">
       <UniqueIdentifier>{8c1aac98-1703-413d-9ebf-78e6a9f2d5af}</UniqueIdentifier>
     </Filter>
@@ -548,11 +542,23 @@
     <Filter Include="Game\Common\Utillities\Collision\ColliderDraw">
       <UniqueIdentifier>{7d01f3e1-8118-47c4-841a-6b4f5baa62b7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Game\Common\GameplayLogic\CollisionManager\CollisionDetectionWorker">
+    <Filter Include="Game\Common\Framework\Collision">
+      <UniqueIdentifier>{0c87a3cb-f38f-457a-8021-4c1d2fc57807}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Common\Framework\Collision\CollisionMatrix">
+      <UniqueIdentifier>{6d6c8f23-a426-4a1a-a39c-1b6a26219de0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Common\Framework\Collision\CollisionDispatcher">
+      <UniqueIdentifier>{982cbac2-c08a-4267-8a35-0093cc46c32a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Common\Framework\Collision\CollisionManager">
+      <UniqueIdentifier>{f5cf191d-ae94-4e1b-b468-77e553e983ba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Common\Framework\Collision\CollisionManager\CollisionDetectionWorker">
       <UniqueIdentifier>{40627ede-a6dc-4704-8187-382613d3ec26}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Game\Common\GameplayLogic\CollisionDispatcher">
-      <UniqueIdentifier>{982cbac2-c08a-4267-8a35-0093cc46c32a}</UniqueIdentifier>
+    <Filter Include="Game\Common\Framework\Collision\CollisionManager\CollisionTypes">
+      <UniqueIdentifier>{dcbbfefb-0971-4854-8460-fc9db94276bc}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -919,10 +925,10 @@
       <Filter>Game\Common\Framework\TaskManager</Filter>
     </ClInclude>
     <ClInclude Include="Game\Common\GameplayLogic\CollisionMatrix\CollisionMatrix.h">
-      <Filter>Game\Common\GameplayLogic\CollisionMatrix</Filter>
+      <Filter>Game\Common\Framework\Collision\CollisionMatrix</Filter>
     </ClInclude>
     <ClInclude Include="Game\Common\GameplayLogic\CollisionManager\CollisionManager.h">
-      <Filter>Game\Common\GameplayLogic\CollisionManager</Filter>
+      <Filter>Game\Common\Framework\Collision\CollisionManager</Filter>
     </ClInclude>
     <ClInclude Include="Game\Common\GameplayLogic\Behaviour\SteeringBehavior\SteeringBehavior.h">
       <Filter>Game\Common\GameplayLogic\Behaviour</Filter>
@@ -1051,10 +1057,13 @@
       <Filter>Game\Common\Utillities\Collision\ColliderDraw</Filter>
     </ClInclude>
     <ClInclude Include="Game\Common\GameplayLogic\CollisionManager\CollisionDetectionWorker\CollisionDetectionWorker.h">
-      <Filter>Game\Common\GameplayLogic\CollisionManager\CollisionDetectionWorker</Filter>
+      <Filter>Game\Common\Framework\Collision\CollisionManager\CollisionDetectionWorker</Filter>
     </ClInclude>
     <ClInclude Include="Game\Common\GameplayLogic\CollisionDispatcher\CollisionDispatcher.h">
-      <Filter>Game\Common\GameplayLogic\CollisionDispatcher</Filter>
+      <Filter>Game\Common\Framework\Collision\CollisionDispatcher</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Common\GameplayLogic\CollisionManager\CollisionTypes\CollisionTypes.h">
+      <Filter>Game\Common\Framework\Collision\CollisionManager\CollisionTypes</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1358,10 +1367,10 @@
       <Filter>Game\Common\Framework\TaskManager</Filter>
     </ClCompile>
     <ClCompile Include="Game\Common\GameplayLogic\CollisionMatrix\CollisionMatrix.cpp">
-      <Filter>Game\Common\GameplayLogic\CollisionMatrix</Filter>
+      <Filter>Game\Common\Framework\Collision\CollisionMatrix</Filter>
     </ClCompile>
     <ClCompile Include="Game\Common\GameplayLogic\CollisionManager\CollisionManager.cpp">
-      <Filter>Game\Common\GameplayLogic\CollisionManager</Filter>
+      <Filter>Game\Common\Framework\Collision\CollisionManager</Filter>
     </ClCompile>
     <ClCompile Include="Game\Common\GameplayLogic\Behaviour\SteeringBehavior\SteeringBehavior.cpp">
       <Filter>Game\Common\GameplayLogic\Behaviour</Filter>
@@ -1472,10 +1481,10 @@
       <Filter>Game\Common\Utillities\Collision\ColliderDraw</Filter>
     </ClCompile>
     <ClCompile Include="Game\Common\GameplayLogic\CollisionManager\CollisionDetectionWorker\CollisionDetectionWorker.cpp">
-      <Filter>Game\Common\GameplayLogic\CollisionManager\CollisionDetectionWorker</Filter>
+      <Filter>Game\Common\Framework\Collision\CollisionManager\CollisionDetectionWorker</Filter>
     </ClCompile>
     <ClCompile Include="Game\Common\GameplayLogic\CollisionDispatcher\CollisionDispatcher.cpp">
-      <Filter>Game\Common\GameplayLogic\CollisionDispatcher</Filter>
+      <Filter>Game\Common\Framework\Collision\CollisionDispatcher</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
