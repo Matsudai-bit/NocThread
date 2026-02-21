@@ -35,6 +35,8 @@
 // ゲームプレイロジック関連
 #include "Game/Common/GameplayLogic/CollisionMatrix/CollisionMatrix.h"
 
+class CollisionDetectionWorker;
+
 // クラスの定義 ===============================================================
 /**
  * @brief 当たり判定管理
@@ -115,7 +117,66 @@ struct CollisionData
 
 };
 
+/**
+	 * @brief 衝突したオブジェクトの組み合わせ
+	 */
+struct DetectedCollisonData
+{
+	int collisionDataIdA;
+	int collisionDataIdB;
 
+};
+
+struct ThreadCollisionObjectProxy
+{
+	bool isActive;
+	GameObjectTag tag;
+	uint32_t	tagBitIndex;
+
+	int id;
+	std::unique_ptr<ICollider> collider;
+	std::vector<ThreadCollisionObjectProxy> children;
+
+	ThreadCollisionObjectProxy()
+		: id{ -1 }
+		, tag{ GameObjectTag::DEFAULT }
+		, tagBitIndex{ }
+		, isActive{ false }
+
+	{
+	}
+
+	ThreadCollisionObjectProxy(const ThreadCollisionObjectProxy& origin)
+		: id{ origin.id }
+		, collider{ }
+		, children{ origin.children }
+		, tag{ origin.tag }
+		, tagBitIndex{ origin.tagBitIndex }
+		, isActive{ origin.isActive }
+	{
+		if (origin.collider)
+		{
+			collider = origin.collider->GetClone();
+		}
+	}
+	ThreadCollisionObjectProxy& operator=(const ThreadCollisionObjectProxy& origin)
+	{
+		if (this != &origin) {
+			id = origin.id;
+			tag = origin.tag;
+			tagBitIndex = origin.tagBitIndex;
+			isActive = origin.isActive;
+			children = origin.children;
+			if (origin.collider) {
+				collider = origin.collider->GetClone();
+			}
+			else {
+				collider.reset();
+			}
+		}
+		return *this;
+	}
+};
 class CollisionManager
 	: public Task
 {
@@ -124,65 +185,7 @@ public:
 
 	// 構造体の宣言
 private:
-	/**
-	 * @brief 衝突したオブジェクトの組み合わせ
-	 */
-	struct DetectedCollisonData
-	{
-		int collisionDataIdA;
-		int collisionDataIdB;
-
-	};
-
-	struct ThreadCollisionObjectProxy
-	{
-		bool isActive;
-		GameObjectTag tag;
-		uint32_t	tagBitIndex;
-
-		int id;
-		std::unique_ptr<ICollider> collider;
-		std::vector<ThreadCollisionObjectProxy> children;
-
-		ThreadCollisionObjectProxy()
-			: id{-1}
-			, tag{ GameObjectTag::DEFAULT }
-			, tagBitIndex{ }
-			, isActive{ false }
-
-		{ }
-
-		ThreadCollisionObjectProxy(const ThreadCollisionObjectProxy& origin)
-			: id{ origin.id }
-			, collider{ }
-			, children{ origin.children }
-			, tag{ origin.tag }
-			, tagBitIndex{origin.tagBitIndex }
-			, isActive{origin.isActive}
-		{
-			if (origin.collider)
-			{
-				collider = origin.collider->GetClone();
-			}
-		}
-		ThreadCollisionObjectProxy& operator=(const ThreadCollisionObjectProxy& origin)
-		{
-			if (this != &origin) {
-				id = origin.id;
-				tag = origin.tag;
-				tagBitIndex = origin.tagBitIndex;
-				isActive = origin.isActive;
-				children = origin.children;
-				if (origin.collider) {
-					collider = origin.collider->GetClone();
-				}
-				else {
-					collider.reset();
-				}
-			}
-			return *this;
-		}
-	};
+	
 
 
 	// エイリアス宣言
@@ -200,6 +203,8 @@ private:
 	const CollisionMatrix* m_pCollisionMatrix;
 
 	MyLib::IdPool<UINT> m_idPool;
+
+	std::unique_ptr<CollisionDetectionWorker> m_collisionDetectionWorker;
 
 	std::vector<ThreadCollisionObjectProxy> m_proxy;
 
@@ -236,8 +241,6 @@ public:
 
 	// 操作
 public:
-	// 初期化処理
-	void Initialize();
 
 	// 更新処理
 	bool UpdateTask(float deltaTime) override;
@@ -282,7 +285,8 @@ private:
 	void UpdateDetection(std::vector<DetectedCollisonData>* pOutResults);
 
 	// 衝突の通知
-	void NotifyCollisionEvents(std::vector<DetectedCollisonData>* pDetectedCollisions);
+	void DynamicNotifyCollisionEvents(std::vector<DetectedCollisonData>* pDetectedCollisions);
+	void StaticNotifyCollisionEvents(std::vector<DetectedCollisonData>* pDetectedCollisions);
 
 	// 事後処理
 	void FinalizeCollision();

@@ -12,6 +12,7 @@
 #include "pch.h"
 
 #include "CollisionManager.h"
+#include "CollisionDetectionWorker/CollisionDetectionWorker.h"
 #include <set>
 
 
@@ -36,6 +37,8 @@ CollisionManager::CollisionManager()
 {
 	 m_proxy.resize(1336);
 
+	 m_collisionDetectionWorker = std::make_unique<CollisionDetectionWorker>();
+
 	m_detectionThread = std::make_unique<std::thread>(&CollisionManager::UpdateDetection, this, &m_detectionResults);
 
 }
@@ -49,21 +52,6 @@ CollisionManager::~CollisionManager()
 {
 
 }
-
-
-
-/**
- * @brief 初期化処理
- *
- * @param[in] なし
- *
- * @return なし
- */
-void CollisionManager::Initialize()
-{
-
-}
-
 
 
 
@@ -86,7 +74,7 @@ bool CollisionManager::UpdateTask(float deltaTime)
 # endif 
 	
 	// 衝突を通知する
-	NotifyCollisionEvents(&m_detectionResults);
+	DynamicNotifyCollisionEvents(&m_detectionResults);
 
 	// 事後処理
 	FinalizeCollision();
@@ -634,6 +622,7 @@ bool CollisionManager::RetrieveCollisionData(const ICollider* pCheckCollider, st
 
 void CollisionManager::StartThread()
 {
+
 #ifdef COLLISIONMANAGER_DEBUG	
 	OutputDebugString(L"============ スレッドの開始処理 ============\n");
 #endif 
@@ -650,8 +639,8 @@ void CollisionManager::StartThread()
 	PreCollision();
 
 	// 判定用データの作成（ここはメインスレッドで安全に行う）
-	std::vector<ThreadCollisionObjectProxy> nextProxy;
-	CreateThreadCollisionObjectProxy(&nextProxy);
+	std::unique_ptr<std::vector<ThreadCollisionObjectProxy>> nextProxy;
+	CreateThreadCollisionObjectProxy(nextProxy.get());
 
 #ifdef COLLISIONMANAGER_DEBUG	
 
@@ -667,15 +656,14 @@ void CollisionManager::StartThread()
 #endif 
 
 	// 静的オブジェクトをコピー
-	nextProxy.insert(nextProxy.end(), m_staticProxies.begin(), m_staticProxies.end());
+	nextProxy->insert(nextProxy->end(), m_staticProxies.begin(), m_staticProxies.end());
 
 	{
 		std::lock_guard<std::mutex> lock(m_mutex);
 
 		// 2. 「コピー」ではなく「移動代入」を使う
 		// これにより、m_proxy の中身が一瞬で nextProxy と入れ替わります ($O(1)$)
-		m_proxy = std::move(nextProxy);
-
+		m_collisionDetectionWorker->StartAsync(std::move(nextProxy));
 		m_detectionResults.clear();
 		m_applyThread = true;
 
@@ -791,7 +779,7 @@ void CollisionManager::UpdateDetection(std::vector<DetectedCollisonData>* pOutRe
  *
  * @param[in] pDetectedCollisions 検知された衝突
  */
-void CollisionManager::NotifyCollisionEvents(std::vector<DetectedCollisonData>* pDetectedCollisions)
+void CollisionManager::DynamicNotifyCollisionEvents(std::vector<DetectedCollisonData>* pDetectedCollisions)
 {
 	// 一時的にデータを溜めるローカルバッファ
 	std::vector<DetectedCollisonData> localWorkList;
@@ -859,6 +847,28 @@ void CollisionManager::NotifyCollisionEvents(std::vector<DetectedCollisonData>* 
 	OutputDebugString(L"=========== 衝突通知終了 ========== \n");
 #endif 
 
+}
+
+void CollisionManager::StaticNotifyCollisionEvents(std::vector<DetectedCollisonData>* pDetectedCollisions)
+{
+	// ここにはもうロックも wait も不要。純粋な通知ロジックのみ。
+	for (const auto& data : (*pDetectedCollisions))
+	{
+		auto itA = m_collisionIdLookupTable.find(data.collisionDataIdA);
+		auto itB = m_collisionIdLookupTable.find(data.collisionDataIdB);
+
+		if (itA != m_collisionIdLookupTable.end() && itB != m_collisionIdLookupTable.end())
+		{
+			CollisionData& collA = itA->second;
+			CollisionData& collB = itB->second;
+
+			if (collA.pGameObject && collB.pGameObject)
+			{
+				collA.pGameObject->OnCollision(CollisionInfo(collB.pCollider, collB.pGameObject, collA.pCollider));
+				collB.pGameObject->OnCollision(CollisionInfo(collA.pCollider, collA.pGameObject, collB.pCollider));
+			}
+		}
+	}
 }
 
 /**

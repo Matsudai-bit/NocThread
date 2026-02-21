@@ -548,6 +548,9 @@
     <Filter Include="Game\Common\Utillities\Collision\ColliderDraw">
       <UniqueIdentifier>{7d01f3e1-8118-47c4-841a-6b4f5baa62b7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\Common\GameplayLogic\CollisionManager\CollisionDetectionWorker">
+      <UniqueIdentifier>{40627ede-a6dc-4704-8187-382613d3ec26}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -1044,6 +1047,9 @@
     <ClInclude Include="Game\Common\Utillities\Collision\ColliderDraw\ColliderDrawer.h">
       <Filter>Game\Common\Utillities\Collision\ColliderDraw</Filter>
     </ClInclude>
+    <ClInclude Include="Game\Common\GameplayLogic\CollisionManager\CollisionDetectionWorker\CollisionDetectionWorker.h">
+      <Filter>Game\Common\GameplayLogic\CollisionManager\CollisionDetectionWorker</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -1458,6 +1464,9 @@
     </ClCompile>
     <ClCompile Include="Game\Common\Utillities\Collision\ColliderDraw\ColliderDrawer.cpp">
       <Filter>Game\Common\Utillities\Collision\ColliderDraw</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Common\GameplayLogic\CollisionManager\CollisionDetectionWorker\CollisionDetectionWorker.cpp">
+      <Filter>Game\Common\GameplayLogic\CollisionManager\CollisionDetectionWorker</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
