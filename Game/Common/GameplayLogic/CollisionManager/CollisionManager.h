@@ -11,6 +11,7 @@
  // 多重インクルードの防止 =====================================================
 #pragma once
 
+#define COLLISIONMANAGER_DEBUG
 
 #include <vector>
 #include <thread>
@@ -131,11 +132,6 @@ private:
 		int collisionDataIdA;
 		int collisionDataIdB;
 
-	/*	DetectedCollisonData()
-			: collisionDataIdA{ -1 }
-			, collisionDataIdB{ -1 }
-		{}*/
-
 	};
 
 	struct ThreadCollisionObjectProxy
@@ -221,9 +217,13 @@ private:
 
 	std::vector<ThreadCollisionObjectProxy> m_staticProxies;
 
+
+	#ifdef COLLISIONMANAGER_DEBUG
 	long long m_totalDuration;
 
-	int m_debugCount[2];
+	# endif 
+
+
 	// メンバ関数の宣言 -------------------------------------------------
 	// コンストラクタ/デストラクタ
 public:
@@ -256,14 +256,8 @@ public:
 	void RemoveCollisionObjectData(GameObject* pAddGameObject, ICollider* pCollider);
 	void RemoveAll();
 
-	// 何かのオブジェクトと当たったかどうか
-	bool IsCollisionWithAnyObject(const ICollider& checkCollider);
-
 	// 衝突判定
 	static bool DetectCollision(const ICollider* pColliderA, const ICollider* pColliderB);
-
-	// 指定したオブジェクトの種類と衝突しているかどうか
-	bool IsCollidingWithObjectType(const ICollider* pCheckCollider, const GameObjectTag& checkTag);
 
 	// 指定したコライダーの衝突情報を取得する
 	bool RetrieveCollisionData(const ICollider* pCheckCollider, std::vector<const GameObject*>* pHitGameObjects, std::vector<const ICollider*>* pHitColliders = nullptr);
@@ -285,7 +279,7 @@ private:
 	// 衝突判定直前の処理
 	void PreCollision();
 	// 衝突の検知
-	void UpdateDetection(const std::vector<ThreadCollisionObjectProxy>* proxy, std::vector<DetectedCollisonData>* pOutResults);
+	void UpdateDetection(std::vector<DetectedCollisonData>* pOutResults);
 
 	// 衝突の通知
 	void NotifyCollisionEvents(std::vector<DetectedCollisonData>* pDetectedCollisions);
@@ -300,7 +294,7 @@ private:
 	// 早期アクセス用テーブルに登録する
 	UINT RegisterIdLookUpTable(CollisionData data);
 	// 早期アクセス用テーブルから削除する
-	void UnregisterIdLookUpTable(int dataID);
+	void UnregisterIdLookUpTable(UINT dataID);
 
 
 	void CreateThreadCollisionObjectProxy(std::vector<ThreadCollisionObjectProxy>* collisionObjectProxy);

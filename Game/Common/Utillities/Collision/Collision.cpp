@@ -2488,11 +2488,10 @@ void Box2D::Set(
  * 
  * @return OŠpŒ`
  */
-const std::array<Triangle, Box2D::TRIANGLE_NUM>& Box2D::GetTriangle() const
+const std::array<Triangle, Box2D::TRIANGLE_NUM> Box2D::GetTriangle() const
 {
-	std::array< Triangle, Box2D::TRIANGLE_NUM> result{ m_triangles[0], m_triangles[1] };
 
-	return result;
+	return { m_triangles[0], m_triangles[1] };
 }
 
 /**

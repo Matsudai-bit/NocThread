@@ -322,7 +322,7 @@ public:
 			const DirectX::SimpleMath::Vector3& posD);
 
 	// OŠpŒ`‚Ìæ“¾
-	const std::array<Triangle, TRIANGLE_NUM>& GetTriangle() const;
+	const std::array<Triangle, TRIANGLE_NUM> GetTriangle() const;
 
 	// •½–Êî•ñ‚Ìæ“¾
 	const Plane& GetPlane() const;

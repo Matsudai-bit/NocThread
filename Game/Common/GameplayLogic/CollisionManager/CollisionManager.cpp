@@ -28,10 +28,15 @@ CollisionManager::CollisionManager()
 	, m_applyThread{ false }
 	, m_isCalculating{ false }
 	, m_stopThread{ false }
+
+#ifdef COLLISIONMANAGER_DEBUG	
+	, m_totalDuration{}
+#endif 
+
 {
 	 m_proxy.resize(1336);
 
-	m_detectionThread = std::make_unique<std::thread>(&CollisionManager::UpdateDetection, this, &m_proxy, &m_detectionResults);
+	m_detectionThread = std::make_unique<std::thread>(&CollisionManager::UpdateDetection, this, &m_detectionResults);
 
 }
 
@@ -73,34 +78,36 @@ void CollisionManager::Initialize()
 bool CollisionManager::UpdateTask(float deltaTime)
 {
 	UNREFERENCED_PARAMETER(deltaTime);
+
+#ifdef COLLISIONMANAGER_DEBUG	
 	// 1. 開始時刻の記録
 	auto start = std::chrono::high_resolution_clock::now();
-	//OutputDebugString(L"============ 衝突管理の更新処理 ============\n");
-
+	OutputDebugString(L"============ 衝突管理の更新処理 ============\n");
+# endif 
 	
 	// 衝突を通知する
 	NotifyCollisionEvents(&m_detectionResults);
 
-
 	// 事後処理
 	FinalizeCollision();
 
-		//// 3. 終了時刻の記録
+#ifdef COLLISIONMANAGER_DEBUG	
+	//// 3. 終了時刻の記録
 	auto end = std::chrono::high_resolution_clock::now();
 
-		// 4. 処理時間の計算と表示
-	 //duration_cast で希望の単位に変換（ここではマイクロ秒 ?s）
+	// 4. 処理時間の計算と表示
+	//duration_cast で希望の単位に変換（ここではマイクロ秒 ?s）
 	auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
 
 	wchar_t buffer[64];
 	swprintf_s(buffer, L"duration : %lld us\n", duration.count());
 
-
-
 	// 3. Send to the Output window
 	OutputDebugString(buffer);
 
-	//OutputDebugString(L"============ 衝突管理の終了 ============\n");
+	OutputDebugString(L"============ 衝突管理の終了 ============\n");
+# endif 
+
 
 
 	// タスクを継続する
@@ -161,7 +168,7 @@ void CollisionManager::AddCollisionData(const CollisionData& childCollisionData,
 	{
 		auto it = std::find_if(m_rootCollisionDataId.begin(), m_rootCollisionDataId.end(), [&](const unsigned int& id)
 			{
-				return  m_collisionIdLookupTable[id].pCollider == parent;
+				return  m_collisionIdLookupTable[static_cast<size_t>(id)].pCollider == parent;
 			});
 
 		if (it != m_rootCollisionDataId.end())
@@ -214,36 +221,6 @@ void CollisionManager::RemoveAll()
 	m_collisionIdLookupTable.clear();
 	m_rootCollisionDataId.clear();
 
-}
-
-
-/**
- * @brief 何かのオブジェクトと当たったかどうか
- *
- * @param[in] checkCollider 衝突判定を検証するコライダー
- *
- * @return true 当たっている
- */
-bool CollisionManager::IsCollisionWithAnyObject(const ICollider& checkCollider)
-{
-	//for (size_t i = 0; i < m_rootCollisionDataId.size(); i++)
-	//{
-	//	// 処理用オブジェクト
-	//	GameObject* gameObject = m_rootCollisionDataId[i].pGameObject;
-
-	//	//活動していなければ飛ばす
-	//	if (gameObject->IsActive() == false) continue;
-
-
-	//	// 衝突しているかどうか
-	//	if (DetectCollision(&checkCollider, m_rootCollisionDataId[i].pCollider))
-	//	{
-	//		// 衝突していればtrueを返す
-	//		return true;
-	//	}
-	//}
-
-	return false;
 }
 
 /**
@@ -592,32 +569,6 @@ bool CollisionManager::DetectCollision(const ICollider* pColliderA, const IColli
 }
 
 
-
-/**
- * @brief 指定したオブジェクトの種類と衝突しているかどうか
- *
- * @param[in] pCheckCollider
- * @param[in] checkTag
- *
- * @return true 衝突している
- */
-bool CollisionManager::IsCollidingWithObjectType(const ICollider* pCheckCollider, const GameObjectTag& checkTag)
-{
-
-	//for (auto& collInfo : m_rootCollisionDataId)
-	//{
-	//	// 衝突判定
-	//	if (DetectCollision(collInfo.pCollider, pCheckCollider))
-	//	{
-	//		// タグと比べる
-	//		if (collInfo.pGameObject->GetTag() == checkTag)
-	//			return true;
-	//	}
-	//}
-
-	return false;
-}
-
 /**
  * @brief 指定したコライダーの衝突情報を取得
  *
@@ -683,12 +634,13 @@ bool CollisionManager::RetrieveCollisionData(const ICollider* pCheckCollider, st
 
 void CollisionManager::StartThread()
 {
-	//OutputDebugString(L"============ スレッドの開始処理 ============\n");
-	m_debugCount[0] = 0;
-	m_debugCount[1] = 0;
+#ifdef COLLISIONMANAGER_DEBUG	
+	OutputDebugString(L"============ スレッドの開始処理 ============\n");
+#endif 
+
 	// 衝突判定の流れ
 // 衝突判定->衝突処理->押し出し
-	if (m_rootCollisionDataId.empty() || m_rootCollisionDataId.size() == 0) return ;
+	if (m_rootCollisionDataId.empty()) return ;
 
 	// 1. 開始時刻の記録
 	auto start = std::chrono::high_resolution_clock::now();
@@ -701,6 +653,8 @@ void CollisionManager::StartThread()
 	std::vector<ThreadCollisionObjectProxy> nextProxy;
 	CreateThreadCollisionObjectProxy(&nextProxy);
 
+#ifdef COLLISIONMANAGER_DEBUG	
+
 	//// 3. 終了時刻の記録
 	auto end = std::chrono::high_resolution_clock::now();
 
@@ -709,6 +663,8 @@ void CollisionManager::StartThread()
 	auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
 	m_totalDuration = 0;
 	m_totalDuration += duration.count();
+
+#endif 
 
 	// 静的オブジェクトをコピー
 	nextProxy.insert(nextProxy.end(), m_staticProxies.begin(), m_staticProxies.end());
@@ -723,7 +679,9 @@ void CollisionManager::StartThread()
 		m_detectionResults.clear();
 		m_applyThread = true;
 
-		//OutputDebugString(L"============ スレッドの開始要求 ============\n");
+#ifdef COLLISIONMANAGER_DEBUG	
+		OutputDebugString(L"============ スレッドの開始要求 ============\n");
+#endif 
 	}
 	m_cv.notify_one(); // サブスレッドを起こす
 }
@@ -755,7 +713,7 @@ void CollisionManager::PreCollision()
  *
  * @param[out] pOutResults 検知された衝突
  */
-void CollisionManager::UpdateDetection(const std::vector<ThreadCollisionObjectProxy>* proxy, std::vector<DetectedCollisonData>* pOutResults)
+void CollisionManager::UpdateDetection(std::vector<DetectedCollisonData>* pOutResults)
 {
 	// サブスレッド内だけで使う「完全なローカル」スタック
 	std::vector<DetectedCollisonData> localBuffer;
@@ -768,7 +726,9 @@ void CollisionManager::UpdateDetection(const std::vector<ThreadCollisionObjectPr
             // 「仕事が来る(m_applyThread)」か「終了する(m_stopThread)」までスリープ
             m_cv.wait(lock, [this] { return m_applyThread || m_stopThread; });
 
-			//OutputDebugString(L"============ 仕事を受け取った ============\n");
+#ifdef COLLISIONMANAGER_DEBUG	
+			OutputDebugString(L"============ 仕事を受け取った ============\n");
+#endif 
 
             if (m_stopThread) break;
 
@@ -790,14 +750,19 @@ void CollisionManager::UpdateDetection(const std::vector<ThreadCollisionObjectPr
 					// 2. バッファが一定数ったら一気に共有メモリへ
 					if (localBuffer.size() >= 50)
 					{
-						//OutputDebugString(L"=========== データ更新待機 ========== \n");
+#ifdef COLLISIONMANAGER_DEBUG	
+						OutputDebugString(L"=========== データ更新待機 ========== \n");
+#endif 
 
 						std::lock_guard<std::mutex> lock(m_mutex);
 						// std::copy よりも insert が効率的
 						pOutResults->insert(pOutResults->end(), localBuffer.begin(), localBuffer.end());
 						localBuffer.clear();
-						//OutputDebugString(L"!!!! 衝突データの更新 !!!! \n");
-						//OutputDebugString(L"=========== データ更新 ========== \n");
+
+#ifdef COLLISIONMANAGER_DEBUG	
+						OutputDebugString(L"!!!! 衝突データの更新 !!!! \n");
+#endif 
+
 						m_notifyCV.notify_one();
 					}
 				}
@@ -813,8 +778,10 @@ void CollisionManager::UpdateDetection(const std::vector<ThreadCollisionObjectPr
 		}
 
 		m_isCalculating = false;
-		//OutputDebugString(L"!!!! 衝突処理の終了 !!!! \n");
 
+#ifdef COLLISIONMANAGER_DEBUG	
+		OutputDebugString(L"!!!! 衝突処理の終了 !!!! \n");
+#endif 
 		m_notifyCV.notify_one(); // 完了通知
 	}
 }
@@ -833,7 +800,10 @@ void CollisionManager::NotifyCollisionEvents(std::vector<DetectedCollisonData>* 
 	{
 		{
 			std::unique_lock<std::mutex> lock(m_mutex);
-			//OutputDebugString(L"=========== 衝突データがくるまで待機 ========== \n");
+
+#ifdef COLLISIONMANAGER_DEBUG	
+			OutputDebugString(L"=========== 衝突データがくるまで待機 ========== \n");
+#endif 
 
 			// データが空かつ計算中なら待機
 			m_notifyCV.wait(lock, [this, pDetectedCollisions] {
@@ -851,7 +821,10 @@ void CollisionManager::NotifyCollisionEvents(std::vector<DetectedCollisonData>* 
 			pDetectedCollisions->clear();
 		} // ここでロックが解除される
 
-		//OutputDebugString(L"=========== 衝突通知 ========== \n");
+#ifdef COLLISIONMANAGER_DEBUG	
+		OutputDebugString(L"=========== 衝突通知 ========== \n");
+#endif 
+
 
 		// --- ここからロックの外 ---
 		// まとめて取得したデータを一気に処理
@@ -881,7 +854,10 @@ void CollisionManager::NotifyCollisionEvents(std::vector<DetectedCollisonData>* 
 		localWorkList.clear(); // 次のバッチのためにクリア
 	}
 
-	//OutputDebugString(L"=========== 衝突通知終了 ========== \n");
+
+#ifdef COLLISIONMANAGER_DEBUG	
+	OutputDebugString(L"=========== 衝突通知終了 ========== \n");
+#endif 
 
 }
 
@@ -929,24 +905,10 @@ void CollisionManager::CheckCollisionPair(const ThreadCollisionObjectProxy& coll
 		return;
 	}
 
-	m_debugCount[0]++;
 	// 衝突しているかどうか
 	if (DetectCollision(collisionDataA.collider.get(), collisionDataB.collider.get()))
-	{
-	/*	if (collisionDataA.tag == GameObjectTag::DEFAULT && collisionDataB.tag == GameObjectTag::WIRE_GRAPPING_AREA)
-		{
-			m_debugCount[0]++;
-		}
-
-		if (collisionDataA.tag == GameObjectTag::BUILDING && collisionDataB.tag == GameObjectTag::WIRE_GRAPPING_AREA)
-		{
-			m_debugCount[1]++;
-		}*/
-
-		
+	{	
 		pOutResultStack->push_back({ collisionDataA.id, collisionDataB.id });
-
-
 
 		// 子を持っている場合その子も検知する
 		for (auto& child : collisionDataA.children)
@@ -974,7 +936,7 @@ UINT CollisionManager::RegisterIdLookUpTable(CollisionData data)
 
 }
 
-void CollisionManager::UnregisterIdLookUpTable(int dataID)
+void CollisionManager::UnregisterIdLookUpTable(UINT dataID)
 {
 	auto it = m_collisionIdLookupTable.find(dataID);
 	if (it == m_collisionIdLookupTable.end()) return;
@@ -1002,7 +964,10 @@ void CollisionManager::UnregisterIdLookUpTable(int dataID)
 void CollisionManager::CreateThreadCollisionObjectProxy(std::vector<ThreadCollisionObjectProxy>* collisionObjectProxy)
 {
 	std::vector<ThreadCollisionObjectProxy> localProxies;
-	//OutputDebugString(L"============ 動的プロキシの作成処理 ============\n");
+
+#ifdef COLLISIONMANAGER_DEBUG	
+	OutputDebugString(L"============ 動的プロキシの作成処理 ============\n");
+#endif 
 	{
 		std::lock_guard<std::mutex> lock(m_mutex);
 		// 読み取りを開始する前にロックを取得！
@@ -1061,7 +1026,10 @@ bool CollisionManager::CreateProxy(ThreadCollisionObjectProxy* pProxy, const Col
 bool CollisionManager::CreateStaticProxy(std::vector<ThreadCollisionObjectProxy>* collisionObjectProxy)
 {
 	std::vector<ThreadCollisionObjectProxy> localProxies;
-	//OutputDebugString(L"============ 静的プロキシの作成処理 ============\n");
+
+#ifdef COLLISIONMANAGER_DEBUG	
+	OutputDebugString(L"============ 静的プロキシの作成処理 ============\n");
+#endif 
 	{
 		std::lock_guard<std::mutex> lock(m_mutex);
 		// 読み取りを開始する前にロックを取得！

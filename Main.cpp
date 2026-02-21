@@ -11,7 +11,7 @@
 
 using namespace DirectX;
 
-#define GAME_MODE
+//#define GAME_MODE
 
 #ifdef __clang__
 #pragma clang diagnostic ignored "-Wcovered-switch-default"
