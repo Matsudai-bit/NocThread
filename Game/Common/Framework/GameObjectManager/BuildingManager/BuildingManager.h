@@ -9,7 +9,8 @@
 // 多重インクルードの防止 =====================================================
 #pragma once
 
-
+#define RENDERER_TYPE 1 // 0 : 通常描画　1: フラスタムカリング 2：CS使用フラスタムカリング
+#define BUILDING_DEBUG
 
 
 // ヘッダファイルの読み込み ===================================================
@@ -18,9 +19,14 @@
 
 // フレームワーク関連
 #include "Game/Common/Framework/TaskManager/TaskManager.h"
+#include "Game/Common/Framework/Event/Messenger/GameFlowMessenger/IGameFlowObserver.h"
+#include "Game/Common/Framework/Event/Messenger/GameFlowMessenger/GameFlowMessenger.h"
 
 // ゲームオブジェクト関連
 #include "Game/GameObjects/Prop/Building/Building.h"
+
+// ユーティリティ関連
+#include "Game/Common/Utillities/ElapsedTimeCounter/ElapsedTimeCounter.h"
 
 
 // クラスの前方宣言 ===================================================
@@ -34,6 +40,7 @@ class CommonResources;
  */
 class BuildingManager
 	: public Task
+	, public IGameFlowObserver
 {
 // クラス定数の宣言 -------------------------------------------------
 public:
@@ -72,6 +79,7 @@ private:
 
 	const CommonResources* m_pCommonResources;
 
+#if (RENDERER_TYPE == 1) || (RENDERER_TYPE == 2)	
 	// コンピュートシェーダー関連
 	// コンピュートシェーダー
 	Microsoft::WRL::ComPtr<ID3D11ComputeShader> m_computeShader;
@@ -86,6 +94,8 @@ private:
 	Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_particleSRV;
 	// UAV
 	Microsoft::WRL::ComPtr<ID3D11UnorderedAccessView> m_resultUAV;
+#endif RENDERER_TYPE
+
 
 // メンバ関数の宣言 -------------------------------------------------
 // コンストラクタ/デストラクタ
@@ -114,6 +124,8 @@ public:
 
 	void SetBuildings(std::unique_ptr<std::vector<std::unique_ptr<Building>>> buildings);
 
+	// ゲームフローイベントの受け取り
+	void OnGameFlowEvent(GameFlowEventID eventID);
 
 private:
 
@@ -126,11 +138,15 @@ public:
 
 // 内部実装
 private:
-
-
-
-
+	
+	// 通常描画
 	void DrawDefault(const Camera& camera);
+	// フラスタムカリングを用いた描画
 	void DrawFrustumCulling(const Camera& camera);
+	// CSを用いたフラスタムカリングを用いた描画
 	void DrawFrustumCullingCS(const Camera& camera);
+
+	// 建物バッファの作成
+	void CreateBuildingDataBuffer(ID3D11DeviceContext1* context);
+
 };

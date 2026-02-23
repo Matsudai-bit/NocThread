@@ -59,7 +59,9 @@ BuildingManager::~BuildingManager()
  */
 void BuildingManager::Initialize()
 {
+	GameFlowMessenger::GetInstance()->RegistryObserver(this);
 
+#if (RENDERER_TYPE == 2)
 
 	ID3D11Device1* device = m_pCommonResources->GetDeviceResources()->GetD3DDevice();
 	// 定数バッファの作成
@@ -89,6 +91,7 @@ void BuildingManager::Initialize()
 	DX::ThrowIfFailed(
 		device->CreateComputeShader(cs.data(), cs.size(), nullptr, m_computeShader.ReleaseAndGetAddressOf())
 	);
+#endif
 }
 
 
@@ -109,8 +112,6 @@ bool BuildingManager::UpdateTask(float deltaTime)
 		building->Update(deltaTime);
 	}
 
-	
-	
 
 	return true;
 }
@@ -126,19 +127,40 @@ void BuildingManager::DrawTask(const Camera& camera)
 {
 	using namespace SimpleMath;
 	
+#ifndef BUILDING_DEBUG
+
 	//// 1. 開始時刻の記録
-	//auto start = std::chrono::high_resolution_clock::now();
+	auto start = std::chrono::high_resolution_clock::now();
+#endif // !BUILDING_DEBUG
 
+
+	
+
+
+#if (RENDERER_TYPE == 0)	
+	// 通常描画
+	DrawDefault(camera);
+#elif (RENDERER_TYPE == 1)
+	// フラスムカリング描画
 	DrawFrustumCulling(camera);
+#elif (RENDERER_TYPE == 2)
+	// CSを用いたフラスムカリング描画
+	DrawFrustumCullingCS(camera);
+#endif
 
-	//// 3. 終了時刻の記録
-	//auto end = std::chrono::high_resolution_clock::now();
+#ifndef BUILDING_DEBUG
 
-	//// 4. 処理時間の計算と表示
-	//// duration_cast で希望の単位に変換（ここではマイクロ秒 ?s）
-	//auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+	//// 1. 開始時刻の記録
+// 3. 終了時刻の記録
+	auto end = std::chrono::high_resolution_clock::now();
 
-	//m_pCommonResources->GetDebugFont()->AddString(100, 100, Colors::Red, L"duration(?s) = %d", duration.count());
+	// 4. 処理時間の計算と表示
+	// duration_cast で希望の単位に変換（ここではマイクロ秒 ?s）
+	auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+
+	m_pCommonResources->GetDebugFont()->AddString(100, 100, Colors::Red, L"duration(?s) = %d", duration.count()); 
+#endif // !BUILDING_DEBUG
+	
 
 	
 }
@@ -185,7 +207,11 @@ bool BuildingManager::FindBuilding(const int& tileNumber, const Building*& outBu
 }
 
 
-
+/**
+ * @brief 通常描画
+ *
+ * @param[in] camera　カメラ
+ */
 void BuildingManager::DrawDefault(const Camera& camera)
 {
 	// 建物の描画処理
@@ -196,6 +222,13 @@ void BuildingManager::DrawDefault(const Camera& camera)
 	}
 }
 
+#if (RENDERER_TYPE == 1)
+
+/**
+ * @brief フラスタムカリングの描画
+ *
+ * @param[in] camera　カメラ
+ */
 void BuildingManager::DrawFrustumCulling(const Camera& camera)
 {
 	const auto& cameraFrustum = camera.CalcFrustum();
@@ -219,7 +252,15 @@ void BuildingManager::DrawFrustumCulling(const Camera& camera)
 
 	}
 }
+#endif
 
+#if (RENDERER_TYPE == 2)
+
+/**
+ * @brief CSを用いたフラスタムカリングの描画
+ * 
+ * @param[in] camera　カメラ
+ */
 void BuildingManager::DrawFrustumCullingCS(const Camera& camera)
 {
 	using namespace SimpleMath;
@@ -248,22 +289,6 @@ void BuildingManager::DrawFrustumCullingCS(const Camera& camera)
 		}
 	}
 
-	// 2. 建物データの更新 (位置 + 半径)
-	{
-		m_particles.clear();
-		for (auto& building : m_buildings) {
-			ParticleCompute data;
-			data.position = building->GetCullingCollider()->GetPosition();
-			data.radius = building->GetCullingCollider()->GetRadius();
-			m_particles.emplace_back(data);
-		}
-
-		D3D11_MAPPED_SUBRESOURCE subRes;
-		if (SUCCEEDED(context->Map(m_particleBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &subRes))) {
-			memcpy(subRes.pData, m_particles.data(), sizeof(ParticleCompute) * m_particles.size());
-			context->Unmap(m_particleBuffer.Get(), 0);
-		}
-	}
 
 	//　コンピュートシェーダー実行
 	ID3D11ShaderResourceView* pSRVs[1] = {m_particleSRV.Get() };
@@ -278,7 +303,6 @@ void BuildingManager::DrawFrustumCullingCS(const Camera& camera)
 	// uavの再設定によるリソースバリア
 	ID3D11UnorderedAccessView* nulluav = nullptr;
 	context->CSSetUnorderedAccessViews(0, 1, &nulluav, nullptr);
-	std::vector<ResultCompute> cullingResults(m_particles.size());
 	// コンピュートシェーダーの結果を取得
 	context->CopyResource(m_stagingBuffer.Get(), m_resultBuffer.Get());
 	D3D11_MAPPED_SUBRESOURCE subRes{};
@@ -300,12 +324,53 @@ void BuildingManager::DrawFrustumCullingCS(const Camera& camera)
 	}
 }
 
+void BuildingManager::CreateBuildingDataBuffer(ID3D11DeviceContext1* context)
+{
+	// 2. 建物データの更新 (位置 + 半径)
+	{
+		m_particles.clear();
+		for (auto& building : m_buildings)
+		{
+			ParticleCompute data;
+			data.position = building->GetCullingCollider()->GetPosition();
+			data.radius = building->GetCullingCollider()->GetRadius();
+			m_particles.emplace_back(data);
+		}
+
+		D3D11_MAPPED_SUBRESOURCE subRes;
+		if (SUCCEEDED(context->Map(m_particleBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &subRes))) {
+			memcpy(subRes.pData, m_particles.data(), sizeof(ParticleCompute) * m_particles.size());
+			context->Unmap(m_particleBuffer.Get(), 0);
+		}
+	}
+}
+
+#endif
 
 void BuildingManager::SetBuildings(std::unique_ptr<std::vector<std::unique_ptr<Building>>> buildings)
 {
 	for (auto& building : *buildings)
 	{
 		m_buildings.emplace_back(std::move(building));
+	}
+}
+
+/**
+ * @brief ゲームフローイベントの受けとり
+ * 
+ * @param[in] eventID
+ */
+void BuildingManager::OnGameFlowEvent(GameFlowEventID eventID)
+{
+	switch (eventID)
+	{
+	case GameFlowEventID::GAME_SETUP_FINISH:
+#if (RENDERER_TYPE == 2)
+		CreateBuildingDataBuffer(m_pCommonResources->GetDeviceResources()->GetD3DDeviceContext());
+#endif
+		break;
+	default:
+		break;
 	}
 }
 
