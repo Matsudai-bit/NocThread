@@ -10,7 +10,7 @@
 #include "pch.h"
 #include "DistanceConstraint.h"
 
-#include "Game/GameObjects/RopeObject/XPBDSimulator/SimParticle/SimParticle.h"
+#include "../../../XPBDSimulator/SimParticle/SimParticle.h"
 
 using namespace DirectX;
 

@@ -13,8 +13,8 @@
 
 
 // ヘッダファイルの読み込み ===================================================
-#include "Game/GameObjects/RopeObject/XPBDSimulator/XPBDSimulator.h"
-#include "Game/GameObjects/RopeObject/XPBDSimulator/Constraint/IConstraint.h"
+#include "../../../XPBDSimulator/XPBDSimulator.h"
+#include "../../../XPBDSimulator/Constraint/IConstraint.h"
 
 // クラスの前方宣言 ===================================================
 class SimParticle;	// シュミレータのパーティクル

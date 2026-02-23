@@ -20,12 +20,12 @@
 #include "Game/Common/Utillities/Collision/Collision.h"
 
 // XPBD制約関連
-#include "Game/GameObjects/RopeObject/XPBDSimulator/Constraint/ConstraintFactory.h"
-#include "Game/GameObjects/RopeObject/XPBDSimulator/Constraint/IConstraint.h"
+#include "Constraint/ConstraintFactory.h"
+#include "Constraint/IConstraint.h"
 
 // ゲームオブジェクト関連
-#include "Game/GameObjects/RopeObject/RopeObject.h"
-#include "Game/GameObjects/RopeObject/XPBDSimulator/Constraint/DistanceConstraint/DistanceConstraint.h"
+#include "../RopeObject/RopeObject.h"
+#include "Constraint/DistanceConstraint/DistanceConstraint.h"
 
 using namespace DirectX;
 

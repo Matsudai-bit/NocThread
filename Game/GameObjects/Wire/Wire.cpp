@@ -11,9 +11,9 @@
 #include "Wire.h"
 
 // ファクトリー関連
-#include "Game/GameObjects/RopeObject/XPBDSimulator/Constraint/DistanceConstraint/DistanceConstraintFactory.h"
-#include "Game/GameObjects/RopeObject/XPBDSimulator/Constraint/CollisionConstraint/CollisionConstraintFactory.h"
-#include "Game/GameObjects/RopeObject/XPBDSimulator/Constraint/SteeringConstraint/SteeringConstraintFactory.h"
+#include "Game/Common/GameplayLogic/XPBD/XPBDSimulator/Constraint/DistanceConstraint/DistanceConstraintFactory.h"
+#include "Game/Common/GameplayLogic/XPBD/XPBDSimulator/Constraint/CollisionConstraint/CollisionConstraintFactory.h"
+#include "Game/Common/GameplayLogic/XPBD/XPBDSimulator/Constraint/SteeringConstraint/SteeringConstraintFactory.h"
 
 // ライブラリ関連
 #include "Library/MyLib/DirectXMathUtils/DirectXMathUtils.h"

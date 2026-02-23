@@ -16,14 +16,15 @@
 #include <memory>
 #include <vector>
 
+#include "../../../XPBDSimulator/Constraint/ConstraintFactory.h"
+#include "../../../XPBDSimulator/XPBDSimulator.h"
+
 // ファクトリー関連
-#include "Game/GameObjects/RopeObject/XPBDSimulator/Constraint/ConstraintFactory.h"
 #include "Game/Common/Factory/InputBindingFactory/InputBindingFactory.h"
 
 // フレームワーク関連
 
 // ユーティリティ関連
-#include "Game/GameObjects/RopeObject/XPBDSimulator/XPBDSimulator.h"
 #include "Game/Common/Utillities/ElapsedTimeCounter/ElapsedTimeCounter.h"
 
 // クラスの前方宣言 ===================================================

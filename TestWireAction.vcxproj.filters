@@ -80,24 +80,6 @@
     <Filter Include="Game\GameObjects\Common\MovableObject">
       <UniqueIdentifier>{267c1a50-31e6-42ba-83c4-963b812482cd}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Game\GameObjects\RopeObject">
-      <UniqueIdentifier>{8bfa4007-7a35-48f1-83a4-8caebde6c91c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\GameObjects\RopeObject\ParticleObject">
-      <UniqueIdentifier>{d82888af-a624-4196-8a74-0001ec13de73}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\GameObjects\RopeObject\XPBDSimulator">
-      <UniqueIdentifier>{df7f9a1e-142a-455c-9747-d9052f08b663}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\GameObjects\RopeObject\XPBDSimulator\SimParticle">
-      <UniqueIdentifier>{f2e0db80-23aa-4bd0-ab63-b26b938218d7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\GameObjects\RopeObject\XPBDSimulator\Constraint">
-      <UniqueIdentifier>{c29e1a8d-969c-4dd3-b32d-1dc4497f1dda}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\GameObjects\RopeObject\XPBDSimulator\Constraint\CollisionConstraint">
-      <UniqueIdentifier>{c7d1d405-bb3e-4000-8055-9e9dc0f5db88}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Game\GameObjects\Floor">
       <UniqueIdentifier>{f33db563-88c5-4227-81ca-4cee2a5713de}</UniqueIdentifier>
     </Filter>
@@ -251,15 +233,6 @@
     <Filter Include="Library\ImGui">
       <UniqueIdentifier>{5cd5f309-cc15-4981-bccc-ac9937f9266c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Game\GameObjects\RopeObject\XPBDSimulator\Constraint\DistanceConstraint">
-      <UniqueIdentifier>{81716a6e-9c74-45f3-a219-75968d971864}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\GameObjects\RopeObject\XPBDSimulator\Constraint\Factory">
-      <UniqueIdentifier>{3a88915d-5138-4d28-9923-9061728f2ec4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\GameObjects\RopeObject\XPBDSimulator\Constraint\Factory\Base">
-      <UniqueIdentifier>{57c15223-3cf6-4f1e-b2df-9ecf4f644136}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Resources\Shaders\CircleShadow">
       <UniqueIdentifier>{c4d188cf-1282-453a-8db1-edfa827b6884}</UniqueIdentifier>
     </Filter>
@@ -328,9 +301,6 @@
     </Filter>
     <Filter Include="Game\Common\Minimap">
       <UniqueIdentifier>{5b126132-1180-4e61-8614-23a99c9a404e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\GameObjects\RopeObject\XPBDSimulator\Constraint\SteeringConstraint">
-      <UniqueIdentifier>{723cbe91-ee7e-45d0-9023-a136156c3dad}</UniqueIdentifier>
     </Filter>
     <Filter Include="Resources\Shaders\FrustumCulling">
       <UniqueIdentifier>{79e9824a-f191-47a0-9920-4aa629466599}</UniqueIdentifier>
@@ -509,9 +479,6 @@
     <Filter Include="Game\Common\GameplayLogic\ExitController">
       <UniqueIdentifier>{f5d2ab48-831a-401b-8320-0706aa8113e7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Game\Common\GameplayLogic\ResultData">
-      <UniqueIdentifier>{6cb8f038-3210-4c03-80d7-7d397b98cee4}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Game\Common\Graphics\GameEffect\Interface">
       <UniqueIdentifier>{8c1aac98-1703-413d-9ebf-78e6a9f2d5af}</UniqueIdentifier>
     </Filter>
@@ -560,6 +527,42 @@
     <Filter Include="Game\Common\Framework\Collision\CollisionManager\CollisionTypes">
       <UniqueIdentifier>{dcbbfefb-0971-4854-8460-fc9db94276bc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\Common\GameplayLogic\ResultData">
+      <UniqueIdentifier>{6cb8f038-3210-4c03-80d7-7d397b98cee4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Common\GameplayLogic\XPBD">
+      <UniqueIdentifier>{8bfa4007-7a35-48f1-83a4-8caebde6c91c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Common\GameplayLogic\XPBD\ParticleObject">
+      <UniqueIdentifier>{d82888af-a624-4196-8a74-0001ec13de73}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Common\GameplayLogic\XPBD\XPBDSimulator">
+      <UniqueIdentifier>{df7f9a1e-142a-455c-9747-d9052f08b663}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Common\GameplayLogic\XPBD\XPBDSimulator\SimParticle">
+      <UniqueIdentifier>{f2e0db80-23aa-4bd0-ab63-b26b938218d7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Common\GameplayLogic\XPBD\XPBDSimulator\Constraint">
+      <UniqueIdentifier>{c29e1a8d-969c-4dd3-b32d-1dc4497f1dda}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Common\GameplayLogic\XPBD\XPBDSimulator\Constraint\CollisionConstraint">
+      <UniqueIdentifier>{c7d1d405-bb3e-4000-8055-9e9dc0f5db88}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Common\GameplayLogic\XPBD\XPBDSimulator\Constraint\DistanceConstraint">
+      <UniqueIdentifier>{81716a6e-9c74-45f3-a219-75968d971864}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Common\GameplayLogic\XPBD\XPBDSimulator\Constraint\Factory">
+      <UniqueIdentifier>{3a88915d-5138-4d28-9923-9061728f2ec4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Common\GameplayLogic\XPBD\XPBDSimulator\Constraint\Factory\Base">
+      <UniqueIdentifier>{57c15223-3cf6-4f1e-b2df-9ecf4f644136}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Common\GameplayLogic\XPBD\XPBDSimulator\Constraint\SteeringConstraint">
+      <UniqueIdentifier>{723cbe91-ee7e-45d0-9023-a136156c3dad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Common\GameplayLogic\XPBD\RopeObject">
+      <UniqueIdentifier>{0d7449ec-2872-45d7-a0c1-a6c5c97307b6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -572,18 +575,6 @@
     </ClInclude>
     <ClInclude Include="Game\GameObjects\Common\MovableObject\MovableObject.h">
       <Filter>Game\GameObjects\Common\MovableObject</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\GameObjects\RopeObject\ParticleObject\ParticleObject.h">
-      <Filter>Game\GameObjects\RopeObject\ParticleObject</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\GameObjects\RopeObject\XPBDSimulator\SimParticle\SimParticle.h">
-      <Filter>Game\GameObjects\RopeObject\XPBDSimulator\SimParticle</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\GameObjects\RopeObject\RopeObject.h">
-      <Filter>Game\GameObjects\RopeObject</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\GameObjects\RopeObject\XPBDSimulator\XPBDSimulator.h">
-      <Filter>Game\GameObjects\RopeObject\XPBDSimulator</Filter>
     </ClInclude>
     <ClInclude Include="Game\GameObjects\Floor\Floor.h">
       <Filter>Game\GameObjects\Floor</Filter>
@@ -635,12 +626,6 @@
     </ClInclude>
     <ClInclude Include="Game\GameObjects\Common\GameObjectEvent\GameObjectEvent.h">
       <Filter>Game\GameObjects\Common\GameObject\GameObjectEvent</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\GameObjects\RopeObject\XPBDSimulator\Constraint\IConstraint.h">
-      <Filter>Game\GameObjects\RopeObject\XPBDSimulator\Constraint</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\GameObjects\RopeObject\XPBDSimulator\Constraint\CollisionConstraint\CollisionConstraint.h">
-      <Filter>Game\GameObjects\RopeObject\XPBDSimulator\Constraint\CollisionConstraint</Filter>
     </ClInclude>
     <ClInclude Include="Game\GameObjects\Enemy\Enemy.h">
       <Filter>Game\GameObjects\Enemy</Filter>
@@ -783,18 +768,6 @@
     <ClInclude Include="Library\ImGui\imgui_impl_win32.h">
       <Filter>Library\ImGui</Filter>
     </ClInclude>
-    <ClInclude Include="Game\GameObjects\RopeObject\XPBDSimulator\Constraint\DistanceConstraint\DistanceConstraint.h">
-      <Filter>Game\GameObjects\RopeObject\XPBDSimulator\Constraint\DistanceConstraint</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\GameObjects\RopeObject\XPBDSimulator\Constraint\ConstraintFactory.h">
-      <Filter>Game\GameObjects\RopeObject\XPBDSimulator\Constraint\Factory\Base</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\GameObjects\RopeObject\XPBDSimulator\Constraint\DistanceConstraint\DistanceConstraintFactory.h">
-      <Filter>Game\GameObjects\RopeObject\XPBDSimulator\Constraint\Factory</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\GameObjects\RopeObject\XPBDSimulator\Constraint\CollisionConstraint\CollisionConstraintFactory.h">
-      <Filter>Game\GameObjects\RopeObject\XPBDSimulator\Constraint\Factory</Filter>
-    </ClInclude>
     <ClInclude Include="Game\GameObjects\Player\State\ShootingWireState\ShootingWirePlayerState.h">
       <Filter>Game\GameObjects\Player\State\ShootingWire</Filter>
     </ClInclude>
@@ -851,12 +824,6 @@
     </ClInclude>
     <ClInclude Include="Game\Common\Minimap\Minimap.h">
       <Filter>Game\Common\Minimap</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\GameObjects\RopeObject\XPBDSimulator\Constraint\SteeringConstraint\SteeringConstraint.h">
-      <Filter>Game\GameObjects\RopeObject\XPBDSimulator\Constraint\SteeringConstraint</Filter>
-    </ClInclude>
-    <ClInclude Include="Game\GameObjects\RopeObject\XPBDSimulator\Constraint\SteeringConstraint\SteeringConstraintFactory.h">
-      <Filter>Game\GameObjects\RopeObject\XPBDSimulator\Constraint\Factory</Filter>
     </ClInclude>
     <ClInclude Include="Game\Common\Factory\CollisionMatrixFactory\CollisionMatrixFactory.h">
       <Filter>Game\Common\Factory\CollisionMatrixFactory</Filter>
@@ -1065,6 +1032,42 @@
     <ClInclude Include="Game\Common\Framework\Collision\CollisionManager\CollisionTypes\CollisionTypes.h">
       <Filter>Game\Common\Framework\Collision\CollisionManager\CollisionTypes</Filter>
     </ClInclude>
+    <ClInclude Include="Game\Common\GameplayLogic\XPBD\ParticleObject\ParticleObject.h">
+      <Filter>Game\Common\GameplayLogic\XPBD\ParticleObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Common\GameplayLogic\XPBD\RopeObject\RopeObject.h">
+      <Filter>Game\Common\GameplayLogic\XPBD\RopeObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Common\GameplayLogic\XPBD\XPBDSimulator\XPBDSimulator.h">
+      <Filter>Game\Common\GameplayLogic\XPBD\XPBDSimulator</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Common\GameplayLogic\XPBD\XPBDSimulator\Constraint\IConstraint.h">
+      <Filter>Game\Common\GameplayLogic\XPBD\XPBDSimulator\Constraint</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Common\GameplayLogic\XPBD\XPBDSimulator\SimParticle\SimParticle.h">
+      <Filter>Game\Common\GameplayLogic\XPBD\XPBDSimulator\SimParticle</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Common\GameplayLogic\XPBD\XPBDSimulator\Constraint\CollisionConstraint\CollisionConstraint.h">
+      <Filter>Game\Common\GameplayLogic\XPBD\XPBDSimulator\Constraint\CollisionConstraint</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Common\GameplayLogic\XPBD\XPBDSimulator\Constraint\CollisionConstraint\CollisionConstraintFactory.h">
+      <Filter>Game\Common\GameplayLogic\XPBD\XPBDSimulator\Constraint\Factory</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Common\GameplayLogic\XPBD\XPBDSimulator\Constraint\DistanceConstraint\DistanceConstraintFactory.h">
+      <Filter>Game\Common\GameplayLogic\XPBD\XPBDSimulator\Constraint\Factory</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Common\GameplayLogic\XPBD\XPBDSimulator\Constraint\SteeringConstraint\SteeringConstraintFactory.h">
+      <Filter>Game\Common\GameplayLogic\XPBD\XPBDSimulator\Constraint\Factory</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Common\GameplayLogic\XPBD\XPBDSimulator\Constraint\ConstraintFactory.h">
+      <Filter>Game\Common\GameplayLogic\XPBD\XPBDSimulator\Constraint\Factory\Base</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Common\GameplayLogic\XPBD\XPBDSimulator\Constraint\DistanceConstraint\DistanceConstraint.h">
+      <Filter>Game\Common\GameplayLogic\XPBD\XPBDSimulator\Constraint\DistanceConstraint</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\Common\GameplayLogic\XPBD\XPBDSimulator\Constraint\SteeringConstraint\SteeringConstraint.h">
+      <Filter>Game\Common\GameplayLogic\XPBD\XPBDSimulator\Constraint\SteeringConstraint</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
@@ -1077,18 +1080,6 @@
     </ClCompile>
     <ClCompile Include="Game\GameObjects\Common\MovableObject\MovableObject.cpp">
       <Filter>Game\GameObjects\Common\MovableObject</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\GameObjects\RopeObject\ParticleObject\ParticleObject.cpp">
-      <Filter>Game\GameObjects\RopeObject\ParticleObject</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\GameObjects\RopeObject\XPBDSimulator\SimParticle\SimParticle.cpp">
-      <Filter>Game\GameObjects\RopeObject\XPBDSimulator\SimParticle</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\GameObjects\RopeObject\RopeObject.cpp">
-      <Filter>Game\GameObjects\RopeObject</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\GameObjects\RopeObject\XPBDSimulator\XPBDSimulator.cpp">
-      <Filter>Game\GameObjects\RopeObject\XPBDSimulator</Filter>
     </ClCompile>
     <ClCompile Include="Game\GameObjects\Floor\Floor.cpp">
       <Filter>Game\GameObjects\Floor</Filter>
@@ -1128,12 +1119,6 @@
     </ClCompile>
     <ClCompile Include="Game\GameObjects\StageObject\State\ThrownStageObjectState\ThrownObjectState.cpp">
       <Filter>Game\GameObjects\StageObject\state\Thrown</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\GameObjects\RopeObject\XPBDSimulator\Constraint\IConstraint.cpp">
-      <Filter>Game\GameObjects\RopeObject\XPBDSimulator\Constraint</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\GameObjects\RopeObject\XPBDSimulator\Constraint\CollisionConstraint\CollisionConstraint.cpp">
-      <Filter>Game\GameObjects\RopeObject\XPBDSimulator\Constraint\CollisionConstraint</Filter>
     </ClCompile>
     <ClCompile Include="Game\Common\Screen.cpp">
       <Filter>Game\Common</Filter>
@@ -1255,18 +1240,6 @@
     <ClCompile Include="Library\ImGui\imgui_impl_win32.cpp">
       <Filter>Library\ImGui</Filter>
     </ClCompile>
-    <ClCompile Include="Game\GameObjects\RopeObject\XPBDSimulator\Constraint\DistanceConstraint\DistanceConstraint.cpp">
-      <Filter>Game\GameObjects\RopeObject\XPBDSimulator\Constraint\DistanceConstraint</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\GameObjects\RopeObject\XPBDSimulator\Constraint\ConstraintFactory.cpp">
-      <Filter>Game\GameObjects\RopeObject\XPBDSimulator\Constraint\Factory\Base</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\GameObjects\RopeObject\XPBDSimulator\Constraint\DistanceConstraint\DistanceConstraintFactory.cpp">
-      <Filter>Game\GameObjects\RopeObject\XPBDSimulator\Constraint\Factory</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\GameObjects\RopeObject\XPBDSimulator\Constraint\CollisionConstraint\CollisionConstraintFactory.cpp">
-      <Filter>Game\GameObjects\RopeObject\XPBDSimulator\Constraint\Factory</Filter>
-    </ClCompile>
     <ClCompile Include="Game\GameObjects\Player\State\ShootingWireState\ShootingWirePlayerState.cpp">
       <Filter>Game\GameObjects\Player\State\ShootingWire</Filter>
     </ClCompile>
@@ -1314,12 +1287,6 @@
     </ClCompile>
     <ClCompile Include="Game\Common\Minimap\Minimap.cpp">
       <Filter>Game\Common\Minimap</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\GameObjects\RopeObject\XPBDSimulator\Constraint\SteeringConstraint\SteeringConstraint.cpp">
-      <Filter>Game\GameObjects\RopeObject\XPBDSimulator\Constraint\SteeringConstraint</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\GameObjects\RopeObject\XPBDSimulator\Constraint\SteeringConstraint\SteeringConstraintFactory.cpp">
-      <Filter>Game\GameObjects\RopeObject\XPBDSimulator\Constraint\Factory</Filter>
     </ClCompile>
     <ClCompile Include="Game\Common\Factory\CollisionMatrixFactory\CollisionMatrixFactory.cpp">
       <Filter>Game\Common\Factory\CollisionMatrixFactory</Filter>
@@ -1485,6 +1452,42 @@
     </ClCompile>
     <ClCompile Include="Game\Common\Framework\Collision\CollisionManager\CollisionDetectionWorker\CollisionDetectionWorker.cpp">
       <Filter>Game\Common\Framework\Collision\CollisionManager\CollisionDetectionWorker</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Common\GameplayLogic\XPBD\ParticleObject\ParticleObject.cpp">
+      <Filter>Game\Common\GameplayLogic\XPBD\ParticleObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Common\GameplayLogic\XPBD\RopeObject\RopeObject.cpp">
+      <Filter>Game\Common\GameplayLogic\XPBD\RopeObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Common\GameplayLogic\XPBD\XPBDSimulator\XPBDSimulator.cpp">
+      <Filter>Game\Common\GameplayLogic\XPBD\XPBDSimulator</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Common\GameplayLogic\XPBD\XPBDSimulator\Constraint\IConstraint.cpp">
+      <Filter>Game\Common\GameplayLogic\XPBD\XPBDSimulator\Constraint</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Common\GameplayLogic\XPBD\XPBDSimulator\SimParticle\SimParticle.cpp">
+      <Filter>Game\Common\GameplayLogic\XPBD\XPBDSimulator\SimParticle</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Common\GameplayLogic\XPBD\XPBDSimulator\Constraint\CollisionConstraint\CollisionConstraint.cpp">
+      <Filter>Game\Common\GameplayLogic\XPBD\XPBDSimulator\Constraint\CollisionConstraint</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Common\GameplayLogic\XPBD\XPBDSimulator\Constraint\CollisionConstraint\CollisionConstraintFactory.cpp">
+      <Filter>Game\Common\GameplayLogic\XPBD\XPBDSimulator\Constraint\Factory</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Common\GameplayLogic\XPBD\XPBDSimulator\Constraint\DistanceConstraint\DistanceConstraintFactory.cpp">
+      <Filter>Game\Common\GameplayLogic\XPBD\XPBDSimulator\Constraint\Factory</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Common\GameplayLogic\XPBD\XPBDSimulator\Constraint\SteeringConstraint\SteeringConstraintFactory.cpp">
+      <Filter>Game\Common\GameplayLogic\XPBD\XPBDSimulator\Constraint\Factory</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Common\GameplayLogic\XPBD\XPBDSimulator\Constraint\ConstraintFactory.cpp">
+      <Filter>Game\Common\GameplayLogic\XPBD\XPBDSimulator\Constraint\Factory\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Common\GameplayLogic\XPBD\XPBDSimulator\Constraint\DistanceConstraint\DistanceConstraint.cpp">
+      <Filter>Game\Common\GameplayLogic\XPBD\XPBDSimulator\Constraint\DistanceConstraint</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Common\GameplayLogic\XPBD\XPBDSimulator\Constraint\SteeringConstraint\SteeringConstraint.cpp">
+      <Filter>Game\Common\GameplayLogic\XPBD\XPBDSimulator\Constraint\SteeringConstraint</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -15,7 +15,7 @@
 
 // ユーティリティ関連
 #include "Game/Common/Utillities/Collision/Collision.h"
-#include "Game/GameObjects/RopeObject/XPBDSimulator/SimParticle/SimParticle.h"
+#include "../../SimParticle/SimParticle.h"
 
 // グラフィック関連
 #include "Game/Common/Graphics/Camera/MainCamera/MainCamera.h"
