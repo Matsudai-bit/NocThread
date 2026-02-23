@@ -11,7 +11,7 @@
  // 多重インクルードの防止 =====================================================
 #pragma once
 
-//#define COLLISIONMANAGER_DEBUG
+#define COLLISIONMANAGER_DEBUG
 
 #include <vector>
 #include <thread>
