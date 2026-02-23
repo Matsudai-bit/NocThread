@@ -15,7 +15,7 @@
 // ヘッダファイルの読み込み ===================================================
 #include <vector>
 #include <memory>
-#include "Game/GameObjects/RopeObject/ParticleObject/ParticleObject.h"
+#include "../ParticleObject/ParticleObject.h"
 
 // クラスの前方宣言 ===================================================
 class CommonResources;	// 共通リソース

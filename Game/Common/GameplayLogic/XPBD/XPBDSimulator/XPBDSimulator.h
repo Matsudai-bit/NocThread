@@ -16,7 +16,7 @@
 #include <vector>
 #include <memory>
 
-#include "Game/GameObjects/RopeObject/XPBDSimulator/SimParticle/SimParticle.h"
+#include "SimParticle/SimParticle.h"
 
 
 // ƒNƒ‰ƒX‚Ì‘O•ûéŒ¾ ===================================================

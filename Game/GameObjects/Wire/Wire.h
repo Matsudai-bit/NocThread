@@ -17,9 +17,9 @@
 #include "Game/GameObjects/Common/GameObject.h"
 
 // シミュレーション関連
-#include "Game/GameObjects/RopeObject/XPBDSimulator/XPBDSimulator.h"	// XPBDのシミュレーション
-#include "Game/GameObjects/RopeObject/ParticleObject/ParticleObject.h"	// パーティクルオブジェクト
-#include "Game/GameObjects/RopeObject/RopeObject.h"						// ロープオブジェクト
+#include "Game/Common/GameplayLogic/XPBD/XPBDSimulator/XPBDSimulator.h"	// XPBDのシミュレーション
+#include "Game/Common/GameplayLogic/XPBD/ParticleObject/ParticleObject.h"	// パーティクルオブジェクト
+#include "Game/Common/GameplayLogic/XPBD/RopeObject/RopeObject.h"						// ロープオブジェクト
 
 // ツール
 #include "Library/MyLib/Ray/Ray.h"	// レイ

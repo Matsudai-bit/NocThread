@@ -35,11 +35,6 @@
 // ユーティリティ関連
 #include "Game/Common/Utillities/ElapsedTimeCounter/ElapsedTimeCounter.h"
 
-// ゲームオブジェクト
-#include "Game/GameObjects/RopeObject/RopeObject.h"
-#include "Game/GameObjects/RopeObject/XPBDSimulator/XPBDSimulator.h"
-#include "Game/GameObjects/RopeObject/ParticleObject/ParticleObject.h"
-
 // クラスの宣言 ===============================================================
 class CommonResources;  // 共通リソース
 class Floor;			// 床

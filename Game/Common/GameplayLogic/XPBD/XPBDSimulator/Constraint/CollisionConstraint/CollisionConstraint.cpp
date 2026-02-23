@@ -9,7 +9,7 @@
 // ヘッダファイルの読み込み ===================================================
 #include "pch.h"
 #include "CollisionConstraint.h"
-#include "Game/GameObjects/RopeObject/XPBDSimulator/SimParticle/SimParticle.h"
+#include "../../SimParticle/SimParticle.h"
 
 #include "Library/MyLib/MathUtils/MathUtils.h"
 #include "Game/Common/Utillities/Collision/Collision.h"
@@ -24,6 +24,7 @@ using namespace DirectX;
  */
 CollisionConstraint::CollisionConstraint(SimParticle* pParticle)
 	: m_pParticle{ pParticle }
+	, m_constraintParam{}
 {
 
 }

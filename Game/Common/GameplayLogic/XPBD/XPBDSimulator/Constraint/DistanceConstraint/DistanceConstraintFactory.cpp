@@ -21,8 +21,8 @@
 #include "Game/Common/Framework/Collision/CollisionManager/CollisionManager.h"
 
 // ユーティリティ関連
-#include "Game/GameObjects/RopeObject/XPBDSimulator/Constraint/CollisionConstraint/CollisionConstraint.h"
-#include "Game/GameObjects/RopeObject/XPBDSimulator/SimParticle/SimParticle.h"
+#include "../../Constraint/CollisionConstraint/CollisionConstraint.h"
+#include "../../SimParticle/SimParticle.h"
 
 using namespace DirectX;
 
