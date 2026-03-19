@@ -127,6 +127,7 @@ void CollisionManager::Finalize()
  */
 void CollisionManager::AddCollisionData(const CollisionData& collisionData)
 {
+	std::lock_guard<std::mutex> lock(m_collisionMutex); // ロック取得
 
 	auto newId = RegisterIdLookUpTable(collisionData);
 
@@ -144,6 +145,7 @@ void CollisionManager::AddCollisionData(const CollisionData& childCollisionData,
 {
 	if (parent)
 	{
+		std::lock_guard<std::mutex> lock(m_collisionMutex); // ロック取得
 		auto it = std::find_if(m_rootCollisionDataId.begin(), m_rootCollisionDataId.end(), [&](const unsigned int& id)
 			{
 				return  m_collisionIdLookupTable[static_cast<size_t>(id)].pCollider == parent;
@@ -171,6 +173,8 @@ void CollisionManager::RemoveCollisionObjectData(GameObject* pRemoveGameObject, 
 {
 	if (!pRemoveGameObject || !pCollider) return;
 
+	std::lock_guard<std::mutex> lock(m_collisionMutex); // ロック取得
+
 
 	auto findIt = std::find_if(m_rootCollisionDataId.begin(), m_rootCollisionDataId.end(),
 		[&](const UINT& id) {
@@ -195,6 +199,8 @@ void CollisionManager::RemoveCollisionObjectData(GameObject* pRemoveGameObject, 
  */
 void CollisionManager::RemoveAll()
 {
+	std::lock_guard<std::mutex> lock(m_collisionMutex); // ロック取得
+
 	m_collisionIdLookupTable.clear();
 	m_rootCollisionDataId.clear();
 
@@ -281,8 +287,12 @@ void CollisionManager::RequestCollisionDetection()
 	// 判定用データの作成（ここはメインスレッドで安全に行う）
 	auto nextProxy = std::make_unique<std::vector<ThreadCollisionObjectProxy>>();
 
-	// プロキシの作成
-	CreateWorkerProxy(nextProxy.get(), false);
+	{
+		std::lock_guard<std::mutex> lock(m_collisionMutex); // ロック取得
+
+		// プロキシの作成
+		CreateWorkerProxy(nextProxy.get(), false);
+	}
 
 	// オブジェクトをコピー
 	nextProxy->insert(nextProxy->end(), m_staticProxies.begin(), m_staticProxies.end());
@@ -357,6 +367,8 @@ void CollisionManager::PreCollision()
  */
 void CollisionManager::NotifyCollisionEvents(std::vector<DetectedCollisonData>* pDetectedCollisions)
 {
+	std::lock_guard<std::mutex> lock(m_collisionMutex); // ロック取得
+
 	// ここにはもうロックも wait も不要。純粋な通知ロジックのみ。
 	for (const auto& data : (*pDetectedCollisions))
 	{
@@ -382,6 +394,8 @@ void CollisionManager::NotifyCollisionEvents(std::vector<DetectedCollisonData>* 
  */
 void CollisionManager::FinalizeCollision()
 {
+	std::lock_guard<std::mutex> lock(m_collisionMutex); // ロック取得
+
 	// 衝突判定の直後の処理をする
 	for (auto& data : m_collisionIdLookupTable)
 	{
@@ -443,7 +457,6 @@ void CollisionManager::CreateWorkerProxy(std::vector<ThreadCollisionObjectProxy>
 	OutputDebugString(L"============ プロキシの作成処理 ============\n");
 #endif 
 	
-	// 読み取りを開始する前にロックを取得！
 	localProxies.reserve(m_rootCollisionDataId.size());
 
 	for (auto& id : m_rootCollisionDataId) {
@@ -459,7 +472,6 @@ void CollisionManager::CreateWorkerProxy(std::vector<ThreadCollisionObjectProxy>
 
 	// そのまま共有データへ代入
 	*collisionObjectProxy = std::move(localProxies);
-	 // ここでアンロック
 }
 
 bool CollisionManager::CreateProxy(ThreadCollisionObjectProxy* pProxy, const CollisionData& collisionData, bool isStaticCreation)

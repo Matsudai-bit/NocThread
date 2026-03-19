@@ -10,7 +10,7 @@
 #pragma once
 
 #define RENDERER_TYPE 1 // 0 : 通常描画　1: フラスタムカリング 2：CS使用フラスタムカリング
-#define BUILDING_DEBUG
+//#define BUILDING_DEBUG
 
 
 // ヘッダファイルの読み込み ===================================================

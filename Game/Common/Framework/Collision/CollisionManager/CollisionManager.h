@@ -62,6 +62,8 @@ public:
 	// データメンバの宣言 -----------------------------------------------
 private:
 
+	std::mutex m_collisionMutex; ///< 衝突データ保護用のミューテックス
+
 	// 衝突データ関連
 	MyLib::IdPool<UINT> m_idPool;										///< 識別子の作成プール
 	std::vector<UINT>	m_rootCollisionDataId;							///< 衝突データのルートデータ群

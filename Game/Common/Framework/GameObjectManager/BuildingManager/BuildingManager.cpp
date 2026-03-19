@@ -127,11 +127,11 @@ void BuildingManager::DrawTask(const Camera& camera)
 {
 	using namespace SimpleMath;
 	
-#ifndef BUILDING_DEBUG
+#ifdef BUILDING_DEBUG
 
 	//// 1. 開始時刻の記録
 	auto start = std::chrono::high_resolution_clock::now();
-#endif // !BUILDING_DEBUG
+#endif // BUILDING_DEBUG
 
 
 	
@@ -148,7 +148,7 @@ void BuildingManager::DrawTask(const Camera& camera)
 	DrawFrustumCullingCS(camera);
 #endif
 
-#ifndef BUILDING_DEBUG
+#ifdef BUILDING_DEBUG
 
 	//// 1. 開始時刻の記録
 // 3. 終了時刻の記録
@@ -159,7 +159,7 @@ void BuildingManager::DrawTask(const Camera& camera)
 	auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
 
 	m_pCommonResources->GetDebugFont()->AddString(100, 100, Colors::Red, L"duration(?s) = %d", duration.count()); 
-#endif // !BUILDING_DEBUG
+#endif // BUILDING_DEBUG
 	
 
 	

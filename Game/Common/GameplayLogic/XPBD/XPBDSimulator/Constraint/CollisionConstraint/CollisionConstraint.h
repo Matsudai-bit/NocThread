@@ -38,8 +38,6 @@ private:
 
 	SimParticle* m_pParticle;
 
-	//**** テスト用
-
 
 
 public:

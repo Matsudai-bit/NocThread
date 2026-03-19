@@ -82,6 +82,12 @@ float CollisionConstraint::ComputeLambdaCorrection(float dt, float C) const
 	return -C / (invMass * gradientSquared + αTilda);
 }
 
+/**
+ * @brief 位置補正ベクトルΔxを計算する
+ * 
+ * @param[in] deltaLambda　Δλ
+ * @return 
+ */
 DirectX::SimpleMath::Vector3 CollisionConstraint::ComputeDeltaX(float deltaLambda) const
 {
 	// Δx = Δλ * ∇C * wi
@@ -90,6 +96,11 @@ DirectX::SimpleMath::Vector3 CollisionConstraint::ComputeDeltaX(float deltaLambd
 	return deltaLambda * m_collisionNormal * m_pParticle->GetInvMass();
 }
 
+/**
+ * @brief 位置補正の適用
+ * 
+ * @param[in] deltaLambda　Δλ
+ */
 void CollisionConstraint::ApplyPositionCorrection(float deltaLambda)
 {
 	DirectX::SimpleMath::Vector3 deltaX = ComputeDeltaX(deltaLambda); // ComputeDeltaXが既にinvMassを考慮したΔxを返すと仮定

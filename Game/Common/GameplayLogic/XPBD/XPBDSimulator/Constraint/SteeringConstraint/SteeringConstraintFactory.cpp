@@ -197,6 +197,10 @@ DirectX::SimpleMath::Vector3 SteeringConstraintFactory::ComputeCameraDirectedSte
     return steeringForce;
 }
 
+/**
+ * @brief 入力コールバックの登録
+ * 
+ */
 void SteeringConstraintFactory::RegisterBindCallbackToInput()
 {
     using namespace SimpleMath;
@@ -220,6 +224,10 @@ void SteeringConstraintFactory::RegisterBindCallbackToInput()
 
 }
 
+/**
+ * @brief 紐づけの解除をする
+ * 
+ */
 void SteeringConstraintFactory::UnBindCallbackToInput()
 {
     // 入力システムの取得
